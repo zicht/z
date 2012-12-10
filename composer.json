@@ -1,0 +1,32 @@
+{
+    "name": "symfony/framework-standard-edition",
+    "description": "The \"Symfony Standard Edition\" distribution",
+    "autoload": {
+        "psr-0": { "": "src/" }
+    },
+    "repositories": [
+        {
+            "type": "git",
+            "url": "https://github.com/drm/MelpVcs"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/yaml": "2.1.3",
+        "symfony/dependency-injection": "2.1.3",
+        "symfony/config": "2.1.3",
+        "symfony/console": "2.1.3",
+        "melp/vcs": "dev-master"
+    },
+    "scripts": {
+        "post-install-cmd": [
+        ],
+        "post-update-cmd": [
+        ]
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "symfony-app-dir": "app",
+        "symfony-web-dir": "web"
+    }
+}
