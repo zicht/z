@@ -14,6 +14,12 @@ abstract class Task implements TaskInterface
      */
     protected $context = null;
 
+    function __construct($name, $options) {
+        $this->name = $name;
+        $this->options = $options;
+    }
+
+
     function setExecutionContext(ContextInterface $context) {
         $this->context = $context;
     }
@@ -28,9 +34,6 @@ abstract class Task implements TaskInterface
         return $this->name;
     }
 
-    function getPriority() {
-        return 0;
-    }
 
     function simulate() {
         $this->context->writeln("Would execute {$this->getName()}");
@@ -39,11 +42,20 @@ abstract class Task implements TaskInterface
     /**
      * @return array
      */
-    function getDepends() {
+    final function getDepends() {
+        if (!isset($this->options['depends'])) {
+            return array();
+        }
+        return $this->options['depends'];
+    }
+
+    static function uses()
+    {
         return array();
     }
 
-    function getTriggers() {
+    static function provides()
+    {
         return array();
     }
 }

@@ -7,24 +7,30 @@ namespace Zicht\Tool\Task;
 
 class Runner
 {
-    function __construct(Builder $builder, Context $context) {
+    function __construct(Builder $builder, Context $context, $options) {
         $this->builder = $builder;
         $this->context = $context;
+        $this->taskOptions = $options;
     }
 
 
-    function run($tasks)
+    function run($tasks, $simulate = false)
     {
-        $exec = new TaskList($this->builder);
+        $exec = new TaskList($this->builder, $this->taskOptions);
 
         foreach ($tasks as $task) {
             $exec->addTask($task);
         }
 
         foreach ($exec as $task) {
-            echo "Executing task {$task->getName()}\n";
             $task->setExecutionContext($this->context);
-            $task->execute();
+            if ($simulate) {
+                $this->context->writeln("Simulating task {$task->getName()}");
+                $task->simulate();
+            } else {
+                $this->context->writeln("Executing task {$task->getName()}");
+                $task->execute();
+            }
         }
     }
 }

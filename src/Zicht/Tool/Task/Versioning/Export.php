@@ -15,6 +15,6 @@ class Export extends Task
             $this->context->exec('rm -rf ' . $this->context->get('build.dir'));
         }
         $version = $this->context->getService('versioning');
-        $version->export($this->context->get('build.version'), $this->context->get('build.dir'));
+        $version->export($this->context->get('build.version', false), $this->context->get('build.dir'));
     }
 }

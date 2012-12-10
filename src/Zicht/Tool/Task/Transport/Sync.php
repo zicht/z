@@ -10,10 +10,19 @@ use Zicht\Tool\Task\Task;
 
 class Sync extends Task
 {
+    static function uses()
+    {
+        return array(
+            'sync.src'
+        );
+    }
+
+
     function execute()
     {
         $this->execRsync($this->getRsyncOptions());
     }
+
 
     function simulate()
     {
@@ -23,14 +32,16 @@ class Sync extends Task
     }
 
 
-    function execRsync($options) {
+    function execRsync($options)
+    {
         $this->context->exec(
             'rsync ' . join(' ', $options)
         );
     }
 
+
     function getRsyncOptions() {
-        $src = $this->context->get('deploy.src');
+        $src = $this->context->get('sync.src');
 
         $options = array(
             '-rupv', '--size-only', '--delete',
@@ -40,8 +51,8 @@ class Sync extends Task
         if (is_file($excludeList = ($src . 'exclude-list.txt'))) {
             $options[]= '--exclude-from=' . $excludeList;
         }
-        $options[]= escapeshellarg($this->context->get('deploy.src'));
-        $options[]= escapeshellarg($this->context->get('ssh')) . ':' . escapeshellarg($this->context->get('deploy.target'));
+        $options[]= escapeshellarg($this->context->get('sync.src'));
+        $options[]= escapeshellarg($this->context->get('ssh')) . ':' . escapeshellarg($this->context->get('root'));
         return $options;
     }
 }

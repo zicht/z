@@ -15,9 +15,17 @@ class Context implements ContextInterface
 
     function __construct(ContainerInterface $container, $options, $environments) {
         $this->container = $container;
+        $this->setOptions($options);
+        $this->setEnvironments($environments);
+    }
+
+    function setOptions($options) {
         foreach ($options as $option => $value) {
             $this->set($option, $value);
         }
+    }
+
+    function setEnvironments($environments) {
         $this->environments = $environments;
     }
 
@@ -31,22 +39,50 @@ class Context implements ContextInterface
     }
 
     function set($name, $value) {
-        $this->context[$name] = $value;
+        $path = explode('.', $name);
+        $ptr =& $this->context;
+        foreach (array_slice($path, 0, -1) as $element) {
+            if (!isset($ptr[$element])) {
+                $ptr[$element] = array();
+            }
+            $ptr =& $ptr[$element];
+        }
+        $ptr[end($path)] = $value;
     }
 
-    function get($name) {
-        if ($this->selectedEnvironment) {
-            if (isset($this->environments[$this->selectedEnvironment][$name])) {
-                return $this->environments[$this->selectedEnvironment][$name];
+    function get($name, $require = true) {
+        $path = explode('.', $name);
+        $ptr = $this->context;
+        foreach ($path as $element) {
+            if (!isset($ptr[$element])) {
+                $ptr = null;
+                break;
+            }
+            $ptr =& $ptr[$element];
+        }
+        if ($ptr === null && $this->selectedEnvironment) {
+            $ptr = $this->environments[$this->selectedEnvironment];
+            foreach ($path as $element) {
+                if (!isset($ptr[$element])) {
+                    $ptr = null;
+                    break;
+                }
+                $ptr =& $ptr[$element];
             }
         }
-        return $this->context[$name];
+
+        if ($require && $ptr === null) {
+            throw new \InvalidArgumentException("Context value {$name} is not found");
+        }
+
+        return $ptr;
     }
 
 
     function getService($name) {
         return $this->container->get($name);
     }
+
 
     function chdir($dir) {
         $this->dirStack[]= getcwd();
@@ -71,7 +107,11 @@ class Context implements ContextInterface
 
     function exec($cmd) {
         echo "[EXEC] {$cmd}\n";
-        passthru($cmd);
+        $status = null;
+        passthru($cmd, $status);
+        if ($status !== 0) {
+            throw new \RuntimeException("Executing command failed with status code $status");
+        }
     }
 
 

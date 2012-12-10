@@ -10,11 +10,11 @@ use Zicht\Tool\Task\Task;
 
 class Deploy extends Task
 {
-    function getDepends() {
+    static function uses()
+    {
         return array(
-//            'release.tag',
-            'release.build',
-            'transport.sync',
+            'environment',
+            'sync.src'
         );
     }
 

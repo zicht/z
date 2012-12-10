@@ -9,20 +9,27 @@ use Zicht\Tool\Task\Task;
 
 class Build extends Task
 {
-    function getDepends()
+    static function provides()
     {
         return array(
-            'versioning.export'
+            'sync.src'
         );
     }
+
 
     function execute()
     {
         $this->context->chdir($this->context->get('build.dir'));
-        foreach ($this->context->get('build.commands') as $command) {
+        foreach ($this->options['post'] as $command) {
             $this->context->exec($command);
         }
         $this->context->popdir();
-        $this->context->set('deploy.src', rtrim(realpath($this->context->get('build.dir')), '/') . '/');
+        $this->context->set('sync.src', rtrim(realpath($this->context->get('build.dir')), '/') . '/');
+    }
+
+
+    function simulate()
+    {
+        $this->context->set('sync.src', getcwd());
     }
 }

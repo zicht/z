@@ -13,16 +13,21 @@ class BaseCommand extends \Symfony\Component\Console\Command\Command
 {
     function __construct(ContainerInterface $container)
     {
-        parent::__construct();
         $this->container = $container;
+        parent::__construct();
     }
 
 
     protected function initialize(InputInterface $input, OutputInterface $output) {
         parent::initialize($input, $output);
 
-        if ($value = $input->getArgument('environment')) {
-            $this->container->get('task_context')->setEnvironment($value);
+        $env = null;
+        try {
+            $env = $input->getArgument('environment');
+        } catch(\Exception $e) {
+        }
+        if (null !== $env) {
+            $this->container->get('task_context')->setEnvironment($env);
         }
     }
 }

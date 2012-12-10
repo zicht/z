@@ -21,11 +21,11 @@
         <service id="task_builder" class="Zicht\Tool\Task\Builder">
             <argument type="service" id="task_resolver" />
         </service>
-        <service id="task_resolver" class="Zicht\Tool\Task\Resolver">
-        </service>
+        <service id="task_resolver" class="Zicht\Tool\Task\Resolver" />
         <service id="task_runner" class="Zicht\Tool\Task\Runner">
             <argument type="service" id="task_builder" />
             <argument type="service" id="task_context" />
+            <argument>%tasks%</argument>
         </service>
     </services>
 </container>

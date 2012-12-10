@@ -1,0 +1,12 @@
+tasks:
+    release.build:
+        depends: ['versioning.export']
+    release.deploy:
+        depends: ['release.build', 'transport.sync']
+    env.ssh: ~
+    env.mysql: ~
+
+options:
+    build:
+        dir: build
+        version: ~

@@ -12,19 +12,17 @@ class TaskList implements \IteratorAggregate
 {
     protected $tasks = array();
 
-    function __construct(Builder $builder)
+    function __construct(Builder $builder, $taskOptions)
     {
         $this->builder = $builder;
+        $this->taskOptions = $taskOptions;
     }
 
 
     function addTask($name)
     {
-        if (is_string($name)) {
-            $task = $this->builder->build($name);
-        } else {
-            $task = $name;
-        }
+        $task = $this->builder->build($name, isset($this->taskOptions[$name]) ? $this->taskOptions[$name] : array());
+
         $this->tasks[]= $task;
         foreach ($task->getDepends() as $name) {
             if (!array_key_exists($name, $this->tasks)) {
@@ -56,7 +54,11 @@ class TaskList implements \IteratorAggregate
                 : -1
             ;
         });
+        $this->validate();
+    }
 
+
+    function validate() {
         $wouldHaveExecuted = array();
         foreach ($this->tasks as $task) {
             foreach ($task->getDepends() as $name) {

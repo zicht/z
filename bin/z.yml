@@ -1,15 +1,14 @@
 versioning:
     url: svn://zon/projecten/ips001/trunk
 
-options:
-    build.dir: ./builds
-    build.version: ~
-    build.commands:
-        - "if [ -d \"../vendor/\" ]; then rsync -rp ../vendor/ ./vendor; fi"
-        - "if [ -f \"composer.lock\" ]; then composer install; fi"
-        - "make sass"
-
 environments:
     staging:
-        ssh:              ips25_a@a.ips25.com
-        deploy.target:    ~/public_html/default/public/
+        ssh:        ips25_a@a.ips25.com
+        root:       ~/public_html/default/public/
+
+tasks:
+    release.build:
+        post:
+            - "if [ -d \"../vendor/\" ]; then rsync -rp ../vendor/ ./vendor; fi"
+            - "if [ -f \"composer.lock\" ]; then composer install; fi"
+            - "make sass"

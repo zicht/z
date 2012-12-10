@@ -16,11 +16,11 @@ class Builder implements BuilderInterface
     }
 
 
-    function build($name)
+    function build($name, $options = array())
     {
         $impl = new ReflectionClass($this->resolver->resolve($name));
         /** @var $ret TaskInterface */
-        $ret = $impl->newInstance();
+        $ret = $impl->newInstance($name, $options);
         if (! ($ret instanceof TaskInterface)) {
             throw new \UnexpectedValueException("The task rsolver returned a class with name {$name}, but it is no instance of TaskInterface");
         }

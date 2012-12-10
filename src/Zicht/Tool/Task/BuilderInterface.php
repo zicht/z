@@ -10,5 +10,5 @@ interface BuilderInterface
     /**
      * @return \Zicht\Tool\Task\TaskInterface
      */
-    function build($name);
+    function build($name, $options = array());
 }

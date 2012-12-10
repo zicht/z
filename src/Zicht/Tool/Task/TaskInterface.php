@@ -7,11 +7,12 @@ namespace Zicht\Tool\Task;
 
 interface TaskInterface
 {
+    static function uses();
+    static function provides();
+
     function setExecutionContext(ContextInterface $context);
     function execute();
     function simulate();
     function getDepends();
-    function getPriority();
-    function setName($name);
     function getName();
 }
