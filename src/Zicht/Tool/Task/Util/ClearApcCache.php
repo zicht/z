@@ -19,7 +19,7 @@ class ClearApcCache extends Task
         $scriptName = rand() . '.php';
         $this->context->execScript(
             sprintf(
-                'scp %s $(ssh):$(root)$(web)/%s; wget -O - $(url)%s',
+                'scp %s $(ssh):$(root)$(web)/%s; wget -O - $(url)%s; ssh $(ssh) "rm $(root)$(web)/%s"',
                 dirname(__FILE__) . '/__apc_clear_cache.php',
                 $scriptName,
                 $scriptName,
