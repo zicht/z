@@ -19,12 +19,12 @@ class Ssh extends Task
 
     function execute()
     {
-        $this->context->exec('ssh -t ' . $this->context->get('ssh') . ' "cd ' . $this->context->get('root') . '; bash"');
+        $this->context->execScript('ssh -t $(ssh) "cd $(root); bash"', \Zicht\Tool\Context::EXEC_PASSTHRU);
     }
 
 
     function simulate()
     {
-        $this->context->exec('ssh ' . $this->context->get('ssh'));
+        $this->context->exec('ssh ' . $this->context->get('ssh'), \Zicht\Tool\Context::EXEC_PASSTHRU);
     }
 }

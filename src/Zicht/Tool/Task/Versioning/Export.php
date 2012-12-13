@@ -12,7 +12,7 @@ class Export extends Task
     function execute() {
         /** @var $version \Zicht\Tool\Versioning\Svn\Versioning */
         if (is_dir($this->context->get('build.dir'))) {
-            $this->context->exec('rm -rf ' . $this->context->get('build.dir'));
+            $this->context->execScript('rm -rf $(build.dir)');
         }
         $version = $this->context->getService('versioning');
         $version->export($this->context->get('build.version', false), $this->context->get('build.dir'));

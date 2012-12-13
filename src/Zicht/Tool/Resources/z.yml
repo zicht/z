@@ -3,10 +3,24 @@ tasks:
         depends: ['versioning.export']
     release.deploy:
         depends: ['release.build', 'transport.sync']
+    release.simulate:
+        depends: ['release.build', 'transport.simulate']
     env.ssh: ~
     env.mysql: ~
+    content.backup: ~
+    util.clear-apc-cache: ~
 
 options:
     build:
         dir: build
         version: ~
+
+    content:
+        # Symfony
+        dir: ['web/media']
+
+        # Drupal
+        # dir: ['sites/all/files/']
+
+versioning:
+    url: ~

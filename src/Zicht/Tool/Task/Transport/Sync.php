@@ -20,15 +20,13 @@ class Sync extends Task
 
     function execute()
     {
-        $this->execRsync($this->getRsyncOptions());
+        $this->execRsync($this->getRsyncOptions(), \Zicht\Tool\Context::EXEC_REPORT);
     }
 
 
     function simulate()
     {
-        $options = $this->getRsyncOptions();
-        $options[]= '--dry-run';
-        $this->execRsync($options);
+        $this->context->writeln("Would execute rsync with options " . join(' ', $this->getRsyncOptions()));
     }
 
 

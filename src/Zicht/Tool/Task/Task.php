@@ -5,6 +5,8 @@
  */
 namespace Zicht\Tool\Task;
 
+use Zicht\Tool\ContextInterface;
+
 abstract class Task implements TaskInterface
 {
     protected $name;

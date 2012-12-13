@@ -5,6 +5,9 @@ environments:
     staging:
         ssh:        ips25_a@a.ips25.com
         root:       ~/public_html/default/public/
+        web:        web
+        url:        http://a.ips25.com/
+        db:         ips25_a
 
 tasks:
     release.build:
@@ -12,3 +15,9 @@ tasks:
             - "if [ -d \"../vendor/\" ]; then rsync -rp ../vendor/ ./vendor; fi"
             - "if [ -f \"composer.lock\" ]; then composer install; fi"
             - "make sass"
+            - "php app/console assetic:dump --env=$(environment) --no-debug"
+
+    release.deploy:
+        post:
+            # TODO, do it like this: - { type: util.clear-cache, with: ["apc", "symfony"] }
+            - "ssh $(ssh) \"cd $(root) && php app/console cache:clear --env=$(environment) --no-debug\""

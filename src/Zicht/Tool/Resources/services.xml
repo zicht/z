@@ -13,7 +13,7 @@
             <argument>%versioning%</argument>
         </service>
 
-        <service id="task_context" class="Zicht\Tool\Task\Context">
+        <service id="task_context" class="Zicht\Tool\Context">
             <argument type="service" id="service_container" />
             <argument>%options%</argument>
             <argument>%environments%</argument>

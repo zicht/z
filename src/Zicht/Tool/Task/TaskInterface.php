@@ -5,10 +5,12 @@
  */
 namespace Zicht\Tool\Task;
 
+use Zicht\Tool\ContextInterface;
+
 interface TaskInterface
 {
-    static function uses();
-    static function provides();
+//    static function uses();
+//    static function provides();
 
     function setExecutionContext(ContextInterface $context);
     function execute();

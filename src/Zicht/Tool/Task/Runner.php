@@ -5,6 +5,8 @@
  */
 namespace Zicht\Tool\Task;
 
+use Zicht\Tool\Context;
+
 class Runner
 {
     function __construct(Builder $builder, Context $context, $options) {

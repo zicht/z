@@ -8,7 +8,7 @@ namespace Zicht\Tool\Task\Release;
 
 use Zicht\Tool\Task\Task;
 
-class Deploy extends Task
+class Simulate extends Deploy
 {
     static function uses()
     {
@@ -21,9 +21,6 @@ class Deploy extends Task
 
     function execute()
     {
-        foreach ($this->options['post'] as $command) {
-            $this->context->execScript($command);
-        }
-        echo "Released to environment " . $this->context->getEnvironment() . "\n";
+        $this->context->writeln("Simulated release to environment " . $this->context->getEnvironment());
     }
 }

@@ -10,6 +10,7 @@ class Resolver implements ResolverInterface
 {
     function resolve($name)
     {
+
         trigger_error(E_USER_WARNING, "Version resolution is not implemented yet");
         return 'trunk';
     }

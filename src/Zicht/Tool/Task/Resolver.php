@@ -33,9 +33,9 @@ class Resolver implements ResolverInterface
             . '\\'
             . ucfirst(
                 preg_replace_callback(
-                    '/\b[a-z]/',
+                    '/(?:\b|[_-])([a-z])/',
                     function($n) {
-                        return ucfirst($n[0]);
+                        return ucfirst($n[1]);
                     },
                     str_replace('.', '\\', $name)
                 )
