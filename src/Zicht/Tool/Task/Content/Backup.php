@@ -54,6 +54,6 @@ class Backup extends Task
 
     function getRemoteCommand()
     {
-        return 'cd $(root); mysqldump -Q --opt $(db) > $(db).sql; tar zcvf $(backup.file) $(content.dir) $(db).sql; rm $(db).sql';
+        return 'cd $(root); mysqldump -Q --opt $(db) > db.sql; tar zcvf $(backup.file) $(content.dir) db.sql; rm db.sql';
     }
 }

@@ -9,6 +9,13 @@ environments:
         url:        http://a.ips25.com/
         db:         ips25_a
 
+    production:
+        ssh:        ips25_p@ips25.com
+        root:       ~/public_html/default/public/
+        web:        web
+        url:        http://ips25.com/
+        db:         ips25_p
+
 tasks:
     release.build:
         post:

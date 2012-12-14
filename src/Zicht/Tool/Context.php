@@ -114,6 +114,7 @@ class Context implements ContextInterface
 
     function exec($cmd, $mode = self::EXEC_REPORT)
     {
+        echo "[EXEC] $cmd\n";
         switch ($mode) {
             case self::EXEC_PASSTHRU:
                 passthru($cmd);

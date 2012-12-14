@@ -27,7 +27,17 @@ class BaseCommand extends \Symfony\Component\Console\Command\Command
         } catch(\Exception $e) {
         }
         if (null !== $env) {
-            $this->container->get('task_context')->setEnvironment($env);
+            foreach ($input->getArguments() as $name => $value) {
+                if ($name === 'command') {
+                    continue;
+                }
+
+                if ($name == 'environment') {
+                    $this->container->get('task_context')->setEnvironment($env);
+                } else {
+                    $this->container->get('task_context')->set($name, $value);
+                }
+            }
         }
     }
 }

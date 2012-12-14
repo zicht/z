@@ -8,6 +8,7 @@ tasks:
     env.ssh: ~
     env.mysql: ~
     content.backup: ~
+    content.push: ~
     util.clear-apc-cache: ~
 
 options:

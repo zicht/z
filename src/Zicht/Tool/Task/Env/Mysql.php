@@ -6,6 +6,7 @@
 namespace Zicht\Tool\Task\Env;
 
 use Zicht\Tool\Task\Task;
+use Zicht\Tool\Context;
 
 class Mysql extends Task
 {
@@ -19,12 +20,12 @@ class Mysql extends Task
 
     function execute()
     {
-        $this->context->exec('ssh ' . $this->context->get('ssh') . ' -t \"mysql\"');
+        $this->context->execScript('ssh $(ssh) -t "mysql $(db)"', Context::EXEC_PASSTHRU);
     }
 
 
     function simulate()
     {
-        $this->context->exec('ssh ' . $this->context->get('ssh') . ' \"mysql -Ne\'SHOW TABLES\'\"');
+        $this->context->execScript('ssh $(ssh) "mysql $(db) -Ne\'SHOW TABLES\'"');
     }
 }
