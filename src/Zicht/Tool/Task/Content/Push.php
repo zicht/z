@@ -11,7 +11,7 @@ class Push extends Task
 {
     static function uses() {
         return array(
-            'backup.file',
+            'backup.input',
             'environment'
         );
     }
@@ -19,22 +19,22 @@ class Push extends Task
 
     function execute()
     {
-        $this->context->execScript('rsync --progress $(backup.file) $(ssh):$(root)$(backup.file)');
-        $this->context->execScript('ssh $(ssh) "cd $(root) && tar zxvf $(backup.file)"');
+        $this->context->execScript('rsync --progress $(backup.input) $(ssh):$(root)$(backup.input)');
+        $this->context->execScript('ssh $(ssh) "cd $(root) && tar zxvf $(backup.input)"');
         $this->context->execScript('ssh $(ssh) "mysql $(db) < db.sql"');
     }
 
 
     function simulate()
     {
-        $this->context->writeln('rsync --progress $(backup.file) $(ssh):$(root)$(backup.file)');
-        $this->context->writeln('ssh $(ssh) "cd $(root) && tar zxvf $(backup.file)"');
+        $this->context->writeln('rsync --progress $(backup.input) $(ssh):$(root)$(backup.input)');
+        $this->context->writeln('ssh $(ssh) "cd $(root) && tar zxvf $(backup.input)"');
         $this->context->writeln('ssh $(ssh) "mysql $(db) < db.sql"');
     }
 
 
     function getRemoteCommand()
     {
-        return 'cd $(root); mysqldump -Q --opt $(db) > db.sql; tar zcvf $(backup.file) $(content.dir) db.sql; rm db.sql';
+        return 'cd $(root); mysqldump -Q --opt $(db) > db.sql; tar zcvf $(backup.input) $(content.dir) db.sql; rm db.sql';
     }
 }
