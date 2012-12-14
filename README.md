@@ -1,35 +1,26 @@
+# Z #
 z is the universal Zicht developer tool. It is used to create projects, release management, deployment and more.
 
- The following commands are available:
+## Command overview ##
+### release:build ###
+Create a build for a specific environment
 
- v(ersioning)
-    :changelog [version1] [version2]
+### release:deploy ###
+Deploy a release to a specific environment
 
-    If not supplied, the defaults are:
-        version2 The local working copy version if available. If not available, it defaults to 'trunk'
-        version1 is resolved to the latest tag available in the repository
+### content:backup ###
+Create a local backup archive of remote content (database + content assets)
 
-    Versions can be supplied as such:
-        'trunk', which is equal to "dev-master" or "dev-trunk" or "dev"
-        'branches/branchname', which is equal to dev-branchname
+### content:push ###
+Push a local backup archive to a remote environment
 
-        Default resolution is to tagnames. Resolving a tagname works as such:
-        Any tag is matched to the list of tags using standard version numbering. E.g., version "2" would match the
-        latest 2.x tag that is not marked RC, alpha or beta
-        The tag may contain 'x' or '*' where any substition may be done. In this case, there is no minimum stability,
-        which causes to match anything, e.g. 2.1 would match 2.1.0, 2.1.3, but not 2.1.0-RC3, but 2.1.x would.
+### env:ssh ###
+Log in to the remote shell
 
- p(roject)
-    :list
+### env:mysql ###
+Log in to the remote mysql shell
 
-        List a set of projects from the globally registered project list providers
-
-    :setup
-
-        Creates a project from the globally registered set of project templates.
-
-    :info
-
-        Shows information based on the current working directory.
+### util:apc_clear_cache ###
+Flush the remote APC cache
 
 
