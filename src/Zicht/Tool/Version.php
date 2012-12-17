@@ -8,5 +8,5 @@ namespace Zicht\Tool;
 
 class Version
 {
-    const VERSION = 'development';
+    const VERSION = '1.0-alpha';
 }
