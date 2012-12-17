@@ -1,7 +1,9 @@
 # Z #
-z is the universal Zicht developer tool. It is used to create projects, release management, deployment and more.
+z is the universal Zicht developer tool. It is used to create projects, do release management, deployment and more.
 
 ## Command overview ##
+The following commands are currently supported.
+
 ### release:build ###
 Create a build for a specific environment
 
