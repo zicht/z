@@ -11,11 +11,12 @@ class Cs extends Task
 {
     function execute()
     {
-        $this->context->execScript('phpcs src --standard=PSR');
+        $this->context->execScript('phpcs src --standard=$(qa.standard)');
     }
 
 
-    function simulate() {
+    function simulate()
+    {
         $this->context->writeln('Would execute phpcs');
     }
 }
