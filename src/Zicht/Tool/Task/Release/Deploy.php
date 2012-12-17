@@ -24,6 +24,6 @@ class Deploy extends Task
         foreach ($this->options['post'] as $command) {
             $this->context->execScript($command);
         }
-        echo "Released to environment " . $this->context->getEnvironment() . "\n";
+        $this->context->writeln("Released to environment " . $this->context->getEnvironment());
     }
 }

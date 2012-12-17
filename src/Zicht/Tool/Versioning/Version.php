@@ -14,24 +14,28 @@ final class Version
     private $type;
     private $name;
 
-    function __construct($type, $name, $peg = null) {
+    public function __construct($type, $name, $peg = null)
+    {
         $this->type = $type;
         $this->name = $name;
         $this->peg = $peg;
     }
 
 
-    function getPeg() {
+    public function getPeg()
+    {
         return $this->peg;
     }
 
 
-    function getType() {
+    public function getType()
+    {
         return $this->type;
     }
 
 
-    function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 }

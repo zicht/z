@@ -16,6 +16,9 @@ use \Symfony\Component\Config\FileLocator;
 use \Symfony\Component\Config\Definition\Processor;
 use Zicht\Tool\Command\TaskCommand;
 use \Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
 
 class Application extends BaseApplication
 {

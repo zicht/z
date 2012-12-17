@@ -8,6 +8,7 @@ tasks:
     env.ssh: ~
     env.mysql: ~
     content.backup: ~
+    qa.cs: ~
     content.push:
         depends: ['content.backup']
     util.clear-apc-cache: ~
@@ -23,6 +24,9 @@ options:
 
         # Drupal
         # dir: ['sites/all/files/']
+
+    qa:
+        standard: 'PSR'
 
 versioning:
     url: ~

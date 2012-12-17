@@ -7,13 +7,13 @@ namespace Zicht\Tool\Versioning;
 
 interface VersioningInterface
 {
-    function export($version, $targetPath);
+    public function export($version, $targetPath);
 
     /**
      * @return Version[]
      */
-    function listVersions();
-    function checkout($targetPath);
-    function createTag($name);
-    function createBranch($name, $src = null);
+    public function listVersions();
+    public function checkout($targetPath);
+    public function createTag($name);
+    public function createBranch($name, $src = null);
 }
