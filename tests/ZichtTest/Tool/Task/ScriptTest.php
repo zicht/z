@@ -6,8 +6,8 @@
 
 namespace ZichtTest\Tool\Task;
 
-use Zicht\Tool\Task\Context;
-use Zicht\Tool\Task\Script;
+use Zicht\Tool\Context;
+use Zicht\Tool\Script;
 
 /**
  * @covers \Zicht\Tool\Task\Script
@@ -29,7 +29,8 @@ class ScriptTest extends \PHPUnit_Framework_TestCase
         return array(
             array('echo $(some.var)', array('some' => array('var' => 'w00t')), 'echo w00t'),
             array('echo $$(some.var)', array('some' => array('var' => 'w00t')), 'echo $(some.var)'),
-            array('echo $(some.var)', array('some' => array('var' => array('foo', 'bar'))), 'echo foo bar')
+            array('echo $(some.var)', array('some' => array('var' => array('foo', 'bar'))), 'echo foo bar'),
+//            array('echo $(some.var)', array('some' => array('var' => array('$(foo)', '$(bar)')), 'foo' => 'qux', 'bar' => 'baz'), 'echo qux baz')
         );
     }
 }
