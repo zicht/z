@@ -26,5 +26,8 @@ Log in to the remote shell
 ### env:mysql ###
 Log in to the remote mysql shell
 
+### qa:cs ###
+Quality Assurrance: Codestyle
+
 ### util:apc_clear_cache ###
 Flush the remote APC cache
