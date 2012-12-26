@@ -1,32 +1,58 @@
+vcs:
+    url:        svn://zon/projecten/ips001
+    version:    trunk@HEAD
+
+sync:
+    options:    "--opt -rupv"
+
+build:
+    dir:        ./build
+
+content:
+    dir:        [ 'media' ]
+
+env:
+    staging:
+        ssh:        ips25_a@a.ips25.com
+        root:       ~/public_html/default/public/
+        web:        web
+        url:        http://a.ips25.com/
+        db:         ips25_a
+
+    production:
+        ssh:        ips25_p@ips25.com
+        root:       ~/public_html/default/public/
+        web:        web
+        url:        http://ips25.com/
+        db:         ips25_p
+
 tasks:
-    release.build:
-        depends: ['versioning.export']
-    release.deploy:
-        depends: ['release.build', 'transport.sync']
-    release.simulate:
-        depends: ['release.build', 'transport.simulate']
-    env.ssh: ~
-    env.mysql: ~
-    content.backup: ~
-    qa.cs: ~
-    content.push:
-        depends: ['content.backup']
-    util.clear-apc-cache: ~
-
-options:
+    export:
+        do: svn checkout $(vcs.url)/$(vcs.version) $(build.dir)
+        yield: build.dir
+    clean:
+        do:
+            - rm -rf $(build.dir)
     build:
-        dir: build
-        version: ~
+        pre: [ @clean, @export ]
+        do:
+            - if [ -d "vendor/" ]; then rsync -rp vendor/ $(build.dir)/vendor; fi;
+            - if [ -f "$(build.dir)/composer.lock" ]; then cd $(build.dir) && composer install; fi;
+            - cd $(build.dir) && make sass;
+            - cd $(build.dir) && php app/console assetic:dump --env=$(env) --no-debug;
+        yield: build.dir
 
-    content:
-        # Symfony
-        dir: ['web/media']
+    sync:
+        do:
+            - rsync $(sync.options) $(tasks.build) $(env.ssh):$(env.root)
 
-        # Drupal
-        # dir: ['sites/all/files/']
+    deploy:
+        pre: [ @sync ]
+        do:
+            - ssh $(env.ssh) "cd $(env.root) && php app/console cache:clear --env=$(env) --no-debug"
 
-    qa:
-        standard: 'PSR'
+    ssh:
+        do: ssh -t $(env.ssh)
 
-versioning:
-    url: ~
+    mysql:
+        do: ssh -t $(env.ssh) "mysql $(env.db)"

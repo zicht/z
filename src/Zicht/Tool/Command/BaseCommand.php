@@ -8,36 +8,23 @@ namespace Zicht\Tool\Command;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Command\Command;
 
-class BaseCommand extends \Symfony\Component\Console\Command\Command
+class BaseCommand extends Command
 {
-    function __construct(ContainerInterface $container)
-    {
+    protected $container;
+
+
+    function setContainer(\Zicht\Tool\Container\Container $container) {
         $this->container = $container;
-        parent::__construct();
     }
 
-
-    protected function initialize(InputInterface $input, OutputInterface $output) {
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
         parent::initialize($input, $output);
 
-        $env = null;
-        try {
-            $env = $input->getArgument('environment');
-        } catch(\Exception $e) {
-        }
-        if (null !== $env) {
-            foreach ($input->getArguments() as $name => $value) {
-                if ($name === 'command') {
-                    continue;
-                }
-
-                if ($name == 'environment') {
-                    $this->container->get('task_context')->setEnvironment($env);
-                } else {
-                    $this->container->get('task_context')->set($name, $value);
-                }
-            }
+        if ($input->getOption('env')) {
+            $this->container->select('env', $input->getOption('env'));
         }
     }
 }

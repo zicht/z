@@ -14,25 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class TaskCommand extends BaseCommand
 {
-    protected $taskName;
-
-    function __construct($taskName, $container) {
-        $this->taskName = $taskName;
-        parent::__construct($container);
-    }
-
-
-    function configure()
-    {
-        $this
-            ->setName(str_replace('.', ':', $this->taskName))
-            ->addOption('simulate', 's', InputOption::VALUE_NONE, "Simulate the task")
-        ;
-    }
-
-
-
     protected function execute(InputInterface $input, OutputInterface $output) {
-        $this->container->get('task_runner')->run(array($this->taskName), $input->getOption('simulate'));
+        return $this->container['tasks.' . $this->getName()];
     }
 }

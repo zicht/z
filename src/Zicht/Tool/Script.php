@@ -14,7 +14,7 @@ class Script
     }
 
 
-    function evaluate(ContextInterface $c) {
+    function evaluate(\Zicht\Tool\Container\Container $c) {
         $self = $this;
         return preg_replace_callback(
             '/(.?)\$\(([\w+.]+)\)/',
@@ -22,7 +22,10 @@ class Script
                 if ($m[1] == '$') {
                     return substr($m[0], 1);
                 }
-                $value = $c->get($m[2]);
+                if (!isset($c[$m[2]])) {
+                    throw new \UnexpectedValueException("Unable to resolve {$m[0]} in script '{$this->str}'");
+                }
+                $value = $c[$m[2]];
                 return $m[1] . (is_array($value) ? join(' ', $value) : (string)$value);
             },
             $this->str

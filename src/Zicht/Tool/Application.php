@@ -6,19 +6,21 @@
 
 namespace Zicht\Tool;
 
-use Symfony\Component\Console\Application as BaseApplication;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use \Symfony\Component\Console\Application as BaseApplication;
 use \Symfony\Component\Yaml\Yaml;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use \Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use \Symfony\Component\Config\FileLocator;
 use \Symfony\Component\Config\Definition\Processor;
-use Zicht\Tool\Command\TaskCommand;
 use \Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\Console\Input\InputInterface;
+use \Symfony\Component\Console\Input\InputOption;
+use \Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\Console\Command\Command;
 
+use \Zicht\Tool\Command\TaskCommand;
+use \Zicht\Tool\Container\Configuration;
+use \Zicht\Tool\Container\Container;
+use \Zicht\Tool\Container\Compiler;
+use \Zicht\Tool\Container\Preprocessor;
 
 class Application extends BaseApplication
 {
@@ -30,27 +32,31 @@ class Application extends BaseApplication
 
         $this->initContainer();
 
+        $this->add(new \Zicht\Tool\Command\DumpCommand());
+        $this->add(new \Zicht\Tool\Command\ExplainCommand());
         foreach ($this->config['tasks'] as $name => $options) {
-            $class = $this->container->get('task_resolver')->resolve($name);
-            $parameters = call_user_func(array($class, 'uses'));
-
-            $list = new \Zicht\Tool\Task\TaskList($this->container->get('task_builder'), $this->config['tasks']);
-            $list->addTask($name);
-
-            $command = new TaskCommand($name, $this->container);
-            foreach ($parameters as $name) {
-                $required = true;
-                foreach ($list as $task) {
-                    if (in_array($name, $task->provides())) {
-                        $required = false;
-                        break;
-                    }
-                }
-                $command->addArgument($name, $required ? InputArgument::REQUIRED : InputArgument::OPTIONAL);
-            }
-            $this->add($command);
+            $cmd = new TaskCommand($name);
+            $cmd->setContainer($this->container);
+            $this->add($cmd);
         }
     }
+
+    public function add(Command $command)
+    {
+        if ($command instanceof \Zicht\Tool\Command\BaseCommand) {
+            $command->setContainer($this->container);
+        }
+        return parent::add($command);
+    }
+
+
+    protected function getDefaultInputDefinition()
+    {
+        $ret = parent::getDefaultInputDefinition();
+        $ret->addOption(new InputOption('env', 'e', InputOption::VALUE_REQUIRED, 'Environment', 'staging'));
+        return $ret;
+    }
+
 
 
     function initContainer() {
@@ -63,12 +69,14 @@ class Application extends BaseApplication
         $processor = new Processor();
         $this->config = $processor->processConfiguration(new Configuration(), $configs);
 
-        $params = new ParameterBag($this->config);
-        $builder = new ContainerBuilder($params);
-        $loader = new XmlFileLoader($builder, new FileLocator(__DIR__ . '/Resources/'));
-        $loader->load('services.xml');
-        $builder->compile();
-
-        $this->container = $builder;
+        $compiler = new Compiler('container');
+        $preprocessor = new Preprocessor();
+        $container = new Container();
+        $code = $compiler->compile($preprocessor->preprocess($this->config));
+        eval($code);
+        $this->container = $container;
+        $this->container['__definition'] = $code;
+        $this->container['__config'] = $this->config;
+        return $code;
     }
 }
