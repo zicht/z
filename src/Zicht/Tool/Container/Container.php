@@ -11,10 +11,6 @@ namespace Zicht\Tool\Container;
 use Zicht\Tool\Script;
 
 class Container extends \Pimple {
-    const MODE_EXEC = 'execute';
-    const MODE_ECHO = 'echo';
-
-
     function __construct() {
         parent::__construct();
 
