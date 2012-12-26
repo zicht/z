@@ -35,9 +35,11 @@ class Application extends BaseApplication
         $this->add(new \Zicht\Tool\Command\DumpCommand());
         $this->add(new \Zicht\Tool\Command\ExplainCommand());
         foreach ($this->config['tasks'] as $name => $options) {
-            $cmd = new TaskCommand($name);
-            $cmd->setContainer($this->container);
-            $this->add($cmd);
+            if (substr($name, 0, 1) !== '_') {
+                $cmd = new TaskCommand($name);
+                $cmd->setContainer($this->container);
+                $this->add($cmd);
+            }
         }
     }
 

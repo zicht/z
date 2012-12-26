@@ -20,24 +20,14 @@ class Task implements Compilable
         $indentStr = str_repeat('    ', $indent);
 
         $ret = '$' . $compiler->getContainerName() . '->share(function($z) {' . PHP_EOL . $indentStr;
-        if (isset($this->taskDef['pre'])) {
-            foreach ($this->taskDef['pre'] as $taskName) {
-                if ($taskName[0] === '@') {
-                    $taskName = 'tasks.' . substr($taskName, 1);
-                }
-                $ret .= '$z[' . var_export($taskName, true) . '];' . PHP_EOL . $indentStr;
-            }
-        }
-        foreach ($this->taskDef['do'] as $command) {
-            $ret .= '$z->cmd(' . var_export($command, true) . ');' . PHP_EOL . $indentStr;
+
+        foreach ($this->taskDef['set'] as $name => $value) {
+            $ret .= '$z[' . var_export($name, true) . '] = $z->evaluate(' . var_export($value, true) . ');' . PHP_EOL . $indentStr;
         }
 
-        if (isset($this->taskDef['post'])) {
-            foreach ($this->taskDef['post'] as $taskName) {
-                if ($taskName[0] === '@') {
-                    $taskName = 'tasks.' . substr($taskName, 1);
-                }
-                $ret .= '$z[' . var_export($taskName, true) . '];' . PHP_EOL . $indentStr;
+        foreach (array('pre', 'do', 'post') as $scope) {
+            foreach ($this->taskDef[$scope] as $cmd) {
+                $ret .= '$z->cmd(' . var_export($cmd, true) . ');' . PHP_EOL . $indentStr;
             }
         }
         if (isset($this->taskDef['yield'])) {

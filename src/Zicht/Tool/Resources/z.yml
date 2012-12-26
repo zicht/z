@@ -27,14 +27,19 @@ env:
         db:         ips25_p
 
 tasks:
-    export:
+    _export:
         do: svn checkout $(vcs.url)/$(vcs.version) $(build.dir)
         yield: build.dir
-    clean:
+
+    _clean:
         do:
             - rm -rf $(build.dir)
+    _sync:
+        do:
+            - rsync $(sync.options) $(tasks.build) $(env.ssh):$(env.root)
+
     build:
-        pre: [ @clean, @export ]
+        pre: [ @_clean, @_export ]
         do:
             - if [ -d "vendor/" ]; then rsync -rp vendor/ $(build.dir)/vendor; fi;
             - if [ -f "$(build.dir)/composer.lock" ]; then cd $(build.dir) && composer install; fi;
@@ -42,12 +47,8 @@ tasks:
             - cd $(build.dir) && php app/console assetic:dump --env=$(env) --no-debug;
         yield: build.dir
 
-    sync:
-        do:
-            - rsync $(sync.options) $(tasks.build) $(env.ssh):$(env.root)
-
     deploy:
-        pre: [ @sync ]
+        pre: [ @_sync ]
         do:
             - ssh $(env.ssh) "cd $(env.root) && php app/console cache:clear --env=$(env) --no-debug"
 
@@ -56,3 +57,17 @@ tasks:
 
     mysql:
         do: ssh -t $(env.ssh) "mysql $(env.db)"
+
+    content.backup:
+        set:
+            _backup.file:   $(env).$(now).tar.gz
+            _backup.cmd:    |
+                cd $(env.root);
+                mysqldump -Q --opt $(env.db) > db.sql;
+                tar zcvf $(_backup.file) $(content.dir) db.sql;
+                rm db.sql
+        do:
+            - ssh $(env.ssh) "$(_backup.cmd)"
+            - rsync --progress $(env.ssh):$(env.root)$(_backup.file) ./$(_backup.file)
+
+        yield: _backup.file

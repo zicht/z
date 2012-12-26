@@ -20,8 +20,7 @@ class Container extends \Pimple {
 
 
     function exec($script) {
-        $parser = new Script($script);
-        $cmd = $parser->evaluate($this);
+        $cmd = $this->evaluate($script);
         if (isset($this['executor'])) {
             $ret = call_user_func($this['executor'], $cmd);
         } else {
@@ -35,9 +34,17 @@ class Container extends \Pimple {
     }
 
 
+    public function evaluate($script)
+    {
+        $parser = new Script($script);
+        $cmd = $parser->evaluate($this);
+        return $cmd;
+    }
+
+
     function cmd($cmd) {
         if (substr($cmd, 0, 1) === '@') {
-            return $this['tasks.' . $cmd];
+            return $this['tasks.' . substr($cmd, 1)];
         }
         return $this->exec($cmd);
     }
