@@ -15,6 +15,14 @@ class Container extends \Pimple {
     const MODE_ECHO = 'echo';
 
 
+    function __construct() {
+        parent::__construct();
+
+        $this['now'] = date('YmdHis');
+        $this['date'] = date('Ymd');
+    }
+
+
     function exec($script) {
         $parser = new Script($script);
         $cmd = $parser->evaluate($this);
