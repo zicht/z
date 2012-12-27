@@ -1,9 +1,7 @@
 <?php
 /**
- * For licensing information, please see the LICENSE file accompanied with this file.
- *
- * @author Gerard van Helden <drm@melp.nl>
- * @copyright 2012 Gerard van Helden <http://melp.nl>
+ * @author Gerard van Helden <gerard@zicht.nl>
+ * @copyright Zicht Online <http://zicht.nl>
  */
 
 namespace Zicht\Tool\Container;
@@ -11,8 +9,8 @@ namespace Zicht\Tool\Container;
 use Zicht\Tool\Script;
 
 class Container extends \Pimple {
-    function __construct() {
-        parent::__construct();
+    function __construct(array $values = array()) {
+        parent::__construct($values);
 
         $this['now'] = date('YmdHis');
         $this['date'] = date('Ymd');

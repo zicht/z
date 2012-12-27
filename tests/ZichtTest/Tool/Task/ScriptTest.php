@@ -6,7 +6,7 @@
 
 namespace ZichtTest\Tool\Task;
 
-use Zicht\Tool\Context;
+use Zicht\Tool\Container\Container;
 use Zicht\Tool\Script;
 
 /**
@@ -19,7 +19,7 @@ class ScriptTest extends \PHPUnit_Framework_TestCase
      */
     function testScript($in, $vars, $expect)
     {
-        $context = new Context($this->getMock('Symfony\Component\DependencyInjection\ContainerInterface'), $vars);
+        $context = new Container($vars);
         $script = new Script($in);
         $this->assertEquals($expect, $script->evaluate($context));
     }
@@ -27,10 +27,11 @@ class ScriptTest extends \PHPUnit_Framework_TestCase
 
     function scripts() {
         return array(
-            array('echo $(some.var)', array('some' => array('var' => 'w00t')), 'echo w00t'),
-            array('echo $$(some.var)', array('some' => array('var' => 'w00t')), 'echo $(some.var)'),
-            array('echo $(some.var)', array('some' => array('var' => array('foo', 'bar'))), 'echo foo bar'),
-//            array('echo $(some.var)', array('some' => array('var' => array('$(foo)', '$(bar)')), 'foo' => 'qux', 'bar' => 'baz'), 'echo qux baz')
+            array('echo $(some.var)', array('some.var' => 'w00t'), 'echo w00t'),
+            array('echo $$(some.var)', array('some.var' => 'w00t'), 'echo $(some.var)'),
+            array('echo $(some.var)', array('some.var' => array('foo', 'bar')), 'echo foo bar'),
+            array('echo $(some.var)', array('some.var' => function() { return 'w00t'; }), 'echo w00t'),
+//            array('echo $(some.var())', array('some.var' => function() { return function() { return 'w00t'; }; }), 'echo w00t'),
         );
     }
 }

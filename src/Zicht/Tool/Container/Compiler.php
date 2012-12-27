@@ -1,9 +1,7 @@
 <?php
 /**
- * For licensing information, please see the LICENSE file accompanied with this file.
- *
- * @author Gerard van Helden <drm@melp.nl>
- * @copyright 2012 Gerard van Helden <http://melp.nl>
+ * @author Gerard van Helden <gerard@zicht.nl>
+ * @copyright Zicht Online <http://zicht.nl>
  */
 
 namespace Zicht\Tool\Container;
@@ -48,6 +46,6 @@ class Compiler
 
     function compileValue($name, $def) {
         $namePart = sprintf('$' . $this->containerName . '[%s]', var_export($name, true));
-        return sprintf('%-43s = %s;', $namePart, $def);
+        return sprintf('%s = %s;', $namePart, $def);
     }
 }

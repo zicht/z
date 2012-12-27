@@ -25,7 +25,7 @@ class Script
                 if (!isset($c[$m[2]])) {
                     throw new \UnexpectedValueException("Unable to resolve '{$m[2]}' in script '{$self->str}'");
                 }
-                $value = $c[$m[2]];
+                $value = $c->evaluate($c[$m[2]]);
                 return $m[1] . (is_array($value) ? join(' ', $value) : (string)$value);
             },
             $this->str
