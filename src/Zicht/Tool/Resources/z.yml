@@ -1,42 +1,28 @@
 vcs:
-    url:        svn://zon/projecten/ips001
-    version:    trunk@HEAD
+    url:            ~
+    version:        trunk@HEAD
 
 sync:
-    options:    "--opt -rupv"
+    options:        "-rupv --size-only --delete"
+    exclude_file:   "rsync.exclude"
 
 build:
-    dir:        ./build
+    dir:            ./build
 
 content:
-    dir:        [ 'media' ]
+    dir:            [ 'web/media' ]
 
-env:
-    staging:
-        ssh:        ips25_a@a.ips25.com
-        root:       ~/public_html/default/public/
-        web:        web
-        url:        http://a.ips25.com/
-        db:         ips25_a
-
-    production:
-        ssh:        ips25_p@ips25.com
-        root:       ~/public_html/default/public/
-        web:        web
-        url:        http://ips25.com/
-        db:         ips25_p
+env: ~
 
 tasks:
-    _export:
-        do: svn checkout $(vcs.url)/$(vcs.version) $(build.dir)
-        yield: build.dir
+    _clean:         rm -rf $(build.dir)
 
-    _clean:
-        do:
-            - rm -rf $(build.dir)
-    _sync:
-        do:
-            - rsync $(sync.options) $(tasks.build) $(env.ssh):$(env.root)
+    _export:
+        do:         svn export $(vcs.url)/$(vcs.version) $(build.dir)
+        yield:      build.dir
+
+    _sync:          rsync --exclude-from=$(tasks.build)/$(sync.exclude_file) $(sync.options) $(tasks.build)/ $(env.ssh):$(env.root)
+    _sync.simulate: rsync --exclude-from=$(tasks.build)/$(sync.exclude_file) $(sync.options) $(tasks.build)/ $(env.ssh):$(env.root) --dry-run
 
     build:
         pre: [ @_clean, @_export ]
@@ -48,12 +34,17 @@ tasks:
         yield: build.dir
 
     deploy:
-        pre: [ @_sync ]
+        pre: @_sync
         do:
             - ssh $(env.ssh) "cd $(env.root) && php app/console cache:clear --env=$(env) --no-debug"
 
+    simulate: @_sync.simulate
+
     ssh:
         do: ssh -t $(env.ssh)
+
+    ssh.init:
+        do: ssh-copy-id $(env.ssh)
 
     mysql:
         do: ssh -t $(env.ssh) "mysql $(env.db)"
@@ -71,3 +62,34 @@ tasks:
             - rsync --progress $(env.ssh):$(env.root)$(_backup.file) ./$(_backup.file)
 
         yield: _backup.file
+
+#
+#    static function uses() {
+#        return array(
+#            'backup.input',
+#            'environment'
+#        );
+#    }
+#
+#
+#    function execute()
+#    {
+#        $this->context->execScript('rsync --progress $(backup.input) $(ssh):$(root)$(backup.input)');
+#        $this->context->execScript('ssh $(ssh) "cd $(root) && tar zxvf $(backup.input)"');
+#        $this->context->execScript('ssh $(ssh) "mysql $(db) < db.sql"');
+#    }
+#
+#
+#    function simulate()
+#    {
+#        $this->context->writeln('rsync --progress $(backup.input) $(ssh):$(root)$(backup.input)');
+#        $this->context->writeln('ssh $(ssh) "cd $(root) && tar zxvf $(backup.input)"');
+#        $this->context->writeln('ssh $(ssh) "mysql $(db) < db.sql"');
+#    }
+#
+#
+#    function getRemoteCommand()
+#    {
+#        return 'cd $(root); mysqldump -Q --opt $(db) > db.sql; tar zcvf $(backup.input) $(content.dir) db.sql; rm db.sql';
+#    }
+#}

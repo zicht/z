@@ -25,5 +25,8 @@ class DumpCommand extends BaseCommand
     public function run(InputInterface $input, OutputInterface $output)
     {
         $output->writeln($this->container['__definition']);
+        if ($output->getVerbosity() > 1) {
+            $output->writeln(\Symfony\Component\Yaml\Yaml::dump($this->container['__config']));
+        }
     }
 }

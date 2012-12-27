@@ -23,7 +23,7 @@ class Script
                     return substr($m[0], 1);
                 }
                 if (!isset($c[$m[2]])) {
-                    throw new \UnexpectedValueException("Unable to resolve {$m[0]} in script '{$this->str}'");
+                    throw new \UnexpectedValueException("Unable to resolve '{$m[2]}' in script '{$this->str}'");
                 }
                 $value = $c[$m[2]];
                 return $m[1] . (is_array($value) ? join(' ', $value) : (string)$value);

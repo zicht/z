@@ -34,6 +34,8 @@ class Application extends BaseApplication
 
         $this->add(new \Zicht\Tool\Command\DumpCommand());
         $this->add(new \Zicht\Tool\Command\ExplainCommand());
+        $this->add(new \Zicht\Tool\Command\InitCommand());
+
         foreach ($this->config['tasks'] as $name => $options) {
             if (substr($name, 0, 1) !== '_') {
                 $cmd = new TaskCommand($name);
@@ -55,7 +57,7 @@ class Application extends BaseApplication
     protected function getDefaultInputDefinition()
     {
         $ret = parent::getDefaultInputDefinition();
-        $ret->addOption(new InputOption('env', 'e', InputOption::VALUE_REQUIRED, 'Environment', 'staging'));
+        $ret->addOption(new InputOption('env', 'e', InputOption::VALUE_REQUIRED, 'Environment', null));
         return $ret;
     }
 

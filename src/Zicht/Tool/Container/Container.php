@@ -52,6 +52,9 @@ class Container extends \Pimple {
 
     function select($namespace, $key) {
         $this[$namespace] = $key;
+        if (!isset($this['__config'][$namespace][$key])) {
+            throw new \InvalidArgumentException("Invalid {$namespace} provided, {$namespace}.{$key} is not defined");
+        }
         foreach ($this['__config'][$namespace][$key] as $name => $value) {
             $this[$namespace . '.' . $name] = $value;
         }
