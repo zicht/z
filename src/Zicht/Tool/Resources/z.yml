@@ -24,6 +24,13 @@ tasks:
     _sync:          rsync --exclude-from=$(tasks.build)/$(sync.exclude_file) $(sync.options) $(tasks.build)/ $(env.ssh):$(env.root)
     _sync.simulate: rsync --exclude-from=$(tasks.build)/$(sync.exclude_file) $(sync.options) $(tasks.build)/ $(env.ssh):$(env.root) --dry-run
 
+    clear_apc_cache:
+        set:
+            _file: $(env.root)$(env.web)/__apc_clear_cache.php
+        do:
+            - echo '<?php apc_clear_cache("user"); apc_clear_cache(); ' | ssh $(env.ssh) "cat > $(_file)"
+            - wget -qO - $(env.url)/__apc_clear_cache.php > /dev/null
+            - ssh $(env.ssh) "rm $(_file)"
     build:
         pre: [ @_clean, @_export ]
         do:
@@ -63,6 +70,16 @@ tasks:
             - rsync --progress $(env.ssh):$(env.root)$(_backup.file) ./$(_backup.file)
 
         yield: _backup.file
+
+    content.load:
+        set:
+            file: ~
+        do:
+            - cd $(env.local.root)
+            - tar zxvf $(file);
+            - mysql $(env.local.db) < db.sql
+
+
 
 #
 #    static function uses() {

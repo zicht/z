@@ -1,5 +1,33 @@
 # Z #
-z is the universal Zicht developer tool. It is used to create projects, do release management, deployment and more.
+z is the universal Zicht build tool and release management tool.
+
+## Getting started ##
+Get into your project root and run
+
+    z init
+
+You will be presented with a few questions to initialize your z.yml file. This file must contain at least the following
+data:
+
+    vcs:
+        url: "svn://url/to/your/vcs"
+
+    env:
+        some_remote_env:
+            ssh:    "user@remotehost"
+            root:   "root@remotesite"
+
+For some tasks and/or configurations you will additionally need a remote database name, relative web root, and url:
+
+    env:
+        some_remote_env:
+            url:    "http://my-site/"
+            ssh:    "user@remotehost"
+            root:   "~/my-app/"
+            web:    "web"
+            db:     "my_remote_db"
+
+The "some_remote_env" would typically be testing, staging and production.
 
 ## Common command overview ##
 The following commands are currently supported.
@@ -11,11 +39,13 @@ Create a build for a specific environment
 Deploy a release to a specific environment
 
 ### simulate ###
-Simulate a deploy to a specific environment. The only difference with an actual deployment is that the 'post' tasks
-may differ, and that the synchronization of the data is done with a --dry-run flag.
+Simulate a deploy to a specific environment.
 
 ### content.backup ###
 Create a local backup archive of remote content (database + content assets)
+
+### ssh.init ###
+Copy your key to the remote system using ssh-copy-id.
 
 ### ssh ###
 Log in to the remote shell
