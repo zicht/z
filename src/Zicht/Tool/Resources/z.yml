@@ -31,6 +31,7 @@ tasks:
             - echo '<?php apc_clear_cache("user"); apc_clear_cache(); ' | ssh $(env.ssh) "cat > $(_file)"
             - wget -qO - $(env.url)/__apc_clear_cache.php > /dev/null
             - ssh $(env.ssh) "rm $(_file)"
+
     build:
         pre: [ @_clean, @_export ]
         do:
@@ -48,14 +49,9 @@ tasks:
 
     simulate: @_sync.simulate
 
-    ssh:
-        do: ssh -t $(env.ssh)
-
-    ssh.init:
-        do: ssh-copy-id $(env.ssh)
-
-    mysql:
-        do: ssh -t $(env.ssh) "mysql $(env.db)"
+    ssh:        ssh -t $(env.ssh) "cd $(env.root); bash;"
+    mysql:      ssh -t $(env.ssh) "mysql $(env.db)"
+    ssh.init:   ssh-copy-id $(env.ssh)
 
     content.backup:
         set:
