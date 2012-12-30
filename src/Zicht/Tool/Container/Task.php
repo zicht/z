@@ -36,11 +36,18 @@ class Task implements Compilable
         $ret = '$' . $compiler->getContainerName() . '->share(function($z) {' . PHP_EOL . $indentStr;
 
         foreach ($this->taskDef['set'] as $name => $value) {
-            $ret .= sprintf(
+            $def = sprintf(
                 '$z[%s] = $z->evaluate(%s);' . PHP_EOL . $indentStr,
                 var_export($name, true),
                 var_export($value, true)
             );
+            if ($value === '?') {
+                $ret .= 'if (!isset($z[' . var_export($name, true) . '])) {';
+                $ret .= $def;
+                $ret .= '}';
+            } else {
+                $ret .= $def;
+            }
         }
         if (!empty($this->taskDef['unless'])) {
             $ret .= 'if (!' . $compiler->expr($this->taskDef['unless']) . ') {';
