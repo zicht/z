@@ -84,6 +84,7 @@ class Task implements Compilable
     /**
      * Returns all variables that can be injected into the task.
      *
+     * @param bool $onlyPublic
      * @return array
      */
     public function getVariables($onlyPublic = true)
