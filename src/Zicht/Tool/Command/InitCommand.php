@@ -9,7 +9,6 @@ namespace Zicht\Tool\Command;
 use \Symfony\Component\DependencyInjection\ContainerInterface;
 use \Symfony\Component\Console\Input\InputInterface;
 use \Symfony\Component\Console\Output\OutputInterface;
-use \Symfony\Component\Console\Command\Command;
 use \Symfony\Component\Yaml\Yaml;
 
 /**
@@ -75,6 +74,7 @@ class InitCommand extends BaseCommand
             'web' => 'Web root (relative to deployment root)'
         );
 
+        $ymlConfig = '';
         while ($yn('Add an environment?') == 'y') {
             $cfg = array();
             foreach ($settings as $key => $q) {
