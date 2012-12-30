@@ -74,12 +74,12 @@ class Compiler
      * Compiles a value definition for the container.
      *
      * @param string $name
-     * @param string $def
+     * @param string $valueDef
      * @return string
      */
-    public function compileValue($name, $def)
+    public function compileValue($name, $valueDef)
     {
         $namePart = sprintf('$' . $this->containerName . '[%s]', var_export($name, true));
-        return sprintf('%s = %s;', $namePart, $def);
+        return sprintf('%s = %s;', $namePart, $valueDef);
     }
 }
