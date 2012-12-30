@@ -11,10 +11,8 @@ use \Symfony\Component\Yaml\Yaml;
 use \Symfony\Component\Config\FileLocator;
 use \Symfony\Component\Config\Definition\Processor;
 use \Symfony\Component\Console\Input\InputArgument;
-use \Symfony\Component\Console\Input\InputInterface;
 use \Symfony\Component\Console\Input\InputOption;
-use \Symfony\Component\Console\Output\OutputInterface;
-use \Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\Command;
 
 use \Zicht\Tool\Command as Cmd;
 use \Zicht\Tool\Command\TaskCommand;
