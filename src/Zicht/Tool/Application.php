@@ -16,7 +16,7 @@ use \Symfony\Component\Console\Input\InputOption;
 use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Console\Command\Command;
 
-use \Zicht\Tool\Command as C;
+use \Zicht\Tool\Command as Cmd;
 use \Zicht\Tool\Command\TaskCommand;
 use \Zicht\Tool\Container\Configuration;
 use \Zicht\Tool\Container\Container;
@@ -40,9 +40,9 @@ class Application extends BaseApplication {
 
         $this->initContainer();
 
-        $this->add(new C\DumpCommand());
-        $this->add(new C\ExplainCommand());
-        $this->add(new C\InitCommand());
+        $this->add(new Cmd\DumpCommand());
+        $this->add(new Cmd\ExplainCommand());
+        $this->add(new Cmd\InitCommand());
 
         foreach ($this->config['tasks'] as $name => $options) {
             if (substr($name, 0, 1) !== '_') {

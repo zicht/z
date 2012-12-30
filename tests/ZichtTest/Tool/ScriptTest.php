@@ -6,18 +6,27 @@
 
 namespace ZichtTest\Tool;
 
-use Zicht\Tool\Container\Container;
-use Zicht\Tool\Script;
+use \Zicht\Tool\Container\Container;
+use \Zicht\Tool\Script;
 
 /**
+ * ScriptTest
+ *
  * @covers \Zicht\Tool\Task\Script
  */
 class ScriptTest extends \PHPUnit_Framework_TestCase
 {
     /**
+     * Tests the parsing/compiling of variables
+     *
+     * @param string $in
+     * @param array $vars
+     * @param string $expect
+     * @return void
+     *
      * @dataProvider scripts
      */
-    function testScript($in, $vars, $expect)
+    public function testScript($in, $vars, $expect)
     {
         $context = new Container($vars);
         $script = new Script($in);
@@ -25,13 +34,22 @@ class ScriptTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    function scripts() {
+    /**
+     * Provides test data for testScript()
+     *
+     * @return array
+     */
+    public function scripts()
+    {
+        $fn = function()
+        {
+            return 'w00t';
+        };
         return array(
             array('echo $(some.var)', array('some.var' => 'w00t'), 'echo w00t'),
             array('echo $$(some.var)', array('some.var' => 'w00t'), 'echo $(some.var)'),
             array('echo $(some.var)', array('some.var' => array('foo', 'bar')), 'echo foo bar'),
-            array('echo $(some.var)', array('some.var' => function() { return 'w00t'; }), 'echo w00t'),
-//            array('echo $(some.var())', array('some.var' => function() { return function() { return 'w00t'; }; }), 'echo w00t'),
+            array('echo $(some.var)', array('some.var' => $fn), 'echo w00t'),
         );
     }
 }
