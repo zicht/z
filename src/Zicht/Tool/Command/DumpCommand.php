@@ -39,7 +39,7 @@ class DumpCommand extends BaseCommand
      * @param OutputInterface $output
      * @return void
      */
-    public function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln($this->container['__definition']);
         if ($output->getVerbosity() > 1) {

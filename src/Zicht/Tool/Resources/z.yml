@@ -18,6 +18,10 @@ qa:
         standard:   "Zicht"
         dir:        [ 'src', 'tests' ]
 
+    jshint:
+        run:        "rhino /opt/jshint/jshint-rhino.js"
+        files:      ""
+
 env: ~
 
 tasks:
@@ -76,7 +80,7 @@ tasks:
     qa:
         do:
             - phpcs --standard=$(qa.phpcs.standard) $(qa.phpcs.dir) $(qa.phpcs.options)
-
+            - for f in $(qa.jshint.files); do $(qa.jshint.run) $f; done;
 
     content.load:
         set:

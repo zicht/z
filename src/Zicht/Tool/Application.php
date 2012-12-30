@@ -62,7 +62,7 @@ class Application extends BaseApplication {
      */
     public function add(Command $command)
     {
-        if ($command instanceof C\BaseCommand) {
+        if ($command instanceof Cmd\BaseCommand) {
             $command->setContainer($this->container);
         }
         return parent::add($command);

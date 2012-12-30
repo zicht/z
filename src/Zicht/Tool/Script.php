@@ -7,7 +7,6 @@
 namespace Zicht\Tool;
 
 use \Zicht\Tool\Container\Container;
-use \UnexpectedValueException;
 
 /**
  * Script compiler for script snippets in the tool
@@ -42,8 +41,10 @@ class Script
                 }
                 try {
                     $value = $c->evaluate($c[$m[2]]);
-                } catch(\Exception $e) {
-                    throw new UnexpectedValueException("Unable to resolve '{$m[2]}' in script '{$self->str}'");
+                } catch (\Exception $e) {
+                    throw new \RuntimeException(
+                        "Unable to resolve '{$m[2]}' in script '{$self->str}' ({$e->getMessage()})"
+                    );
                 }
 
                 return $m[1] . (is_array($value) ? join(' ', $value) : (string)$value);
