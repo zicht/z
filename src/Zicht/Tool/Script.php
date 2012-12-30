@@ -40,10 +40,12 @@ class Script
                 if ($m[1] == '$') {
                     return substr($m[0], 1);
                 }
-                if (!isset($c[$m[2]])) {
+                try {
+                    $value = $c->evaluate($c[$m[2]]);
+                } catch(\Exception $e) {
                     throw new UnexpectedValueException("Unable to resolve '{$m[2]}' in script '{$self->str}'");
                 }
-                $value = $c->evaluate($c[$m[2]]);
+
                 return $m[1] . (is_array($value) ? join(' ', $value) : (string)$value);
             },
             $this->str
