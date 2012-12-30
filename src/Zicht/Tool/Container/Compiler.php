@@ -19,6 +19,9 @@ class Compiler
      */
     public static function isList($node)
     {
+        if ($node === array()) {
+            return true;
+        }
         return is_array($node) && array_keys($node) === range(0, count($node) -1);
     }
 
