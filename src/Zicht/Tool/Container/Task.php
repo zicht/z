@@ -36,21 +36,32 @@ class Task implements Compilable
         $ret = '$' . $compiler->getContainerName() . '->share(function($z) {' . PHP_EOL . $indentStr;
 
         foreach ($this->taskDef['set'] as $name => $value) {
-            $def = sprintf(
-                '$z[%s] = $z->evaluate(%s);' . PHP_EOL . $indentStr,
-                var_export($name, true),
-                var_export($value, true)
-            );
-            if ($value === '?') {
+            if ($value && preg_match('/^\?\s*(.*)/', trim($value), $m)) {
                 $ret .= 'if (!isset($z[' . var_export($name, true) . '])) {';
-                $ret .= $def;
+                if (!$m[1]) {
+                    $ret .= sprintf(
+                        'throw new \RuntimeException(\'required variable %s is not defined\');',
+                        $name,
+                        true
+                    );
+                } else {
+                    $ret .= sprintf(
+                        '$z[%s] = $z->evaluate(%s);' . PHP_EOL . $indentStr,
+                        var_export($name, true),
+                        var_export($m[1], true)
+                    );
+                }
                 $ret .= '}';
             } else {
-                $ret .= $def;
+                $ret .= sprintf(
+                    '$z[%s] = $z->evaluate(%s);' . PHP_EOL . $indentStr,
+                    var_export($name, true),
+                    var_export($value, true)
+                );
             }
         }
         if (!empty($this->taskDef['unless'])) {
-            $ret .= 'if (!' . $compiler->expr($this->taskDef['unless']) . ') {';
+//            $ret .= 'if (!' . $compiler->expr($this->taskDef['unless']) . ') {';
         }
         foreach (array('pre', 'do', 'post') as $scope) {
             foreach ($this->taskDef[$scope] as $cmd) {
@@ -66,6 +77,33 @@ class Task implements Compilable
         }
 
         $ret .= PHP_EOL . '})';
+        return $ret;
+    }
+
+
+    /**
+     * Returns all variables that can be injected into the task.
+     *
+     * @return array
+     */
+    public function getVariables($onlyPublic = true)
+    {
+        $ret = array();
+        if (isset($this->taskDef['set'])) {
+            foreach ($this->taskDef['set'] as $name => $expr) {
+                if ($onlyPublic && $name{0} === '_') {
+                    // Variables prefixed with an underscore are considered non public
+                    continue;
+                }
+                // TODO remove duplicated pattern match in this method and the 'compile'.
+                // possibly make a variable declaration a Compilable node too (or just make a real AST)
+                if (preg_match('/^\?\s*(.*)/', $expr, $m)) {
+                    // if the part after the question mark is empty, the variable is assumed to be required
+                    // for execution of the task
+                    $ret[$name] = ($m[1] === '');
+                }
+            }
+        }
         return $ret;
     }
 }

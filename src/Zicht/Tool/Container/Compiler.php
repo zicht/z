@@ -54,6 +54,8 @@ class Compiler
      * @param array $input
      * @param string $prefix
      * @return string
+     *
+     * @throws \InvalidArgumentException
      */
     public function compile($input, $prefix = '')
     {

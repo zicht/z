@@ -15,7 +15,7 @@ interface Compilable
      * Compile the node.
      *
      * @param Compiler $compiler
-     * @return void
+     * @return string
      */
     public function compile(Compiler $compiler);
 }

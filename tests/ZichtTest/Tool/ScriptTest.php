@@ -41,8 +41,7 @@ class ScriptTest extends \PHPUnit_Framework_TestCase
      */
     public function scripts()
     {
-        $fn = function()
-        {
+        $fn = function() {
             return 'w00t';
         };
         return array(

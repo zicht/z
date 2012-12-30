@@ -150,25 +150,19 @@ tasks:
             mysql $(env.local.db) < db.sql
             rm db.sql
 
-# this is what content.push did in 1.0-alpha:
-#    function execute()
-#    {
-#        $this->context->execScript('rsync --progress $(backup.input) $(ssh):$(root)$(backup.input)');
-#        $this->context->execScript('ssh $(ssh) "cd $(root) && tar zxvf $(backup.input)"');
-#        $this->context->execScript('ssh $(ssh) "mysql $(db) < db.sql"');
-#    }
-#
-#
-#    function simulate()
-#    {
-#        $this->context->writeln('rsync --progress $(backup.input) $(ssh):$(root)$(backup.input)');
-#        $this->context->writeln('ssh $(ssh) "cd $(root) && tar zxvf $(backup.input)"');
-#        $this->context->writeln('ssh $(ssh) "mysql $(db) < db.sql"');
-#    }
-#
-#
-#    function getRemoteCommand()
-#    {
-#        return 'cd $(root); mysqldump -Q --opt $(db) > db.sql; tar zcvf $(backup.input) $(content.dir) db.sql; rm db.sql';
-#    }
-#}
+    branch:
+        set:
+            branch:     ?
+            _tgt:       $(vcs.url)/branches/$(branch)
+            _src:       ? $(vcs.url)/$(vcs.version)
+        do:
+            - svn cp $(_src) $(_tgt) -m"Created branch '$(branch)'"
+
+    tag:
+        set:
+            tag:        ?
+            _tgt:       $(vcs.url)/tags/$(tag)
+            _src:       ? $(vcs.url)/$(vcs.version)
+
+        do:
+            - svn cp $(_src) $(_tgt) -m"Created tag '$(tag)'"

@@ -12,7 +12,7 @@ use \Symfony\Component\Config\FileLocator;
 use \Symfony\Component\Config\Definition\Processor;
 use \Symfony\Component\Console\Input\InputArgument;
 use \Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Command\Command;
+use \Symfony\Component\Console\Command\Command;
 
 use \Zicht\Tool\Command as Cmd;
 use \Zicht\Tool\Command\TaskCommand;
@@ -42,10 +42,15 @@ class Application extends BaseApplication {
         $this->add(new Cmd\ExplainCommand());
         $this->add(new Cmd\InitCommand());
 
-        foreach ($this->config['tasks'] as $name => $options) {
+        /** @var $task \Zicht\Tool\Container\Task */
+        foreach ($this->config['tasks'] as $name => $task) {
             if (substr($name, 0, 1) !== '_') {
                 $cmd = new TaskCommand($name);
                 $cmd->setContainer($this->container);
+                foreach ($task->getVariables() as $var => $isRequired) {
+                    $cmd->addArgument($var, $isRequired ? InputArgument::REQUIRED : InputArgument::OPTIONAL);
+                }
+                $cmd->addOption('explain', '', InputOption::VALUE_NONE, 'Explains the commands that are executed');
                 $this->add($cmd);
             }
         }
@@ -94,14 +99,16 @@ class Application extends BaseApplication {
         }
 
         $processor = new Processor();
-        $this->config = $processor->processConfiguration(new Configuration(), $configs);
+        $preprocessor = new Preprocessor();
+        $this->config = $preprocessor->preprocess($processor->processConfiguration(new Configuration(), $configs));
 
         $compiler = new Compiler('container');
-        $preprocessor = new Preprocessor();
+        $code = $compiler->compile($this->config);
+
         $container = new Container();
-        $code = $compiler->compile($preprocessor->preprocess($this->config));
         eval($code);
         $this->container = $container;
+
         $this->container['__definition'] = $code;
         $this->container['__config'] = $this->config;
     }

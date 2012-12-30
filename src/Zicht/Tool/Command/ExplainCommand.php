@@ -28,14 +28,7 @@ class ExplainCommand extends BaseCommand
 
         $this
             ->setName('z:explain')
-            ->setHelp('Explains the commands that are executed')
             ->addArgument('task', InputArgument::REQUIRED, 'The task name to explain')
-            ->addOption(
-                'sh',
-                '',
-                InputOption::VALUE_NONE,
-                'Make the output sh ready, i.e. execute each line in a subshell.'
-            )
         ;
     }
 
@@ -49,16 +42,6 @@ class ExplainCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $sh = $input->getOption('sh');
-        $this->container['executor'] = $this->container->protect(
-            function($exec) use($output, $sh) {
-                if ($sh) {
-                    $exec = ' ( ' . rtrim($exec, "\n") . ' ); ';
-                }
-                $output->writeln($exec);
-            }
-        );
-
         return $this->container['tasks.' . $input->getArgument('task')];
     }
 }
