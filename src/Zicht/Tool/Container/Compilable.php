@@ -6,7 +6,16 @@
 
 namespace Zicht\Tool\Container;
 
+/**
+ * Represents a compilable node in the container configuration
+ */
 interface Compilable
 {
-    function compile(Compiler $compiler);
+    /**
+     * Compile the node.
+     *
+     * @param Compiler $compiler
+     * @return void
+     */
+    public function compile(Compiler $compiler);
 }

@@ -12,6 +12,12 @@ build:
 content:
     dir:            [ 'web/media' ]
 
+qa:
+    phpcs:
+        options:    "--report=summary"
+        standard:   "Zicht"
+        dir:        [ 'src', 'tests' ]
+
 env: ~
 
 tasks:
@@ -66,6 +72,11 @@ tasks:
             - rsync --progress $(env.ssh):$(env.root)$(_backup.file) ./$(_backup.file)
 
         yield: _backup.file
+
+    qa:
+        do:
+            - phpcs --standard=$(qa.phpcs.standard) $(qa.phpcs.dir) $(qa.phpcs.options)
+
 
     content.load:
         set:

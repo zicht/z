@@ -5,14 +5,27 @@
  */
 namespace Zicht\Tool\Container;
 
-
+/**
+ * Preprocessor for processing a Z config and replacing nodes with compilable nodes where necessary
+ */
 class Preprocessor
 {
-    function __construct() {
+    /**
+     * Stubbed
+     */
+    public function __construct()
+    {
     }
 
 
-    function preprocess($config) {
+    /**
+     * Preprocess the configuration
+     *
+     * @param array $config
+     * @return array mixed
+     */
+    public function preprocess($config)
+    {
         foreach ($config['tasks'] as $i => $task) {
             $config['tasks'][$i] = new Task($task);
         }

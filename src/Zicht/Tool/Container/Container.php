@@ -6,32 +6,60 @@
 
 namespace Zicht\Tool\Container;
 
-use Zicht\Tool\Script;
+use \Zicht\Tool\Script;
+use \UnexpectedValueException;
+use \Pimple;
 
-class Container extends \Pimple {
-    function __construct(array $values = array()) {
+/**
+ * Service container
+ */
+class Container extends Pimple
+{
+    /**
+     * Construct the container with the specified values as services/values.
+     *
+     * @param array $values
+     */
+    public function __construct(array $values = array())
+    {
         parent::__construct($values);
 
         $this['now'] = date('YmdHis');
         $this['date'] = date('Ymd');
+        $this['executor'] = $this->protect(
+            function($cmd) {
+                $ret = null;
+                passthru($cmd, $ret);
+                return $ret;
+            }
+        );
     }
 
 
-    function exec($script) {
+    /**
+     * Executes a script snippet using the 'executor' service.
+     *
+     * @param string $script
+     * @return int
+     */
+    public function exec($script)
+    {
         $cmd = $this->evaluate($script);
-        if (isset($this['executor'])) {
-            $ret = call_user_func($this['executor'], $cmd);
-        } else {
-            $ret = null;
-            passthru($cmd, $ret);
-        }
+        $ret = call_user_func($this['executor'], $cmd);
 
         if ($ret != 0) {
             throw new \UnexpectedValueException("Command '$cmd' failed with exit code {$ret}");
         }
+        return $ret;
     }
 
 
+    /**
+     * Evaluate a script and return the value
+     *
+     * @param string $script
+     * @return string
+     */
     public function evaluate($script)
     {
         $parser = new Script($script);
@@ -40,7 +68,14 @@ class Container extends \Pimple {
     }
 
 
-    function cmd($cmd) {
+    /**
+     * Execute a command. This is a wrapper for 'exec', so that a task prefixed with '@' can be passed as well.
+     *
+     * @param string $cmd
+     * @return int
+     */
+    public function cmd($cmd)
+    {
         if (substr($cmd, 0, 1) === '@') {
             return $this['tasks.' . substr($cmd, 1)];
         }
@@ -48,7 +83,15 @@ class Container extends \Pimple {
     }
 
 
-    function select($namespace, $key) {
+    /**
+     * Select a nested configuration for aliased use, typically for 'env'
+     *
+     * @param string $namespace
+     * @param string $key
+     * @return void
+     */
+    public function select($namespace, $key)
+    {
         $this[$namespace] = $key;
         if (!isset($this['__config'][$namespace][$key])) {
             throw new \InvalidArgumentException("Invalid {$namespace} provided, {$namespace}.{$key} is not defined");

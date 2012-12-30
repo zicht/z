@@ -6,8 +6,11 @@
 namespace Zicht\Tool\Container;
 
 use \Symfony\Component\Config\Definition\ConfigurationInterface;
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use \Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
+/**
+ * Configuration implementation validation a Z file configuration
+ */
 class Configuration implements ConfigurationInterface
 {
     /**
@@ -24,7 +27,11 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('tasks')
                     ->prototype('array')
                         ->beforeNormalization()
-                            ->ifString()->then(function($v) { return array('do' => $v); })
+                            ->ifString()->then(
+                                function($v) {
+                                    return array('do' => $v);
+                                }
+                            )
                         ->end()
                         ->children()
                             ->scalarNode('name')->end()
@@ -32,9 +39,14 @@ class Configuration implements ConfigurationInterface
                                 ->prototype('scalar')->end()
                                 ->defaultValue(array())
                             ->end()
+                            ->scalarNode('unless')->defaultNull()->end()
                             ->arrayNode('pre')
                                 ->beforeNormalization()
-                                    ->ifString()->then(function($s) { return array($s); })
+                                    ->ifString()->then(
+                                        function($s) {
+                                            return array($s);
+                                        }
+                                    )
                                 ->end()
                                 ->performNoDeepMerging()
                                 ->prototype('scalar')->end()
@@ -42,7 +54,11 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->arrayNode('post')
                                 ->beforeNormalization()
-                                    ->ifString()->then(function($s) { return array($s); })
+                                    ->ifString()->then(
+                                        function($s) {
+                                            return array($s);
+                                        }
+                                    )
                                 ->end()
                                 ->performNoDeepMerging()
                                 ->prototype('scalar')->end()
@@ -50,7 +66,11 @@ class Configuration implements ConfigurationInterface
                             ->end()
                             ->arrayNode('do')
                                 ->beforeNormalization()
-                                    ->ifString()->then(function($s) { return array($s); })
+                                    ->ifString()->then(
+                                        function($s) {
+                                            return array($s);
+                                        }
+                                    )
                                  ->end()
                                 ->performNoDeepMerging()
                                 ->prototype('scalar')->end()
@@ -98,13 +118,20 @@ class Configuration implements ConfigurationInterface
                 ->end()
                 ->arrayNode('qa')
                     ->children()
-                        ->scalarNode('standard')->end()
+                        ->arrayNode('phpcs')
+                            ->children()
+                                ->arrayNode('dir')
+                                    ->prototype('scalar')->end()
+                                ->end()
+                                ->scalarNode('standard')->end()
+                                ->scalarNode('options')->end()
+                            ->end()
+                        ->end()
                     ->end()
                 ->end()
             ->end()
-        ;
+        ->end();
 
         return $treeBuilder;
     }
-
 }

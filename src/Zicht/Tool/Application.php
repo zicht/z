@@ -16,25 +16,33 @@ use \Symfony\Component\Console\Input\InputOption;
 use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Console\Command\Command;
 
+use \Zicht\Tool\Command as C;
 use \Zicht\Tool\Command\TaskCommand;
 use \Zicht\Tool\Container\Configuration;
 use \Zicht\Tool\Container\Container;
 use \Zicht\Tool\Container\Compiler;
 use \Zicht\Tool\Container\Preprocessor;
+use \Zicht\Tool\Version;
 
-class Application extends BaseApplication
-{
+/**
+ * Z CLI Application
+ */
+class Application extends BaseApplication {
     protected $config;
     protected $container;
 
-    function __construct() {
-        parent::__construct('z - The Zicht Tool', \Zicht\Tool\Version::VERSION);
+    /**
+     * Constructor, initializes the application, container and the commands
+     */
+    public function __construct()
+    {
+        parent::__construct('z - The Zicht Tool', Version::VERSION);
 
         $this->initContainer();
 
-        $this->add(new \Zicht\Tool\Command\DumpCommand());
-        $this->add(new \Zicht\Tool\Command\ExplainCommand());
-        $this->add(new \Zicht\Tool\Command\InitCommand());
+        $this->add(new C\DumpCommand());
+        $this->add(new C\ExplainCommand());
+        $this->add(new C\InitCommand());
 
         foreach ($this->config['tasks'] as $name => $options) {
             if (substr($name, 0, 1) !== '_') {
@@ -45,15 +53,27 @@ class Application extends BaseApplication
         }
     }
 
+
+    /**
+     * Injects the container into the command if it expects one.
+     *
+     * @param \Symfony\Component\Console\Command\Command $command
+     * @return \Symfony\Component\Console\Command\Command
+     */
     public function add(Command $command)
     {
-        if ($command instanceof \Zicht\Tool\Command\BaseCommand) {
+        if ($command instanceof C\BaseCommand) {
             $command->setContainer($this->container);
         }
         return parent::add($command);
     }
 
 
+    /**
+     * Adds the environment to the input definition
+     *
+     * @return \Symfony\Component\Console\Input\InputDefinition
+     */
     protected function getDefaultInputDefinition()
     {
         $ret = parent::getDefaultInputDefinition();
@@ -62,8 +82,13 @@ class Application extends BaseApplication
     }
 
 
-
-    function initContainer() {
+    /**
+     * Initializes the container.
+     *
+     * @return void
+     */
+    public function initContainer()
+    {
         $locator = new FileLocator(array(__DIR__ . '/Resources/', getcwd()));
         $configs = array();
         foreach ($locator->locate('z.yml', null, false) as $file) {
@@ -81,6 +106,5 @@ class Application extends BaseApplication
         $this->container = $container;
         $this->container['__definition'] = $code;
         $this->container['__config'] = $this->config;
-        return $code;
     }
 }

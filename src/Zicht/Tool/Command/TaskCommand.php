@@ -7,14 +7,25 @@
 namespace Zicht\Tool\Command;
 use \Symfony\Component\Console\Command\Command;
 
-use Symfony\Component\Console\Input\InputOption;
-use Zicht\Tool\Task\TaskInterface;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\Console\Input\InputOption;
+use \Zicht\Tool\Task\TaskInterface;
+use \Symfony\Component\Console\Input\InputInterface;
+use \Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Command to execute a specific task
+ */
 class TaskCommand extends BaseCommand
 {
-    protected function execute(InputInterface $input, OutputInterface $output) {
+    /**
+     * Executes the specified task
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return mixed
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
         return $this->container['tasks.' . $this->getName()];
     }
 }

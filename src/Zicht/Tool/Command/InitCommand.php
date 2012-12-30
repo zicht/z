@@ -6,21 +6,39 @@
 
 namespace Zicht\Tool\Command;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Command\Command;
+use \Symfony\Component\DependencyInjection\ContainerInterface;
+use \Symfony\Component\Console\Input\InputInterface;
+use \Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\Console\Command\Command;
+use \Symfony\Component\Yaml\Yaml;
 
+/**
+ * Command to initialize a z file
+ */
 class InitCommand extends BaseCommand
 {
+    /**
+     * Configures the command
+     *
+     * @return void
+     */
     protected function configure()
     {
+        parent::configure();
+
         $this
             ->setName('z:init')
             ->setHelp('Initialize a z-file in the current working directory')
         ;
     }
 
+    /**
+     * Executes the command
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return int
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         if (!$input->isInteractive()) {
@@ -31,28 +49,35 @@ class InitCommand extends BaseCommand
         /** @var $helper \Symfony\Component\Console\Helper\DialogHelper */
         $helper = $this->getHelperSet()->get('dialog');
         $ask = function($q, $default = null) use($helper, $output) {
-            return $helper->ask($output, $q . ($default ? sprintf(' [<info>%s</info>]', $default) : '') . ': ', $default);
+            return $helper->ask(
+                $output,
+                $q . ($default ? sprintf(' [<info>%s</info>]', $default) : '') . ': ',
+                $default
+            );
         };
         $yn = function($q) use($helper, $output) {
             return $helper->askConfirmation($output, $q . ' [y/N] ', false);
         };
 
         $config = array();
-        $config['vcs']['url'] = preg_replace('!/(trunk|branches/[^/]+)/?!', '', trim(shell_exec('svn info | grep URL | awk \'{print $2}\'')));
+        $config['vcs']['url'] = preg_replace(
+            '!/(trunk|branches/[^/]+)/?!',
+            '',
+            trim(shell_exec('svn info | grep URL | awk \'{print $2}\''))
+        );
         $config['vcs']['url'] = $ask('VCS url', $config['vcs']['url']);
+        $settings = array(
+            'name' => 'Environment name',
+            'url' => 'URL',
+            'ssh' => 'SSH (user@host or config name)',
+            'db' => 'Database',
+            'root' => 'Deployment root',
+            'web' => 'Web root (relative to deployment root)'
+        );
 
         while ($yn('Add an environment?') == 'y') {
             $cfg = array();
-            foreach (
-                array(
-                    'name'      => 'Environment name',
-                    'url'       => 'URL',
-                    'ssh'       => 'SSH (user@host or config name)',
-                    'db'        => 'Database',
-                    'root'      => 'Deployment root',
-                    'web'       => 'Web root (relative to deployment root)'
-                ) as $key => $q)
-            {
+            foreach ($settings as $key => $q) {
                 $cfg[$key] = $ask($q);
             }
             $config['env'][$cfg['name']] = $cfg;
@@ -60,11 +85,12 @@ class InitCommand extends BaseCommand
 
             $output->writeln("Config is now:");
             $output->writeln("----");
-            $output->writeln($ymlConfig = \Symfony\Component\Yaml\Yaml::dump($config, 4, 4));
+            $output->writeln($ymlConfig = Yaml::dump($config, 4, 4));
             $output->writeln("----");
         }
 
         file_put_contents('z.yml', $ymlConfig);
         $output->writeln(realpath('z.yml') .  ' written');
+        return 0;
     }
 }
