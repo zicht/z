@@ -4,7 +4,7 @@
  * @copyright Zicht Online <http://zicht.nl>
  */
 
-namespace ZichtTest\Tool\Task;
+namespace ZichtTest\Tool;
 
 use Zicht\Tool\Container\Container;
 use Zicht\Tool\Script;
