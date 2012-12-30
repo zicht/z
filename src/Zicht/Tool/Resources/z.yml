@@ -79,8 +79,9 @@ tasks:
 
     qa.jshint:  for f in $(qa.jshint.files); do $(qa.jshint.run) $f; done;
     qa.phpcs:   phpcs --standard=$(qa.phpcs.standard) $(qa.phpcs.dir) $(qa.phpcs.options)
+    qa.phpunit: phpunit
     qa:
-        do:     [ @qa.jshint, @qa.phpcs]
+        do:     [ @qa.jshint, @qa.phpcs, @qa.phpunit]
 
     content.load:
         set:
@@ -90,17 +91,7 @@ tasks:
             - tar zxvf $(file);
             - mysql $(env.local.db) < db.sql
 
-
-
-#
-#    static function uses() {
-#        return array(
-#            'backup.input',
-#            'environment'
-#        );
-#    }
-#
-#
+# this is what content.push did in 1.0-alpha:
 #    function execute()
 #    {
 #        $this->context->execScript('rsync --progress $(backup.input) $(ssh):$(root)$(backup.input)');
