@@ -20,7 +20,7 @@ qa:
 
     jshint:
         run:        "rhino /opt/jshint/jshint-rhino.js"
-        files:      ""
+        files:      []
 
 env: ~
 
@@ -77,10 +77,10 @@ tasks:
 
         yield: _backup.file
 
+    qa.jshint:  for f in $(qa.jshint.files); do $(qa.jshint.run) $f; done;
+    qa.phpcs:   phpcs --standard=$(qa.phpcs.standard) $(qa.phpcs.dir) $(qa.phpcs.options)
     qa:
-        do:
-            - phpcs --standard=$(qa.phpcs.standard) $(qa.phpcs.dir) $(qa.phpcs.options)
-            - for f in $(qa.jshint.files); do $(qa.jshint.run) $f; done;
+        do:     [ @qa.jshint, @qa.phpcs]
 
     content.load:
         set:

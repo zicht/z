@@ -130,6 +130,13 @@ class Configuration implements ConfigurationInterface
                         ->arrayNode('jshint')
                             ->children()
                                 ->arrayNode('files')
+                                    ->beforeNormalization()
+                                        ->ifString()->then(
+                                            function($v) {
+                                                return array_filter(array($v));
+                                            }
+                                        )
+                                    ->end()
                                     ->prototype('scalar')->end()
                                 ->end()
                                 ->scalarNode('run')->end()
