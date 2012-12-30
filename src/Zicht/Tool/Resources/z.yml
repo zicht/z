@@ -20,7 +20,7 @@ qa:
 
     jshint:
         run:        "rhino /opt/jshint/jshint-rhino.js"
-        files:      []
+        files:      ""
 
 env: ~
 
