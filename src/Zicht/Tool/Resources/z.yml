@@ -107,7 +107,7 @@ tasks:
     qa.jshint:  for f in $(qa.jshint.files); do $(qa.jshint.run) $f; done;
 
     # Do phpcs quality check
-    qa.phpcs:   phpcs --standard=$(qa.phpcs.standard) $(qa.phpcs.dir) $(qa.phpcs.options)
+    qa.phpcs:   phpcs --extensions=php --standard=$(qa.phpcs.standard) $(qa.phpcs.dir) $(qa.phpcs.options)
 
     # Do phpunit quality check
     qa.phpunit: phpunit
