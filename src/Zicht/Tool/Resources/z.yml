@@ -78,11 +78,11 @@ tasks:
     build:
         pre: [ @_clean, @_export ]
         do:
-            - if [ -d "vendor/" ]; then rsync -rp vendor/ $(build.dir)/vendor; fi;
-            - if [ -f "$(build.dir)/composer.lock" ]; then cd $(build.dir) && composer install --no-scripts; fi;
-            - if [ -f "$(build.dir)/app/console" ]; then cd $(build.dir) && php app/console assets:install --env=$(env) --no-debug; fi;
-            - if [ -f "$(build.dir)/app/console" ]; then cd $(build.dir) && php app/console assetic:dump --env=$(env) --no-debug; fi;
-            - if [ -f "$(build.dir)/Makefile" ]; then cd $(build.dir) && make sass; fi;
+            - if [ -d "vendor/" ];                      then rsync -rp vendor/ $(build.dir)/vendor; fi;
+            - if [ -f "$(build.dir)/composer.lock" ];   then cd $(build.dir) && composer install --no-scripts; fi;
+            - if [ -f "$(build.dir)/app/console" ];     then cd $(build.dir) && php app/console assets:install --env=$(env) --no-debug; fi;
+            - if [ -f "$(build.dir)/app/console" ];     then cd $(build.dir) && php app/console assetic:dump --env=$(env) --no-debug; fi;
+            - if [ -f "$(build.dir)/Makefile" ];        then cd $(build.dir) && make sass; fi;
         yield: build.dir
 
     # Deploys a build
