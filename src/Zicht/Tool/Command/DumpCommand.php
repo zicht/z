@@ -43,7 +43,7 @@ class DumpCommand extends BaseCommand
     {
         $output->writeln($this->container['__definition']);
         if ($output->getVerbosity() > 1) {
-            $output->writeln(Yaml::dump($this->container['__config']));
+            $output->writeln(Yaml::dump($this->container['__config'], 5, 4));
         }
     }
 }
