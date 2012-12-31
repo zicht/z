@@ -74,7 +74,8 @@ class InitCommand extends BaseCommand
             'web' => 'Web root (relative to deployment root)'
         );
 
-        $ymlConfig = '';
+        $ymlConfig = Yaml::dump($config, 4, 4);
+
         while ($yn('Add an environment?') == 'y') {
             $cfg = array();
             foreach ($settings as $key => $q) {
