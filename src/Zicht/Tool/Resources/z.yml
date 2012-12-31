@@ -80,9 +80,9 @@ tasks:
         do:
             - if [ -d "vendor/" ]; then rsync -rp vendor/ $(build.dir)/vendor; fi;
             - if [ -f "$(build.dir)/composer.lock" ]; then cd $(build.dir) && composer install --no-scripts; fi;
-            - cd $(build.dir) && php app/console assets:install --env=$(env) --no-debug;
-            - cd $(build.dir) && php app/console assetic:dump --env=$(env) --no-debug;
-            - cd $(build.dir) && make sass;
+            - if [ -f "$(build.dir)/app/console" ]; then cd $(build.dir) && php app/console assets:install --env=$(env) --no-debug; fi;
+            - if [ -f "$(build.dir)/app/console" ]; then cd $(build.dir) && php app/console assetic:dump --env=$(env) --no-debug; fi;
+            - if [ -f "$(build.dir)/Makefile" ]; then cd $(build.dir) && make sass; fi;
         yield: build.dir
 
     # Deploys a build
