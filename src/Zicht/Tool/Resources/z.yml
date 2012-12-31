@@ -166,3 +166,8 @@ tasks:
 
         do:
             - svn cp $(_src) $(_tgt) -m"Created tag '$(tag)'"
+
+    versions:
+        do:
+            - svn ls $(vcs.url)/tags     | awk '{print "tags/" $1}'
+            - svn ls $(vcs.url)/branches | awk '{print "branches/" $1}'
