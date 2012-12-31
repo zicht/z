@@ -9,7 +9,7 @@ vcs:
 # Synchronization options
 sync:
     # Command line options to rsync
-    options:        "-rupv --size-only --delete"
+    options:        "-rupvc --delete"
 
     # File containing exclusion rules for rsync
     exclude_file:   "rsync.exclude"
