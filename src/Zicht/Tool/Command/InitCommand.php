@@ -60,18 +60,18 @@ class InitCommand extends BaseCommand
 
         $config = array();
         $config['vcs']['url'] = preg_replace(
-            '!/(trunk|branches/[^/]+)/?!',
+            '!/(trunk|branches/[^/]+)$/?!',
             '',
             trim(shell_exec('svn info | grep URL | awk \'{print $2}\''))
         );
         $config['vcs']['url'] = $ask('VCS url', $config['vcs']['url']);
         $settings = array(
-            'name' => 'Environment name',
-            'url' => 'URL',
-            'ssh' => 'SSH (user@host or config name)',
-            'db' => 'Database',
-            'root' => 'Deployment root',
-            'web' => 'Web root (relative to deployment root)'
+            'name'  => 'Environment name',
+            'url'   => 'URL',
+            'ssh'   => 'SSH (user@host or config name)',
+            'db'    => 'Database',
+            'root'  => 'Deployment root',
+            'web'   => 'Web root (relative to deployment root)'
         );
 
         $ymlConfig = Yaml::dump($config, 4, 4);
