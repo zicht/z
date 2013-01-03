@@ -1,1 +1,2 @@
 - Tagging after release
+- Detection of current version and pegging this version as the main vcs.version variable
