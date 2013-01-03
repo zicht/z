@@ -41,9 +41,9 @@ class DumpCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln($this->container['__definition']);
+        $output->writeln(Yaml::dump($this->container['__config'], 5, 4));
         if ($output->getVerbosity() > 1) {
-            $output->writeln(Yaml::dump($this->container['__config'], 5, 4));
+            $output->writeln($this->container['__definition']);
         }
     }
 }
