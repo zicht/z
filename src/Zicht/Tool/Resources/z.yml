@@ -156,6 +156,16 @@ tasks:
             mysql $(env.local.db) < db.sql
             rm db.sql
 
+    content.push:
+        set:
+            file: ?
+        pre:
+            - @content.backup
+        do: |
+            rsync --progress $(file) $(env.ssh):$(env.root)/$(file)
+            ssh $(env.ssh) "cd $(env.root) && tar zxvf $(file) && mysql $(env.db) < db.sql;"
+            ssh $(env.ssh) "rm $(env.root)/$(file)"
+
     # Create a version branch
     branch:
         set:
@@ -163,7 +173,17 @@ tasks:
             _tgt:       $(vcs.url)/branches/$(branch)
             _src:       ? $(vcs.url)/$(vcs.version)
         do:
-            - svn cp $(_src) $(_tgt) -m"Created branch '$(branch)'"
+            - svn cp $(_src) $(_tgt)
+        post:
+            - @switch
+
+    # Switch to a branch
+    switch:
+        set:
+            branch:     ?
+            _tgt:       $(vcs.url)/branches/$(branch)
+        do:
+            - svn switch $(_tgt)
 
     # Create a version tag
     tag:
@@ -173,7 +193,7 @@ tasks:
             _src:       ? $(vcs.url)/$(vcs.version)
 
         do:
-            - svn cp $(_src) $(_tgt) -m"Created tag '$(tag)'"
+            - svn cp $(_src) $(_tgt)
 
     # List all versions
     versions:
