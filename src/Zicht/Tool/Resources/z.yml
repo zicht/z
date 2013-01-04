@@ -198,7 +198,7 @@ tasks:
             _src:       ? $(vcs.url)/$(vcs.version)
 
         do:
-            - svn cp $(_src) $(_tgt)
+            - svn cp $(_src) $(_tgt) -m"Created tag $(tag) based on $(vcs.version)"
 
     # List all versions
     versions:

@@ -41,6 +41,7 @@ class Application extends BaseApplication {
         $this->add(new Cmd\DumpCommand());
         $this->add(new Cmd\ExplainCommand());
         $this->add(new Cmd\InitCommand());
+        $this->add(new Cmd\EvalCommand());
 
         /** @var $task \Zicht\Tool\Container\Task */
         foreach ($this->config['tasks'] as $name => $task) {
