@@ -88,14 +88,19 @@ tasks:
             - if [ -f "$(build.dir)/composer.lock" ];   then cd $(build.dir) && composer install --no-scripts; fi;
             - if [ -f "$(build.dir)/app/console" ];     then cd $(build.dir) && php app/console assets:install --env=$(env) --no-debug; fi;
             - if [ -f "$(build.dir)/app/console" ];     then cd $(build.dir) && php app/console assetic:dump --env=$(env) --no-debug; fi;
-            - if [ -f "$(build.dir)/Makefile" ];        then cd $(build.dir) && make sass; fi;
+            - |
+                if [ -f "$(build.dir)/Makefile" ] && (grep 'sass:' Makefile > /dev/null); then
+                    cd $(build.dir) && make sass;
+                fi;
         yield: build.dir
 
     # Deploys a build
     deploy:
-        pre: @_sync
-        do:
-            - ssh $(env.ssh) "cd $(env.root) && php app/console cache:clear --env=$(env) --no-debug"
+        set:
+            tag: $(env)_$(now)
+        pre:    @_sync
+        post:   @tag
+        do:     ssh $(env.ssh) "cd $(env.root) && php app/console cache:clear --env=$(env) --no-debug"
 
     # Simulates a deploy
     simulate: @_sync.simulate
