@@ -2,41 +2,6 @@
     "hash": "336eea7f19dddb296769fc09cf4c2e3d",
     "packages": [
         {
-            "name": "melp/vcs",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/drm/MelpVcs.git",
-                "reference": "ebb4cd1199f81efefbf676b138e2bba9704e0fa5"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/drm/MelpVcs/archive/ebb4cd1199f81efefbf676b138e2bba9704e0fa5.zip",
-                "reference": "ebb4cd1199f81efefbf676b138e2bba9704e0fa5",
-                "shasum": ""
-            },
-            "require": {
-                "symfony/process": "*"
-            },
-            "time": "2012-12-13 16:36:57",
-            "type": "library",
-            "installation-source": "source",
-            "autoload": {
-                "psr-0": {
-                    "Melp\\Vcs": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "description": "VCS access through php",
-            "homepage": "http://github.com/drm/MelpVcs",
-            "keywords": [
-                "svn",
-                "vcs"
-            ]
-        },
-        {
             "name": "pimple/pimple",
             "version": "v1.0.1",
             "source": {
@@ -177,61 +142,6 @@
             "homepage": "http://symfony.com"
         },
         {
-            "name": "symfony/dependency-injection",
-            "version": "v2.1.3",
-            "target-dir": "Symfony/Component/DependencyInjection",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/symfony/DependencyInjection",
-                "reference": "v2.1.3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://github.com/symfony/DependencyInjection/zipball/v2.1.3",
-                "reference": "v2.1.3",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "require-dev": {
-                "symfony/yaml": "2.1.*",
-                "symfony/config": "2.1.*"
-            },
-            "suggest": {
-                "symfony/yaml": "2.1.*",
-                "symfony/config": "2.1.*"
-            },
-            "time": "2012-10-22 07:37:12",
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.1-dev"
-                }
-            },
-            "installation-source": "dist",
-            "autoload": {
-                "psr-0": {
-                    "Symfony\\Component\\DependencyInjection": ""
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
-                    "homepage": "http://symfony.com/contributors"
-                }
-            ],
-            "description": "Symfony DependencyInjection Component",
-            "homepage": "http://symfony.com"
-        },
-        {
             "name": "symfony/process",
             "version": "v2.1.3",
             "target-dir": "Symfony/Component/Process",
@@ -256,7 +166,7 @@
                     "dev-master": "2.1-dev"
                 }
             },
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-0": {
                     "Symfony\\Component\\Process": ""
