@@ -42,6 +42,6 @@ class TaskCommand extends BaseCommand
             $this->container[$arg->getName()]= $input->getArgument($arg->getName());
         }
 
-        return $this->container['tasks.' . $this->getName()];
+        return $this->container['tasks.' . str_replace(':', '.', $this->getName())];
     }
 }

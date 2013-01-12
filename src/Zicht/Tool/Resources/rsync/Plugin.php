@@ -10,8 +10,17 @@ namespace Zicht\Tool\Plugin\Rsync;
 use \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use \Zicht\Tool\Plugin as BasePlugin;
 
+/**
+ * rsync plugin
+ */
 class Plugin extends BasePlugin
 {
+    /**
+     * Configures the rsync parameters
+     *
+     * @param \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition $rootNode
+     * @return mixed|void
+     */
     public function appendConfiguration(ArrayNodeDefinition $rootNode)
     {
         $rootNode

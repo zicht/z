@@ -22,7 +22,7 @@ class Plugin extends BasePlugin
      * @param \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition $rootNode
      * @return void
      */
-    function appendConfiguration(ArrayNodeDefinition $rootNode)
+    public function appendConfiguration(ArrayNodeDefinition $rootNode)
     {
         $rootNode
             ->children()
