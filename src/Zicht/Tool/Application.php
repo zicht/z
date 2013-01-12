@@ -39,16 +39,16 @@ class Application extends BaseApplication {
         $this->initContainer();
 
         $this->add(new Cmd\DumpCommand());
-        $this->add(new Cmd\ExplainCommand());
         $this->add(new Cmd\InitCommand());
         $this->add(new Cmd\EvalCommand());
 
         /** @var $task \Zicht\Tool\Container\Task */
         foreach ($this->config['tasks'] as $name => $task) {
+            // if a tasks is prefixed with an underscore, it is considered an internal task
             if (substr($name, 0, 1) !== '_') {
-                $cmd = new TaskCommand($name);
+                $cmd = new TaskCommand(str_replace('.', ':', $name));
                 $cmd->setContainer($this->container);
-                foreach ($task->getVariables() as $var => $isRequired) {
+                foreach ($task->getArguments() as $var => $isRequired) {
                     $cmd->addArgument($var, $isRequired ? InputArgument::REQUIRED : InputArgument::OPTIONAL);
                 }
                 $cmd->addOption('explain', '', InputOption::VALUE_NONE, 'Explains the commands that are executed');
@@ -93,15 +93,33 @@ class Application extends BaseApplication {
      */
     public function initContainer()
     {
-        $locator = new FileLocator(array(__DIR__ . '/Resources/', getcwd()));
-        $configs = array();
+        $locator = new FileLocator(array(__DIR__ . '/Resources', getcwd()));
+        $loader = new FileLoader($locator);
+
         foreach ($locator->locate('z.yml', null, false) as $file) {
-            $configs[]= Yaml::parse($file);
+            $loader->load($file);
+        }
+
+        $pluginFiles = $loader->getPlugins();
+        $plugins = array();
+        foreach ($pluginFiles as $name => $file) {
+            require_once $file;
+            $className = sprintf('Zicht\Tool\Plugin\%s\Plugin', ucfirst($name));
+            $class = new \ReflectionClass($className);
+            if (!$class->implementsInterface('Zicht\Tool\PluginInterface')) {
+                throw new \UnexpectedValueException("The class $className is not a 'Zicht\\Tool\\PluginInterface'");
+            }
+            $plugins[$name] = $class->newInstance();
         }
 
         $processor = new Processor();
         $preprocessor = new Preprocessor();
-        $this->config = $preprocessor->preprocess($processor->processConfiguration(new Configuration(), $configs));
+        $this->config = $preprocessor->preprocess(
+            $processor->processConfiguration(
+                new Configuration($plugins),
+                $loader->getConfigs()
+            )
+        );
 
         $compiler = new Compiler('container');
         $code = $compiler->compile($this->config);

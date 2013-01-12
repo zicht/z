@@ -1,0 +1,55 @@
+# Version Control System settings
+vcs:
+    # The SVN url to the project. Currently, only SVN is supported
+    url:            ~
+
+    # The path to the version to use
+    version:        trunk@HEAD
+
+    export:
+        # The revision info file to write when exporting
+        revfile:    .z.rev
+
+
+tasks:
+    # Export the specified version to the build dir
+    _vcs.export:
+        do:
+            - svn export $(vcs.url)/$(vcs.version) $(build.dir)
+            - svn info $(vcs.url)/$(vcs.version) > $(build.dir)/$(vcs.export.revfile)
+        yield:      build.dir
+
+    # Create a version branch
+    v.branch:
+        set:
+            branch:     ?
+            _tgt:       $(vcs.url)/branches/$(branch)
+            _src:       ? $(vcs.url)/$(vcs.version)
+        do:
+            - svn cp $(_src) $(_tgt) -m"Created branch '$(branch)'"
+
+    # Create a version tag
+    v.tag:
+        set:
+            tag:        ?
+            _tgt:       $(vcs.url)/tags/$(tag)
+            _src:       ? $(vcs.url)/$(vcs.version)
+
+        do:
+            - svn cp $(_src) $(_tgt) -m"Created tag '$(tag)'"
+
+    # List all versions
+    v.versions:
+        do:
+            - svn ls $(vcs.url)/tags     | awk '{print "tags/" $1}'
+            - svn ls $(vcs.url)/branches | awk '{print "branches/" $1}'
+
+    # Diff to specific version
+    v.diff:
+        set:
+            version:   ?
+        do:
+            - svn diff --summarize $(vcs.url)/$(version) $(vcs.url)/$(vcs.version)
+
+    # Show the deployed version of the remote machine
+    v.version: ssh $(env.ssh) "cat $(env.root)/$(vcs.export.revfile)"

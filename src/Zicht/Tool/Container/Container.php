@@ -24,8 +24,9 @@ class Container extends Pimple
     {
         parent::__construct($values);
 
-        $this['now'] = date('YmdHis');
+        $this['now'] = date('Ymd-H.i.s');
         $this['date'] = date('Ymd');
+        $this['cwd'] = getcwd();
         $this['executor'] = $this->protect(
             function($cmd) {
                 $ret = null;

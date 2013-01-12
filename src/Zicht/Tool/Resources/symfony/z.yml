@@ -1,0 +1,29 @@
+tasks:
+    _symfony.build.copy_local_vendor: |
+        if [ -d "$(cwd)/vendor/" ];
+            then $(cwd)/rsync -rp vendor/ $(build.dir)/vendor;
+        fi;
+
+    _symfony.build.composer_install: |
+        if [ -f "$(build.dir)/composer.lock" ];
+            then cd $(build.dir) && composer install --no-scripts;
+        fi;
+
+    _symfony.build.assets_install: |
+        if [ -f "$(build.dir)/app/console" ];
+            then cd $(build.dir) && php app/console assets:install --env=$(env) --no-debug;
+        fi;
+
+    _symfony.build.assetic_dump: |
+        if [ -f "$(build.dir)/app/console" ];
+            then cd $(build.dir) && php app/console assetic:dump --env=$(env) --no-debug;
+        fi;
+
+    build:
+        do:
+            - @_symfony.build.copy_local_vendor
+            - @_symfony.build.composer_install
+            - @_symfony.build.assets_install
+            - @_symfony.build.assetic_dump
+
+    deploy: ssh $(env.ssh) "cd $(env.root) && php app/console cache:clear --env=$(env) --no-debug"

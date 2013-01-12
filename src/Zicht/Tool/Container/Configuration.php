@@ -14,6 +14,22 @@ use \Symfony\Component\Config\Definition\Builder\TreeBuilder;
 class Configuration implements ConfigurationInterface
 {
     /**
+     * @var \Zicht\Tool\PluginInterface[]
+     */
+    protected $plugins = array();
+
+    /**
+     * Construct the configuration with a set of plugins
+     *
+     * @param \Zicht\Tool\PluginInterface[] $plugins
+     */
+    public function __construct($plugins)
+    {
+        $this->plugins = $plugins;
+    }
+
+
+    /**
      * Generates the configuration tree builder.
      *
      * @return \Symfony\Component\Config\Definition\Builder\TreeBuilder The tree builder
@@ -21,8 +37,9 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $tasks = $treeBuilder->root('z');
-        $tasks
+
+        $zConfig = $treeBuilder->root('z');
+        $zConfig
             ->children()
                 ->arrayNode('tasks')
                     ->prototype('array')
@@ -84,25 +101,14 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('env')
                     ->prototype('array')
                         ->children()
-                            ->scalarNode('ssh')->isRequired()->end()
-                            ->scalarNode('root')->isRequired()->end()
-                            ->scalarNode('web')->defaultValue('')->end()
-                            ->scalarNode('url')->isRequired()->end()
+                            ->scalarNode('ssh')->end()
+                            ->scalarNode('root')->end()
+                            ->scalarNode('web')->end()
+                            ->scalarNode('url')->end()
                             ->scalarNode('db')->end()
                         ->end()
                     ->end()
                     ->useAttributeAsKey('name')
-                ->end()
-                ->arrayNode('vcs')
-                    ->children()
-                        ->scalarNode('url')->isRequired()->end()
-                        ->scalarNode('version')->isRequired()->end()
-                        ->arrayNode('export')
-                            ->children()
-                                ->scalarNode('revfile')->defaultValue('REVISION')->end()
-                            ->end()
-                        ->end()
-                    ->end()
                 ->end()
                 ->arrayNode('build')
                     ->children()
@@ -110,52 +116,12 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('version')->end()
                     ->end()
                 ->end()
-                ->arrayNode('sync')
-                    ->children()
-                        ->scalarNode('options')->end()
-                        ->scalarNode('exclude_file')->end()
-                    ->end()
-                ->end()
-                ->arrayNode('content')
-                    ->children()
-                        ->arrayNode('dir')
-                            ->prototype('scalar')->end()
-                            ->performNoDeepMerging()
-                        ->end()
-                    ->end()
-                ->end()
-                ->arrayNode('qa')
-                    ->children()
-                        ->arrayNode('phpcs')
-                            ->children()
-                                ->arrayNode('dir')
-                                    ->prototype('scalar')->end()
-                                    ->performNoDeepMerging()
-                                ->end()
-                                ->scalarNode('standard')->end()
-                                ->scalarNode('options')->end()
-                            ->end()
-                        ->end()
-                        ->arrayNode('jshint')
-                            ->children()
-                                ->arrayNode('files')
-                                    ->beforeNormalization()
-                                        ->ifString()->then(
-                                            function($v) {
-                                                return array_filter(array($v));
-                                            }
-                                        )
-                                    ->end()
-                                    ->prototype('scalar')->end()
-                                    ->performNoDeepMerging()
-                                ->end()
-                                ->scalarNode('run')->end()
-                            ->end()
-                        ->end()
-                    ->end()
-                ->end()
             ->end()
         ->end();
+
+        foreach ($this->plugins as $plugin) {
+            $plugin->appendConfiguration($zConfig);
+        }
 
         return $treeBuilder;
     }

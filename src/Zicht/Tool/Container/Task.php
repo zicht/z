@@ -87,7 +87,7 @@ class Task implements Compilable
      * @param bool $onlyPublic
      * @return array
      */
-    public function getVariables($onlyPublic = true)
+    public function getArguments($onlyPublic = true)
     {
         $ret = array();
         if (isset($this->taskDef['set'])) {

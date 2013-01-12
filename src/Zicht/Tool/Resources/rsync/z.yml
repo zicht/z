@@ -1,0 +1,25 @@
+# Synchronization options
+sync:
+    # Command line options to rsync
+    options:        "-rupvc --delete"
+
+    # File containing exclusion rules for rsync
+    exclude_file:   "rsync.exclude"
+
+tasks:
+    # Synchronize the build dir to the remote environment
+    _sync: |
+        rsync \
+            --exclude-from=$(tasks.build)/$(sync.exclude_file) \
+            $(sync.options) \
+            $(tasks.build)/ $(env.ssh):$(env.root) \
+        ;
+
+    # Synchronize the build dir to the remote environment
+    _sync.simulate: |
+        rsync \
+            --dry-run \
+            --exclude-from=$(tasks.build)/$(sync.exclude_file) \
+            $(sync.options) \
+            $(tasks.build)/ $(env.ssh):$(env.root) \
+        ;
