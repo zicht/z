@@ -32,13 +32,11 @@ class FileLoader extends BaseFileLoader
     {
         $config = Yaml::parse($resource);
 
-        $i = count($this->configs);
-        $this->configs[$i]= $config;
-
-        if (isset($this->configs[$i]['plugins'])) {
-            $this->processPlugins($this->configs[$i]['plugins'], dirname($resource));
-            unset($this->configs[$i]['plugins']);
+        if (isset($config['plugins'])) {
+            $this->processPlugins($config['plugins'], dirname($resource));
+            unset($config['plugins']);
         }
+        $this->configs[]= $config;
 
         return $config;
     }
