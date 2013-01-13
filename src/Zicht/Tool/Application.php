@@ -93,14 +93,12 @@ class Application extends BaseApplication {
      */
     public function initContainer()
     {
-        $locator = new FileLocator(array(getcwd()));
-        $loader = new FileLoader(
-            new FileLocator(
-                __DIR__ . '/Resources/plugins'
-            )
-        );
+        $zFileLocator = new FileLocator(array(getcwd()));
+        $pluginLocator = new FileLocator(__DIR__ . '/Resources/plugins');
 
-        foreach ($locator->locate('z.yml', null, false) as $file) {
+        $loader = new FileLoader($pluginLocator);
+
+        foreach ($zFileLocator->locate('z.yml', null, false) as $file) {
             $loader->load($file);
         }
 
