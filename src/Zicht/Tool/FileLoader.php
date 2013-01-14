@@ -36,6 +36,11 @@ class FileLoader extends BaseFileLoader
             $this->processPlugins($config['plugins'], dirname($resource));
             unset($config['plugins']);
         }
+        if (isset($config['imports'])) {
+            $this->processImports($config['imports'], dirname($resource));
+            unset($config['imports']);
+        }
+
         $this->configs[]= $config;
 
         return $config;
@@ -66,6 +71,22 @@ class FileLoader extends BaseFileLoader
             }
 
             $this->import($this->getLocator()->locate($plugin . '/z.yml'), self::PLUGIN);
+        }
+    }
+
+
+    /**
+     * Processes imports
+     *
+     * @param array $imports
+     * @param string $dir
+     * @return void
+     */
+    protected function processImports($imports, $dir)
+    {
+        foreach ($imports as $import) {
+            $this->setCurrentDir($dir);
+            $this->configs[]= $this->import($import);
         }
     }
 
