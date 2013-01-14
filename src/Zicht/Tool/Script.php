@@ -27,32 +27,16 @@ class Script
     /**
      * Evaluate the script against the specified container.
      *
-     * @param Container $c
+     * @param Container\Container $z
      * @return string
-     *
-     * @throws \RuntimeException
      */
-    public function evaluate(Container $c)
+    public function evaluate(Container $z)
     {
-        $self = $this;
+        $compiler = new \Zicht\Tool\Script\Compiler();
+        $code = $compiler->compile($this->str);
 
-        return preg_replace_callback(
-            '/(.?)\$\(([\w+.]+)\)/',
-            function($m) use($c, $self) {
-                if ($m[1] == '$') {
-                    return substr($m[0], 1);
-                }
-                try {
-                    $value = $c->evaluate($c[$m[2]]);
-                } catch (\Exception $e) {
-                    throw new \RuntimeException(
-                        "Unable to resolve '{$m[2]}' in script '{$self->str}' ({$e->getMessage()})"
-                    );
-                }
-
-                return $m[1] . (is_array($value) ? join(' ', $value) : (string)$value);
-            },
-            $this->str
-        );
+        $_result = null;
+        eval('$_result = ' . $code . ';');
+        return $_result;
     }
 }

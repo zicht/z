@@ -6,6 +6,8 @@
 
 namespace Zicht\Tool\Container;
 
+use Zicht\Tool\Script\Compiler as ScriptCompiler;
+
 /**
  * Compilable node that represents an executable task
  */
@@ -31,6 +33,8 @@ class Task implements Compilable
      */
     public function compile(Compiler $compiler, $indent = 1)
     {
+        $scriptcompiler = new ScriptCompiler();
+
         $indentStr = str_repeat('    ', $indent);
 
         $ret = '$' . $compiler->getContainerName() . '->share(function($z) {' . PHP_EOL . $indentStr;
@@ -45,33 +49,25 @@ class Task implements Compilable
                         true
                     );
                 } else {
-                    $ret .= sprintf(
-                        '$z[%s] = $z->evaluate(%s);' . PHP_EOL . $indentStr,
+                    $ret .= sprintf('$z[%s] = %s;' . PHP_EOL . $indentStr,
                         var_export($name, true),
-                        var_export($m[1], true)
+                        $scriptcompiler->compile($m[1])
                     );
                 }
                 $ret .= '}';
             } else {
                 $ret .= sprintf(
-                    '$z[%s] = $z->evaluate(%s);' . PHP_EOL . $indentStr,
+                    '$z[%s] = %s;' . PHP_EOL . $indentStr,
                     var_export($name, true),
-                    var_export($value, true)
+                    $scriptcompiler->compile($value)
                 );
             }
         }
-        if (!empty($this->taskDef['unless'])) {
-//            $ret .= 'if (!' . $compiler->expr($this->taskDef['unless']) . ') {';
-        }
         foreach (array('pre', 'do', 'post') as $scope) {
             foreach ($this->taskDef[$scope] as $cmd) {
-                $ret .= '$z->cmd(' . var_export($cmd, true) . ');' . PHP_EOL . $indentStr;
+                $ret .= sprintf('$z->cmd(%s);', $scriptcompiler->compile($cmd)) . PHP_EOL . $indentStr;
             }
         }
-        if (!empty($this->taskDef['unless'])) {
-            $ret .= '}';
-        }
-
         if (isset($this->taskDef['yield'])) {
             $ret .= 'return $z[' . var_export($this->taskDef['yield'], true) . '];';
         }

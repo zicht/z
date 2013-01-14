@@ -45,17 +45,10 @@ class Container extends Pimple
      */
     public function exec($script)
     {
-        // parse an optional conditional at the beginning if the script.
-        if (preg_match('/^!+([^)]+)/', $script, $m)) {
-            var_dump($m[0]);
-            $script = substr($script, strlen($m[0]));
-        }
-
-        $cmd = $this->evaluate($script);
-        $ret = call_user_func($this['executor'], $cmd);
+        $ret = call_user_func($this['executor'], $script);
 
         if ($ret != 0) {
-            throw new \UnexpectedValueException("Command '$cmd' failed with exit code {$ret}");
+            throw new \UnexpectedValueException("Command '$script' failed with exit code {$ret}");
         }
         return $ret;
     }
@@ -106,5 +99,20 @@ class Container extends Pimple
         foreach ($this['__config'][$namespace][$key] as $name => $value) {
             $this[$namespace . '.' . $name] = $value;
         }
+    }
+
+
+    /**
+     * Returns the value representation of the requested variable
+     *
+     * @param $name
+     * @return string
+     */
+    public function value($value)
+    {
+        if (is_array($value)) {
+            return join(' ', $value);
+        }
+        return (string)$value;
     }
 }
