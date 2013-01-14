@@ -24,6 +24,6 @@ tasks:
             - @_symfony.build.copy_local_vendor
             - @_symfony.build.composer_install
             - @_symfony.build.assets_install
-            - @_symfony.build.assetic_dump
+            - @_symfony.assetic_dump
 
     deploy: ssh $(env.ssh) "cd $(env.root) && php app/console cache:clear --env=$(env) --no-debug"

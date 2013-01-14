@@ -29,10 +29,13 @@ class Script
      *
      * @param Container $c
      * @return string
+     *
+     * @throws \RuntimeException
      */
     public function evaluate(Container $c)
     {
         $self = $this;
+
         return preg_replace_callback(
             '/(.?)\$\(([\w+.]+)\)/',
             function($m) use($c, $self) {

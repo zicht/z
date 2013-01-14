@@ -25,7 +25,8 @@ use \Zicht\Tool\Version;
 /**
  * Z CLI Application
  */
-class Application extends BaseApplication {
+class Application extends BaseApplication
+{
     protected $config;
     protected $container;
 
@@ -82,6 +83,7 @@ class Application extends BaseApplication {
     {
         $ret = parent::getDefaultInputDefinition();
         $ret->addOption(new InputOption('env', 'e', InputOption::VALUE_REQUIRED, 'Environment', null));
+        $ret->addOption(new InputOption('config', 'c', InputOption::VALUE_REQUIRED, 'Configuration file to use', null));
         return $ret;
     }
 
@@ -90,15 +92,24 @@ class Application extends BaseApplication {
      * Initializes the container.
      *
      * @return void
+     *
+     * @throws \UnexpectedValueException
      */
     public function initContainer()
     {
-        $zFileLocator = new FileLocator(array(getcwd()));
+        $zFileLocator = new FileLocator(array(getcwd(), getenv('HOME') . '/.config/z/'));
         $pluginLocator = new FileLocator(__DIR__ . '/Resources/plugins');
 
         $loader = new FileLoader($pluginLocator);
 
-        foreach ($zFileLocator->locate('z.yml', null, false) as $file) {
+        $this->run();
+
+        try {
+            $zfiles = $zFileLocator->locate('z.yml', null, false);
+        } catch (\InvalidArgumentException $e) {
+            $zfiles = array();
+        }
+        foreach ($zfiles as $file) {
             $loader->load($file);
         }
 

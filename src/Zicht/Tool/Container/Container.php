@@ -45,6 +45,12 @@ class Container extends Pimple
      */
     public function exec($script)
     {
+        // parse an optional conditional at the beginning if the script.
+        if (preg_match('/^!+([^)]+)/', $script, $m)) {
+            var_dump($m[0]);
+            $script = substr($script, strlen($m[0]));
+        }
+
         $cmd = $this->evaluate($script);
         $ret = call_user_func($this['executor'], $cmd);
 
