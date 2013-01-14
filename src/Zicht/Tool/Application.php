@@ -102,8 +102,6 @@ class Application extends BaseApplication
 
         $loader = new FileLoader($pluginLocator);
 
-        $this->run();
-
         try {
             $zfiles = $zFileLocator->locate('z.yml', null, false);
         } catch (\InvalidArgumentException $e) {
