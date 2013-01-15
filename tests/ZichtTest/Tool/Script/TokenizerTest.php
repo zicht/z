@@ -100,6 +100,27 @@ class TokenizerTest extends \PHPUnit_Framework_TestCase
                     new Token(Token::DATA, ' abc'),
                 )
             ),
+            array(
+                'svn diff --summarize $(vcs.url)/$(version) $(vcs.url)/$(vcs.version)',
+                array(
+                    new Token(Token::DATA, 'svn diff --summarize '),
+                    new Token(Token::EXPR_START, '$('),
+                    new Token(Token::IDENTIFIER, 'vcs.url'),
+                    new Token(Token::EXPR_END, ')'),
+                    new Token(Token::DATA, '/'),
+                    new Token(Token::EXPR_START, '$('),
+                    new Token(Token::IDENTIFIER, 'version'),
+                    new Token(Token::EXPR_END, ')'),
+                    new Token(Token::DATA, ' '),
+                    new Token(Token::EXPR_START, '$('),
+                    new Token(Token::IDENTIFIER, 'vcs.url'),
+                    new Token(Token::EXPR_END, ')'),
+                    new Token(Token::DATA, '/'),
+                    new Token(Token::EXPR_START, '$('),
+                    new Token(Token::IDENTIFIER, 'vcs.version'),
+                    new Token(Token::EXPR_END, ')'),
+                )
+            ),
         );
     }
 }

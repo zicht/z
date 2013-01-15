@@ -136,6 +136,9 @@ class Application extends BaseApplication
         $code = $compiler->compile($this->config);
 
         $container = new Container();
+        foreach ($plugins as $plugin) {
+            $plugin->setContainer($container);
+        }
         eval($code);
         $this->container = $container;
 
