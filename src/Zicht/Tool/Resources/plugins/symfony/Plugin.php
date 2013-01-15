@@ -1,0 +1,29 @@
+<?php
+/**
+ * @author Gerard van Helden <gerard@zicht.nl>
+ * @copyright Zicht Online <http://zicht.nl>
+ */
+
+namespace Zicht\Tool\Plugin\Symfony;
+
+use \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+
+use \Zicht\Tool\Plugin as BasePlugin;
+
+class Plugin extends BasePlugin
+{
+    public function appendConfiguration(ArrayNodeDefinition $rootNode)
+    {
+        $rootNode
+            ->children()
+                ->arrayNode('symfony')
+                    ->children()
+                        ->scalarNode('console')->defaultValue('app/console')->end()
+                        ->scalarNode('web')->defaultValue('web')->end()
+                    ->end()
+                    ->addDefaultsIfNotSet()
+                ->end()
+            ->end()
+        ;
+    }
+}

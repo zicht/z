@@ -1,7 +1,11 @@
+symfony:
+    web:     web
+    console: 'app/console'
+
 tasks:
     _symfony.build.copy_local_vendor: |
         if [ -d "$(cwd)/vendor/" ];
-            then $(cwd)/rsync -rp vendor/ $(build.dir)/vendor;
+            then rsync -rp $(cwd)/vendor/ $(build.dir)/vendor;
         fi;
 
     _symfony.build.composer_install: |
@@ -10,13 +14,13 @@ tasks:
         fi;
 
     _symfony.build.assets_install: |
-        if [ -f "$(build.dir)/app/console" ];
-            then cd $(build.dir) && php app/console assets:install --env=$(env) --no-debug;
+        if [ -f "$(build.dir)/$(symfony.console)" ];
+            then cd $(build.dir) && php $(symfony.console) assets:install $(symfony.web) --env=$(env) --no-debug;
         fi;
 
     _symfony.build.assetic_dump: |
-        if [ -f "$(build.dir)/app/console" ];
-            then cd $(build.dir) && php app/console assetic:dump --env=$(env) --no-debug;
+        if [ -f "$(build.dir)/$(symfony.console)" ];
+            then cd $(build.dir) && php $(symfony.console) assetic:dump --env=$(env) --no-debug;
         fi;
 
     build:
@@ -26,4 +30,4 @@ tasks:
             - @_symfony.build.assets_install
             - @_symfony.build.assetic_dump
 
-    deploy: ssh $(env.ssh) "cd $(env.root) && php app/console cache:clear --env=$(env) --no-debug"
+    deploy: ssh $(env.ssh) "cd $(env.root) && php $(symfony.console) cache:clear --env=$(env) --no-debug"
