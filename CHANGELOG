@@ -1,3 +1,9 @@
+1.0-beta8
+---------
+* Added imports
+* Introduced a real parser/compiler for the script language
+* Call to setContainer() introduced so plugins can change the container configuration (e.g. add variables / functions)
+
 1.0-beta7
 ---------
 * Added conditional for 'make sass' in default build
