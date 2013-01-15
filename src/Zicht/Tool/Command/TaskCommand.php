@@ -28,7 +28,7 @@ class TaskCommand extends BaseCommand
     {
         if ($input->getOption('explain')) {
             $this->container['executor'] = $this->container->protect(
-                function($exec) use($output/*, $sh*/) {
+                function($exec) use($output) {
                     $exec = ' ( ' . rtrim($exec, "\n") . ' ); ';
                     $output->writeln($exec);
                 }
