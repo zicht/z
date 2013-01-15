@@ -31,5 +31,5 @@ tasks:
 
     # Do all quality checks
     qa.all:
-        do:     [ @qa.jshint, @qa.phpcs, @qa.phpunit]
+        do:     [ @qa.phpunit, @qa.jshint, @qa.phpcs ]
 

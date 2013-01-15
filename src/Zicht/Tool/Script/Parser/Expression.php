@@ -20,7 +20,11 @@ class Expression extends AbstractParser
             $name = $stream->current()->value;
             $stream->next();
 
-            if ($stream->match('(')) {
+            // little syntactic sugar for function calls without parentheses:
+            if ($stream->match(Token::IDENTIFIER)) {
+                $ret = new Node\Expr\Func($name);
+                $ret->append($this->parse($stream));
+            } elseif ($stream->match('(')) {
                 $stream->next();
                 $ret = new Node\Expr\Func($name);
                 if (!$stream->match(')')) {
