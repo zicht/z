@@ -8,14 +8,30 @@
 
 namespace Zicht\Tool\Script;
 
-class AbstractParser
+/**
+ * Base class for parsing.
+ */
+abstract class AbstractParser implements ParserInterface
 {
-    function __construct($parent = null)
+    /**
+     * Constructs the parser with an optional parent parser
+     *
+     * @param ParserInterface $parent
+     */
+    public function __construct(ParserInterface $parent = null)
     {
         $this->parent = $parent;
     }
 
-    function err($stream)
+    /**
+     * Triggers a parse error
+     *
+     * @param TokenStream $stream
+     * @return void
+     *
+     * @throws \UnexpectedValueException
+     */
+    final public function err(TokenStream $stream)
     {
         throw new \UnexpectedValueException("Unexpected input near {$stream->current()->value}");
     }

@@ -22,8 +22,8 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     function testParser($input, $result)
     {
         $tokenizer = new Tokenizer($input);
-        $parser = new Parser(new TokenStream($tokenizer->getTokens()));
-        $root = $parser->parse();
+        $parser = new Parser();
+        $root = $parser->parse(new TokenStream($tokenizer->getTokens()));
         $compiler = new \Zicht\Tool\Script\Buffer();
         $root->compile($compiler);
         $this->assertEquals($result, $compiler->getResult());

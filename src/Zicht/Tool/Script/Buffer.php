@@ -1,30 +1,51 @@
 <?php
 /**
- * For licensing information, please see the LICENSE file accompanied with this file.
- *
- * @author Gerard van Helden <drm@melp.nl>
- * @copyright 2012 Gerard van Helden <http://melp.nl>
+ * @author Gerard van Helden <gerard@zicht.nl>
+ * @copyright Zicht Online <http://zicht.nl>
  */
 
 namespace Zicht\Tool\Script;
 
+/**
+ * Buffer to write compiled code to
+ */
 class Buffer
 {
+    /**
+     * The result buffer
+     *
+     * @var string
+     */
     protected $result;
 
-    function __construct()
+
+    /**
+     * Initialize an empty buffer
+     */
+    public function __construct()
     {
         $this->result = '';
     }
 
 
-    function write($data)
+    /**
+     * Write some code to the buffer
+     *
+     * @param string $data
+     * @return void
+     */
+    public function write($data)
     {
         $this->result .= $data;
     }
 
 
-    function getResult()
+    /**
+     * Return the buffer contents.
+     *
+     * @return string
+     */
+    public function getResult()
     {
         return $this->result;
     }

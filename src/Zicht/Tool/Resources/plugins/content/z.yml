@@ -3,15 +3,20 @@ content:
     # Dirs that contain user content (i.e. uploaded files and such)
     dir:            [ 'web/media' ]
 
+    db:
+        structure:  ''
+        full:       ''
+
 tasks:
     # Backup remote content into a content archive containing all files from the $(content.dirs) variable
     # and a dump of the database
     content.backup:
         set:
-            _backup.file:   $(env).$(now).tar.gz
+            _backup.file:   content-$(env).$(now).tar.gz
             _backup.cmd:    |
                 cd $(env.root);
-                mysqldump -Q --opt $(env.db) > db.sql;
+                mysqldump -Q --opt -d $(env.db)  $(content.db.structure) > db.sql;
+                mysqldump -Q --opt $(env.db) $(content.db.full) >> db.sql;
                 tar zcvf $(_backup.file) $(content.dir) db.sql;
                 rm db.sql
         do:

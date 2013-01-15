@@ -1,26 +1,36 @@
 <?php
 /**
- * For licensing information, please see the LICENSE file accompanied with this file.
- *
- * @author Gerard van Helden <drm@melp.nl>
- * @copyright 2012 Gerard van Helden <http://melp.nl>
+ * @author Gerard van Helden <gerard@zicht.nl>
+ * @copyright Zicht Online <http://zicht.nl>
  */
 
 namespace Zicht\Tool\Script;
 
+/**
+ * Wraps the tokenization, parsing and compiling into one convenience class.
+ */
 class Compiler
 {
-    function __construct()
+    /**
+     * Constructor.
+     */
+    public function __construct()
     {
     }
 
+    /**
+     * Compile an input string to PHP code
+     *
+     * @param string $input
+     * @return string
+     */
     public function compile($input)
     {
-        $compiler = new \Zicht\Tool\Script\Buffer();
-        $tokenizer = new \Zicht\Tool\Script\Tokenizer($input);
-        $parser = new \Zicht\Tool\Script\Parser(new \Zicht\Tool\Script\TokenStream($tokenizer->getTokens()));
-        $parser->parse()->compile($compiler);
-        $code = $compiler->getResult();
+        $buffer = new Buffer();
+        $tokenizer = new Tokenizer($input);
+        $parser = new Parser();
+        $parser->parse(new TokenStream($tokenizer->getTokens()))->compile($buffer);
+        $code = $buffer->getResult();
         return $code;
     }
 }

@@ -8,9 +8,10 @@
 
 namespace ZichtTest\Tool\Script;
 
-use Zicht\Tool\Script\Tokenizer;
-use Zicht\Tool\Script\TokenStream;
-use Zicht\Tool\Script\Parser;
+use \Zicht\Tool\Script\Tokenizer;
+use \Zicht\Tool\Script\TokenStream;
+use \Zicht\Tool\Script\Parser;
+use \Zicht\Tool\Script\Dumper;
 
 
 class ParserTest extends \PHPUnit_Framework_TestCase
@@ -22,9 +23,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     function testParser($input, $tree)
     {
         $tokenizer = new Tokenizer($input);
-        $parser = new Parser(new TokenStream($tokenizer->getTokens()));
-        $root = $parser->parse();
-        $dumper = new \Zicht\Tool\Script\Dumper();
+        $parser = new Parser();
+        $root = $parser->parse(new TokenStream($tokenizer->getTokens()));
+        $dumper = new Dumper();
         $this->assertEquals($tree, $dumper->getAst($root));
     }
 

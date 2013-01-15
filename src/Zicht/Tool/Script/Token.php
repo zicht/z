@@ -8,25 +8,60 @@
 
 namespace Zicht\Tool\Script;
 
+/**
+ * Wrapper class for tokens
+ */
 final class Token
 {
+    /**
+     * Data token type
+     */
     const DATA = 'data';
+
+    /**
+     * Start of expression token type
+     */
     const EXPR_START = 'expr_start';
+
+    /**
+     * End of expression token type
+     */
     const EXPR_END = 'expr_end';
+
+    /**
+     * Identifier token type
+     */
     const IDENTIFIER = 'identifier';
+
+    /**
+     * Whitespace token type
+     */
     const WHITESPACE = 'whitespace';
 
     public $type;
     public $value;
 
-    function __construct($type, $value = null)
+    /**
+     * Construct the token with the passed type and value
+     *
+     * @param string $type
+     * @param string $value
+     */
+    public function __construct($type, $value = null)
     {
         $this->type = $type;
         $this->value = $value;
     }
 
 
-    function match($type, $value = null)
+    /**
+     * Checks if the token matches the passed type and/or value
+     *
+     * @param string $type
+     * @param string $value
+     * @return bool
+     */
+    public function match($type, $value = null)
     {
         if ($this->type === $type) {
             if (null === $value || $this->value == $value) {

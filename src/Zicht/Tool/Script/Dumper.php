@@ -7,9 +7,18 @@
  */
 namespace Zicht\Tool\Script;
 
+/**
+ * Dumps a compiled node AST as an array
+ */
 class Dumper
 {
-    function getAst(Node\Node $b)
+    /**
+     * Returns the AST for a specified node as an array representation
+     *
+     * @param Node\Node $b
+     * @return array
+     */
+    public function getAst(Node\Node $b)
     {
         $ret = array(
             'type' => str_replace('Zicht\Tool\Script\Node\\', '', get_class($b))

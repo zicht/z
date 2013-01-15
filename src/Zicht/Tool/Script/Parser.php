@@ -8,29 +8,32 @@
 
 namespace Zicht\Tool\Script;
 
+/**
+ * Parser for root nodes of the script
+ */
 class Parser extends AbstractParser
 {
-    function __construct(TokenStream $input)
-    {
-        $this->input = $input;
-    }
-
-
-    function parse()
+    /**
+     * Parses the input tokenstream and returns a Script node
+     *
+     * @param TokenStream $input
+     * @return Node\Script
+     */
+    public function parse(TokenStream $input)
     {
         $ret = new Node\Script();
 
-        $this->input->next();
-        while ($this->input->valid()) {
-            $cur = $this->input->current();
+        $input->next();
+        while ($input->valid()) {
+            $cur = $input->current();
             if ($cur->match(Token::EXPR_START)) {
-                $this->input->next();
+                $input->next();
                 $parser = new Parser\Expression($this);
-                $ret->append($parser->parse($this->input));
-                $this->input->expect(Token::EXPR_END);
+                $ret->append($parser->parse($input));
+                $input->expect(Token::EXPR_END);
             } elseif ($cur->match(token::DATA)) {
                 $ret->append(new Node\Expr\Data($cur->value));
-                $this->input->next();
+                $input->next();
             }
         }
 

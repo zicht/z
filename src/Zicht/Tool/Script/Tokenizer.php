@@ -8,20 +8,34 @@
 
 namespace Zicht\Tool\Script;
 
-
+/**
+ * Tokenizer for the script language
+ */
 class Tokenizer
 {
-    function __construct($string)
+    /**
+     * Construct the tokenizer with the given input string.
+     *
+     * @param string $string
+     */
+    public function __construct($string)
     {
         $this->string = $string;
     }
 
 
-    function getTokens()
+    /**
+     * Returns an array of tokens
+     *
+     * @return array
+     * @throws \UnexpectedValueException
+     */
+    public function getTokens()
     {
         $ret = array();
         $depth = 0;
-        for ($i = 0; $i < strlen($this->string);) {
+        $i = 0;
+        while ($i < strlen($this->string)) {
             $before = $i;
             if ($depth === 0) {
                 if (preg_match('/^\$\(/', substr($this->string, $i), $m)) {
