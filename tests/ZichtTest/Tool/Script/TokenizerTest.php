@@ -121,6 +121,30 @@ class TokenizerTest extends \PHPUnit_Framework_TestCase
                     new Token(Token::EXPR_END, ')'),
                 )
             ),
+            array(
+                '$("string")',
+                array(
+                    new Token(Token::EXPR_START, '$('),
+                    new Token(Token::STRING, 'string'),
+                    new Token(Token::EXPR_END, ')'),
+                )
+            ),
+            array(
+                '$("str\\ing")',
+                array(
+                    new Token(Token::EXPR_START, '$('),
+                    new Token(Token::STRING, 'str\\ing'),
+                    new Token(Token::EXPR_END, ')'),
+                )
+            ),
+            array(
+                '$("str\\\\ing")',
+                array(
+                    new Token(Token::EXPR_START, '$('),
+                    new Token(Token::STRING, 'str\\\\ing'),
+                    new Token(Token::EXPR_END, ')'),
+                )
+            ),
         );
     }
 }

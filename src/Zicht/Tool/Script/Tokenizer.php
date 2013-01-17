@@ -35,37 +35,38 @@ class Tokenizer
         $ret = array();
         $depth = 0;
         $i = 0;
-        while ($i < strlen($this->string)) {
+        $len = strlen($this->string);
+        while ($i < $len) {
             $before = $i;
+            $substr = substr($this->string, $i);
             if ($depth === 0) {
-                if (preg_match('/^\$\(/', substr($this->string, $i), $m)) {
+                if (preg_match('/^\$\(/', $substr, $m)) {
                     $i += strlen($m[0]);
                     $ret[]= new Token(Token::EXPR_START, $m[0]);
                     $depth ++;
-                } elseif (preg_match('/^\!\(/', substr($this->string, $i), $m)) {
+                } elseif (preg_match('/^\!\(/', $substr, $m)) {
                     $i += strlen($m[0]);
                     $ret[]= new Token(Token::EXPR_START, $m[0]);
                     $depth ++;
                 } else {
-                    if ($token = array_pop($ret)) {
-                        if ($token->match(Token::DATA)) {
-                            $token->value .= $this->string{$i};
-                        } else {
-                            array_push($ret, $token);
-                            $token = new Token(Token::DATA, $this->string{$i});
-                        }
+                    $token =& end($ret);
+                    if ($token && $token->match(Token::DATA)) {
+                        $token->value .= $this->string{$i};
+                        unset($token);
                     } else {
-                        $token = new Token(Token::DATA, $this->string{$i});
+                        $ret[]= new Token(Token::DATA, $this->string{$i});
                     }
                     $i ++;
-                    array_push($ret, $token);
                 }
             } else {
-                if (preg_match('/^[\w.]+/', substr($this->string, $i), $m)) {
+                if (preg_match('/^[\w.]+/', $substr, $m)) {
                     $ret[] = new Token(Token::IDENTIFIER, $m[0]);
                     $i += strlen($m[0]);
-                } elseif (preg_match('/^\s+/', substr($this->string, $i), $m)) {
+                } elseif (preg_match('/^\s+/', $substr, $m)) {
                     $ret[]= new Token(Token::WHITESPACE, $m[0]);
+                    $i += strlen($m[0]);
+                } elseif (preg_match('/^([0-9]*.)?[0-9]+/', $substr, $m)) {
+                    $ret[]= new Token(Token::NUMBER, $m[0]);
                     $i += strlen($m[0]);
                 } elseif ($this->string{$i} == ')') {
                     $depth --;
@@ -79,9 +80,34 @@ class Tokenizer
                     $depth ++;
                     $ret[] = new Token('(');
                     $i ++;
-                } elseif (preg_match('/^[\?,]/', substr($this->string, $i), $m)) {
+                } elseif (preg_match('/^[\?,]/', $substr, $m)) {
                     $ret[] = new Token($m[0]);
                     $i ++;
+                } elseif ($this->string{$i} == '"') {
+                    $strData = '';
+                    $escape = false;
+                    for ($j = $i +1; $j < $len; $j ++) {
+                        $ch = $this->string{$j};
+
+                        if ($ch == '\\') {
+                            $escape = true;
+                        } elseif ($ch == '"') {
+                            if ($escape) {
+                                $escape = false;
+                            } else {
+                                $j ++;
+                                break;
+                            }
+                        } else {
+                            if ($escape) {
+                                $strData .= '\\';
+                                $escape = false;
+                            }
+                            $strData .= $ch;
+                        }
+                    }
+                    $ret[]= new Token(Token::STRING, $strData);
+                    $i = $j;
                 }
             }
             if ($before === $i) {

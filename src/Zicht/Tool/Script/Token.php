@@ -38,6 +38,17 @@ final class Token
      */
     const WHITESPACE = 'whitespace';
 
+    /**
+     * Number token type
+     */
+    const NUMBER = 'number';
+
+    /**
+     * String token type
+     */
+    const STRING = 'string';
+
+
     public $type;
     public $value;
 
