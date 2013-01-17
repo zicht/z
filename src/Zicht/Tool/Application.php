@@ -154,6 +154,7 @@ class Application extends BaseApplication
 
         $compiler = new Compiler('container');
         $cp = $this->config;
+        $this->tasks = array();
         foreach ($cp['tasks'] as $i => $task) {
             $this->tasks[$i] = $cp['tasks.' . $i] = new Task($task);
         }
