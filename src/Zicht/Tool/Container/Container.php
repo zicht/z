@@ -7,6 +7,7 @@
 namespace Zicht\Tool\Container;
 
 use \Zicht\Tool\Script;
+use \Zicht\Tool\PluginInterface;
 use \UnexpectedValueException;
 use \Pimple;
 
@@ -15,6 +16,8 @@ use \Pimple;
  */
 class Container extends Pimple
 {
+    protected $plugins = array();
+
     /**
      * Construct the container with the specified values as services/values.
      *
@@ -32,6 +35,27 @@ class Container extends Pimple
                 $ret = null;
                 passthru($cmd, $ret);
                 return $ret;
+            }
+        );
+        $container = $this;
+
+        $this['ask'] = $this->protect(
+            function($q, $default = null) use ($container) {
+                return $container['console_dialog_helper']->ask(
+                    $container['console_output'],
+                    $q . ($default ? sprintf(' [<info>%s</info>]', $default) : '') . ': ',
+                    $default
+                );
+            }
+        );
+        $this['confirm']= $this->protect(
+            function($q, $default = false) use ($container) {
+                return $container['console_dialog_helper']->askConfirmation(
+                    $container['console_output'],
+                    $q .
+                    ($default === false ? ' [y/N] ' : ' [Y/n]'),
+                    $default
+                );
             }
         );
     }
@@ -105,7 +129,7 @@ class Container extends Pimple
     /**
      * Returns the value representation of the requested variable
      *
-     * @param $name
+     * @param string $value
      * @return string
      */
     public function value($value)
@@ -114,5 +138,43 @@ class Container extends Pimple
             return join(' ', $value);
         }
         return (string)$value;
+    }
+
+
+    /**
+     * Register a list of plugins with the container
+     *
+     * @param PluginInterface[] $plugins
+     * @return void
+     */
+    public function setPlugins(array $plugins)
+    {
+        foreach ($plugins as $plugin) {
+            $this->addPlugin($plugin);
+        }
+    }
+
+
+    /**
+     * Add a single plugin to the container and register the container in the plugin using setContainer
+     *
+     * @param \Zicht\Tool\PluginInterface $plugin
+     * @return void
+     */
+    public function addPlugin(PluginInterface $plugin)
+    {
+        $this->plugins[]= $plugin;
+        $plugin->setContainer($this);
+    }
+
+
+    /**
+     * Returns all registered plugins
+     *
+     * @return PluginInterface[]
+     */
+    public function getPlugins()
+    {
+        return $this->plugins;
     }
 }

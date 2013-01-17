@@ -46,25 +46,14 @@ class InitCommand extends BaseCommand
         }
 
         /** @var $helper \Symfony\Component\Console\Helper\DialogHelper */
-        $helper = $this->getHelperSet()->get('dialog');
-        $ask = function($q, $default = null) use($helper, $output) {
-            return $helper->ask(
-                $output,
-                $q . ($default ? sprintf(' [<info>%s</info>]', $default) : '') . ': ',
-                $default
-            );
-        };
-        $yn = function($q) use($helper, $output) {
-            return $helper->askConfirmation($output, $q . ' [y/N] ', false);
-        };
-
         $config = array();
         $config['vcs']['url'] = preg_replace(
             '!/(trunk|branches/[^/]+)$/?!',
             '',
             trim(shell_exec('svn info | grep URL | awk \'{print $2}\''))
         );
-        $config['vcs']['url'] = $ask('VCS url', $config['vcs']['url']);
+        $config['vcs']['url'] = $this->container['ask']('VCS url', $config['vcs']['url']);
+
         $settings = array(
             'name'  => 'Environment name',
             'url'   => 'URL',
@@ -76,10 +65,10 @@ class InitCommand extends BaseCommand
 
         $ymlConfig = Yaml::dump($config, 4, 4);
 
-        while ($yn('Add an environment?') == 'y') {
+        while ($this->container['confirm']('Add an environment?') == 'y') {
             $cfg = array();
             foreach ($settings as $key => $q) {
-                $cfg[$key] = $ask($q);
+                $cfg[$key] = $this->container['ask']($q);
             }
             $config['env'][$cfg['name']] = $cfg;
             unset($config['env'][$cfg['name']]['name']);

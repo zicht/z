@@ -13,6 +13,10 @@ use \Symfony\Component\Config\Definition\Processor;
 use \Symfony\Component\Console\Input\InputArgument;
 use \Symfony\Component\Console\Input\InputOption;
 use \Symfony\Component\Console\Command\Command;
+use \Symfony\Component\Console\Input\InputInterface;
+use \Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\Console\Output\ConsoleOutput;
+use \Symfony\Component\Console\Input\ArgvInput;
 
 use \Zicht\Tool\Command as Cmd;
 use \Zicht\Tool\Command\TaskCommand;
@@ -21,6 +25,7 @@ use \Zicht\Tool\Container\Container;
 use \Zicht\Tool\Container\Compiler;
 use \Zicht\Tool\Container\Preprocessor;
 use \Zicht\Tool\Version;
+use \Zicht\Tool\Container\Task;
 
 /**
  * Z CLI Application
@@ -29,6 +34,7 @@ class Application extends BaseApplication
 {
     protected $config;
     protected $container;
+    protected $tasks;
 
     /**
      * Constructor, initializes the application, container and the commands
@@ -44,7 +50,7 @@ class Application extends BaseApplication
         $this->add(new Cmd\EvalCommand());
 
         /** @var $task \Zicht\Tool\Container\Task */
-        foreach ($this->config['tasks'] as $name => $task) {
+        foreach ($this->tasks as $name => $task) {
             // if a tasks is prefixed with an underscore, it is considered an internal task
             if (substr($name, 0, 1) !== '_') {
                 $cmd = new TaskCommand(str_replace('.', ':', $name));
@@ -82,9 +88,26 @@ class Application extends BaseApplication
     protected function getDefaultInputDefinition()
     {
         $ret = parent::getDefaultInputDefinition();
-        $ret->addOption(new InputOption('env', 'e', InputOption::VALUE_REQUIRED, 'Environment', null));
-        $ret->addOption(new InputOption('config', 'c', InputOption::VALUE_REQUIRED, 'Configuration file to use', null));
+        $ret->addOption(new InputOption('env',      'e', InputOption::VALUE_REQUIRED, 'Environment', null));
+        $ret->addOption(new InputOption('config',   'c', InputOption::VALUE_REQUIRED, 'Configuration file to use', null));
         return $ret;
+    }
+
+
+    public function run(InputInterface $input = null, OutputInterface $output = null)
+    {
+        if (null === $input) {
+            $input = new ArgvInput();
+        }
+        if (null === $output) {
+            $output = new ConsoleOutput();
+        }
+
+        $this->container['console_output']= $output;
+        $this->container['console_input']= $input;
+        $this->container['console_dialog_helper']= $this->getHelperSet()->get('dialog');
+
+        return parent::run($input, $output);
     }
 
 
@@ -124,21 +147,21 @@ class Application extends BaseApplication
         }
 
         $processor = new Processor();
-        $preprocessor = new Preprocessor();
-        $this->config = $preprocessor->preprocess(
-            $processor->processConfiguration(
-                new Configuration($plugins),
-                $loader->getConfigs()
-            )
+        $this->config = $processor->processConfiguration(
+            new Configuration($plugins),
+            $loader->getConfigs()
         );
 
         $compiler = new Compiler('container');
-        $code = $compiler->compile($this->config);
+        $cp = $this->config;
+        foreach ($cp['tasks'] as $i => $task) {
+            $this->tasks[$i] = $cp['tasks.' . $i] = new Task($task);
+        }
+        $code = $compiler->compile($cp);
 
         $container = new Container();
-        foreach ($plugins as $plugin) {
-            $plugin->setContainer($container);
-        }
+        $container->setPlugins($plugins);
+
         eval($code);
         $this->container = $container;
 
