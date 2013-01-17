@@ -7,6 +7,7 @@ namespace Zicht\Tool\Command;
 
 use \Symfony\Component\DependencyInjection\ContainerInterface;
 use \Symfony\Component\Console\Input\InputInterface;
+use \Symfony\Component\Console\Input\InputArgument;
 use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Console\Command\Command;
 use \Symfony\Component\Yaml\Yaml;
@@ -27,7 +28,8 @@ class DumpCommand extends BaseCommand
 
         $this
             ->setName('z:dump')
-            ->setHelp('Dumps the container as PHP')
+            ->addArgument('path', InputArgument::OPTIONAL, 'Dump the specified path in the config')
+            ->setHelp('Dumps container and/or configuration information')
         ;
     }
 
@@ -41,9 +43,23 @@ class DumpCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln(Yaml::dump($this->container['__config'], 5, 4));
-        if ($output->getVerbosity() > 1) {
-            $output->writeln($this->container['__definition']);
+        if ($path = $input->getArgument('path')) {
+            $ptr = $this->container['__config'];
+            $parts = explode('.', $path);
+            while ($key = array_shift($parts)) {
+                if (isset($ptr[$key])) {
+                    $ptr = $ptr[$key];
+                } else {
+                    throw new \InvalidArgumentException("Key {$key} is not defined");
+                }
+            }
+            $slice = array($path => $ptr);
+            $output->writeln(Yaml::dump($slice, 5, 4));
+        } else {
+            $output->writeln(Yaml::dump($this->container['__config'], 5, 4));
+            if ($output->getVerbosity() > 1) {
+                $output->writeln($this->container['__definition']);
+            }
         }
     }
 }
