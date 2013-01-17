@@ -15,13 +15,15 @@ class Script extends Branch
 {
     function compile(Buffer $compiler)
     {
-        foreach ($this->nodes as $i => $node) {
-            if ($i > 0) {
-                $compiler->write(' . ');
+        if (count($this->nodes)) {
+            foreach ($this->nodes as $i => $node) {
+                if ($i > 0) {
+                    $compiler->write(' . ');
+                }
+                $compiler->write('$z->value(');
+                $node->compile($compiler);
+                $compiler->write(')');
             }
-            $compiler->write('$z->value(');
-            $node->compile($compiler);
-            $compiler->write(')');
         }
     }
 }

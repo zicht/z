@@ -21,7 +21,7 @@ class Expression extends AbstractParser
             $stream->next();
 
             // little syntactic sugar for function calls without parentheses:
-            if ($stream->match(Token::IDENTIFIER)) {
+            if ($stream->match(Token::IDENTIFIER) || $stream->match(Token::STRING) || $stream->match(Token::NUMBER)) {
                 $ret = new Node\Expr\Func($name);
                 $ret->append($this->parse($stream));
             } elseif ($stream->match('(')) {
@@ -43,6 +43,12 @@ class Expression extends AbstractParser
             } else {
                 $ret = new Node\Expr\Variable($name);
             }
+        } elseif ($stream->match(Token::STRING)) {
+            $ret = new Node\Expr\Str($stream->current()->value);
+            $stream->next();
+        } elseif ($stream->match(Token::NUMBER)) {
+            $ret = new Node\Expr\Number($stream->current()->value);
+            $stream->next();
         } else {
             $this->err($stream);
         }
