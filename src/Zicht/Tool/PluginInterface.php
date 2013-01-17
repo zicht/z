@@ -29,4 +29,13 @@ interface PluginInterface
      * @return mixed
      */
     public function setContainer(Container\Container $container);
+
+
+    /**
+     * Initialize/alter the config
+     *
+     * @param array $config
+     * @return mixed
+     */
+    public function init(array &$config);
 }

@@ -23,6 +23,7 @@ abstract class Plugin implements PluginInterface
     {
     }
 
+
     /**
      * Set the container instance
      *
@@ -30,6 +31,17 @@ abstract class Plugin implements PluginInterface
      * @return mixed
      */
     public function setContainer(Container\Container $container)
+    {
+    }
+
+
+    /**
+     * Initialize/alter the config
+     *
+     * @param array &$config
+     * @return void
+     */
+    public function init(array &$config)
     {
     }
 }
