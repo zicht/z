@@ -22,8 +22,6 @@ class Expr extends Branch
 
     public function compile(Buffer $compiler)
     {
-        $compiler->write('$z->value(');
         $this->nodes[0]->compile($compiler);
-        $compiler->write(')');
     }
 }

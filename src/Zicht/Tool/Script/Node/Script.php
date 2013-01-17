@@ -13,13 +13,15 @@ use Zicht\Tool\Script\Buffer;
 
 class Script extends Branch
 {
-    function compile(Buffer $c)
+    function compile(Buffer $compiler)
     {
         foreach ($this->nodes as $i => $node) {
             if ($i > 0) {
-                $c->write(' . ');
+                $compiler->write(' . ');
             }
-            $node->compile($c);
+            $compiler->write('$z->value(');
+            $node->compile($compiler);
+            $compiler->write(')');
         }
     }
 }
