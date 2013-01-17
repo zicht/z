@@ -1,7 +1,7 @@
 # Synchronization options
 sync:
     # Command line options to rsync
-    options:        "-rupvc --delete"
+    options:        "-rupvcL --delete"
 
     # File containing exclusion rules for rsync
     exclude_file:   "rsync.exclude"
