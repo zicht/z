@@ -65,7 +65,6 @@ class Configuration implements ConfigurationInterface
                                         }
                                     )
                                 ->end()
-                                ->performNoDeepMerging()
                                 ->prototype('scalar')->end()
                                 ->defaultValue(array())
                             ->end()
@@ -77,7 +76,6 @@ class Configuration implements ConfigurationInterface
                                         }
                                     )
                                 ->end()
-                                ->performNoDeepMerging()
                                 ->prototype('scalar')->end()
                                 ->defaultValue(array())
                             ->end()

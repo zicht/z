@@ -24,7 +24,7 @@ tasks:
         fi;
 
     build:
-        do:
+        post:
             - @_symfony.build.copy_local_vendor
             - @_symfony.build.composer_install
             - @_symfony.build.assets_install
