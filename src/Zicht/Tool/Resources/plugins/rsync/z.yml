@@ -4,7 +4,7 @@ sync:
     options:        -rupvcL --delete
 
     # File containing exclusion rules for rsync
-    exclude_file:   ""
+    exclude_file:   "rsync.exclude"
 
 tasks:
     # Synchronize the build dir to the remote environment

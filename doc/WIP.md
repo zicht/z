@@ -36,12 +36,29 @@ on your system path. You will now have Z available to run as such:
     $ z
 
 The output will show you what available tasks and commands you have at your disposal, and how to run them. By default,
-Z assumes that you will want to use it as a build and deployment tool. As such, you will want to be able to build and
-deploy projects and put the configuration of these builds in a simple file, called a Z file. At the core, there is no
-dependency on this file, but there is always project specific data you will need. This is where the 'z:init' command
-comes into play:
+no tasks or configuration is done. This is all done through the usage of plugins. You can find documentation on the
+plugins separately.
 
-    $ z z:init
+A sane setup for z would be as follows:
+
+    plugins: ['core', 'svn', 'rsync']
+
+    vcs:
+        url: svn://my/project
+
+    env:
+        production:
+            ssh: myuser@remotehost
+            root: ~/app/deploy-dir
+
+This would provide your setup with a possibility to build and deploy to a remote ssh host identified by 'production'.
+Run the command
+
+    $ z simulate --env=production
+
+To simulate a deploy. To see what exactly would be done, you can use the --explain flag:
+
+    $ z simulate --env=production --explain
 
 This will guide you to a set of questions you need to answer to get a z.yml file in your working directory. When
 finished, you will have a file you can use for deployment.
@@ -75,30 +92,5 @@ This can be short-cut as follows: '/path/to/my-plugin' in which case the name is
 Plugin.php is expanded as "/path/to/my-plugin/Plugin.php", and so forth for the other two files. By default, if the
 dir not absolute, it can be relative to the working dir, or to the Z installation's plugin path. This means that if you
 specify 'rsync' as the plugin, and you execute z from your homedir, it is assumed to exist in /home/user/rsync/. If
-that dir not exists, it is assumed to be in ZPREFIX/plugins/rsync.
+that dir not exists, it is assumed to be in ZPREFIX/src/Zicht/Tool/Resources/plugins/rsync.
 
-How to use Z for continuous integration
-
-Create an integrate task in your z.yml:
-
-tasks:
-    integrate:
-        pre: composer install
-        do:  @qa
-
-Now, Z will need a periodical task to check out the working copy, run the integrate task, and save the reports somehow. This is simple using a cronjob:
-
-10 * * * * z --config=/usr/local/etc/z/integration.yml integrate
-
-The integration yml will look like this:
-
-tasks:
-    integrate:
-        set:
-            vcs.uri: $(projects
-svn checkout $(vcs.url)/$(vcs.version) $(tmpdir)
-        do:  cd $(tmpdir); z integrate
-
-
-Note that the project's integrate command will run in a subshell, and therefore only uses the z file that is exposed
-inside the project. This way, the processes will be independent of each other.
