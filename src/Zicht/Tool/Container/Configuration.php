@@ -56,7 +56,6 @@ class Configuration implements ConfigurationInterface
                                 ->prototype('scalar')->end()
                                 ->defaultValue(array())
                             ->end()
-                            ->scalarNode('unless')->defaultNull()->end()
                             ->arrayNode('pre')
                                 ->beforeNormalization()
                                     ->ifString()->then(
@@ -111,7 +110,6 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('build')
                     ->children()
                         ->scalarNode('dir')->end()
-                        ->scalarNode('version')->end()
                     ->end()
                 ->end()
             ->end()
