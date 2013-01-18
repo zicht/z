@@ -51,7 +51,10 @@ class Expression extends AbstractParser
             $stream->next();
         } else {
             $this->err($stream);
+            return null;
         }
-        return new \Zicht\Tool\Script\Node\Expr\Expr($ret);
+
+        $ret = new \Zicht\Tool\Script\Node\Expr\Expr($ret);
+        return $ret;
     }
 }
