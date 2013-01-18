@@ -42,6 +42,15 @@ class Container extends Pimple
         );
         $container = $this;
 
+        $this['if'] = $this->protect(
+            function($condition, $then, $else = null) {
+                if ($condition) {
+                    return $then;
+                } else {
+                    return $else;
+                }
+            }
+        );
         $this['ask'] = $this->protect(
             function($q, $default = null) use ($container) {
                 return $container['console_dialog_helper']->ask(
@@ -49,6 +58,14 @@ class Container extends Pimple
                     $q . ($default ? sprintf(' [<info>%s</info>]', $default) : '') . ': ',
                     $default
                 );
+            }
+        );
+
+        $this['sprintf'] = $this->protect(
+            function($str) use ($container) {
+                $args = func_get_args();
+                $tpl = array_shift($args);
+                return vsprintf($tpl, $args);
             }
         );
         $this['printf'] = $this->protect(
