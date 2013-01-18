@@ -32,9 +32,12 @@ class Container extends Pimple
         $this['cwd'] = getcwd();
         $this['executor'] = $this->protect(
             function($cmd) {
-                $ret = null;
-                passthru($cmd, $ret);
-                return $ret;
+                if (trim($cmd)) {
+                    $ret = null;
+                    passthru($cmd, $ret);
+                    return $ret;
+                }
+                return null;
             }
         );
         $container = $this;
@@ -46,6 +49,13 @@ class Container extends Pimple
                     $q . ($default ? sprintf(' [<info>%s</info>]', $default) : '') . ': ',
                     $default
                 );
+            }
+        );
+        $this['printf'] = $this->protect(
+            function($str) use ($container) {
+                $args = func_get_args();
+                $tpl = array_shift($args);
+                $container['console_output']->write(vsprintf($tpl, $args));
             }
         );
         $this['confirm']= $this->protect(
