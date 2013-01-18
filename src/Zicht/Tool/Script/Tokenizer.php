@@ -85,6 +85,7 @@ class Tokenizer
                     $i ++;
                 } elseif ($this->string{$i} == '"') {
                     $strData = '';
+
                     $escape = false;
                     for ($j = $i +1; $j < $len; $j ++) {
                         $ch = $this->string{$j};
@@ -100,10 +101,18 @@ class Tokenizer
                             }
                         } else {
                             if ($escape) {
-                                $strData .= '\\';
+                                switch ($ch) {
+                                    case 'n':
+                                        $strData .= "\n";
+                                        break;
+                                    default:
+                                        $strData .= '\\' . $ch;
+                                        break;
+                                }
                                 $escape = false;
+                            } else {
+                                $strData .= $ch;
                             }
-                            $strData .= $ch;
                         }
                     }
                     $ret[]= new Token(Token::STRING, $strData);
