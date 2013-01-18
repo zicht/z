@@ -15,7 +15,8 @@ tasks:
     # Export the specified version to the build dir
     _vcs.export:
         do:
-            - svn export $(vcs.url)/$(vcs.version) $(build.dir)
+            - $(printf("Exporting version <info>%s</info> to <info>%s</info>\n", vcs.version, build.dir))
+            - svn export -q $(vcs.url)/$(vcs.version) $(build.dir)
             - svn info $(vcs.url)/$(vcs.version) > $(build.dir)/$(vcs.export.revfile)
         yield:      build.dir
 
