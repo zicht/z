@@ -14,8 +14,9 @@ class Compiler
     /**
      * Constructor.
      */
-    public function __construct()
+    public function __construct($parser = null)
     {
+        $this->parser = new Parser();
     }
 
     /**
@@ -28,8 +29,7 @@ class Compiler
     {
         $buffer = new Buffer();
         $tokenizer = new Tokenizer($input);
-        $parser = new Parser();
-        $parser->parse(new TokenStream($tokenizer->getTokens()))->compile($buffer);
+        $this->parser->parse(new TokenStream($tokenizer->getTokens()))->compile($buffer);
         $code = $buffer->getResult();
         return $code;
     }

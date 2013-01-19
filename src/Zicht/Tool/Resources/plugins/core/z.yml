@@ -9,14 +9,11 @@ env: ~
 # Available default tasks. All tasks prefixed with '_' are considered 'private',
 # i.e. they are not published in the command line help / list commands.
 tasks:
-    # Clean the build
-    _clean:         rm -rf $(build.dir)
-
     # Creates a build
     build:
         set:
             build.version: $(vcs.current)
-        pre: [ @_clean, @_vcs.export ]
+        pre: [ @_vcs.export ]
         yield: build.dir
 
     # Deploys a build

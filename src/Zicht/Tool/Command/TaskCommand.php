@@ -36,6 +36,9 @@ class TaskCommand extends BaseCommand
                 }
             );
         }
+        if ($input->getOption('force')) {
+            $this->container['force'] = true;
+        }
 
         foreach ($this->getDefinition()->getArguments() as $arg) {
             if ($arg->getName() === 'command') {

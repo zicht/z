@@ -18,9 +18,10 @@ class Task implements Compilable
      *
      * @param array $taskDef
      */
-    public function __construct(array $taskDef)
+    public function __construct(array $taskDef, $name)
     {
         $this->taskDef = $taskDef;
+        $this->name = $name;
     }
 
 
@@ -33,7 +34,8 @@ class Task implements Compilable
      */
     public function compile(Compiler $compiler, $indent = 1)
     {
-        $scriptcompiler = new ScriptCompiler();
+        $scriptcompiler = new ScriptCompiler(new \Zicht\Tool\Script\Parser());
+        $exprcompiler  = new ScriptCompiler(new \Zicht\Tool\Script\Parser\Expression());
 
         $indentStr = str_repeat('    ', $indent);
 
@@ -63,9 +65,19 @@ class Task implements Compilable
                 );
             }
         }
+
         foreach (array('pre', 'do', 'post') as $scope) {
+            $hasUnless = false;
+            if ($scope === 'do' && !empty($this->taskDef['unless'])) {
+                $ret .= 'if ($z[\'force\'] || !(' . $exprcompiler->compile('$(' . $this->taskDef['unless'] . ')') . ')) {';
+                $hasUnless = true;
+            }
             foreach ($this->taskDef[$scope] as $cmd) {
                 $ret .= sprintf('$z->cmd(%s);', $scriptcompiler->compile($cmd)) . PHP_EOL . $indentStr;
+            }
+            if ($hasUnless) {
+                $ret .= '} else {';
+                $ret .= '}';
             }
         }
         if (isset($this->taskDef['yield'])) {

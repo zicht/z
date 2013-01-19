@@ -45,14 +45,22 @@ class Plugin extends BasePlugin
     public function setContainer(Container $container)
     {
         $container['versionof'] = $container->protect(function($dir) use($container) {
-            $info = shell_exec('svn info ' . $dir);
-            preg_match('/^URL: (.*)/m', $info, $m);
-            $url = $m[1];
+            if (is_file($revFile = ($dir . '/' . $container['vcs.export.revfile']))) {
+                $info = file_get_contents($revFile);
+            } else {
+                $info = @shell_exec('svn info ' . $dir);
+            }
 
-            preg_match('/^Revision: (.*)/m', $info, $m);
-            $rev = $m[1];
+            if (trim($info)) {
+                preg_match('/^URL: (.*)/m', $info, $m);
+                $url = $m[1];
 
-            return ltrim(str_replace($container['vcs.url'], '', $url), '/') . '@' . $rev;
+                preg_match('/^Revision: (.*)/m', $info, $m);
+                $rev = $m[1];
+
+                return ltrim(str_replace($container['vcs.url'], '', $url), '/') . '@' . $rev;
+            }
+            return null;
         });
         $container['vcs.current'] = function($container) {
             return $container['versionof']($container['cwd']);

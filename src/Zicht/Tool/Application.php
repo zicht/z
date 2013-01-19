@@ -59,6 +59,7 @@ class Application extends BaseApplication
                     $cmd->addArgument($var, $isRequired ? InputArgument::REQUIRED : InputArgument::OPTIONAL);
                 }
                 $cmd->addOption('explain', '', InputOption::VALUE_NONE, 'Explains the commands that are executed');
+                $cmd->addOption('force', 'f', InputOption::VALUE_NONE, 'Force execution of otherwise skipped tasks');
                 $this->add($cmd);
             }
         }
@@ -89,7 +90,6 @@ class Application extends BaseApplication
     {
         $ret = parent::getDefaultInputDefinition();
         $ret->addOption(new InputOption('env',      'e', InputOption::VALUE_REQUIRED, 'Environment', null));
-        $ret->addOption(new InputOption('config',   'c', InputOption::VALUE_REQUIRED, 'Configuration file to use', null));
         return $ret;
     }
 
@@ -156,13 +156,17 @@ class Application extends BaseApplication
         $cp = $this->config;
         $this->tasks = array();
         foreach ($cp['tasks'] as $i => $task) {
-            $this->tasks[$i] = $cp['tasks.' . $i] = new Task($task);
+            $this->tasks[$i] = $cp['tasks.' . $i] = new Task($task, $i);
         }
         $code = $compiler->compile($cp);
 
         $container = new Container();
         $container->setPlugins($plugins);
 
+//        $temp = tempnam('/tmp', 'z-');
+//        file_put_contents($temp, '<?php ' . $code);
+//        var_dump(shell_exec('php -l ' . $temp));
+//        die();
         eval($code);
         $this->container = $container;
 

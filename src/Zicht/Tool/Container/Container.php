@@ -27,9 +27,6 @@ class Container extends Pimple
     {
         parent::__construct($values);
 
-        $this['now'] = date('Ymd-H.i.s');
-        $this['date'] = date('Ymd');
-        $this['cwd'] = getcwd();
         $this['executor'] = $this->protect(
             function($cmd) {
                 if (trim($cmd)) {
@@ -40,51 +37,7 @@ class Container extends Pimple
                 return null;
             }
         );
-        $container = $this;
-
-        $this['if'] = $this->protect(
-            function($condition, $then, $else = null) {
-                if ($condition) {
-                    return $then;
-                } else {
-                    return $else;
-                }
-            }
-        );
-        $this['ask'] = $this->protect(
-            function($q, $default = null) use ($container) {
-                return $container['console_dialog_helper']->ask(
-                    $container['console_output'],
-                    $q . ($default ? sprintf(' [<info>%s</info>]', $default) : '') . ': ',
-                    $default
-                );
-            }
-        );
-
-        $this['sprintf'] = $this->protect(
-            function($str) use ($container) {
-                $args = func_get_args();
-                $tpl = array_shift($args);
-                return vsprintf($tpl, $args);
-            }
-        );
-        $this['printf'] = $this->protect(
-            function($str) use ($container) {
-                $args = func_get_args();
-                $tpl = array_shift($args);
-                $container['console_output']->write(vsprintf($tpl, $args));
-            }
-        );
-        $this['confirm']= $this->protect(
-            function($q, $default = false) use ($container) {
-                return $container['console_dialog_helper']->askConfirmation(
-                    $container['console_output'],
-                    $q .
-                    ($default === false ? ' [y/N] ' : ' [Y/n]'),
-                    $default
-                );
-            }
-        );
+        $this['force'] = false;
     }
 
 

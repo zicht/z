@@ -9,9 +9,14 @@ vcs:
 
 
 tasks:
+    # Clean the build
+    _clean:         rm -rf $(build.dir)
+
     # Export the specified version to the build dir
     _vcs.export:
+        unless: eq(build.version, versionof(build.dir))
         do:
+            - @_clean
             - $(printf("Exporting version <info>%s</info> to <info>%s</info>\n", build.version, build.dir))
             - svn export -q $(vcs.url)/$(build.version) $(build.dir)
             - svn info $(vcs.url)/$(build.version) > $(build.dir)/$(vcs.export.revfile)
