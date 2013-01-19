@@ -112,6 +112,9 @@ class Tokenizer
                                     case 'n':
                                         $strData .= "\n";
                                         break;
+                                    case '\\':
+                                        $strData .= "\\";
+                                        break;
                                     default:
                                         $strData .= '\\' . $ch;
                                         break;

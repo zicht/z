@@ -141,7 +141,7 @@ class TokenizerTest extends \PHPUnit_Framework_TestCase
                 '$("str\\\\ing")',
                 array(
                     new Token(Token::EXPR_START, '$('),
-                    new Token(Token::STRING, 'str\\\\ing'),
+                    new Token(Token::STRING, 'str\\ing'),
                     new Token(Token::EXPR_END, ')'),
                 )
             ),
