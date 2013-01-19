@@ -12,7 +12,7 @@ use \Zicht\Tool\Script;
 /**
  * ScriptTest
  *
- * @covers \Zicht\Tool\Task\Script
+ * @covers \Zicht\Tool\Script
  */
 class ScriptTest extends \PHPUnit_Framework_TestCase
 {

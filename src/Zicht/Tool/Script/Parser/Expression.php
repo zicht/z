@@ -54,7 +54,6 @@ class Expression extends AbstractParser
             return null;
         }
 
-        $ret = new \Zicht\Tool\Script\Node\Expr\Expr($ret);
         return $ret;
     }
 }

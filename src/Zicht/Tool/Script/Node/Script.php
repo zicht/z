@@ -20,9 +20,7 @@ class Script extends Branch
                 if ($i > 0) {
                     $compiler->write(' . ');
                 }
-                $compiler->write('$z->value(');
                 $node->compile($compiler);
-                $compiler->write(')');
             }
         }
     }

@@ -50,13 +50,20 @@ class Tokenizer
                     $depth ++;
                 } else {
                     $token =& end($ret);
+
+                    if (preg_match('/^\$\$\(/', $substr, $m)) {
+                        $value = substr($m[0], 1);
+                        $i += strlen($m[0]);
+                    } else {
+                        $value = $this->string{$i};
+                        $i += strlen($value);
+                    }
                     if ($token && $token->match(Token::DATA)) {
-                        $token->value .= $this->string{$i};
+                        $token->value .= $value;
                         unset($token);
                     } else {
-                        $ret[]= new Token(Token::DATA, $this->string{$i});
+                        $ret[]= new Token(Token::DATA, $value);
                     }
-                    $i ++;
                 }
             } else {
                 if (preg_match('/^[\w.]+/', $substr, $m)) {

@@ -15,6 +15,7 @@ class Func extends Branch
 {
     public function __construct($name)
     {
+        parent::__construct();
         $this->name = $name;
     }
 

@@ -27,7 +27,7 @@ class Script
     /**
      * Evaluate the script against the specified container.
      *
-     * @param Container\Container $z
+     * @param Container $z
      * @return string
      */
     public function evaluate(Container $z)

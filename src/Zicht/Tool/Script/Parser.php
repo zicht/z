@@ -29,7 +29,7 @@ class Parser extends AbstractParser
             if ($cur->match(Token::EXPR_START)) {
                 $input->next();
                 $parser = new Parser\Expression($this);
-                $ret->append($parser->parse($input));
+                $ret->append(new \Zicht\Tool\Script\Node\Expr\Expr($parser->parse($input)));
                 $input->expect(Token::EXPR_END);
             } elseif ($cur->match(token::DATA)) {
                 $ret->append(new Node\Expr\Data($cur->value));
