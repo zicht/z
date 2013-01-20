@@ -18,7 +18,8 @@ tasks:
 
     # Deploys a build
     deploy:
-        pre: @_sync
+        pre: @build
+        do: @_sync
 
     # Simulates a deploy
     simulate: @_sync.simulate

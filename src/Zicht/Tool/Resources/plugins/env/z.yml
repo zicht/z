@@ -8,3 +8,5 @@ tasks:
     # Initialize the SSH session by copying a local public key to the remote machine
     env.ssh.init:   ssh-copy-id $(env.ssh)
 
+    # Show the deployed version of the remote machine
+    env.version:    echo $(env.versionat env.ssh)

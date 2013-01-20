@@ -44,6 +44,14 @@ class Plugin extends BasePlugin
 
     public function setContainer(Container $container)
     {
+        $container['vcs.versionid'] = $container->protect(function($info) use($container) {
+            if (trim($info) && preg_match('/^URL: (.*)/m', $info, $urlMatch) && preg_match('/^Revision: (.*)/m', $info, $revMatch)) {
+                $url = $urlMatch[1];
+                $rev = $revMatch[1];
+                return ltrim(str_replace($container['vcs.url'], '', $url), '/') . '@' . $rev;
+            }
+            return null;
+        });
         $container['versionof'] = $container->protect(function($dir) use($container) {
             if (is_file($revFile = ($dir . '/' . $container['vcs.export.revfile']))) {
                 $info = file_get_contents($revFile);
@@ -52,13 +60,7 @@ class Plugin extends BasePlugin
             } else {
                 return null;
             }
-
-            if (trim($info) && preg_match('/^URL: (.*)/m', $info, $urlMatch) && preg_match('/^Revision: (.*)/m', $info, $revMatch)) {
-                $url = $urlMatch[1];
-                $rev = $revMatch[1];
-                return ltrim(str_replace($container['vcs.url'], '', $url), '/') . '@' . $rev;
-            }
-            return null;
+            return $container['vcs.versionid']($info);
         });
         $container['vcs.current'] = function($container) {
             return $container['versionof']($container['cwd']);

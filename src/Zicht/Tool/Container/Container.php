@@ -60,7 +60,8 @@ class Container extends Pimple
 
 
 
-    public function decorate($service, $decorator) {
+    public function decorate($service, $decorator)
+    {
         $this[$service] = $this->protect($decorator($this[$service]));
     }
 

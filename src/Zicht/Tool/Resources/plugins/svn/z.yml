@@ -54,5 +54,3 @@ tasks:
         do:
             - svn diff --summarize $(vcs.url)/$(version) $(vcs.url)/$(vcs..current)
 
-    # Show the deployed version of the remote machine
-    v.version: ssh $(env.ssh) "cat $(env.root)/$(vcs.export.revfile)"

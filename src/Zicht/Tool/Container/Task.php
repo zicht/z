@@ -67,9 +67,9 @@ class Task implements Compilable
             }
         }
 
+        $hasUnless = false;
         foreach (array('pre', 'do', 'post') as $scope) {
             $ret .= sprintf('$z->notify(%s, %s);', var_export($this->name, true), var_export('before_' . $scope, true));
-            $hasUnless = false;
             if ($scope === 'do' && !empty($this->taskDef['unless'])) {
                 $ret .= 'if (!$z[\'force\'] && (' . $exprcompiler->compile('$(' . $this->taskDef['unless'] . ')') . ')) {';
                 $ret .= '$z[\'stdout\']("<comment>" . ' . var_export($this->taskDef['unless'], true ) . ' . "</comment>, skipped ' . $this->name . '\n");';
@@ -79,7 +79,7 @@ class Task implements Compilable
             foreach ($this->taskDef[$scope] as $cmd) {
                 $ret .= sprintf('$z->cmd(%s);', $scriptcompiler->compile($cmd)) . PHP_EOL . $indentStr;
             }
-            if ($hasUnless) {
+            if ($hasUnless && $scope == 'post') {
                 $ret .= '}';
             }
             $ret .= sprintf('$z->notify(%s, %s);', var_export($this->name, true), var_export('after_' . $scope, true));
