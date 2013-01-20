@@ -64,21 +64,6 @@ class Plugin extends BasePlugin
                 throw new \Zicht\Tool\Script\FlowControl\SkipTask($msg);
             }
         });
-        $container['gt'] = $container->protect(function($left, $right) {
-            return $left > $right;
-        });
-        $container['gte'] = $container->protect(function($left, $right) {
-            return $left >= $right;
-        });
-        $container['lt'] = $container->protect(function($left, $right) {
-            return $left < $right;
-        });
-        $container['lte'] = $container->protect(function($left, $right) {
-            return $left <= $right;
-        });
-        $container['eq'] = $container->protect(function($left, $right) {
-            return $left == $right;
-        });
         $container['mtime'] = $container->protect(function($glob) {
             $ret = array();
             foreach (glob($glob) as $file) {
@@ -86,6 +71,8 @@ class Plugin extends BasePlugin
             }
             return max($ret);
         });
+        $container['is_dir'] = 'is_dir';
+        $container['is_file'] = 'is_file';
         $container['url.host'] = $container->protect(function($url) {
             return parse_url($url, PHP_URL_HOST);
         });

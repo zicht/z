@@ -14,7 +14,7 @@ tasks:
 
     # Export the specified version to the build dir
     _vcs.export:
-        unless: eq(build.version, versionof(build.dir))
+        unless: build.version == versionof(build.dir)
         do:
             - @_clean
             - $(printf("Exporting version <info>%s</info> to <info>%s</info>\n", build.version, build.dir))

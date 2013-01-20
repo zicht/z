@@ -47,17 +47,15 @@ class Plugin extends BasePlugin
         $container['versionof'] = $container->protect(function($dir) use($container) {
             if (is_file($revFile = ($dir . '/' . $container['vcs.export.revfile']))) {
                 $info = file_get_contents($revFile);
+            } elseif (is_dir($dir)) {
+                $info = @shell_exec('svn info ' . $dir . ' 2>&1');
             } else {
-                $info = @shell_exec('svn info ' . $dir);
+                return null;
             }
 
-            if (trim($info)) {
-                preg_match('/^URL: (.*)/m', $info, $m);
-                $url = $m[1];
-
-                preg_match('/^Revision: (.*)/m', $info, $m);
-                $rev = $m[1];
-
+            if (trim($info) && preg_match('/^URL: (.*)/m', $info, $urlMatch) && preg_match('/^Revision: (.*)/m', $info, $revMatch)) {
+                $url = $urlMatch[1];
+                $rev = $revMatch[1];
                 return ltrim(str_replace($container['vcs.url'], '', $url), '/') . '@' . $rev;
             }
             return null;
