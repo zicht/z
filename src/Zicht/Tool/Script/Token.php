@@ -49,6 +49,12 @@ final class Token
     const STRING = 'string';
 
 
+    /**
+     * Operator token type
+     */
+    const OPERATOR = 'operator';
+
+
     public $type;
     public $value;
 
@@ -75,7 +81,7 @@ final class Token
     public function match($type, $value = null)
     {
         if ($this->type === $type) {
-            if (null === $value || $this->value == $value) {
+            if (null === $value || $this->value == $value || (is_array($value) && in_array($this->value, $value))) {
                 return true;
             }
         }

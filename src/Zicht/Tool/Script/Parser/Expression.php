@@ -10,13 +10,18 @@ namespace Zicht\Tool\Script\Parser;
 
 use Zicht\Tool\Script\Token;
 use Zicht\Tool\Script\Node;
+use Zicht\Tool\Script\Node\Expr\Op;
 use Zicht\Tool\Script\AbstractParser;
 
 class Expression extends AbstractParser
 {
     function parse(\Zicht\Tool\Script\TokenStream $stream)
     {
-        if ($stream->match(Token::IDENTIFIER)) {
+        if ($stream->match(Token::OPERATOR, array('!', '-'))) {
+            $value = $stream->current()->value;
+            $stream->next();
+            $ret = new Op\Unary($value, $this->parse($stream));
+        } elseif ($stream->match(Token::IDENTIFIER)) {
             $name = $stream->current()->value;
             $stream->next();
 
@@ -49,9 +54,19 @@ class Expression extends AbstractParser
         } elseif ($stream->match(Token::NUMBER)) {
             $ret = new Node\Expr\Number($stream->current()->value);
             $stream->next();
+        } elseif ($stream->match('(')) {
+            $stream->next();
+            $ret = new \Zicht\Tool\Script\Node\Expr\Parens($this->parse($stream));
+            $stream->expect(')');
         } else {
             $this->err($stream);
             return null;
+        }
+
+        if ($stream->match(Token::OPERATOR, array('==', '!=', '<=', '>=', '<', '>'))) {
+            $value = $stream->current()->value;
+            $stream->next();
+            $ret = new Op\Binary($value, $ret, $this->parse($stream));
         }
 
         return $ret;

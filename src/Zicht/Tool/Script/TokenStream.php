@@ -67,7 +67,7 @@ class TokenStream
     /**
      * Returns the current token
      *
-     * @return mixed
+     * @return Token
      * @throws \UnexpectedValueException
      */
     public function current()

@@ -44,10 +44,6 @@ class Tokenizer
                     $i += strlen($m[0]);
                     $ret[]= new Token(Token::EXPR_START, $m[0]);
                     $depth ++;
-                } elseif (preg_match('/^\!\(/', $substr, $m)) {
-                    $i += strlen($m[0]);
-                    $ret[]= new Token(Token::EXPR_START, $m[0]);
-                    $depth ++;
                 } else {
                     $token =& end($ret);
 
@@ -66,7 +62,10 @@ class Tokenizer
                     }
                 }
             } else {
-                if (preg_match('/^[\w.]+/', $substr, $m)) {
+                if (preg_match('/^(==|<=?|>=?|!=?)/', $substr, $m)) {
+                    $ret[]= new Token(Token::OPERATOR, $m[0]);
+                    $i += strlen($m[0]);
+                } elseif (preg_match('/^[\w.]+/', $substr, $m)) {
                     $ret[] = new Token(Token::IDENTIFIER, $m[0]);
                     $i += strlen($m[0]);
                 } elseif (preg_match('/^\s+/', $substr, $m)) {
