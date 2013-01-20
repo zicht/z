@@ -21,7 +21,7 @@ qa:
 
 tasks:
     # Do jshint quality check
-    qa.jshint:  for f in $(qa.jshint.files); do $(qa.jshint.run) $f; done;
+    qa.jshint:  ?(qa.jshint.files) for f in $(qa.jshint.files); do $(qa.jshint.run) $f; done;
 
     # Do phpcs quality check
     qa.phpcs:   phpcs --extensions=php --standard=$(qa.phpcs.standard) $(qa.phpcs.dir) $(qa.phpcs.options)
