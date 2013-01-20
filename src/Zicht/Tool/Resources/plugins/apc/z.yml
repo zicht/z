@@ -4,10 +4,10 @@ tasks:
         set:
             _file: $(env.root)$(env.web)/__apc_clear_cache.php
         do:
-            - $(verbose ? printf("woei"))
             - echo '<?php apc_clear_cache("user"); apc_clear_cache(); ' | ssh $(env.ssh) "cat > $(_file)"
             - wget -qO - $(env.url)/__apc_clear_cache.php > /dev/null
             - ssh $(env.ssh) "rm $(_file)"
+            - '$(verbose ? printf("Cache cleared at %s: %s\n", env, env.url))'
 
     deploy:
         post:
