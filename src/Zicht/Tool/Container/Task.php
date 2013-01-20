@@ -85,7 +85,7 @@ class Task implements Compilable
             $ret .= sprintf('$z->notify(%s, %s);', var_export($this->name, true), var_export('after_' . $scope, true));
         }
         if (isset($this->taskDef['yield'])) {
-            $ret .= '$ret = $z[' . var_export($this->taskDef['yield'], true) . '];';
+            $ret .= '$ret = ' . $exprcompiler->compile('$(' . $this->taskDef['yield'] . ')') . ';';
         } else {
             $ret .= '$ret = null;';
         }
