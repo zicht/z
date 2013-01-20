@@ -28,7 +28,11 @@ class Dumper
                 $ret['nodes'] = array();
 
                 foreach ($b->nodes as $n) {
-                    $ret['nodes'][]= $this->getAst($n);
+                    if (null === $n) {
+                        $ret['nodes'][]= $n;
+                    } else {
+                        $ret['nodes'][]= $this->getAst($n);
+                    }
                 }
             }
         }

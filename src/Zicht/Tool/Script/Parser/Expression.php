@@ -63,19 +63,20 @@ class Expression extends AbstractParser
             return null;
         }
 
-        if ($stream->match(Token::OPERATOR, array('==', '!=', '<=', '>=', '<', '>'))) {
+        if ($stream->match(Token::OPERATOR, array('==', '!=', '<=', '>=', '<', '>', '&&', '||', 'or', 'and', 'xor'))) {
             $value = $stream->current()->value;
             $stream->next();
             $ret = new Op\Binary($value, $ret, $this->parse($stream));
         } elseif ($stream->match(Token::OPERATOR, '?')) {
             $stream->next();
-            if ($stream->match(':')) {
+            if ($stream->match(Token::OPERATOR, ':')) {
                 $then = null;
             } else {
                 $then = $this->parse($stream);
             }
 
-            if ($stream->match(':')) {
+            if ($stream->match(Token::OPERATOR, ':')) {
+                $stream->next();
                 $else = $this->parse($stream);
             } else {
                 $else = null;

@@ -62,10 +62,10 @@ class Tokenizer
                     }
                 }
             } else {
-                if (preg_match('/^(==|<=?|>=?|!=?|\?|:)/', $substr, $m)) {
+                if (preg_match('/^(==|<=?|>=?|!=?|\?|:|\|\||&&|xor|or|and)/', $substr, $m)) {
                     $ret[]= new Token(Token::OPERATOR, $m[0]);
                     $i += strlen($m[0]);
-                } elseif (preg_match('/^[\w.]+/', $substr, $m)) {
+                } elseif (preg_match('/^[a-z_][\w.]*/i', $substr, $m)) {
                     $ret[] = new Token(Token::IDENTIFIER, $m[0]);
                     $i += strlen($m[0]);
                 } elseif (preg_match('/^\s+/', $substr, $m)) {

@@ -30,6 +30,7 @@ class DumpCommand extends BaseCommand
             ->setName('z:dump')
             ->addArgument('path', InputArgument::OPTIONAL, 'Dump the specified path in the config')
             ->setHelp('Dumps container and/or configuration information')
+            ->addOption('verify', '', \Symfony\Component\Console\Input\InputOption::VALUE_NONE, 'Verifies the code (lint through php -l)')
         ;
     }
 
@@ -58,8 +59,13 @@ class DumpCommand extends BaseCommand
         } else {
             $output->writeln(Yaml::dump($this->container['__config'], 5, 4));
             if ($output->getVerbosity() > 1) {
-                $output->writeln($this->container['__definition']);
+                $output->writeln($this->container['__definition'], OutputInterface::OUTPUT_RAW);
             }
+        }
+        if ($input->getOption('verify')) {
+            $f = tempnam(sys_get_temp_dir(), 'z');
+            file_put_contents($f, '<?php' . PHP_EOL . $this->container['__definition']);
+            passthru('php -l ' . $f);
         }
     }
 }

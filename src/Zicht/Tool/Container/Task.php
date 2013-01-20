@@ -72,7 +72,7 @@ class Task implements Compilable
             $hasUnless = false;
             if ($scope === 'do' && !empty($this->taskDef['unless'])) {
                 $ret .= 'if (!$z[\'force\'] && (' . $exprcompiler->compile('$(' . $this->taskDef['unless'] . ')') . ')) {';
-                $ret .= '$z[\'stdout\']("<comment>' . $this->taskDef['unless'] . '</comment>, skipped ' . $this->name . '\n");';
+                $ret .= '$z[\'stdout\']("<comment>" . ' . var_export($this->taskDef['unless'], true ) . ' . "</comment>, skipped ' . $this->name . '\n");';
                 $ret .= '} else {';
                 $hasUnless = true;
             }

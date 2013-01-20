@@ -39,12 +39,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase
             array('', array('type' => 'Script')),
             array('$(w00t)', array('type' => 'Script', 'nodes' => array(array('type' => 'Expr\Expr', 'nodes' => array(array('type' => 'Expr\\Variable')))))),
             array('$(w00t waaa)', array('type' => 'Script', 'nodes' => array(array('type' => 'Expr\Expr', 'nodes' => array(array('type' => 'Expr\\Func', 'nodes' => array(array('type' => 'Expr\Variable')))))))),
-//            array('$(w00t)', array('type' => 'Script', 'nodes' => array('type' => 'Expr\Expr', array('nodes' => array(array('type' => 'Expr\\Variable')))))),
-//            array('$(w00t())',array('type' => 'Script', 'nodes' => array('type' => 'Expr\Expr', array('nodes' => array(array('type' => 'Expr\\Func')))))),
-//            array('$(w00t(w00t))',array('type' => 'Script', 'nodes' => array('type' => 'Expr\Expr', array('nodes' => array(array('type' => 'Expr\\Func', 'nodes' => array(array('type' => 'Expr\\Variable')))))))),
-//            array('$(w00t(foo, bar))',array('type' => 'Script', 'nodes' => array('type' => 'Expr\Expr', array('nodes' => array(array('type' => 'Expr\\Func', 'nodes' => array(array('type' => 'Expr\\Variable'), array('type' => 'Expr\\Variable')))))))),
-//            array('$( w00t(w00t()) )',array('type' => 'Script', 'nodes' => array('type' => 'Expr\Expr', array('nodes' => array(array('type' => 'Expr\\Func', 'nodes' => array(array('type' => 'Expr\\Func')))))))),
-//            array('$( w00t(foo(), bar()) )',array('type' => 'Script', 'nodes' => array('type' => 'Expr\Expr', array('nodes' => array(array('type' => 'Expr\\Func', 'nodes' => array(array('type' => 'Expr\\Func'), array('type' => 'Expr\\Func')))))))),
+            array('$(1 ? 2)', array('type' => 'Script', 'nodes' => array(array('type' => 'Expr\Expr', 'nodes' => array(array('type' => 'Expr\\Op\\Ternary', 'nodes' => array(array('type' => 'Expr\Number'), array('type' => 'Expr\\Number'), null))))))),
+            array('$(1 ? 2 : 3)', array('type' => 'Script', 'nodes' => array(array('type' => 'Expr\Expr', 'nodes' => array(array('type' => 'Expr\\Op\\Ternary', 'nodes' => array(array('type' => 'Expr\Number'), array('type' => 'Expr\\Number'), array('type' => 'Expr\\Number')))))))),
+            array('$(1 ?: 3)', array('type' => 'Script', 'nodes' => array(array('type' => 'Expr\Expr', 'nodes' => array(array('type' => 'Expr\\Op\\Ternary', 'nodes' => array(array('type' => 'Expr\Number'), null, array('type' => 'Expr\\Number')))))))),
         );
     }
 }

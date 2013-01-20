@@ -39,21 +39,19 @@ class TokenizerTest extends \PHPUnit_Framework_TestCase
                 )
             ),
             array(
-                'abc $(?abc)',
+                'abc $(abc)',
                 array(
                     new Token(Token::DATA, 'abc '),
                     new Token(Token::EXPR_START, '$('),
-                    new Token('?'),
                     new Token(Token::IDENTIFIER, 'abc'),
                     new Token(Token::EXPR_END, ')'),
                 )
             ),
             array(
-                'abc $(?abc abc)',
+                'abc $(abc abc)',
                 array(
                     new Token(Token::DATA, 'abc '),
                     new Token(Token::EXPR_START, '$('),
-                    new Token('?'),
                     new Token(Token::IDENTIFIER, 'abc'),
                     new Token(Token::WHITESPACE, ' '),
                     new Token(Token::IDENTIFIER, 'abc'),

@@ -166,11 +166,6 @@ class Application extends BaseApplication
 
         $container = new Container();
         $container->setPlugins($plugins);
-
-//        $temp = tempnam('/tmp', 'z-');
-//        file_put_contents($temp, '<?php ' . $code);
-//        var_dump(shell_exec('php -l ' . $temp));
-//        die();
         eval($code);
         $this->container = $container;
 

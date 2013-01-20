@@ -12,7 +12,7 @@ tasks:
         rsync \
             $(sync.options) \
                 $(sync.exclude_file ? sprintf("--exclude-from=%s/%s", tasks.build, sync.exclude_file)) \
-                $(verbose ? "-v") \
+                $(verbose ? "-v" : "--stats") \
             $(tasks.build)/ $(env.ssh):$(env.root) \
         ;
 
@@ -22,6 +22,6 @@ tasks:
             --dry-run \
             $(sync.options) \
                 $(sync.exclude_file ? sprintf("--exclude-from=%s/%s", tasks.build, sync.exclude_file)) \
-                $(verbose ? "-v") \
+                -v \
             $(tasks.build)/ $(env.ssh):$(env.root) \
         ;
