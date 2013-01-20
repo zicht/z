@@ -26,8 +26,8 @@ tasks:
     v.branch:
         set:
             branch:     ?
-            _tgt:       $(vcs.url)/branches/$(branch)
-            _src:       ? $(vcs.url)/$(vcs.current)
+            _tgt:       sprintf("%s/branches/%s", vcs.url, branch)
+            _src:       ? sprintf("%s/%s", vcs.url, vcs.current)
         do:
             - svn cp $(_src) $(_tgt) -m"Created branch '$(branch)'"
 
@@ -35,8 +35,8 @@ tasks:
     v.tag:
         set:
             tag:        ?
-            _tgt:       $(vcs.url)/tags/$(tag)
-            _src:       ? $(vcs.url)/$(vcs.current)
+            _tgt:       sprintf("%s/tags/%s", vcs.url, tag)
+            _src:       ? sprintf("%s/%s", vcs.url, vcs.current)
 
         do:
             - svn cp $(_src) $(_tgt) -m"Created tag '$(tag)'"

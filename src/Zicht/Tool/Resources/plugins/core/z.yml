@@ -12,7 +12,7 @@ tasks:
     # Creates a build
     build:
         set:
-            build.version: $(vcs.current)
+            build.version: vcs.current
         pre: [ @_vcs.export ]
         yield: build.dir
 

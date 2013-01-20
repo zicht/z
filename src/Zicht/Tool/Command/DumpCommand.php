@@ -57,7 +57,7 @@ class DumpCommand extends BaseCommand
             $slice = array($path => $ptr);
             $output->writeln(Yaml::dump($slice, 5, 4));
         } else {
-            $output->writeln(Yaml::dump($this->container['__config'], 5, 4));
+//            $output->writeln(Yaml::dump($this->container['__config'], 5, 4));
             if ($output->getVerbosity() > 1) {
                 $output->writeln($this->container['__definition'], OutputInterface::OUTPUT_RAW);
             }

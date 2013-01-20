@@ -18,8 +18,8 @@ class TokenizerTest extends \PHPUnit_Framework_TestCase
      */
     function testTokenization($input, $tokens)
     {
-        $tokenizer = new Tokenizer($input);
-        $this->assertEquals($tokens, $tokenizer->getTokens());
+        $tokenizer = new Tokenizer();
+        $this->assertEquals($tokens, $tokenizer->getTokens($input));
     }
 
     /**

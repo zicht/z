@@ -16,11 +16,29 @@ class Script extends Branch
     function compile(Buffer $compiler)
     {
         if (count($this->nodes)) {
-            foreach ($this->nodes as $i => $node) {
+            $depth = 0;
+            if ($this->nodes[0] instanceof Expr\Conditional) {
+                $nodes = $this->nodes;
+                $compiler->write('if (');
+                $this->nodes[0]->compile($compiler);
+                $compiler->write(') {');
+                array_shift($nodes);
+                $depth ++;
+            } else {
+                $nodes = $this->nodes;
+            }
+
+            $compiler->write('$z->cmd(');
+            foreach ($nodes as $i => $node) {
                 if ($i > 0) {
                     $compiler->write(' . ');
                 }
                 $node->compile($compiler);
+            }
+            $compiler->write(');');
+
+            while ($depth--) {
+                $compiler->write('}');
             }
         }
     }

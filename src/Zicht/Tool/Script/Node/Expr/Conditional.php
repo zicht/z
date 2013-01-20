@@ -6,26 +6,22 @@
  * @copyright 2012 Gerard van Helden <http://melp.nl>
  */
 
-namespace Zicht\Tool\Script\Node\Expr\Op;
+namespace Zicht\Tool\Script\Node\Expr;
 
-use Zicht\Tool\Script\Node\Branch;
-use Zicht\Tool\Script\Node\Node;
 use Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Node\Branch;
 
-class Unary extends Branch
+class Conditional extends Branch
 {
-
-    function __construct($operator, $subject)
+    function __construct($node)
     {
         parent::__construct();
-        $this->operator = $operator;
-        $this->nodes[0] = $subject;
+        $this->nodes[0] = $node;
     }
 
 
     public function compile(Buffer $compiler)
     {
-        $compiler->write($this->operator);
         $this->nodes[0]->compile($compiler);
     }
 }

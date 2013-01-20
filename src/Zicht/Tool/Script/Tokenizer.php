@@ -15,12 +15,9 @@ class Tokenizer
 {
     /**
      * Construct the tokenizer with the given input string.
-     *
-     * @param string $string
      */
-    public function __construct($string)
+    public function __construct()
     {
-        $this->string = $string;
     }
 
 
@@ -30,17 +27,18 @@ class Tokenizer
      * @return array
      * @throws \UnexpectedValueException
      */
-    public function getTokens()
+    public function getTokens($string, &$i = 0)
     {
+        $exprTokenizer = new \Zicht\Tool\Script\Tokenizer\Expression();
         $ret = array();
         $depth = 0;
         $i = 0;
-        $len = strlen($this->string);
+        $len = strlen($string);
         while ($i < $len) {
             $before = $i;
-            $substr = substr($this->string, $i);
+            $substr = substr($string, $i);
             if ($depth === 0) {
-                if (preg_match('/^\$\(/', $substr, $m)) {
+                if (preg_match('/^(\$|\?)\(/', $substr, $m)) {
                     $i += strlen($m[0]);
                     $ret[]= new Token(Token::EXPR_START, $m[0]);
                     $depth ++;
@@ -51,7 +49,7 @@ class Tokenizer
                         $value = substr($m[0], 1);
                         $i += strlen($m[0]);
                     } else {
-                        $value = $this->string{$i};
+                        $value = $string{$i};
                         $i += strlen($value);
                     }
                     if ($token && $token->match(Token::DATA)) {
@@ -62,75 +60,12 @@ class Tokenizer
                     }
                 }
             } else {
-                if (preg_match('/^(==|<=?|>=?|!=?|\?|:|\|\||&&|xor|or|and)/', $substr, $m)) {
-                    $ret[]= new Token(Token::OPERATOR, $m[0]);
-                    $i += strlen($m[0]);
-                } elseif (preg_match('/^[a-z_][\w.]*/i', $substr, $m)) {
-                    $ret[] = new Token(Token::IDENTIFIER, $m[0]);
-                    $i += strlen($m[0]);
-                } elseif (preg_match('/^\s+/', $substr, $m)) {
-                    $ret[]= new Token(Token::WHITESPACE, $m[0]);
-                    $i += strlen($m[0]);
-                } elseif (preg_match('/^([0-9]*.)?[0-9]+/', $substr, $m)) {
-                    $ret[]= new Token(Token::NUMBER, $m[0]);
-                    $i += strlen($m[0]);
-                } elseif ($this->string{$i} == ')') {
-                    $depth --;
-                    if ($depth == 0) {
-                        $ret[] = new Token(Token::EXPR_END, ')');
-                    } else {
-                        $ret[] = new Token(')');
-                    }
-                    $i ++;
-                } elseif ($this->string{$i} == '(') {
-                    $depth ++;
-                    $ret[] = new Token('(');
-                    $i ++;
-                } elseif (preg_match('/^[\?,]/', $substr, $m)) {
-                    $ret[] = new Token($m[0]);
-                    $i ++;
-                } elseif ($this->string{$i} == '"') {
-                    $strData = '';
-
-                    $escape = false;
-                    for ($j = $i +1; $j < $len; $j ++) {
-                        $ch = $this->string{$j};
-
-                        if ($ch == '\\') {
-                            $escape = true;
-                        } elseif ($ch == '"') {
-                            if ($escape) {
-                                $escape = false;
-                            } else {
-                                $j ++;
-                                break;
-                            }
-                        } else {
-                            if ($escape) {
-                                switch ($ch) {
-                                    case 'n':
-                                        $strData .= "\n";
-                                        break;
-                                    case '\\':
-                                        $strData .= "\\";
-                                        break;
-                                    default:
-                                        $strData .= '\\' . $ch;
-                                        break;
-                                }
-                                $escape = false;
-                            } else {
-                                $strData .= $ch;
-                            }
-                        }
-                    }
-                    $ret[]= new Token(Token::STRING, $strData);
-                    $i = $j;
-                }
+                $ret = array_merge($ret, $exprTokenizer->getTokens($string, $i));
+                $depth = 0;
             }
             if ($before === $i) {
                 // safety net.
-                throw new \UnexpectedValueException("Unexpected input near token {$this->string{$i}}");
+                throw new \UnexpectedValueException("Unexpected input near token {$string{$i}}");
             }
         }
         return $ret;

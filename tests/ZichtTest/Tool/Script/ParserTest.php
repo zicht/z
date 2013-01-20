@@ -22,9 +22,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     function testParser($input, $tree)
     {
-        $tokenizer = new Tokenizer($input);
+        $tokenizer = new Tokenizer();
         $parser = new Parser();
-        $root = $parser->parse(new TokenStream($tokenizer->getTokens()));
+        $root = $parser->parse(new TokenStream($tokenizer->getTokens($input)));
         $dumper = new Dumper();
         $this->assertEquals($tree, $dumper->getAst($root));
     }

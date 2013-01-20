@@ -11,7 +11,7 @@ namespace Zicht\Tool\Script;
  */
 class TokenStream
 {
-    protected $ptr = -1;
+    protected $ptr = 0;
 
     /**
      * Create the tokenstream with the specified list of tokens.
@@ -73,7 +73,6 @@ class TokenStream
     public function current()
     {
         if (!isset($this->tokenList[$this->ptr])) {
-            var_dump($this->tokenList);
             throw new \UnexpectedValueException("Unexpected input at offset {$this->ptr}");
         }
         return $this->tokenList[$this->ptr];

@@ -56,6 +56,15 @@ class Container extends Pimple
         $this['stderr'] = $this->protect(function($data) use($container){
             $container['console_output']->write($data);
         });
+        $this['expand']= $this->protect(function($value) {
+            if (is_callable($value)) {
+                $value = call_user_func($value);
+            }
+            if (is_array($value)) {
+                $value = join(' ', $value);
+            }
+            return (string) $value;
+        });
     }
 
 

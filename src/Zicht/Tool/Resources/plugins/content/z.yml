@@ -12,13 +12,15 @@ tasks:
     # and a dump of the database
     content.backup:
         set:
-            _backup.file:   content-$(env).$(now).tar.gz
-            _backup.cmd:    |
-                cd $(env.root);
-                mysqldump -Q --opt -d $(env.db)  $(content.db.structure) > db.sql;
-                mysqldump -Q --opt $(env.db) $(content.db.full) >> db.sql;
-                tar zcvf $(_backup.file) $(content.dir) db.sql;
-                rm db.sql
+            _backup.file: sprintf("content-%s-%s.tar.gz", env, now)
+            _backup.cmd: |
+                eval("
+                    cd $(env.root);
+                    mysqldump -Q --opt -d $(env.db)  $(content.db.structure) > db.sql;
+                    mysqldump -Q --opt $(env.db) $(content.db.full) >> db.sql;
+                    tar zcvf $(_backup.file) $(content.dir) db.sql;
+                    rm db.sql
+                ")
         do:
             - ssh $(env.ssh) "$(_backup.cmd)"
             - rsync --progress $(env.ssh):$(env.root)$(_backup.file) ./$(_backup.file)
@@ -28,7 +30,7 @@ tasks:
     # Pull a content archive into the local installation
     content.pull:
         set:
-            file: $(tasks.content.backup)
+            file: tasks.content.backup
         do:
             - @content.load
             - rm $(file)

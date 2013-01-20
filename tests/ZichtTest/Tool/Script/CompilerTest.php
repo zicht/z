@@ -35,11 +35,11 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('', ''),
-            array('$(w00t)', '$z->value($z[\'w00t\'])'),
-            array('a $(w00t) b', "'a ' . \$z->value(\$z['w00t']) . ' b'"),
-            array('a $(w00t()) b', "'a ' . \$z->value(call_user_func(\$z['w00t'])) . ' b'"),
-            array('a $(w00t(b)) b', "'a ' . \$z->value(call_user_func(\$z['w00t'], \$z['b'])) . ' b'"),
-            array('a $(w00t(b())) b', "'a ' . \$z->value(call_user_func(\$z['w00t'], call_user_func(\$z['b']))) . ' b'"),
+//            array('$(w00t)', '$z->value($z[\'w00t\'])'),
+            array('a $(w00t) b', "\$z->cmd('a ' . \$z->value(\$z['w00t']) . ' b');"),
+//            array('a $(w00t()) b', "'a ' . \$z->value(call_user_func(\$z['w00t'])) . ' b'"),
+//            array('a $(w00t(b)) b', "'a ' . \$z->value(call_user_func(\$z['w00t'], \$z['b'])) . ' b'"),
+//            array('a $(w00t(b())) b', "'a ' . \$z->value(call_user_func(\$z['w00t'], call_user_func(\$z['b']))) . ' b'"),
         );
     }
 }
