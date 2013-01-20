@@ -67,6 +67,20 @@ class Expression extends AbstractParser
             $value = $stream->current()->value;
             $stream->next();
             $ret = new Op\Binary($value, $ret, $this->parse($stream));
+        } elseif ($stream->match(Token::OPERATOR, '?')) {
+            $stream->next();
+            if ($stream->match(':')) {
+                $then = null;
+            } else {
+                $then = $this->parse($stream);
+            }
+
+            if ($stream->match(':')) {
+                $else = $this->parse($stream);
+            } else {
+                $else = null;
+            }
+            $ret = new Op\Ternary('?', $ret, $then, $else);
         }
 
         return $ret;

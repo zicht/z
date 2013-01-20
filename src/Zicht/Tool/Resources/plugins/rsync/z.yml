@@ -1,7 +1,7 @@
 # Synchronization options
 sync:
     # Command line options to rsync
-    options:        -rupvcL --delete
+    options:        -rupcL --delete
 
     # File containing exclusion rules for rsync
     exclude_file:   "rsync.exclude"
@@ -10,8 +10,9 @@ tasks:
     # Synchronize the build dir to the remote environment
     _sync: |
         rsync \
-            --exclude-from=$(tasks.build)/$(sync.exclude_file) \
-            $(sync.options) $(if(sync.exclude_file, sprintf("--exclude-from=%s/%s", tasks.build, sync.exclude_file))) \
+            $(sync.options) \
+                $(sync.exclude_file ? sprintf("--exclude-from=%s/%s", tasks.build, sync.exclude_file)) \
+                $(verbose ? "-v") \
             $(tasks.build)/ $(env.ssh):$(env.root) \
         ;
 
@@ -19,6 +20,8 @@ tasks:
     _sync.simulate: |
         rsync \
             --dry-run \
-            $(sync.options) $(if(sync.exclude_file, sprintf("--exclude-from=%s/%s", tasks.build, sync.exclude_file))) \
+            $(sync.options) \
+                $(sync.exclude_file ? sprintf("--exclude-from=%s/%s", tasks.build, sync.exclude_file)) \
+                $(verbose ? "-v") \
             $(tasks.build)/ $(env.ssh):$(env.root) \
         ;

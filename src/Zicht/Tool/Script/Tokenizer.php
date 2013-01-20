@@ -62,7 +62,7 @@ class Tokenizer
                     }
                 }
             } else {
-                if (preg_match('/^(==|<=?|>=?|!=?)/', $substr, $m)) {
+                if (preg_match('/^(==|<=?|>=?|!=?|\?|:)/', $substr, $m)) {
                     $ret[]= new Token(Token::OPERATOR, $m[0]);
                     $i += strlen($m[0]);
                 } elseif (preg_match('/^[\w.]+/', $substr, $m)) {

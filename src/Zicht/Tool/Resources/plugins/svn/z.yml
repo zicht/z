@@ -17,8 +17,8 @@ tasks:
         unless: build.version == versionof(build.dir)
         do:
             - @_clean
-            - $(printf("Exporting version <info>%s</info> to <info>%s</info>\n", build.version, build.dir))
-            - svn export -q $(vcs.url)/$(build.version) $(build.dir)
+            - $(printf("Exporting version <comment>%s</comment> to <comment>%s</comment>\n", build.version, build.dir))
+            - svn export $(!verbose ? "-q") $(vcs.url)/$(build.version) $(build.dir)
             - svn info $(vcs.url)/$(build.version) > $(build.dir)/$(vcs.export.revfile)
         yield:      build.dir
 

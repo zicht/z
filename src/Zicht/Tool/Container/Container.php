@@ -17,6 +17,7 @@ use \Pimple;
 class Container extends Pimple
 {
     protected $plugins = array();
+    protected $subscribers = array();
 
     /**
      * Construct the container with the specified values as services/values.
@@ -26,20 +27,42 @@ class Container extends Pimple
     public function __construct(array $values = array())
     {
         parent::__construct($values);
+        $container = $this;
 
         $this['executor'] = $this->protect(
-            function($cmd) {
+            function($cmd, $interact = false) use($container) {
                 if (trim($cmd)) {
                     $ret = null;
-                    passthru($cmd, $ret);
+                    if ($interact) {
+                        passthru($cmd, $ret);
+                    } else {
+                        $process = new \Symfony\Component\Process\Process($cmd);
+                        $process->run(function($mode, $data) use($container) {
+                            call_user_func($container['std' . $mode], $data);
+                        });
+                        $ret = $process->getExitCode();
+                    }
                     return $ret;
                 }
                 return null;
             }
         );
         $this['force'] = false;
+        $this['verbose'] = false;
+
+        $this['stdout'] = $this->protect(function($data) use($container){
+            $container['console_output']->write($data);
+        });
+        $this['stderr'] = $this->protect(function($data) use($container){
+            $container['console_output']->write($data);
+        });
     }
 
+
+
+    public function decorate($service, $decorator) {
+        $this[$service] = $this->protect($decorator($this[$service]));
+    }
 
     /**
      * Executes a script snippet using the 'executor' service.
@@ -76,6 +99,7 @@ class Container extends Pimple
      * Execute a command. This is a wrapper for 'exec', so that a task prefixed with '@' can be passed as well.
      *
      * @param string $cmd
+     * @return int
      * @return int
      */
     public function cmd($cmd)
@@ -156,5 +180,32 @@ class Container extends Pimple
     public function getPlugins()
     {
         return $this->plugins;
+    }
+
+
+    /**
+     * Notifies registered subscribers of an event
+     *
+     * @param string $task
+     * @param string $event
+     * @return void
+     */
+    public function notify($task, $event)
+    {
+        foreach ($this->subscribers as $subscriber) {
+            call_user_func($subscriber, $task, $event);
+        }
+    }
+
+
+    /**
+     * Subscribe to the events dispatched by notify()
+     *
+     * @param callable $callback
+     * @return void
+     */
+    public function subscribe($callback)
+    {
+        $this->subscribers[]= $callback;
     }
 }

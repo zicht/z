@@ -12,6 +12,8 @@ use \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 
 class Plugin extends BasePlugin
 {
+    public $prefix = array();
+
     public function setContainer(Container $container)
     {
         $container['now'] = date('Ymd-H.i.s');
@@ -46,7 +48,7 @@ class Plugin extends BasePlugin
             function($str) use ($container) {
                 $args = func_get_args();
                 $tpl = array_shift($args);
-                $container['console_output']->write(vsprintf($tpl, $args));
+                $container['stdout'](vsprintf($tpl, $args));
             }
         );
         $container['confirm']= $container->protect(
@@ -76,5 +78,36 @@ class Plugin extends BasePlugin
         $container['url.host'] = $container->protect(function($url) {
             return parse_url($url, PHP_URL_HOST);
         });
+
+        $self = $this;
+        $outputDecorator = function($original) use($self, $container) {
+            return function($output) use($original, $self, $container) {
+                if ($container['verbose']) {
+                    return $original(
+                        preg_replace(
+                            '/(.*)\n/', '[<info>' . join('</info>][<info>', $self->prefix) . '</info>] $1' . "\n",
+                            $output
+                        )
+                    );
+                } else {
+                    return $original($output);
+                }
+            };
+        };
+
+        $container->decorate('stdout', $outputDecorator);
+
+        $container->subscribe(
+            function($task, $event) use($container, $self) {
+                switch ($event) {
+                    case 'start':
+                        array_push($self->prefix, $task);
+                        break;
+                    case 'end':
+                        array_pop($self->prefix);
+                        break;
+                }
+            }
+        );
     }
 }

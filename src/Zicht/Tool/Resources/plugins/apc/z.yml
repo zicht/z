@@ -1,9 +1,14 @@
 tasks:
     # Clear remote APC cache by transferring a file, and wgetting it.
-    clear_apc_cache:
+    env.clear_apc_cache:
         set:
             _file: $(env.root)$(env.web)/__apc_clear_cache.php
         do:
+            - $(verbose ? printf("woei"))
             - echo '<?php apc_clear_cache("user"); apc_clear_cache(); ' | ssh $(env.ssh) "cat > $(_file)"
             - wget -qO - $(env.url)/__apc_clear_cache.php > /dev/null
             - ssh $(env.ssh) "rm $(_file)"
+
+    deploy:
+        post:
+            - @env.clear_apc_cache

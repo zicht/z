@@ -24,4 +24,6 @@ tasks:
             - @_symfony.build.assets_install
             - @_symfony.build.assetic_dump
 
-    deploy: ssh $(env.ssh) "cd $(env.root) && php $(symfony.console) cache:clear --env=$(env) --no-debug"
+    deploy:
+        post:
+            - ssh $(env.ssh) "cd $(env.root) && php $(symfony.console) cache:clear --env=$(env) --no-debug"

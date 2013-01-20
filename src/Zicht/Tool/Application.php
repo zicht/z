@@ -107,6 +107,10 @@ class Application extends BaseApplication
         $this->container['console_input']= $input;
         $this->container['console_dialog_helper']= $this->getHelperSet()->get('dialog');
 
+        if (true === $input->hasParameterOption(array('--verbose', '-v'))) {
+            $this->container['verbose'] = true;
+        }
+
         return parent::run($input, $output);
     }
 

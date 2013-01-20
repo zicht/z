@@ -40,6 +40,7 @@ class Task implements Compilable
         $indentStr = str_repeat('    ', $indent);
 
         $ret = '$' . $compiler->getContainerName() . '->share(function($z) {' . PHP_EOL . $indentStr;
+        $ret .= sprintf('$z->notify(%s, "start");', var_export($this->name, true));
 
         foreach ($this->taskDef['set'] as $name => $value) {
             if ($value && preg_match('/^\?\s*(.*)/', trim($value), $m)) {
@@ -67,23 +68,29 @@ class Task implements Compilable
         }
 
         foreach (array('pre', 'do', 'post') as $scope) {
+            $ret .= sprintf('$z->notify(%s, %s);', var_export($this->name, true), var_export('before_' . $scope, true));
             $hasUnless = false;
             if ($scope === 'do' && !empty($this->taskDef['unless'])) {
-                $ret .= 'if ($z[\'force\'] || !(' . $exprcompiler->compile('$(' . $this->taskDef['unless'] . ')') . ')) {';
+                $ret .= 'if (!$z[\'force\'] && (' . $exprcompiler->compile('$(' . $this->taskDef['unless'] . ')') . ')) {';
+                $ret .= '$z[\'stdout\']("<comment>' . $this->taskDef['unless'] . '</comment>, skipped ' . $this->name . '\n");';
+                $ret .= '} else {';
                 $hasUnless = true;
             }
             foreach ($this->taskDef[$scope] as $cmd) {
                 $ret .= sprintf('$z->cmd(%s);', $scriptcompiler->compile($cmd)) . PHP_EOL . $indentStr;
             }
             if ($hasUnless) {
-                $ret .= '} else {';
                 $ret .= '}';
             }
+            $ret .= sprintf('$z->notify(%s, %s);', var_export($this->name, true), var_export('after_' . $scope, true));
         }
         if (isset($this->taskDef['yield'])) {
-            $ret .= 'return $z[' . var_export($this->taskDef['yield'], true) . '];';
+            $ret .= '$ret = $z[' . var_export($this->taskDef['yield'], true) . '];';
+        } else {
+            $ret .= '$ret = null;';
         }
-
+        $ret .= sprintf('$z->notify(%s, "end");', var_export($this->name, true));
+        $ret .= 'return $ret;';
         $ret .= PHP_EOL . '})';
         return $ret;
     }
