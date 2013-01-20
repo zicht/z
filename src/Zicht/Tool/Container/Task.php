@@ -37,61 +37,70 @@ class Task implements Compilable
         $scriptcompiler = new ScriptCompiler(new \Zicht\Tool\Script\Parser());
         $exprcompiler  = new ScriptCompiler(new \Zicht\Tool\Script\Parser\Expression());
 
-        $indentStr = str_repeat('    ', $indent);
+        $eol = function($inc = 0) use(&$indent) {
+            if ($inc == 1) {
+                $indent ++;
+            }
+            $ret = PHP_EOL . str_repeat('    ', $indent);
+            if ($inc == -1) {
+                $indent --;
+            }
+            return $ret;
+        };
 
-        $ret = '$' . $compiler->getContainerName() . '->share(function($z) {' . PHP_EOL . $indentStr;
-        $ret .= sprintf('$z->notify(%s, "start");', var_export($this->name, true));
+        $ret = '$' . $compiler->getContainerName() . '->share(function($z) {' . $eol();
+        $ret .= sprintf('$z->notify(%s, "start");', var_export($this->name, true)) . $eol();
 
         foreach ($this->taskDef['set'] as $name => $value) {
             if ($value && preg_match('/^\?\s*(.*)/', trim($value), $m)) {
-                $ret .= 'if (!isset($z[' . var_export($name, true) . '])) {';
+                $ret .= 'if (!isset($z[' . var_export($name, true) . '])) {' . $eol(1);
                 if (!$m[1]) {
                     $ret .= sprintf(
                         'throw new \RuntimeException(\'required variable %s is not defined\');',
                         $name,
                         true
-                    );
+                    ) . $eol(-1);
                 } else {
-                    $ret .= sprintf('$z[%s] = %s;' . PHP_EOL . $indentStr,
+                    $ret .= sprintf('$z[%s] = %s;',
                         var_export($name, true),
                         $scriptcompiler->compile($m[1])
-                    );
+                    ) . $eol(-1);
                 }
-                $ret .= '}';
+                $ret .= '}' . $eol();
             } else {
                 $ret .= sprintf(
-                    '$z[%s] = %s;' . PHP_EOL . $indentStr,
+                    '$z[%s] = %s;',
                     var_export($name, true),
                     $scriptcompiler->compile($value)
-                );
+                ) . $eol();
             }
         }
 
         $hasUnless = false;
         foreach (array('pre', 'do', 'post') as $scope) {
-            $ret .= sprintf('$z->notify(%s, %s);', var_export($this->name, true), var_export('before_' . $scope, true));
+            $ret .= sprintf('$z->notify(%s, %s);', var_export($this->name, true), var_export('before_' . $scope, true)) . $eol();
             if ($scope === 'do' && !empty($this->taskDef['unless'])) {
-                $ret .= 'if (!$z[\'force\'] && (' . $exprcompiler->compile('$(' . $this->taskDef['unless'] . ')') . ')) {';
-                $ret .= '$z[\'stdout\']("<comment>" . ' . var_export($this->taskDef['unless'], true ) . ' . "</comment>, skipped ' . $this->name . '\n");';
-                $ret .= '} else {';
+                $ret .= 'if (!$z[\'force\'] && (' . $exprcompiler->compile('$(' . $this->taskDef['unless'] . ')') . ')) {' . $eol(1);
+                $ret .= '$z[\'stdout\']("<comment>" . ' . var_export($this->taskDef['unless'], true ) . ' . "</comment>, skipped ' . $this->name . '\n");' . $eol(-1);
+                $ret .= '} else {' . $eol(1);
                 $hasUnless = true;
             }
             foreach ($this->taskDef[$scope] as $cmd) {
-                $ret .= sprintf('$z->cmd(%s);', $scriptcompiler->compile($cmd)) . PHP_EOL . $indentStr;
+                $ret .= sprintf('$z->cmd(%s);', $scriptcompiler->compile($cmd)) . $eol();
             }
             if ($hasUnless && $scope == 'post') {
-                $ret .= '}';
+                $ret .= '}' . $eol(-1);
             }
-            $ret .= sprintf('$z->notify(%s, %s);', var_export($this->name, true), var_export('after_' . $scope, true));
+            $ret .= sprintf('$z->notify(%s, %s);', var_export($this->name, true), var_export('after_' . $scope, true)) . $eol();
         }
         if (isset($this->taskDef['yield'])) {
-            $ret .= '$ret = ' . $exprcompiler->compile('$(' . $this->taskDef['yield'] . ')') . ';';
+            $ret .= '$ret = ' . $exprcompiler->compile('$(' . $this->taskDef['yield'] . ')') . ';' . $eol();
         } else {
-            $ret .= '$ret = null;';
+            $ret .= '$ret = null;' . $eol();
         }
-        $ret .= sprintf('$z->notify(%s, "end");', var_export($this->name, true));
-        $ret .= 'return $ret;';
-        $ret .= PHP_EOL . '})';
+        $ret .= sprintf('$z->notify(%s, "end");', var_export($this->name, true)) . $eol();
+        $ret .= 'return $ret;' . $eol(-1);
+        $ret .= '})' . $eol();
         return $ret;
     }
 
