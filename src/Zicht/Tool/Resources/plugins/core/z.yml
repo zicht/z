@@ -11,15 +11,26 @@ env: ~
 tasks:
     # Creates a build
     build:
+        help: |
+            Creates a build for the specified environment
         set:
+            env: ?
             build.version: vcs.current
         pre: [ @_vcs.export ]
         yield: build.dir
 
     # Deploys a build
     deploy:
-        pre: @build
+        set:
+            env: ?
+        help: |
+            Deploys a build to the specified environment
         do: @_sync
 
     # Simulates a deploy
-    simulate: @_sync.simulate
+    simulate:
+        help: |
+            Simulates a deploy of a build to the specified environment
+        set:
+            env: ?
+        do: @_sync.simulate

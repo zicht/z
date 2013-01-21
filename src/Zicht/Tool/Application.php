@@ -59,19 +59,6 @@ class Application extends BaseApplication
     }
 
 
-    /**
-     * Adds the environment to the input definition
-     *
-     * @return \Symfony\Component\Console\Input\InputDefinition
-     */
-    protected function getDefaultInputDefinition()
-    {
-        $ret = parent::getDefaultInputDefinition();
-        $ret->addOption(new InputOption('env',      'e', InputOption::VALUE_REQUIRED, 'Environment', null));
-        return $ret;
-    }
-
-
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
         if (null === $input) {
@@ -90,7 +77,6 @@ class Application extends BaseApplication
 
         $this->add(new Cmd\DumpCommand());
         $this->add(new Cmd\InitCommand());
-        $this->add(new Cmd\EvalCommand());
 
         /** @var $task \Zicht\Tool\Container\Task */
         foreach ($this->tasks as $name => $task) {
@@ -101,8 +87,10 @@ class Application extends BaseApplication
                 foreach ($task->getArguments() as $var => $isRequired) {
                     $cmd->addArgument($var, $isRequired ? InputArgument::REQUIRED : InputArgument::OPTIONAL);
                 }
-                $cmd->addOption('explain', '', InputOption::VALUE_NONE, 'Explains the commands that are executed');
-                $cmd->addOption('force', 'f', InputOption::VALUE_NONE, 'Force execution of otherwise skipped tasks');
+                $cmd->addOption('explain', '', InputOption::VALUE_NONE, 'Explains the commands that are executed without executing them.');
+                $cmd->addOption('force', 'f', InputOption::VALUE_NONE, 'Force execution of otherwise skipped tasks.');
+                $cmd->setHelp($task->getHelp());
+                $cmd->setDescription(preg_replace('/^([^\n]*).*/s', '$1', $task->getHelp()));
                 $this->add($cmd);
             }
         }

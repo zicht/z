@@ -52,6 +52,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         ->children()
                             ->scalarNode('name')->end()
+                            ->scalarNode('help')->defaultValue('No help available for this task')->end()
                             ->arrayNode('set')
                                 ->prototype('scalar')->end()
                                 ->defaultValue(array())

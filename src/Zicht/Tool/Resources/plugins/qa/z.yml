@@ -21,15 +21,31 @@ qa:
 
 tasks:
     # Do jshint quality check
-    qa.jshint:  ?(qa.jshint.files) for f in $(qa.jshint.files); do $(qa.jshint.run) $f; done;
+    qa.jshint:
+        help: |
+            Runs all files in the qa.jshint.files setting through jshint
+
+            By default, runs through 'rhino /opt/jshint/jshint-rhino.js'
+        do:
+            - ?(qa.jshint.files) for f in $(qa.jshint.files); do $(qa.jshint.run) $f; done || true;
 
     # Do phpcs quality check
-    qa.phpcs:   phpcs --extensions=php --standard=$(qa.phpcs.standard) $(qa.phpcs.dir) $(qa.phpcs.options)
+    qa.phpcs:
+        help: |
+            Runs phpcs over the configured dirs against the configured standard.
+        do:
+            - phpcs --extensions=php --standard=$(qa.phpcs.standard) $(qa.phpcs.dir) $(qa.phpcs.options) || true
 
     # Do phpunit quality check
-    qa.phpunit: phpunit
+    qa.phpunit:
+        help: |
+            Runs phpunit
+
+        do: phpunit || true
 
     # Do all quality checks
     qa.all:
+        help: |
+            Combines phpunit, jshint and phpcs into one quality assurance check
         do:     [ @qa.phpunit, @qa.jshint, @qa.phpcs ]
 

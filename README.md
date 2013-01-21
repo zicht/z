@@ -34,12 +34,12 @@ The "some_remote_env" would typically be testing, staging and production.
 To prepare for deployment, it's best to issue your SSH key to the remote machine to avoid having to enter passwords
 every time the tool connects to the remote machine. You can accomplish this by running
 
-    z env:ssh:init --env=staging
+    z env:ssh:init staging
 
 An `ssh-copy-id` command will be executed to copy your public key to the remote machine. After this, you enter a
 remote shell by calling
 
-    z env:ssh --env=staging
+    z env:ssh staging
 
 The shell will be started at the remote machine and you will be in the remote root.
 

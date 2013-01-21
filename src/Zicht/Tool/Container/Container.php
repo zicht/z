@@ -22,6 +22,8 @@ class Container extends Pimple
 
     public $output;
 
+    protected $prefix = array();
+
     /**
      * Construct the container with the specified values as services/values.
      *
@@ -36,6 +38,39 @@ class Container extends Pimple
             'interactive' => false
         ));
         $this->output = $output;
+
+        if (!$explain || $verbose) {
+            $this->subscribe(array($this, 'prefixListener'));
+        }
+    }
+
+
+    function prefixListener($task, $event)
+    {
+        $reset = false;
+        switch ($event) {
+            case 'start':
+                array_push($this->prefix, $task);
+                $reset = true;
+                break;
+            case 'end':
+                array_pop($this->prefix);
+                $reset = true;
+                break;
+        }
+
+        if ($reset) {
+            if ($this->output->getVerbosity() > 1) {
+                $this->output->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
+            } elseif (count($this->prefix) > 1) {
+                $prefix = end($this->prefix);
+                if (strlen($prefix) > 21) {
+                    $prefix = substr($prefix, 0, 9) . '...' . substr($prefix, -9);
+                }
+                $prefix = str_pad($prefix, 21, ' ', STR_PAD_LEFT);
+                $this->output->setPrefix('<info>[' . $prefix . ']</info> ');
+            }
+        }
     }
 
 

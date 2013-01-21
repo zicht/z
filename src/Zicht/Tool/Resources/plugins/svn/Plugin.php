@@ -45,7 +45,11 @@ class Plugin extends BasePlugin
     public function setContainer(Container $container)
     {
         $container['vcs.versionid'] = $container->protect(function($info) use($container) {
-            if (trim($info) && preg_match('/^URL: (.*)/m', $info, $urlMatch) && preg_match('/^Revision: (.*)/m', $info, $revMatch)) {
+            if (
+                trim($info)
+                && preg_match('/^URL: (.*)/m', $info, $urlMatch)
+                && preg_match('/^Revision: (.*)/m', $info, $revMatch)
+            ) {
                 $url = $urlMatch[1];
                 $rev = $revMatch[1];
                 return ltrim(str_replace($container['vcs.url'], '', $url), '/') . '@' . $rev;

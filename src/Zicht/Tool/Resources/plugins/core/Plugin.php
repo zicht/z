@@ -62,11 +62,6 @@ class Plugin extends BasePlugin
                 );
             }
         );
-        $container['unless'] = $container->protect(function($condition, $msg) {
-            if (!$condition) {
-                throw new \Zicht\Tool\Script\FlowControl\SkipTask($msg);
-            }
-        });
         $container['mtime'] = $container->protect(function($glob) {
             $ret = array();
             foreach (glob($glob) as $file) {
@@ -79,24 +74,5 @@ class Plugin extends BasePlugin
         $container['url.host'] = $container->protect(function($url) {
             return parse_url($url, PHP_URL_HOST);
         });
-
-        $container->subscribe(array($this, 'listener'));
-        $this->container = $container;
-    }
-
-
-    function listener($task, $event) {
-        if ($this->container['verbose']) {
-            switch ($event) {
-                case 'start':
-                    array_push($this->prefix, $task);
-                    $this->container->output->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
-                    break;
-                case 'end':
-                    array_pop($this->prefix);
-                    $this->container->output->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
-                    break;
-            }
-        }
     }
 }

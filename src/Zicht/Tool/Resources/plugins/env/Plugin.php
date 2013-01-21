@@ -16,7 +16,7 @@ class Plugin extends BasePlugin
 {
     public function setContainer(Container $container)
     {
-        $container['env.versionat'] = $container->protect(function($env) use($container) {
+        $container['env.versionat'] = $container->protect(function($env, $verbose) use($container) {
             $tmp = tempnam(sys_get_temp_dir(), 'z');
             $container->cmd(sprintf(
                 'scp %s:%s/%s %s',
@@ -27,20 +27,11 @@ class Plugin extends BasePlugin
             ));
             $vcsInfo = file_get_contents($tmp);
             unlink($tmp);
-            return $container['vcs.versionid']($vcsInfo);
-        });
-        $container->subscribe(array($this, 'listenToInteractiveCommands'));
-        $this->container = $container;
-    }
-
-
-    public function listenToInteractiveCommands($task, $event) {
-        if ($task === 'env.ssh' || $task === 'env.mysql') {
-            if ($event == 'start') {
-                $this->container['interactive'] = true;
-            } elseif ($event == 'end') {
-                $this->container['interactive'] = false;
+            if ($verbose) {
+                return $vcsInfo;
+            } else {
+                return $container['vcs.versionid']($vcsInfo);
             }
-        }
+        });
     }
 }
