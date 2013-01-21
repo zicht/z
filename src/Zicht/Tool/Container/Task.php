@@ -87,7 +87,6 @@ class Task implements Compilable
 
         $hasUnless = false;
         foreach (array('pre', 'do', 'post') as $scope) {
-            $ret .= sprintf('$z->notify(%s, %s);', $taskName, var_export('before_' . $scope, true)) . $eol();
             if ($scope === 'do' && !empty($this->taskDef['unless'])) {
                 $ret .= 'if (!$z[\'force\'] && (' . $exprcompiler->compile($this->taskDef['unless']) . ')) {' . $eol(1);
                 $ret .= '$z->cmd(' . var_export(
@@ -107,7 +106,6 @@ class Task implements Compilable
             if ($hasUnless && $scope == 'post') {
                 $ret .= '}' . $eol(-1);
             }
-            $ret .= sprintf('$z->notify(%s, %s);', $taskName, var_export('after_' . $scope, true)) . $eol();
         }
         if (!empty($this->taskDef['yield'])) {
             $ret .= '$ret = ' . $exprcompiler->compile($this->taskDef['yield']) . ';' . $eol();
