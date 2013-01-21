@@ -39,7 +39,7 @@ class Container extends Pimple
         ));
         $this->output = $output;
 
-        if ($verbose) {
+        if (!$explain || $verbose) {
             $this->subscribe(array($this, 'prefixListener'));
         }
     }
@@ -47,17 +47,30 @@ class Container extends Pimple
 
     function prefixListener($task, $event)
     {
+        $reset = false;
         switch ($event) {
             case 'start':
                 array_push($this->prefix, $task);
-                $this->output->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
+                $reset = true;
                 break;
             case 'end':
                 array_pop($this->prefix);
-                $this->output->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
+                $reset = true;
                 break;
         }
 
+        if ($reset) {
+            if ($this->output->getVerbosity() > 1) {
+                $this->output->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
+            } else {
+                $prefix = end($this->prefix);
+                if (strlen($prefix) > 21) {
+                    $prefix = substr($prefix, 0, 9) . '...' . substr($prefix, -9);
+                }
+                $prefix = str_pad($prefix, 21, ' ', STR_PAD_LEFT);
+                $this->output->setPrefix('<info>[' . $prefix . ']</info> ');
+            }
+        }
     }
 
 
