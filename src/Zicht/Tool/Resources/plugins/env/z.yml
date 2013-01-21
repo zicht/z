@@ -1,12 +1,21 @@
 tasks:
     # Connect to the remote shell using ssh
-    env.ssh:        ssh -t $(env.ssh) "cd $(env.root); bash;"
+    env.ssh:
+        set:
+            interactive: 1
+        do: ssh -t $(env.ssh) "cd $(env.root); bash;"
 
     # Connect to the remote mysql shell using ssh
-    env.mysql:      ssh -t $(env.ssh) "mysql $(env.db)"
+    env.mysql:
+        set:
+            interactive: 1
+        do: ssh -t $(env.ssh) "mysql $(env.db)"
 
     # Initialize the SSH session by copying a local public key to the remote machine
-    env.ssh.init:   ssh-copy-id $(env.ssh)
+    env.ssh.init:
+        set:
+            interactive: 1
+        do: ssh-copy-id $(env.ssh)
 
     # Show the deployed version of the remote machine
     env.version:    echo $(env.versionat env.ssh)

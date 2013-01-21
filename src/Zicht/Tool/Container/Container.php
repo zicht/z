@@ -22,6 +22,8 @@ class Container extends Pimple
 
     public $output;
 
+    protected $prefix = array();
+
     /**
      * Construct the container with the specified values as services/values.
      *
@@ -36,6 +38,28 @@ class Container extends Pimple
             'interactive' => false
         ));
         $this->output = $output;
+
+        if ($verbose) {
+            $this->prefixFormatter = new \Zicht\Tool\Output\LinePrefixFormatter($this->output->getFormatter());
+            $this->output->setFormatter($this->prefixFormatter);
+            $this->subscribe(array($this, 'prefixListener'));
+        }
+    }
+
+
+    function prefixListener($task, $event)
+    {
+        switch ($event) {
+            case 'start':
+                array_push($this->prefix, $task);
+                $this->prefixFormatter->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
+                break;
+            case 'end':
+                array_pop($this->prefix);
+                $this->prefixFormatter->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
+                break;
+        }
+
     }
 
 

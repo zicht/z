@@ -78,7 +78,7 @@ class Application extends BaseApplication
             $input = new ArgvInput();
         }
         if (null === $output) {
-            $output = new Output\ConsoleOutput();
+            $output = new \Symfony\Component\Console\Output\ConsoleOutput();
         }
 
         $this->initContainer(
