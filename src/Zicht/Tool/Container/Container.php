@@ -62,7 +62,7 @@ class Container extends Pimple
         if ($reset) {
             if ($this->output->getVerbosity() > 1) {
                 $this->output->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
-            } else {
+            } elseif (count($this->prefix) > 1) {
                 $prefix = end($this->prefix);
                 if (strlen($prefix) > 21) {
                     $prefix = substr($prefix, 0, 9) . '...' . substr($prefix, -9);
