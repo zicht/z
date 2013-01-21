@@ -62,11 +62,6 @@ class Plugin extends BasePlugin
                 );
             }
         );
-        $container['unless'] = $container->protect(function($condition, $msg) {
-            if (!$condition) {
-                throw new \Zicht\Tool\Script\FlowControl\SkipTask($msg);
-            }
-        });
         $container['mtime'] = $container->protect(function($glob) {
             $ret = array();
             foreach (glob($glob) as $file) {
