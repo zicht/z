@@ -24,7 +24,6 @@ tasks:
 
     # Create a version branch
     v.branch:
-        pre: [ "svn up" ]
         help: |
             Create a branch of the current working revision.
 
@@ -38,7 +37,6 @@ tasks:
 
     # Create a version tag
     v.tag:
-        pre: [ "svn up" ]
         help: |
             Tags the current working revision
 

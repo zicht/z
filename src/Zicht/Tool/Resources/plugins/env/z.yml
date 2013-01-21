@@ -3,6 +3,7 @@ tasks:
     env.ssh:
         help: "Connect to the remote SSH"
         set:
+            env: ?
             interactive: 1
         do: ssh -t $(env.ssh) "cd $(env.root); bash;"
 
@@ -14,6 +15,7 @@ tasks:
             This assumes that the local user on the remote machine has access to the local database.
             Configure the remote ~/.my.cnf if this is not the case.
         set:
+            env: ?
             interactive: 1
         do: ssh -t $(env.ssh) "mysql $(env.db)"
 
@@ -25,6 +27,7 @@ tasks:
             Copies your local identity to the remote environment. If specified, the identity file
             from your configuration will be used.
         set:
+            env: ?
             interactive: 1
         do: ssh-copy-id $(env.ssh)
 
@@ -34,5 +37,7 @@ tasks:
             Show which version is currently deployed at the remote environment.
 
             Downloads the remote revision file and shows which version is specified in it.
+        set:
+            env: ?
         do:
             - echo "$(env.versionat(env.ssh, verbose))"
