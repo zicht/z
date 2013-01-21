@@ -54,21 +54,21 @@ A sane setup for z would be as follows:
 This would provide your setup with a possibility to build and deploy to a remote ssh host identified by 'production'.
 Run the command
 
-    $ z simulate --env=production
+    $ z simulate production
 
 To simulate a deploy. To see what exactly would be done, you can use the --explain flag:
 
-    $ z simulate --env=production --explain
+    $ z simulate production --explain
 
 This will guide you to a set of questions you need to answer to get a z.yml file in your working directory. When
 finished, you will have a file you can use for deployment.
 
-    $ z simulate --env=testing
+    $ z simulate testing
 
 This will simulate a deploy to the environment specified as 'testing' in your setup process. If you are wondering what
 the tasks would exactly do, use the --explain option:
 
-    $ z --explain simulate --env=testing
+    $ z --explain simulate testing
 
 How to expose a plugin to Z
 A plugin consists of at least one of these two files. A z.yml file, and/or a Plugin.php file. Additionally, it may
