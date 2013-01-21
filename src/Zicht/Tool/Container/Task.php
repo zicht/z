@@ -26,6 +26,12 @@ class Task implements Compilable
     }
 
 
+    function getHelp()
+    {
+        return $this->taskDef['help'];
+    }
+
+
     /**
      * Compile the node
      *

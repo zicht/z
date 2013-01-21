@@ -81,7 +81,7 @@ class Expression extends AbstractParser
                     $then = $this->parse($stream);
                 }
 
-                if ($stream->match(Token::OPERATOR, ':')) {
+                if ($stream->valid() && $stream->match(Token::OPERATOR, ':')) {
                     $stream->next();
                     $else = $this->parse($stream);
                 } else {

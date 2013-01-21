@@ -27,7 +27,13 @@ class InitCommand extends BaseCommand
 
         $this
             ->setName('z:init')
-            ->setHelp('Initialize a z-file in the current working directory')
+            ->setHelp(<<<EOH
+Initialize a Z file in the current working directory.
+
+Note that this overwrites any existing z file.
+EOH
+            )
+            ->setDescription('Initialize a z-file in the current working directory')
         ;
     }
 

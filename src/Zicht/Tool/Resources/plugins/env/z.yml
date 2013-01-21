@@ -1,21 +1,38 @@
 tasks:
     # Connect to the remote shell using ssh
     env.ssh:
+        help: "Connect to the remote SSH"
         set:
             interactive: 1
         do: ssh -t $(env.ssh) "cd $(env.root); bash;"
 
     # Connect to the remote mysql shell using ssh
     env.mysql:
+        help: |
+            Connect to the remote MySQL.
+
+            This assumes that the local user on the remote machine has access to the local database.
+            Configure the remote ~/.my.cnf if this is not the case.
         set:
             interactive: 1
         do: ssh -t $(env.ssh) "mysql $(env.db)"
 
     # Initialize the SSH session by copying a local public key to the remote machine
     env.ssh.init:
+        help: |
+            Initialize an SSH key exchange
+
+            Copies your local identity to the remote environment. If specified, the identity file
+            from your configuration will be used.
         set:
             interactive: 1
         do: ssh-copy-id $(env.ssh)
 
     # Show the deployed version of the remote machine
-    env.version:    echo $(env.versionat env.ssh)
+    env.version:
+        help: |
+            Show which version is currently deployed at the remote environment.
+
+            Downloads the remote revision file and shows which version is specified in it.
+        do:
+            - echo "$(env.versionat(env.ssh, verbose))"

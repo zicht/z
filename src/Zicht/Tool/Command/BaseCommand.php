@@ -33,18 +33,6 @@ class BaseCommand extends Command
 
 
     /**
-     * Adds the 'step' option to the command
-     *
-     * @return void
-     */
-    protected function configure()
-    {
-        parent::configure();
-        $this->addOption('step', '', InputOption::VALUE_NONE, 'Step through');
-    }
-
-
-    /**
      * Initializes the environment in the container if set as an input option
      *
      * @param \Symfony\Component\Console\Input\InputInterface $input
@@ -55,22 +43,8 @@ class BaseCommand extends Command
     {
         parent::initialize($input, $output);
 
-        if ($input->getOption('env')) {
-            $this->container->select('env', $input->getOption('env'));
-        }
-        if ($input->getOption('step')) {
-            $originalExecutor = $this->container['executor'];
-            $dialog = $this->getHelperSet()->get('dialog');
-
-            $this->container['executor'] = $this->container->protect(
-                function() use($output, $originalExecutor, $dialog) {
-                    $args = func_get_args();
-                    if ($dialog->askConfirmation($output, sprintf('Execute: [<info>%s</info>] [Y/n] ', $args[0]))) {
-                        return call_user_func_array($originalExecutor, $args);
-                    }
-                    return 0;
-                }
-            );
+        if ($input->hasArgument('env') && $input->getArgument('env')) {
+            $this->container->select('env', $input->getArgument('env'));
         }
     }
 }
