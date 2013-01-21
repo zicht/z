@@ -84,7 +84,7 @@ class Task implements Compilable
             $ret .= sprintf('$z->notify(%s, %s);', $taskName, var_export('before_' . $scope, true)) . $eol();
             if ($scope === 'do' && !empty($this->taskDef['unless'])) {
                 $ret .= 'if (!$z[\'force\'] && (' . $exprcompiler->compile($this->taskDef['unless']) . ')) {' . $eol(1);
-                $ret .= '$z[\'stdout\']("<comment>" . ' . var_export($this->taskDef['unless'], true ) . ' . "</comment>, skipped ' . $this->name . '\n");' . $eol(-1);
+                $ret .= '$z->output->writeln("<comment>" . ' . var_export($this->taskDef['unless'], true ) . ' . "</comment>, skipped ' . $this->name . '");' . $eol(-1);
                 $ret .= '} else {' . $eol(1);
                 $hasUnless = true;
             }

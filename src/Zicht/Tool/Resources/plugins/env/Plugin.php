@@ -29,5 +29,18 @@ class Plugin extends BasePlugin
             unlink($tmp);
             return $container['vcs.versionid']($vcsInfo);
         });
+        $container->subscribe(array($this, 'listenToInteractiveCommands'));
+        $this->container = $container;
+    }
+
+
+    public function listenToInteractiveCommands($task, $event) {
+        if ($task === 'env.ssh' || $task === 'env.mysql') {
+            if ($event == 'start') {
+                $this->container['interactive'] = true;
+            } elseif ($event == 'end') {
+                $this->container['interactive'] = false;
+            }
+        }
     }
 }

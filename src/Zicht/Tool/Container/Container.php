@@ -10,6 +10,7 @@ use \Zicht\Tool\Script;
 use \Zicht\Tool\PluginInterface;
 use \UnexpectedValueException;
 use \Pimple;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Service container
@@ -19,73 +20,62 @@ class Container extends Pimple
     protected $plugins = array();
     protected $subscribers = array();
 
+    public $output;
+
     /**
      * Construct the container with the specified values as services/values.
      *
      * @param array $values
      */
-    public function __construct(array $values = array())
+    public function __construct(OutputInterface $output, $verbose, $force, $explain)
     {
-        parent::__construct($values);
-        $container = $this;
-
-        $this['executor'] = $this->protect(
-            function($cmd, $interact = false) use($container) {
-                if (trim($cmd)) {
-                    $ret = null;
-                    if ($interact) {
-                        passthru($cmd, $ret);
-                    } else {
-                        $process = new \Symfony\Component\Process\Process($cmd);
-                        $process->run(function($mode, $data) use($container) {
-                            call_user_func($container['std' . $mode], $data);
-                        });
-                        $ret = $process->getExitCode();
-                    }
-                    return $ret;
-                }
-                return null;
-            }
-        );
-        $this['force'] = false;
-        $this['verbose'] = false;
-
-        $this['stdout'] = $this->protect(function($data) use($container){
-            $container['console_output']->write($data);
-        });
-        $this['stderr'] = $this->protect(function($data) use($container){
-            $container['console_output']->write($data);
-        });
-        $this['expand']= $this->protect(function($value) {
-            if (is_callable($value)) {
-                $value = call_user_func($value);
-            }
-            if (is_array($value)) {
-                $value = join(' ', $value);
-            }
-            return (string) $value;
-        });
+        parent::__construct(array(
+            'verbose' => $verbose,
+            'force' => $force,
+            'explain' => $explain,
+            'interactive' => false
+        ));
+        $this->output = $output;
     }
 
-
-
-    public function decorate($service, $decorator)
-    {
-        $this[$service] = $this->protect($decorator($this[$service]));
-    }
 
     /**
      * Executes a script snippet using the 'executor' service.
      *
-     * @param string $script
+     * @param string $cmd
      * @return int
      */
-    public function exec($script)
+    public function exec($cmd)
     {
-        $ret = call_user_func($this['executor'], $script);
-
+        $ret = 0;
+        if (trim($cmd)) {
+            if ($this['explain']) {
+                $this->output->writeln('( ' . rtrim($cmd, "\n") . ' );');
+            } elseif ($this['interactive']) {
+                passthru($cmd, $ret);
+            } else {
+                $ret = null;
+                $process = new \Symfony\Component\Process\Process($cmd);
+                $output = $this->output;
+                $process->run(function($mode, $data) use($output) {
+                    $output->write($data);
+                });
+                $ret = $process->getExitCode();
+            }
+        }
         if ($ret != 0) {
-            throw new \UnexpectedValueException("Command '$script' failed with exit code {$ret}");
+            throw new \UnexpectedValueException("Command '$cmd' failed with exit code {$ret}");
+        }
+
+        return $ret;
+    }
+
+
+    public function interact($cmd)
+    {
+        $ret = 0;
+        if ($ret != 0) {
+            throw new \UnexpectedValueException("Command '$cmd' failed with exit code {$ret}");
         }
         return $ret;
     }

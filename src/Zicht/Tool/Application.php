@@ -15,7 +15,6 @@ use \Symfony\Component\Console\Input\InputOption;
 use \Symfony\Component\Console\Command\Command;
 use \Symfony\Component\Console\Input\InputInterface;
 use \Symfony\Component\Console\Output\OutputInterface;
-use \Symfony\Component\Console\Output\ConsoleOutput;
 use \Symfony\Component\Console\Input\ArgvInput;
 
 use \Zicht\Tool\Command as Cmd;
@@ -42,27 +41,6 @@ class Application extends BaseApplication
     public function __construct()
     {
         parent::__construct('z - The Zicht Tool', Version::VERSION);
-
-        $this->initContainer();
-
-        $this->add(new Cmd\DumpCommand());
-        $this->add(new Cmd\InitCommand());
-        $this->add(new Cmd\EvalCommand());
-
-        /** @var $task \Zicht\Tool\Container\Task */
-        foreach ($this->tasks as $name => $task) {
-            // if a tasks is prefixed with an underscore, it is considered an internal task
-            if (substr($name, 0, 1) !== '_') {
-                $cmd = new TaskCommand(str_replace('.', ':', $name));
-                $cmd->setContainer($this->container);
-                foreach ($task->getArguments() as $var => $isRequired) {
-                    $cmd->addArgument($var, $isRequired ? InputArgument::REQUIRED : InputArgument::OPTIONAL);
-                }
-                $cmd->addOption('explain', '', InputOption::VALUE_NONE, 'Explains the commands that are executed');
-                $cmd->addOption('force', 'f', InputOption::VALUE_NONE, 'Force execution of otherwise skipped tasks');
-                $this->add($cmd);
-            }
-        }
     }
 
 
@@ -100,16 +78,37 @@ class Application extends BaseApplication
             $input = new ArgvInput();
         }
         if (null === $output) {
-            $output = new ConsoleOutput();
+            $output = new Output\ConsoleOutput();
         }
 
-        $this->container['console_output']= $output;
-        $this->container['console_input']= $input;
+        $this->initContainer(
+            $output,
+            $input->hasParameterOption(array('--verbose', '-v')),
+            $input->hasParameterOption(array('--force', '-f')),
+            $input->hasParameterOption(array('--explain'))
+        );
+
+        $this->add(new Cmd\DumpCommand());
+        $this->add(new Cmd\InitCommand());
+        $this->add(new Cmd\EvalCommand());
+
+        /** @var $task \Zicht\Tool\Container\Task */
+        foreach ($this->tasks as $name => $task) {
+            // if a tasks is prefixed with an underscore, it is considered an internal task
+            if (substr($name, 0, 1) !== '_') {
+                $cmd = new TaskCommand(str_replace('.', ':', $name));
+                $cmd->setContainer($this->container);
+                foreach ($task->getArguments() as $var => $isRequired) {
+                    $cmd->addArgument($var, $isRequired ? InputArgument::REQUIRED : InputArgument::OPTIONAL);
+                }
+                $cmd->addOption('explain', '', InputOption::VALUE_NONE, 'Explains the commands that are executed');
+                $cmd->addOption('force', 'f', InputOption::VALUE_NONE, 'Force execution of otherwise skipped tasks');
+                $this->add($cmd);
+            }
+        }
+        $this->container->output = $output;
+        $this->container->input = $input;
         $this->container['console_dialog_helper']= $this->getHelperSet()->get('dialog');
-
-        if (true === $input->hasParameterOption(array('--verbose', '-v'))) {
-            $this->container['verbose'] = true;
-        }
 
         return parent::run($input, $output);
     }
@@ -122,7 +121,7 @@ class Application extends BaseApplication
      *
      * @throws \UnexpectedValueException
      */
-    public function initContainer()
+    public function initContainer($output, $verbose, $force, $explain)
     {
         $zFileLocator = new FileLocator(array(getcwd(), getenv('HOME') . '/.config/z/'));
         $pluginLocator = new FileLocator(__DIR__ . '/Resources/plugins');
@@ -164,7 +163,7 @@ class Application extends BaseApplication
         }
         $code = $compiler->compile($cp);
 
-        $container = new Container();
+        $container = new Container($output, $verbose, $force, $explain);
         $container->setPlugins($plugins);
         eval($code);
         $this->container = $container;

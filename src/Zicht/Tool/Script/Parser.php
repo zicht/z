@@ -21,13 +21,14 @@ class Parser extends AbstractParser
      */
     public function parse(TokenStream $input)
     {
-        $ret = new Node\Script();
         $exprParser = new Parser\Expression($this);
-
-        if ($input->valid() && $input->match(Token::EXPR_START, '?(')) {
-            $input->next();
-            $ret->append(new \Zicht\Tool\Script\Node\Expr\Conditional($exprParser->parse($input)));
-            $input->expect(Token::EXPR_END);
+        $ret = new Node\Script();
+        if ($input->valid()){
+            if($input->match(Token::EXPR_START, '?(')) {
+                $input->next();
+                $ret->append(new \Zicht\Tool\Script\Node\Expr\Conditional($exprParser->parse($input)));
+                $input->expect(Token::EXPR_END);
+            }
         }
         while ($input->valid()) {
             $cur = $input->current();

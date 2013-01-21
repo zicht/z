@@ -26,27 +26,6 @@ class TaskCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($input->getOption('explain')) {
-            $stdout = $this->container['stdout'];
-
-            $this->container->decorate('stdout', function($original) {
-                return function($data) use($original) {
-                    return $original(preg_replace('/(.*)\n/', '# $1' . "\n", $data));
-                };
-            });
-            $this->container['executor'] = $this->container->protect(
-                function($exec) use($output, $stdout) {
-                    if (trim($exec)) {
-                        $exec = ' ( ' . rtrim($exec, "\n") . ' ); ';
-                        $stdout($exec . "\n");
-                    }
-                }
-            );
-        }
-        if ($input->getOption('force')) {
-            $this->container['force'] = true;
-        }
-
         foreach ($this->getDefinition()->getArguments() as $arg) {
             if ($arg->getName() === 'command') {
                 continue;

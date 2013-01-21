@@ -13,6 +13,7 @@ use \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 class Plugin extends BasePlugin
 {
     public $prefix = array();
+    public $prefixer = null;
 
     public function setContainer(Container $container)
     {
@@ -31,7 +32,7 @@ class Plugin extends BasePlugin
         $container['ask'] = $container->protect(
             function($q, $default = null) use ($container) {
                 return $container['console_dialog_helper']->ask(
-                    $container['console_output'],
+                    $container->output,
                     $q . ($default ? sprintf(' [<info>%s</info>]', $default) : '') . ': ',
                     $default
                 );
@@ -48,13 +49,13 @@ class Plugin extends BasePlugin
             function($str) use ($container) {
                 $args = func_get_args();
                 $tpl = array_shift($args);
-                $container['stdout'](vsprintf($tpl, $args));
+                $container->output->write(vsprintf($tpl, $args));
             }
         );
         $container['confirm']= $container->protect(
             function($q, $default = false) use ($container) {
                 return $container['console_dialog_helper']->askConfirmation(
-                    $container['console_output'],
+                    $container->output,
                     $q .
                         ($default === false ? ' [y/N] ' : ' [Y/n]'),
                     $default
@@ -79,35 +80,23 @@ class Plugin extends BasePlugin
             return parse_url($url, PHP_URL_HOST);
         });
 
-        $self = $this;
-        $outputDecorator = function($original) use($self, $container) {
-            return function($output) use($original, $self, $container) {
-                if ($container['verbose']) {
-                    return $original(
-                        preg_replace(
-                            '/(.*)\n/', '[<info>' . join('</info>][<info>', $self->prefix) . '</info>] $1' . "\n",
-                            $output
-                        )
-                    );
-                } else {
-                    return $original($output);
-                }
-            };
-        };
+        $container->subscribe(array($this, 'listener'));
+        $this->container = $container;
+    }
 
-        $container->decorate('stdout', $outputDecorator);
 
-        $container->subscribe(
-            function($task, $event) use($container, $self) {
-                switch ($event) {
-                    case 'start':
-                        array_push($self->prefix, $task);
-                        break;
-                    case 'end':
-                        array_pop($self->prefix);
-                        break;
-                }
+    function listener($task, $event) {
+        if ($this->container['verbose']) {
+            switch ($event) {
+                case 'start':
+                    array_push($this->prefix, $task);
+                    $this->container->output->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
+                    break;
+                case 'end':
+                    array_pop($this->prefix);
+                    $this->container->output->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
+                    break;
             }
-        );
+        }
     }
 }
