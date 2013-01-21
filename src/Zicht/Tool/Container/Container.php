@@ -40,8 +40,6 @@ class Container extends Pimple
         $this->output = $output;
 
         if ($verbose) {
-            $this->prefixFormatter = new \Zicht\Tool\Output\LinePrefixFormatter($this->output->getFormatter());
-            $this->output->setFormatter($this->prefixFormatter);
             $this->subscribe(array($this, 'prefixListener'));
         }
     }
@@ -52,11 +50,11 @@ class Container extends Pimple
         switch ($event) {
             case 'start':
                 array_push($this->prefix, $task);
-                $this->prefixFormatter->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
+                $this->output->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
                 break;
             case 'end':
                 array_pop($this->prefix);
-                $this->prefixFormatter->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
+                $this->output->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
                 break;
         }
 
