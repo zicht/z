@@ -21,11 +21,12 @@ tasks:
 
     # Initialize the SSH session by copying a local public key to the remote machine
     env.ssh.init:
+        unless: env.ssh.connectable
         help: |
             Initialize an SSH key exchange
 
-            Copies your local identity to the remote environment. If specified, the identity file
-            from your configuration will be used.
+            Copies your local identity to the remote environment. The step is skipped if the environment
+            already is connectable
         set:
             env: ?
             interactive: 1
