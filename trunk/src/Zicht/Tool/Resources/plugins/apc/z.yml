@@ -1,0 +1,19 @@
+tasks:
+    env.apc:
+        help: |
+            Clears the remote APC cache
+
+            A file __apc_clear_cache.php containing the code the clear the cache file is transferred
+            to the remote machine's "web" dir and then wget by prepending the env's "url" before it
+        set:
+            _file:  env.root . env.web . "/__apc_clear_cache.php"
+            env:    ?
+        do:
+            - echo '<?php apc_clear_cache("user"); apc_clear_cache(); ' | ssh $(env.ssh) "cat > $(_file)"
+            - wget -qO - $(env.url)/__apc_clear_cache.php > /dev/null
+            - ssh $(env.ssh) "rm $(_file)"
+            - ?(verbose) echo "Cache cleared at $(env) $(env.url)"
+
+    deploy:
+        post:
+            - @env.apc

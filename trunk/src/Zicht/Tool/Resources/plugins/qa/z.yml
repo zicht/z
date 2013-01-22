@@ -1,0 +1,51 @@
+# Quality Assurance options
+qa:
+    # PHPCS options
+    phpcs:
+        # Command line options to the PHPCS tool
+        options:    "--report=summary --report-width=200"
+
+        # The standard to use
+        standard:   "Zicht"
+
+        # Directories that are used
+        dir:        [ 'src', 'tests' ]
+
+    # JSHint options
+    jshint:
+        # Command line to use for running jshint
+        run:        "rhino /opt/jshint/jshint-rhino.js"
+
+        # Files to check
+        files:      ""
+
+tasks:
+    # Do jshint quality check
+    qa.jshint:
+        help: |
+            Runs all files in the qa.jshint.files setting through jshint
+
+            By default, runs through 'rhino /opt/jshint/jshint-rhino.js'
+        do:
+            - ?(qa.jshint.files) for f in $(qa.jshint.files); do $(qa.jshint.run) $f; done || true;
+
+    # Do phpcs quality check
+    qa.phpcs:
+        help: |
+            Runs phpcs over the configured dirs against the configured standard.
+        do:
+            - phpcs --extensions=php --standard=$(qa.phpcs.standard) $(qa.phpcs.dir) $(qa.phpcs.options) || true
+
+    # Do phpunit quality check
+    qa.phpunit:
+        help: |
+            Runs phpunit
+
+        do: phpunit || true
+
+    # Do all quality checks
+    qa.all:
+        help: |
+            Combines phpunit, jshint and phpcs into one quality assurance check
+        do:     [ @qa.phpunit, @qa.jshint, @qa.phpcs ]
+

@@ -1,0 +1,50 @@
+1.0-beta8
+---------
+* Added imports
+* Introduced a real parser/compiler for the script language
+* Call to setContainer() introduced so plugins can change the container configuration (e.g. add variables / functions)
+
+1.0-beta7
+---------
+* Added conditional for 'make sass' in default build
+* Added z:eval command
+* Added plugin structure, and moved all default configurations into separate plugins
+* Moved the basic setup to a 'core' plugin
+* Reworked all tasks to be prefixed with a scope
+
+1.0-beta6
+---------
+* Added content.push, branch, tag and switch tasks
+* Added post-deploy tagging
+* Changed default dump command to show the config, --verbose dumps the compiled container code.
+
+1.0-beta5
+---------
+* Added clear_apc_cache default task
+* Added conditional task variables in a 'set' definition
+* Added a jshint qa task
+* Added a phpunit qa task
+* Fixed an issue with deep merging of list configurations
+* Added shell conditions to symfony-specific build steps (app/console and Makefile check) in the default build
+* Added a 'versions' command
+* Added a 'revfile' to the build
+
+1.0-beta4
+---------
+* Fixed a bug that triggered "using $this when not in object context"
+
+1.0-beta3
+---------
+* Added assets:install to symfony build
+
+1.0-beta2
+---------
+* Altered the default config to run "composer install" without scripts
+
+1.0-beta
+--------
+* Added variables for tasks with the 'set' parameter
+
+1.0-alpha
+---------
+* First alpha release of Z

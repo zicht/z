@@ -1,0 +1,36 @@
+# Build options
+build:
+    # Directory to build in
+    dir:            ./build
+
+# Environments
+env: ~
+
+# Available default tasks. All tasks prefixed with '_' are considered 'private',
+# i.e. they are not published in the command line help / list commands.
+tasks:
+    # Creates a build
+    build:
+        help: |
+            Creates a build for the specified environment
+        set:
+            env: ?
+            build.version: vcs.current
+        pre: [ @_vcs.export ]
+        yield: build.dir
+
+    # Deploys a build
+    deploy:
+        set:
+            env: ?
+        help: |
+            Deploys a build to the specified environment
+        do: @_sync
+
+    # Simulates a deploy
+    simulate:
+        help: |
+            Simulates a deploy of a build to the specified environment
+        set:
+            env: ?
+        do: @_sync.simulate

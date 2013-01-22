@@ -1,0 +1,29 @@
+symfony:
+    web:     web
+    console: 'app/console'
+
+tasks:
+    _symfony.build.copy_local_vendor: |
+        if [ -d "$(cwd)/vendor/" ];
+            then rsync -rp $(cwd)/vendor/ $(build.dir)/vendor;
+        fi;
+
+    _symfony.build.composer_install: |
+        cd $(build.dir) && composer install --no-scripts;
+
+    _symfony.build.assets_install: |
+        php $(symfony.console) assets:install $(symfony.web) --env=$(env) --no-debug;
+
+    _symfony.build.assetic_dump: |
+        cd $(build.dir) && php $(symfony.console) assetic:dump --env=$(env) --no-debug;
+
+    build:
+        post:
+            - @_symfony.build.copy_local_vendor
+            - @_symfony.build.composer_install
+            - @_symfony.build.assets_install
+            - @_symfony.build.assetic_dump
+
+    deploy:
+        post:
+            - ssh $(env.ssh) "cd $(env.root) && php $(symfony.console) cache:clear --env=$(env) --no-debug"
