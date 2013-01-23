@@ -62,7 +62,7 @@ class Task implements Compilable
 
         foreach ($this->taskDef['set'] as $name => $value) {
             if ($value && preg_match('/^\?\s*(.*)/', trim($value), $m)) {
-                $ret .= 'if (!isset($z[' . var_export($name, true) . '])) {' . $eol(1);
+                $ret .= 'if (empty($z[' . var_export($name, true) . '])) {' . $eol(1);
                 if (!$m[1]) {
                     $ret .= sprintf(
                         'throw new \RuntimeException(\'required variable %s is not defined\');',
