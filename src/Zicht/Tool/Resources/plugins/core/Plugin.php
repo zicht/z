@@ -20,15 +20,6 @@ class Plugin extends BasePlugin
         $container['now'] = date('Ymd-H.i.s');
         $container['date'] = date('Ymd');
         $container['cwd'] = getcwd();
-        $container['if'] = $container->protect(
-            function($condition, $then, $else = null) {
-                if ($condition) {
-                    return $then;
-                } else {
-                    return $else;
-                }
-            }
-        );
         $container['ask'] = $container->protect(
             function($q, $default = null) use ($container) {
                 return $container['console_dialog_helper']->ask(
@@ -43,13 +34,6 @@ class Plugin extends BasePlugin
                 $args = func_get_args();
                 $tpl = array_shift($args);
                 return vsprintf($tpl, $args);
-            }
-        );
-        $container['printf'] = $container->protect(
-            function($str) use ($container) {
-                $args = func_get_args();
-                $tpl = array_shift($args);
-                $container->output->write(vsprintf($tpl, $args));
             }
         );
         $container['confirm']= $container->protect(
