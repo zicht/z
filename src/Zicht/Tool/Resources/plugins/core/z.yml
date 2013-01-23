@@ -15,14 +15,16 @@ tasks:
             Creates a build for the specified environment
         set:
             env: ?
-            build.version: vcs.current
-        pre: [ @_vcs.export ]
+            build.version: ?vcs.current
+        pre:
+            - @_vcs.export
         yield: build.dir
 
     # Deploys a build
     deploy:
         set:
             env: ?
+            build.version: ?vcs.current
         help: |
             Deploys a build to the specified environment
         do: @_sync
@@ -33,4 +35,6 @@ tasks:
             Simulates a deploy of a build to the specified environment
         set:
             env: ?
+            build.version: ?vcs.current
         do: @_sync.simulate
+
