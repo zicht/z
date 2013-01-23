@@ -33,7 +33,7 @@ tasks:
             _tgt:       sprintf("%s/branches/%s", vcs.url, branch)
             _src:       ? sprintf("%s/%s", vcs.url, vcs.current)
         do: |
-            svn cp $(_src) $(_tgt) -m"(Z) Created branch '$(branch)'"
+            svn cp $(_src) $(_tgt) -m"(Z) Created branch '$(branch)' from $(vcs.current)"
 
     # Create a version tag
     v.tag:
@@ -50,7 +50,7 @@ tasks:
             _src:       ? sprintf("%s/%s", vcs.url, vcs.current)
 
         do:
-            - svn cp $(_src) $(_tgt) -m"(Z) Created tag '$(tag)'"
+            - svn cp $(_src) $(_tgt) -m"(Z) Created tag '$(tag)' from $(vcs.current)"
 
     # List all versions
     v.versions:
