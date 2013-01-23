@@ -4,11 +4,13 @@ tasks:
         help: "Connect to the remote SSH"
         set:
             env: ?
+            cmd: ? "bash"
             interactive: 1
-        do: ssh -t $(env.ssh) "cd $(env.root); bash;"
+        do: ssh -tq $(env.ssh) "cd $(env.root); $(cmd)"
 
     # Connect to the remote mysql shell using ssh
     env.mysql:
+        unless: !env.ssh.connectable
         help: |
             Connect to the remote MySQL.
 
@@ -17,7 +19,7 @@ tasks:
         set:
             env: ?
             interactive: 1
-        do: ssh -t $(env.ssh) "mysql $(env.db)"
+        do: ssh -tq $(env.ssh) "mysql $(env.db)"
 
     # Initialize the SSH session by copying a local public key to the remote machine
     env.ssh.init:
