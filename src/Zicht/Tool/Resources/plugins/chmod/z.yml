@@ -16,8 +16,8 @@ tasks:
         do:
             - find $(chmod.dir) -type d -exec chmod $(verbose ? "-c ") $(chmod.defaults.dir) '{}' +
             - find $(chmod.dir) -type f -exec chmod $(verbose ? "-c ") $(chmod.defaults.file) '{}' +
-            - ?(chmod.writable)     chmod -R 777 $(verbose ? "-c ") $(chmod.writable)
-            - ?(chmod.executable)   chmod -R 755 $(verbose ? "-c ") $(chmod.executable)
+            - ?(chmod.writable)   cd $(chmod.dir) && chmod -R 777 $(verbose ? "-c ") $(chmod.writable)
+            - ?(chmod.executable) cd $(chmod.dir) && chmod -R 755 $(verbose ? "-c ") $(chmod.executable)
 
     _chmod.prepare_build:
         # makes sure the chmod is applied to the build dir at build time
