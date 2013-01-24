@@ -22,6 +22,7 @@ class Container extends Pimple
 
     public $output;
 
+    protected $stack = array();
     protected $prefix = array();
 
     /**
@@ -37,11 +38,23 @@ class Container extends Pimple
             'explain' => $explain,
             'interactive' => false
         ));
-        $this->output = $output;
 
         if (!$explain || $verbose) {
             $this->subscribe(array($this, 'prefixListener'));
         }
+
+        $this->output = $output;
+    }
+
+    public function offsetGet($id)
+    {
+        if (in_array($id, $this->stack)) {
+            throw new \UnexpectedValueException("Circular reference detected: " . implode(' -> ', $this->stack) . ' -> ' . $id);
+        }
+        array_push($this->stack, $id);
+        $ret = parent::offsetGet($id);
+        array_pop($this->stack);
+        return $ret;
     }
 
 
