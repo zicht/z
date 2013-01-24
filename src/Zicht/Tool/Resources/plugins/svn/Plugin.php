@@ -67,7 +67,7 @@ class Plugin extends BasePlugin
             return $container['vcs.versionid']($info);
         });
         $container['vcs.current'] = function($container) {
-            return $container['versionof']($container['cwd']);
+            return (string) $container['versionof']($container['cwd']);
         };
     }
 }
