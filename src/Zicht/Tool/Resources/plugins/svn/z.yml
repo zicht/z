@@ -47,7 +47,7 @@ tasks:
         set:
             tag:        ?
             _tgt:       sprintf("%s/tags/%s", vcs.url, tag)
-            _src:       ? sprintf("%s/%s", vcs.url, vcs.current)
+            _src:       sprintf("%s/%s", vcs.url, vcs.current)
 
         do:
             - svn cp $(_src) $(_tgt) -m"(Z) Created tag '$(tag)' from $(vcs.current)"
@@ -81,5 +81,5 @@ tasks:
     v.url:
         help: "Print the svn url of the project"
         set:
-            path: ? ""
-        do: echo $(vcs.url)/$(path)
+            _path: ? ""
+        do: echo $(vcs.url)/$(_path)
