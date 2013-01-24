@@ -77,3 +77,9 @@ tasks:
         do:
             - svn diff $(!verbose ? "--summarize") $(vcs.url)/$(version) $(vcs.url)/$(vcs.current)
 
+    # Print the url of the project
+    v.url:
+        help: "Print the svn url of the project"
+        set:
+            path: ? ""
+        do: echo $(vcs.url)/$(path)
