@@ -17,11 +17,11 @@ class Plugin extends BasePlugin
 
     public function setContainer(Container $container)
     {
-        $container['now'] = date('Ymd-H.i.s');
-        $container['date'] = date('Ymd');
-        $container['cwd'] = getcwd();
-        $container['ask'] = $container->protect(
-            function($q, $default = null) use ($container) {
+        $container->set('now', date('Ymd-H.i.s'));
+        $container->set('date', date('Ymd'));
+        $container->set('cwd', getcwd());
+
+        $container->method('ask', function($container, $q, $default = null) {
                 return $container['console_dialog_helper']->ask(
                     $container->output,
                     $q . ($default ? sprintf(' [<info>%s</info>]', $default) : '') . ': ',
@@ -29,33 +29,28 @@ class Plugin extends BasePlugin
                 );
             }
         );
-        $container['sprintf'] = $container->protect(
-            function($str) use ($container) {
-                $args = func_get_args();
-                $tpl = array_shift($args);
-                return vsprintf($tpl, $args);
-            }
-        );
-        $container['confirm']= $container->protect(
-            function($q, $default = false) use ($container) {
-                return $container['console_dialog_helper']->askConfirmation(
-                    $container->output,
-                    $q .
-                        ($default === false ? ' [y/N] ' : ' [Y/n]'),
-                    $default
-                );
-            }
-        );
-        $container['mtime'] = $container->protect(function($glob) {
+        $container->fn('sprintf');
+        $container->fn('is_dir');
+        $container->fn('is_file');
+
+//        $container['confirm']= $container->protect(
+//            function($q, $default = false) use ($container) {
+//                return $container['console_dialog_helper']->askConfirmation(
+//                    $container->output,
+//                    $q .
+//                        ($default === false ? ' [y/N] ' : ' [Y/n]'),
+//                    $default
+//                );
+//            }
+//        );
+        $container->fn('mtime', function($glob) {
             $ret = array();
             foreach (glob($glob) as $file) {
                 $ret[]= filemtime($file);
             }
             return max($ret);
         });
-        $container['is_dir'] = 'is_dir';
-        $container['is_file'] = 'is_file';
-        $container['url.host'] = $container->protect(function($url) {
+        $container->fn('url.host', function($url) {
             return parse_url($url, PHP_URL_HOST);
         });
     }

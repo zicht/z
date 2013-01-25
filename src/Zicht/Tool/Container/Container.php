@@ -15,12 +15,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Service container
  */
-class Container extends Pimple
+class Container
 {
     protected $plugins = array();
     protected $subscribers = array();
 
     public $output;
+    public $config;
+
+    protected $values = array();
+    protected $declarations = array();
+    protected $functions = array();
 
     protected $stack = array();
     protected $prefix = array();
@@ -30,29 +35,70 @@ class Container extends Pimple
      *
      * @param array $values
      */
-    public function __construct($verbose, $force, $explain)
+    public function __construct($vars, $config)
     {
-        parent::__construct(array(
-            'verbose'     => (bool)$verbose,
-            'force'       => (bool)$force,
-            'explain'     => (bool)$explain,
-            'interactive' => false
-        ));
+        $this->values = $vars;
+        $this->config = $config;
 
-        if (!$explain || $verbose) {
+        if (!$vars['explain'] || $vars['verbose']) {
             $this->subscribe(array($this, 'prefixListener'));
         }
     }
 
-    public function offsetGet($id)
+    public function resolve($id)
     {
         if (in_array($id, $this->stack)) {
             throw new \UnexpectedValueException("Circular reference detected: " . implode(' -> ', $this->stack) . ' -> ' . $id);
         }
         array_push($this->stack, $id);
-        $ret = parent::offsetGet($id);
+        if (!array_key_exists($id, $this->values)) {
+            if (array_key_exists($id, $this->declarations)) {
+                $this->values[$id] = call_user_func($this->declarations[$id], $this);
+            } else {
+                var_dump(array_keys($this->declarations));
+                throw new \InvalidArgumentException("Unresolvable value [$id]");
+            }
+        }
         array_pop($this->stack);
-        return $ret;
+        return $this->values[$id];
+    }
+
+
+    public function set($id, $value)
+    {
+        $this->values[$id] = $value;
+    }
+
+
+    public function fn($id, $callable = null, $needsContainer = false)
+    {
+        if ($callable === null) {
+            $callable = $id;
+        }
+        if (!is_callable($callable)) {
+            throw new \InvalidArgumentException("Not callable");
+        }
+        $this->functions[$id] = array($callable, $needsContainer);
+    }
+
+
+    public function method($id, $callable) {
+        $this->fn($id, $callable, true);
+    }
+
+
+    public function decl($id, $callable)
+    {
+        if (!is_callable($callable)) {
+            throw new \InvalidArgumentException("Not callable");
+        }
+        $this->declarations[$id] = $callable;
+    }
+
+
+    public function has($id)
+    {
+        return !empty($this->values[$id]);
     }
 
 
@@ -66,11 +112,14 @@ class Container extends Pimple
     {
         $args = func_get_args();
         $service = array_shift($args);
-        $service = $this->offsetGet($service);
-        if (!is_callable($service)) {
+        $service = $this->functions[$service];
+        if (!is_callable($service[0])) {
             throw new \InvalidArgumentException("Can not use service '$service' as a function, it is not callable");
         }
-        return call_user_func_array($service, $args);
+        if ($service[1]) {
+            array_unshift($args, $this);
+        }
+        return call_user_func_array($service[0], $args);
     }
 
 
@@ -113,14 +162,14 @@ class Container extends Pimple
     {
         $ret = 0;
         if (trim($cmd)) {
-            if ($this->raw('explain')) {
+            if ($this->resolve('explain')) {
                 $this->output->writeln('( ' . rtrim($cmd, "\n") . ' );');
-            } elseif ($this->raw('interactive')) {
+            } elseif ($this->resolve('interactive')) {
                 passthru($cmd, $ret);
             } else {
                 $ret = null;
                 $process = new \Symfony\Component\Process\Process($cmd);
-                $process->run(array($this, 'processCallback'));
+                $process->run(/*array($this, 'processCallback')*/);
                 $ret = $process->getExitCode();
             }
         }
@@ -162,7 +211,7 @@ class Container extends Pimple
     public function cmd($cmd)
     {
         if (substr($cmd, 0, 1) === '@') {
-            return $this['tasks.' . substr($cmd, 1)];
+            return $this->resolve('tasks.' . substr($cmd, 1));
         }
         return $this->exec($cmd);
     }
@@ -177,12 +226,12 @@ class Container extends Pimple
      */
     public function select($namespace, $key)
     {
-        $this[$namespace] = $key;
-        if (!isset($this['__config'][$namespace][$key])) {
+        $this->values[$namespace] = $key;
+        if (!isset($this->config[$namespace][$key])) {
             throw new \InvalidArgumentException("Invalid {$namespace} provided, {$namespace}.{$key} is not defined");
         }
-        foreach ($this['__config'][$namespace][$key] as $name => $value) {
-            $this[$namespace . '.' . $name] = $value;
+        foreach ($this->config[$namespace][$key] as $name => $value) {
+            $this->values[$namespace . '.' . $name] = $value;
         }
     }
 
@@ -199,33 +248,6 @@ class Container extends Pimple
             return join(' ', $value);
         }
         return (string)$value;
-    }
-
-
-    /**
-     * Register a list of plugins with the container
-     *
-     * @param PluginInterface[] $plugins
-     * @return void
-     */
-    public function setPlugins(array $plugins)
-    {
-        foreach ($plugins as $plugin) {
-            $this->addPlugin($plugin);
-        }
-    }
-
-
-    /**
-     * Add a single plugin to the container and register the container in the plugin using setContainer
-     *
-     * @param \Zicht\Tool\PluginInterface $plugin
-     * @return void
-     */
-    public function addPlugin(PluginInterface $plugin)
-    {
-        $this->plugins[]= $plugin;
-        $plugin->setContainer($this);
     }
 
 

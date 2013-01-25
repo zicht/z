@@ -21,8 +21,7 @@ use \Zicht\Tool\Command as Cmd;
 use \Zicht\Tool\Command\TaskCommand;
 use \Zicht\Tool\Container\Configuration;
 use \Zicht\Tool\Container\Container;
-use \Zicht\Tool\Container\Compiler;
-use \Zicht\Tool\Container\Preprocessor;
+use \Zicht\Tool\Container\Flattener;
 use \Zicht\Tool\Version;
 use \Zicht\Tool\Container\Task;
 
@@ -54,11 +53,12 @@ class Application extends BaseApplication
         }
 
         $container = $this->initContainer(
-            $output,
             $input->hasParameterOption(array('--verbose', '-v')),
             $input->hasParameterOption(array('--force', '-f')),
             $input->hasParameterOption(array('--explain'))
         );
+
+        $container->output = $output;
 
         $this->add(new Cmd\DumpCommand());
         $this->add(new Cmd\InitCommand());
@@ -79,7 +79,7 @@ class Application extends BaseApplication
                 $this->add($cmd);
             }
         }
-        $container['console_dialog_helper']= $this->getHelperSet()->get('dialog');
+//        $container['console_dialog_helper']= $this->getHelperSet()->get('dialog');
 
         return parent::run($input, $output);
     }
@@ -92,9 +92,42 @@ class Application extends BaseApplication
      *
      * @throws \UnexpectedValueException
      */
-    public function initContainer($output, $verbose, $force, $explain)
+    public function initContainer($verbose, $force, $explain)
     {
-        $zFileLocator = new FileLocator(array(getcwd(), getenv('HOME') . '/.config/z/'));
+        list($plugins, $config) = $this->getConfig();
+
+        $compiler = new Flattener();
+        $flattened = $compiler->flatten($config);
+        $flattened += array(
+            'verbose'     => (bool)$verbose,
+            'force'       => (bool)$force,
+            'explain'     => (bool)$explain,
+            'interactive' => false
+        );
+        $z = new Container($flattened, $config);
+
+        $buffer = new \Zicht\Tool\Script\Buffer();
+        $this->tasks = array();
+        foreach ($config['tasks'] as $name => $taskDef) {
+            $task = new Task($taskDef, $name);
+            $this->tasks[$name]= $task;
+            $buffer->writeln(sprintf('$z->decl(%s, ', var_export('tasks.' . $name, true)));
+            $task->compile($buffer);
+            $buffer->writeln(');');
+        }
+        unset($config['tasks']);
+
+        eval($buffer->getResult());
+        foreach ($plugins as $plugin) {
+            $plugin->setContainer($z);
+        }
+
+        return $z;
+    }
+
+    public function getConfig()
+    {
+        $zFileLocator  = new FileLocator(array(getcwd(), getenv('HOME') . '/.config/z/'));
         $pluginLocator = new FileLocator(__DIR__ . '/Resources/plugins');
 
         $loader = new FileLoader($pluginLocator);
@@ -109,11 +142,11 @@ class Application extends BaseApplication
         }
 
         $pluginFiles = $loader->getPlugins();
-        $plugins = array();
+        $plugins     = array();
         foreach ($pluginFiles as $name => $file) {
             require_once $file;
             $className = sprintf('Zicht\Tool\Plugin\%s\Plugin', ucfirst($name));
-            $class = new \ReflectionClass($className);
+            $class     = new \ReflectionClass($className);
             if (!$class->implementsInterface('Zicht\Tool\PluginInterface')) {
                 throw new \UnexpectedValueException("The class $className is not a 'Zicht\\Tool\\PluginInterface'");
             }
@@ -121,25 +154,11 @@ class Application extends BaseApplication
         }
 
         $processor = new Processor();
-        $this->config = $processor->processConfiguration(
+        $config    = $processor->processConfiguration(
             new Configuration($plugins),
             $loader->getConfigs()
         );
 
-        $compiler = new Compiler('container');
-        $cp = $this->config;
-        $this->tasks = array();
-        foreach ($cp['tasks'] as $i => $task) {
-            $this->tasks[$i] = $cp['tasks.' . $i] = new Task($task, $i);
-        }
-        $code = $compiler->compile($cp);
-
-        $container = new Container($verbose, $force, $explain);
-        $container->setPlugins($plugins);
-        eval($code);
-        $container['__definition'] = $code;
-        $container['__config'] = $this->config;
-        $container->output = $output;
-        return $container;
+        return array($plugins, $config);
     }
 }

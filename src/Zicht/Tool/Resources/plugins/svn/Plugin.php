@@ -44,7 +44,7 @@ class Plugin extends BasePlugin
 
     public function setContainer(Container $container)
     {
-        $container['vcs.versionid'] = $container->protect(function($info) use($container) {
+        $container->method('vcs.versionid', function($container, $info) {
             if (
                 trim($info)
                 && preg_match('/^URL: (.*)/m', $info, $urlMatch)
@@ -52,22 +52,22 @@ class Plugin extends BasePlugin
             ) {
                 $url = $urlMatch[1];
                 $rev = $revMatch[1];
-                return ltrim(str_replace($container['vcs.url'], '', $url), '/') . '@' . $rev;
+                return ltrim(str_replace($container->resolve('vcs.url'), '', $url), '/') . '@' . $rev;
             }
             return null;
         });
-        $container['versionof'] = $container->protect(function($dir) use($container) {
-            if (is_file($revFile = ($dir . '/' . $container['vcs.export.revfile']))) {
+        $container->method('versionof', function($container, $dir) {
+            if (is_file($revFile = ($dir . '/' . $container->resolve('vcs.export.revfile')))) {
                 $info = file_get_contents($revFile);
             } elseif (is_dir($dir)) {
                 $info = @shell_exec('svn info ' . $dir . ' 2>&1');
             } else {
                 return null;
             }
-            return $container['vcs.versionid']($info);
+            return $container->call('vcs.versionid', $info);
         });
-        $container['vcs.current'] = function($container) {
-            return (string) $container['versionof']($container['cwd']);
-        };
+        $container->decl('vcs.current', function($container) {
+            return $container->call('versionof', $container->resolve('cwd'));
+        });
     }
 }

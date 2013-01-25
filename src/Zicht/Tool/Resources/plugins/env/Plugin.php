@@ -16,7 +16,7 @@ class Plugin extends BasePlugin
 {
     public function setContainer(Container $container)
     {
-        $container['env.versionat'] = $container->protect(function($env, $verbose) use($container) {
+        $container->fn('env.versionat', function($container, $env, $verbose) {
             $tmp = tempnam(sys_get_temp_dir(), 'z');
             $container->cmd(sprintf(
                 'scp %s:%s/%s %s',
@@ -33,8 +33,8 @@ class Plugin extends BasePlugin
                 return $container['vcs.versionid']($vcsInfo);
             }
         });
-        $container['env.ssh.connectable'] = function($container) use($container) {
+        $container->fn('env.ssh.connectable', function($container) {
             return shell_exec(sprintf('ssh -oBatchMode=yes %s "echo 1" 2>/dev/null;', $container['env.ssh']));
-        };
+        });
     }
 }

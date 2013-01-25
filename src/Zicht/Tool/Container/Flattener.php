@@ -9,7 +9,7 @@ namespace Zicht\Tool\Container;
 /**
  * The compiler compiles the service container definition based on the container configuration
  */
-class Compiler
+class Flattener
 {
     /**
      * Checks if the passed variable is a list, which is a 0-indexed incremental array.
@@ -27,28 +27,6 @@ class Compiler
 
 
     /**
-     * Construct the compiler with the passed container name as a variable to use for the container definition.
-     *
-     * @param string $containerName
-     */
-    public function __construct($containerName = 'z')
-    {
-        $this->containerName = $containerName;
-    }
-
-
-    /**
-     * Returns the variable name used in the compiled PHP code for the container to be compiled.
-     *
-     * @return string
-     */
-    public function getContainerName()
-    {
-        return $this->containerName;
-    }
-
-
-    /**
      * Compile the input array.
      *
      * @param array $input
@@ -57,16 +35,14 @@ class Compiler
      *
      * @throws \InvalidArgumentException
      */
-    public function compile($input, $prefix = '')
+    public function flatten($input, $prefix = '')
     {
-        $ret = '';
+        $ret = array();
         foreach ($input as $name => $node) {
             if (self::isList($node) || is_scalar($node) || is_null($node)) {
-                $ret .= $this->compileValue($prefix . $name, var_export($node, true)) . "\n";
+                $ret[$prefix . $name] = $node;
             } elseif (is_array($node)) {
-                $ret .= $this->compile($node, $prefix . $name . '.');
-            } elseif ($node instanceof Compilable) {
-                $ret .= $this->compileValue($prefix . $name, $node->compile($this)) . "\n";
+                $ret = array_merge($ret, $this->flatten($node, $prefix . $name . '.'));
             } else {
                 throw new \InvalidArgumentException("Can not compile node at path {$prefix}{$name}.");
             }

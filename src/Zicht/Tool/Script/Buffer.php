@@ -32,11 +32,19 @@ class Buffer
      * Write some code to the buffer
      *
      * @param string $data
-     * @return void
+     * @return Buffer
      */
     public function write($data)
     {
         $this->result .= $data;
+        return $this;
+    }
+
+
+    public function writeln($data)
+    {
+        $this->result .= $data . PHP_EOL;
+        return $this;
     }
 
 
