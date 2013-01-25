@@ -30,7 +30,7 @@ class Container extends Pimple
      *
      * @param array $values
      */
-    public function __construct(OutputInterface $output, $verbose, $force, $explain)
+    public function __construct($verbose, $force, $explain)
     {
         parent::__construct(array(
             'verbose'     => (bool)$verbose,
@@ -42,8 +42,6 @@ class Container extends Pimple
         if (!$explain || $verbose) {
             $this->subscribe(array($this, 'prefixListener'));
         }
-
-        $this->output = $output;
     }
 
     public function offsetGet($id)
@@ -81,11 +79,11 @@ class Container extends Pimple
         $reset = false;
         switch ($event) {
             case 'start':
-                array_push($this->prefix, $task);
+                $this->prefix[]= (string)$task;
                 $reset = true;
                 break;
             case 'end':
-                array_pop($this->prefix);
+                $this->prefix = array_slice($this->prefix, 0, -1);
                 $reset = true;
                 break;
         }
@@ -94,7 +92,7 @@ class Container extends Pimple
             if ($this->output->getVerbosity() > 1) {
                 $this->output->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
             } elseif (count($this->prefix) > 1) {
-                $prefix = end($this->prefix);
+                $prefix = $this->prefix[count($this->prefix) -1];
                 if (strlen($prefix) > 21) {
                     $prefix = substr($prefix, 0, 9) . '...' . substr($prefix, -9);
                 }
@@ -122,10 +120,7 @@ class Container extends Pimple
             } else {
                 $ret = null;
                 $process = new \Symfony\Component\Process\Process($cmd);
-                $output = $this->output;
-                $process->run(function($mode, $data) use($output) {
-                    $output->write($data);
-                });
+                $process->run(array($this, 'processCallback'));
                 $ret = $process->getExitCode();
             }
         }
@@ -134,6 +129,12 @@ class Container extends Pimple
         }
 
         return $ret;
+    }
+
+
+    public function processCallback($mode, $data)
+    {
+        $this->output->write($data);
     }
 
 

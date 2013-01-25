@@ -11,13 +11,15 @@ namespace Zicht\Tool\Output;
 use \Symfony\Component\Console\Formatter\OutputFormatter;
 use \Symfony\Component\Console\Formatter\OutputFormatterStyleInterface;
 use Symfony\Component\Console\Output\ConsoleOutput as BaseOutput;
+use Symfony\Component\Console\Output\OutputInterface;
+
 class ConsoleOutput extends BaseOutput
 {
     protected $prefix = '';
 
     public function write($messages, $newline = false, $type = 0)
     {
-        if (self::VERBOSITY_QUIET === $this->getVerbosity()) {
+        if (OutputInterface::VERBOSITY_QUIET === $this->getVerbosity()) {
             return;
         }
 

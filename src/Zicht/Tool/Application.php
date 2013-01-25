@@ -44,21 +44,6 @@ class Application extends BaseApplication
     }
 
 
-    /**
-     * Injects the container into the command if it expects one.
-     *
-     * @param \Symfony\Component\Console\Command\Command $command
-     * @return \Symfony\Component\Console\Command\Command
-     */
-    public function add(Command $command)
-    {
-        if ($command instanceof Cmd\BaseCommand) {
-            $command->setContainer($this->container);
-        }
-        return parent::add($command);
-    }
-
-
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
         if (null === $input) {
@@ -68,7 +53,7 @@ class Application extends BaseApplication
             $output = new Output\ConsoleOutput();
         }
 
-        $this->initContainer(
+        $container = $this->initContainer(
             $output,
             $input->hasParameterOption(array('--verbose', '-v')),
             $input->hasParameterOption(array('--force', '-f')),
@@ -83,7 +68,7 @@ class Application extends BaseApplication
             // if a tasks is prefixed with an underscore, it is considered an internal task
             if (substr($name, 0, 1) !== '_') {
                 $cmd = new TaskCommand(str_replace('.', ':', $name));
-                $cmd->setContainer($this->container);
+                $cmd->setContainer($container);
                 foreach ($task->getArguments() as $var => $isRequired) {
                     $cmd->addArgument($var, $isRequired ? InputArgument::REQUIRED : InputArgument::OPTIONAL);
                 }
@@ -94,9 +79,7 @@ class Application extends BaseApplication
                 $this->add($cmd);
             }
         }
-        $this->container->output = $output;
-        $this->container->input = $input;
-        $this->container['console_dialog_helper']= $this->getHelperSet()->get('dialog');
+        $container['console_dialog_helper']= $this->getHelperSet()->get('dialog');
 
         return parent::run($input, $output);
     }
@@ -105,7 +88,7 @@ class Application extends BaseApplication
     /**
      * Initializes the container.
      *
-     * @return void
+     * @return Container
      *
      * @throws \UnexpectedValueException
      */
@@ -151,12 +134,12 @@ class Application extends BaseApplication
         }
         $code = $compiler->compile($cp);
 
-        $container = new Container($output, $verbose, $force, $explain);
+        $container = new Container($verbose, $force, $explain);
         $container->setPlugins($plugins);
         eval($code);
-        $this->container = $container;
-
-        $this->container['__definition'] = $code;
-        $this->container['__config'] = $this->config;
+        $container['__definition'] = $code;
+        $container['__config'] = $this->config;
+        $container->output = $output;
+        return $container;
     }
 }
