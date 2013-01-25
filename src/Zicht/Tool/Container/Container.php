@@ -21,6 +21,8 @@ class Container
     protected $subscribers = array();
 
     public $output;
+
+    // TODO check if config really needs to be public
     public $config;
 
     protected $values = array();
@@ -40,9 +42,18 @@ class Container
         $this->values = $vars;
         $this->config = $config;
 
-        if (!$vars['explain'] || $vars['verbose']) {
-            $this->subscribe(array($this, 'prefixListener'));
+        $this->subscribe(array($this, 'prefixListener'));
+
+        if (!$this->has('explain')) {
+            $this->set('explain', false);
         }
+        if (!$this->has('verbose')) {
+            $this->set('verbose', false);
+        }
+        if (!$this->has('force')) {
+            $this->set('force', false);
+        }
+        $this->set('interactive', false);
     }
 
     public function resolve($id)
@@ -50,6 +61,7 @@ class Container
         if (in_array($id, $this->stack)) {
             throw new \UnexpectedValueException("Circular reference detected: " . implode(' -> ', $this->stack) . ' -> ' . $id);
         }
+
         array_push($this->stack, $id);
         if (!array_key_exists($id, $this->values)) {
             if (array_key_exists($id, $this->declarations)) {
@@ -60,6 +72,7 @@ class Container
             }
         }
         array_pop($this->stack);
+
         return $this->values[$id];
     }
 
@@ -125,6 +138,9 @@ class Container
 
     function prefixListener($task, $event)
     {
+        if (!$this->resolve('explain') && !$this->resolve('verbose')) {
+            return;
+        }
         $reset = false;
         switch ($event) {
             case 'start':
@@ -182,7 +198,9 @@ class Container
 
     public function processCallback($mode, $data)
     {
-        $this->output->write($data);
+        if (isset($this->output)) {
+            $this->output->write($data);
+        }
     }
 
 
