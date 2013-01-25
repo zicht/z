@@ -33,9 +33,9 @@ class Container extends Pimple
     public function __construct(OutputInterface $output, $verbose, $force, $explain)
     {
         parent::__construct(array(
-            'verbose' => $verbose,
-            'force' => $force,
-            'explain' => $explain,
+            'verbose'     => (bool)$verbose,
+            'force'       => (bool)$force,
+            'explain'     => (bool)$explain,
             'interactive' => false
         ));
 
@@ -55,6 +55,24 @@ class Container extends Pimple
         $ret = parent::offsetGet($id);
         array_pop($this->stack);
         return $ret;
+    }
+
+
+    /**
+     * Separate helper for calling a service as a function.
+     *
+     * @return mixed
+     * @throws \InvalidArgumentException
+     */
+    public function call()
+    {
+        $args = func_get_args();
+        $service = array_shift($args);
+        $service = $this->offsetGet($service);
+        if (!is_callable($service)) {
+            throw new \InvalidArgumentException("Can not use service '$service' as a function, it is not callable");
+        }
+        return call_user_func_array($service, $args);
     }
 
 
@@ -97,9 +115,9 @@ class Container extends Pimple
     {
         $ret = 0;
         if (trim($cmd)) {
-            if ($this['explain']) {
+            if ($this->raw('explain')) {
                 $this->output->writeln('( ' . rtrim($cmd, "\n") . ' );');
-            } elseif ($this['interactive']) {
+            } elseif ($this->raw('interactive')) {
                 passthru($cmd, $ret);
             } else {
                 $ret = null;
@@ -115,16 +133,6 @@ class Container extends Pimple
             throw new \UnexpectedValueException("Command '$cmd' failed with exit code {$ret}");
         }
 
-        return $ret;
-    }
-
-
-    public function interact($cmd)
-    {
-        $ret = 0;
-        if ($ret != 0) {
-            throw new \UnexpectedValueException("Command '$cmd' failed with exit code {$ret}");
-        }
         return $ret;
     }
 

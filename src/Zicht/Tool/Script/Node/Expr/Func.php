@@ -21,7 +21,7 @@ class Func extends Branch
 
     public function compile(Buffer $compiler)
     {
-        $compiler->write('call_user_func($z[' . var_export($this->name, true) . ']');
+        $compiler->write('$z->call(' . var_export($this->name, true));
         foreach ($this->nodes as $i => $n) {
             $compiler->write(', ');
             $n->compile($compiler);
