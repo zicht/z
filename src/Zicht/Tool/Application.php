@@ -79,7 +79,7 @@ class Application extends BaseApplication
                 $this->add($cmd);
             }
         }
-//        $container['console_dialog_helper']= $this->getHelperSet()->get('dialog');
+        $container->console_dialog_helper = $this->getHelperSet()->get('dialog');
 
         return parent::run($input, $output);
     }

@@ -22,7 +22,7 @@ class Plugin extends BasePlugin
         $container->set('cwd', getcwd());
 
         $container->method('ask', function($container, $q, $default = null) {
-                return $container['console_dialog_helper']->ask(
+                return $container->console_dialog_helper->ask(
                     $container->output,
                     $q . ($default ? sprintf(' [<info>%s</info>]', $default) : '') . ': ',
                     $default
@@ -33,16 +33,17 @@ class Plugin extends BasePlugin
         $container->fn('is_dir');
         $container->fn('is_file');
 
-//        $container['confirm']= $container->protect(
-//            function($q, $default = false) use ($container) {
-//                return $container['console_dialog_helper']->askConfirmation(
-//                    $container->output,
-//                    $q .
-//                        ($default === false ? ' [y/N] ' : ' [Y/n]'),
-//                    $default
-//                );
-//            }
-//        );
+        $container->method(
+            'confirm',
+            function($container, $q, $default = false) {
+                return $container->console_dialog_helper->askConfirmation(
+                    $container->output,
+                    $q .
+                        ($default === false ? ' [y/N] ' : ' [Y/n]'),
+                    $default
+                );
+            }
+        );
         $container->fn('mtime', function($glob) {
             $ret = array();
             foreach (glob($glob) as $file) {

@@ -9,8 +9,8 @@ namespace Zicht\Tool\Container;
 use \Zicht\Tool\Script;
 use \Zicht\Tool\PluginInterface;
 use \UnexpectedValueException;
-use \Pimple;
-use Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\Process\Process;
 
 /**
  * Service container
@@ -167,9 +167,8 @@ class Container
             } elseif ($this->resolve('interactive')) {
                 passthru($cmd, $ret);
             } else {
-                $ret = null;
                 $process = new \Symfony\Component\Process\Process($cmd);
-                $process->run(/*array($this, 'processCallback')*/);
+                $process->run(array($this, 'processCallback'));
                 $ret = $process->getExitCode();
             }
         }
