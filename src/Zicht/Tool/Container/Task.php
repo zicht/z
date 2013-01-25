@@ -95,7 +95,7 @@ class Task implements Compilable
         $hasUnless = false;
         foreach (array('pre', 'do', 'post') as $scope) {
             if ($scope === 'do' && !empty($this->taskDef['unless'])) {
-                $ret .= 'if (!$z[\'force\'] && (' . $exprcompiler->compile($this->taskDef['unless']) . ')) {' . $eol(1);
+                $ret .= 'if (!$z->raw(\'force\') && (' . $exprcompiler->compile($this->taskDef['unless']) . ')) {' . $eol(1);
                 $ret .= '$z->cmd(' . var_export(
                     sprintf(
                         'echo "%s skipped, because (%s)"',
