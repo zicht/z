@@ -45,9 +45,17 @@ class Plugin extends BasePlugin
             }
         );
         $container->fn('mtime', function($glob) {
+            if (!is_array($glob)) {
+                $glob = array($glob);
+            }
             $ret = array();
-            foreach (glob($glob) as $file) {
-                $ret[]= filemtime($file);
+            foreach ($glob as $pattern) {
+                foreach (glob($pattern) as $file) {
+                    $ret[]= filemtime($file);
+                }
+            }
+            if (!count($ret)) {
+                return -1;
             }
             return max($ret);
         });

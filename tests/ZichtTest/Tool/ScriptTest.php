@@ -28,7 +28,7 @@ class ScriptTest extends \PHPUnit_Framework_TestCase
      */
     public function testScript($in, $vars, $expect)
     {
-        $context = new Container($vars);
+        $context = new Container($vars, $vars);
         $script = new Script($in);
         $this->assertEquals($expect, $script->evaluate($context));
     }

@@ -21,7 +21,11 @@ class Container
     protected $subscribers = array();
 
     public $output;
+
+    // TODO check if config really needs to be public
     public $config;
+
+    public $definition = '';
 
     protected $values = array();
     protected $declarations = array();
@@ -40,9 +44,18 @@ class Container
         $this->values = $vars;
         $this->config = $config;
 
-        if (!$vars['explain'] || $vars['verbose']) {
-            $this->subscribe(array($this, 'prefixListener'));
+        $this->subscribe(array($this, 'prefixListener'));
+
+        if (!$this->has('explain')) {
+            $this->set('explain', false);
         }
+        if (!$this->has('verbose')) {
+            $this->set('verbose', false);
+        }
+        if (!$this->has('force')) {
+            $this->set('force', false);
+        }
+        $this->set('interactive', false);
     }
 
     public function resolve($id)
@@ -50,6 +63,7 @@ class Container
         if (in_array($id, $this->stack)) {
             throw new \UnexpectedValueException("Circular reference detected: " . implode(' -> ', $this->stack) . ' -> ' . $id);
         }
+
         array_push($this->stack, $id);
         if (!array_key_exists($id, $this->values)) {
             if (array_key_exists($id, $this->declarations)) {
@@ -60,6 +74,7 @@ class Container
             }
         }
         array_pop($this->stack);
+
         return $this->values[$id];
     }
 
@@ -116,15 +131,24 @@ class Container
         if (!is_callable($service[0])) {
             throw new \InvalidArgumentException("Can not use service '$service' as a function, it is not callable");
         }
+
+        // if the service needs the container, it is specified in the decl() call as the second param:
         if ($service[1]) {
             array_unshift($args, $this);
         }
+
         return call_user_func_array($service[0], $args);
     }
 
 
     function prefixListener($task, $event)
     {
+        if ($this->resolve('explain') && !$this->resolve('verbose')) {
+            // don't do prefixing if the "explain" option is given, unless the "verbose" option is given too
+            // in the latter case we do want the prefixes (because then we would want to know why certain
+            // pieces are executed
+            return;
+        }
         $reset = false;
         switch ($event) {
             case 'start':
@@ -182,7 +206,9 @@ class Container
 
     public function processCallback($mode, $data)
     {
-        $this->output->write($data);
+        if (isset($this->output)) {
+            $this->output->write($data);
+        }
     }
 
 

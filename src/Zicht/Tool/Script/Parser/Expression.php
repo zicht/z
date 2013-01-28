@@ -62,6 +62,16 @@ class Expression extends AbstractParser
             $stream->next();
             $ret = new \Zicht\Tool\Script\Node\Expr\Parens($this->parse($stream));
             $stream->expect(')');
+        } elseif ($stream->match(Token::OPERATOR, '[')) {
+            $stream->next();
+            $ret = new \Zicht\Tool\Script\Node\Expr\ListNode();
+            if (!$stream->match(Token::OPERATOR, ']')) {
+                $ret->append($this->parse($stream));
+                while ($stream->match(',')) {
+                    $ret->append($this->parse($stream));
+                }
+            }
+            $stream->expect(Token::OPERATOR, ']');
         } else {
             var_dump($stream);
             $this->err($stream);

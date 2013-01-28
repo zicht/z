@@ -19,9 +19,9 @@ class Script extends Branch
             $depth = 0;
             if ($this->nodes[0] instanceof Expr\Conditional) {
                 $nodes = $this->nodes;
-                $compiler->write('if (');
+                $compiler->indent(1)->write('if (');
                 $this->nodes[0]->compile($compiler);
-                $compiler->write(') {');
+                $compiler->writeln(') {');
                 array_shift($nodes);
                 $depth ++;
             } else {
@@ -38,7 +38,7 @@ class Script extends Branch
             $compiler->write(');');
 
             while ($depth--) {
-                $compiler->write('}');
+                $compiler->indent(-1)->write('}');
             }
         }
     }
