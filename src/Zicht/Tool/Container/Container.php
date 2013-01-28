@@ -131,9 +131,12 @@ class Container
         if (!is_callable($service[0])) {
             throw new \InvalidArgumentException("Can not use service '$service' as a function, it is not callable");
         }
+
+        // if the service needs the container, it is specified in the decl() call as the second param:
         if ($service[1]) {
             array_unshift($args, $this);
         }
+
         return call_user_func_array($service[0], $args);
     }
 
