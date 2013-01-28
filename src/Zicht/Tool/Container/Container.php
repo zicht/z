@@ -140,7 +140,10 @@ class Container
 
     function prefixListener($task, $event)
     {
-        if (!$this->resolve('explain') && !$this->resolve('verbose')) {
+        if ($this->resolve('explain') && !$this->resolve('verbose')) {
+            // don't do prefixing if the "explain" option is given, unless the "verbose" option is given too
+            // in the latter case we do want the prefixes (because then we would want to know why certain
+            // pieces are executed
             return;
         }
         $reset = false;
