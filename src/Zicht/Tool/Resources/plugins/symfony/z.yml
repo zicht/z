@@ -12,7 +12,7 @@ tasks:
         cd $(build.dir) && composer install --no-scripts;
 
     _symfony.build.assets_install: |
-        php $(symfony.console) assets:install $(symfony.web) --env=$(env) --no-debug;
+        cd $(build.dir) && php $(symfony.console) assets:install $(symfony.web) --env=$(env) --no-debug;
 
     _symfony.build.assetic_dump: |
         cd $(build.dir) && php $(symfony.console) assetic:dump --env=$(env) --no-debug;
