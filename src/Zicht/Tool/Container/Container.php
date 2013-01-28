@@ -25,6 +25,8 @@ class Container
     // TODO check if config really needs to be public
     public $config;
 
+    public $definition = '';
+
     protected $values = array();
     protected $declarations = array();
     protected $functions = array();

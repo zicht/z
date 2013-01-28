@@ -60,7 +60,7 @@ class DumpCommand extends BaseCommand
         } else {
             $output->writeln(Yaml::dump($this->container->config, 5, 4));
             if ($output->getVerbosity() > 1) {
-                $output->writeln($this->container['__definition'], OutputInterface::OUTPUT_RAW);
+                $output->writeln($this->container->definition, OutputInterface::OUTPUT_RAW);
             }
         }
         if ($input->getOption('verify')) {

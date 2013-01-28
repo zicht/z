@@ -47,14 +47,16 @@ class Task
 
         $taskName = var_export($this->name, true);
 
-        $buffer->write('function($z) {' . PHP_EOL);
-        $buffer->write(sprintf('$z->notify(%s, "start");', $taskName));
+        $buffer
+            ->indent(1)->writeln('function($z) {')
+            ->writeln(sprintf('$z->notify(%s, "start");', $taskName))
+        ;
 
         foreach ($this->taskDef['set'] as $name => $value) {
             if ($value && preg_match('/^\?\s*(.*)/', trim($value), $m)) {
                 $m[1] = trim($m[1]);
 
-                $buffer->writeln(sprintf('if (!$z->has(%s)) {', var_export($name, true)));
+                $buffer->indent(1)->writeln(sprintf('if (!$z->has(%s)) {', var_export($name, true)));
                 if (!$m[1]) {
                     $buffer->writeln(sprintf(
                         'throw new \RuntimeException(\'required variable %s is not defined\');',
@@ -69,7 +71,7 @@ class Task
                         )
                     );
                 }
-                $buffer->writeln('}');
+                $buffer->indent(-1)->writeln('}');
             } else {
                 $buffer->writeln(
                     sprintf(
@@ -117,7 +119,7 @@ class Task
         }
         $buffer->writeln(sprintf('$z->notify(%s, "end");', $taskName));
         $buffer->writeln('return $ret;');
-        $buffer->writeln('}');
+        $buffer->writeln('}')->indent(-1);
     }
 
 

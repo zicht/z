@@ -20,6 +20,14 @@ class BaseCommand extends Command
 {
     protected $container;
 
+
+    public function __construct(Container $container, $name = null)
+    {
+        parent::__construct($name);
+        $this->setContainer($container);
+    }
+
+
     /**
      * Set the container instance
      *

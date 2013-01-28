@@ -21,7 +21,7 @@ class Expression
             $substr = substr($string, $i);
             $before = $i;
 
-            if (preg_match('/^(==|<=?|>=?|!=?|\?|:|\|\||&&|xor|or|and|\.)/', $substr, $m)) {
+            if (preg_match('/^(==|<=?|>=?|!=?|\?|:|\|\||&&|xor|or|and|\.|\[|\])/', $substr, $m)) {
                 $ret[]= new Token(Token::OPERATOR, $m[0]);
                 $i += strlen($m[0]);
             } elseif (preg_match('/^[a-z_][\w.]*/i', $substr, $m)) {

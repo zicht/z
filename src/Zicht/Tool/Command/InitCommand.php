@@ -52,13 +52,16 @@ EOH
         }
 
         /** @var $helper \Symfony\Component\Console\Helper\DialogHelper */
-        $config = array();
+        $config = array(
+            'plugins' => array('core', 'svn', 'rsync')
+        );
+
         $config['vcs']['url'] = preg_replace(
             '!/(trunk|branches/[^/]+)$/?!',
             '',
             trim(shell_exec('svn info | grep URL | awk \'{print $2}\''))
         );
-        $config['vcs']['url'] = $this->container['ask']('VCS url', $config['vcs']['url']);
+        $config['vcs']['url'] = $this->getHelper('dialog')->ask($output, 'VCS url: ');
 
         $settings = array(
             'name'  => 'Environment name',

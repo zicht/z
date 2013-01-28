@@ -25,6 +25,7 @@ class Buffer
     public function __construct()
     {
         $this->result = '';
+        $this->indent = 0;
     }
 
 
@@ -43,7 +44,16 @@ class Buffer
 
     public function writeln($data)
     {
-        $this->result .= $data . PHP_EOL;
+        $this->result .= $data . PHP_EOL . str_repeat('    ', $this->indent);
+        return $this;
+    }
+
+
+    public function indent($increment = false)
+    {
+        if (false !== $increment) {
+            $this->indent += $increment;
+        }
         return $this;
     }
 

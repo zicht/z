@@ -60,15 +60,14 @@ class Application extends BaseApplication
 
         $container->output = $output;
 
-        $this->add(new Cmd\DumpCommand());
-        $this->add(new Cmd\InitCommand());
+        $this->add(new Cmd\DumpCommand($container));
+//        $this->add(new Cmd\InitCommand($container));
 
         /** @var $task \Zicht\Tool\Container\Task */
         foreach ($this->tasks as $name => $task) {
             // if a tasks is prefixed with an underscore, it is considered an internal task
             if (substr($name, 0, 1) !== '_') {
-                $cmd = new TaskCommand(str_replace('.', ':', $name));
-                $cmd->setContainer($container);
+                $cmd = new TaskCommand($container, str_replace('.', ':', $name));
                 foreach ($task->getArguments() as $var => $isRequired) {
                     $cmd->addArgument($var, $isRequired ? InputArgument::REQUIRED : InputArgument::OPTIONAL);
                 }
@@ -111,13 +110,16 @@ class Application extends BaseApplication
         foreach ($config['tasks'] as $name => $taskDef) {
             $task = new Task($taskDef, $name);
             $this->tasks[$name]= $task;
-            $buffer->writeln(sprintf('$z->decl(%s, ', var_export('tasks.' . $name, true)));
+            $buffer->indent(1)->writeln('$z->decl(');
+            $buffer->writeln(var_export('tasks.' . $name, true) . ',');
             $task->compile($buffer);
-            $buffer->writeln(');');
+            $buffer->indent(-1)->writeln(');');
         }
         unset($config['tasks']);
 
+        $z->definition = $buffer->getResult();
         eval($buffer->getResult());
+
         foreach ($plugins as $plugin) {
             $plugin->setContainer($z);
         }
@@ -154,7 +156,7 @@ class Application extends BaseApplication
         }
 
         $processor = new Processor();
-        $config    = $processor->processConfiguration(
+        $config = $processor->processConfiguration(
             new Configuration($plugins),
             $loader->getConfigs()
         );
