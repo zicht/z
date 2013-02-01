@@ -21,7 +21,14 @@ class Plugin extends BasePlugin
         $container->set('date', date('Ymd'));
         $container->set('cwd', getcwd());
 
-        $container->method('ask', function($container, $q, $default = null) {
+        // simple php functions
+        $container->fn('sprintf');
+        $container->fn('is_dir');
+        $container->fn('is_file');
+
+        $container->method(
+            'ask',
+            function($container, $q, $default = null) {
                 return $container->console_dialog_helper->ask(
                     $container->output,
                     $q . ($default ? sprintf(' [<info>%s</info>]', $default) : '') . ': ',
@@ -29,9 +36,25 @@ class Plugin extends BasePlugin
                 );
             }
         );
-        $container->fn('sprintf');
-        $container->fn('is_dir');
-        $container->fn('is_file');
+        $container->method(
+            'choose',
+            function($container, $q, $options) {
+                foreach ($options as $key => $option) {
+                    $container->output->writeln(sprintf('[<info>%s</info>] %s', $key, $option));
+                }
+
+                return $container->console_dialog_helper->askAndValidate(
+                    $container->output,
+                    "$q: ",
+                    function($value) use($options) {
+                        if (!array_key_exists($value, $options)) {
+                            throw new \InvalidArgumentException("Invalid option [$value]");
+                        }
+                        return $options[$value];
+                    }
+                );
+            }
+        );
 
         $container->method(
             'confirm',
