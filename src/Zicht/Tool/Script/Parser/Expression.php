@@ -68,6 +68,7 @@ class Expression extends AbstractParser
             if (!$stream->match(Token::OPERATOR, ']')) {
                 $ret->append($this->parse($stream));
                 while ($stream->match(',')) {
+                    $stream->next();
                     $ret->append($this->parse($stream));
                 }
             }
