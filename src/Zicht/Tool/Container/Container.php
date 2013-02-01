@@ -70,6 +70,7 @@ class Container
                 $this->values[$id] = call_user_func($this->declarations[$id], $this);
             } else {
                 var_dump(array_keys($this->declarations));
+                array_pop($this->stack);
                 throw new \InvalidArgumentException("Unresolvable value [$id]");
             }
         }
@@ -297,7 +298,7 @@ class Container
     public function notify($task, $event)
     {
         foreach ($this->subscribers as $subscriber) {
-            call_user_func($subscriber, $task, $event);
+            call_user_func($subscriber, $task, $event, $this);
         }
     }
 

@@ -20,6 +20,7 @@ class Plugin extends BasePlugin
         $container->set('now', date('Ymd-H.i.s'));
         $container->set('date', date('Ymd'));
         $container->set('cwd', getcwd());
+        $container->set('user', getenv('USER'));
 
         // simple php functions
         $container->fn('sprintf');
