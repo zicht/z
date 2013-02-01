@@ -55,10 +55,12 @@ class Plugin extends BasePlugin
                 $projectUrl = $container->resolve('vcs.url');
 
                 if (substr($url, 0, strlen($projectUrl)) != $projectUrl) {
-                    throw new \UnexpectedValueException("The project url {$projectUrl} does not match the VCS url {$url}");
+                    $err = "The project url {$projectUrl} does not match the VCS url {$url}\n";
+                    $err .= "Maybe you need to relocate your working copy?";
+                    throw new \UnexpectedValueException($err);
                 }
 
-                return ltrim(str_replace($container->resolve('vcs.url'), '', $url), '/') . '@' . $rev;
+                return ltrim(substr($url, strlen($projectUrl)), '/') . '@' . $rev;
             }
             return null;
         });
