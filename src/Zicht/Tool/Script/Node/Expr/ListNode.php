@@ -16,7 +16,7 @@ class ListNode extends Branch
         $compiler->write('array(');
         $i = 0;
         foreach ($this->nodes as $child) {
-            if ($i > 0) {
+            if ($i++ > 0) {
                 $compiler->write(', ');
             }
             $child->compile($compiler);

@@ -80,6 +80,17 @@ class TokenStream
 
 
     /**
+     * Returns the pointer in the stream
+     *
+     * @return int
+     */
+    public function key()
+    {
+        return $this->ptr;
+    }
+
+
+    /**
      * Checks if the current token matches the specified type and/or value
      *
      * @param string $type

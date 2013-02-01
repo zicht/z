@@ -33,6 +33,6 @@ abstract class AbstractParser implements ParserInterface
      */
     final public function err(TokenStream $stream)
     {
-        throw new \UnexpectedValueException("Unexpected input near {$stream->current()->value}");
+        throw new \UnexpectedValueException("Unexpected input near {$stream->current()->value} at offset {$stream->key()}");
     }
 }
