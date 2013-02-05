@@ -232,20 +232,6 @@ class Container
 
 
     /**
-     * Evaluate a script and return the value
-     *
-     * @param string $script
-     * @return string
-     */
-    public function evaluate($script)
-    {
-        $parser = new Script($script);
-        $cmd = $parser->evaluate($this);
-        return $cmd;
-    }
-
-
-    /**
      * Execute a command. This is a wrapper for 'exec', so that a task prefixed with '@' can be passed as well.
      *
      * @param string $cmd
