@@ -45,11 +45,12 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->beforeNormalization()
                             ->ifTrue(function($in) {
+                                var_dump($in);
                                 return
                                     is_string($in)
 
                                     // allow for 'lists' (skipping the 'do' key)
-                                 || (is_array($in) && range(0, count($in) -1) == array_keys($in));
+                                 || (is_array($in) && range(0, count($in) -1) === array_keys($in));
                             })
                             ->then(
                                 function($v) {
