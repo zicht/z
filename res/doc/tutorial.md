@@ -456,7 +456,7 @@ what == "hello"
 
 You must recognize the `... ? ... : ...` ternary operator and the `"string" . "concatenation"` operator from PHP. You
 probably noted that the variables aren't prefixed with a dollar sign as in PHP. During the development of Z, I decided
-not to use prefixed variables, because they unnessecarily clutter the code.
+not to use prefixed variables, because they unnessecarily clutter the```` code.
 
 See the [reference](reference.html) for more information on supported operators.
 
@@ -536,7 +536,7 @@ Hello world!
 Note that the class is expected to live in the namespace 'Zicht\Tool\Plugin', and the last part of the directory name
 must be it's classname.
 
-> *Note: This will probably change in future versions*
+> *The naming of plugin classes will likely change in future versions*
 
 ## Declarations, methods and functions ##
 
