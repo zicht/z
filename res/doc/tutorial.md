@@ -458,3 +458,160 @@ You must recognize the `... ? ... : ...` ternary operator and the `"string" . "c
 probably noted that the variables aren't prefixed with a dollar sign as in PHP. During the development of Z, I decided
 not to use prefixed variables, because they unnessecarily clutter the code.
 
+See the [reference](reference.html) for more information on supported operators.
+
+
+
+# Creating a plugin #
+
+## Basic task plugins ##
+A plugin provides a set of standard tasks and / or a set of functions and variables to Z. The simplest plugin is one
+where you simply specify a few tasks which are fully coded inside it's z.yml file.
+
+Consider a base z.yml file:
+
+```
+plugins: ['plugins/say']
+
+tasks:
+    say:
+        do: [ @_say ]
+```
+
+And the plugin's z.yml:
+
+```
+tasks:
+    _say: echo "Hello world!"
+```
+
+```shell
+$ z say
+[                 _say] Hello world!
+```
+
+## Adding declarations ##
+Of course, this wouldn't be very helpful is there wasn't more to plugins.
+
+If you now add a Plugin.php to the same directory, containing the following:
+
+```php
+<?php
+
+namespace Zicht\Tool\Plugin\Say;
+
+use Zicht\Tool\Plugin as BasePlugin;
+use Zicht\Tool\Container\Container;
+
+class Plugin extends BasePlugin
+{
+    public function setContainer(Container $container)
+    {
+        $container->decl(
+            'hello',
+            function() {
+                return 'Hello world!';
+            }
+        );
+    }
+}
+```
+
+You can now use the declaration of 'hello' to evaluate inside your z.yml:
+
+```
+plugins: ['plugins/say']
+
+tasks:
+    say:
+        do:
+            - echo $(hello)
+```
+
+```shell
+$ z say
+Hello world!
+```
+
+Note that the class is expected to live in the namespace 'Zicht\Tool\Plugin', and the last part of the directory name
+must be it's classname.
+
+> *Note: This will probably change in future versions*
+
+## Declarations, methods and functions ##
+
+The container supports three types of callables that can be used in Z expressions. Declarations are callables that are
+calculated only once. They should not accept parameters but one, the container itself:
+
+```php
+$container->set('greeting', 'Hello!');
+$container->decl('hello', function($container) {
+    return $container->resolve('greeting');
+});
+```
+
+The return value of the declaration is used to replace the declaration itself in the container, so the next time you
+use it, will simply resolve to the value the function returned.
+
+Functions are used for processing input or calculating real time values. For example, the core plugin provides functions
+such as 'is_dir', 'is_file', 'sprintf', 'ask' and 'choose'. They don't do anything with the container's state, and they
+should not.
+
+Methods are used to do something with the container, or at least with the values in it.
+
+Here's a simple example:
+
+```php
+// inside setContainer():
+$container->decl('one_time_random', function() {
+    return rand(0, 100);
+});
+$container->fn('all_time_random', function() {
+    return rand(0, 100);
+});
+```
+
+```
+plugins: ['plugins/randomizer']
+
+tasks:
+    rand:
+        do:
+            - echo $(one_time_random) $(all_time_random())
+            - echo $(one_time_random) $(all_time_random())
+            - echo $(one_time_random) $(all_time_random())
+            - echo $(one_time_random) $(all_time_random())
+```
+
+```shell
+$ z rand
+59 76
+59 71
+59 83
+59 90
+```
+
+The first number stays constant throughout the Z process, but the second differs everytime. You should note that the
+syntax for using them is slightly different. You won't need the parentheses in case of the declarations, because they
+will never accept parameters. You do need the parentheses in case of the function call, because otherwise it can not be
+recognized as a function call.
+
+However, if you should accept parameters in the function call, for every first parameter the parentheses are optional:
+
+```php
+$container->fn('all_time_random', function($max = 100, $min = 0) {
+    return rand($min, $max);
+});
+```
+
+```
+tasks:
+    rand20: echo $(all_time_random 20);
+```
+
+This is just a convenience and syntactic sugar. For more than one parameter omitting the would cause a parser error.
+Even though you could nest these calls like this: `all_time_random all_time_random 20`, it would me much less readable
+and is therefore discouraged. You should use it only to improve readability.
+
+
+
