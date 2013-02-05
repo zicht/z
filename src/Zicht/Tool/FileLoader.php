@@ -60,15 +60,25 @@ class FileLoader extends BaseFileLoader
      * @param array $plugins
      * @return void
      */
-    protected function processPlugins($plugins)
+    protected function processPlugins($plugins, $dir)
     {
         foreach ($plugins as $plugin) {
+            $hasPlugin = $hasZfile = false;
             try {
-                $this->plugins[$plugin] = $this->getLocator()->locate($plugin . '/Plugin.php');
+                $this->plugins[$plugin] = $this->getLocator()->locate($plugin . '/Plugin.php', $dir, true);
+                $hasPlugin = true;
             } catch (\InvalidArgumentException $e) {
             }
 
-            $this->import($this->getLocator()->locate($plugin . '/z.yml'), self::PLUGIN);
+            try {
+                $this->import($this->getLocator()->locate($plugin . '/z.yml', $dir), self::PLUGIN);
+                $hasZfile = true;
+            } catch (\InvalidArgumentException $e) {
+            }
+
+            if (!$hasPlugin && !$hasZfile) {
+                throw new \InvalidArgumentException("You need at least either a z.yml or a Plugin.php in the plugin path for {$plugin}");
+            }
         }
     }
 
