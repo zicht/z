@@ -8,9 +8,9 @@ tasks:
                         --toc                                                   \
                         --section-divs                                          \
                         --template=assets/template                              \
-                        $i -o html/$$(basename $i.html)                         \
+                        $i -o html/$$(basename $i .md).html                     \
                         --highlight-style=pygments;                             \
-                    if [ "$(verbose)" != "" ]; then echo $$(basename $i.html) written; fi; \
+                    if [ "$(verbose)" != "" ]; then echo $$(basename $i .md).html written; fi; \
                 fi;                                                             \
             done;
     docs:

@@ -1,3 +1,6 @@
 tasks:
     docs: cd res/doc && z docs $(z.opts)
 
+    publish:
+        pre: @docs
+        do: rsync -rv res/doc/html/ zichter@dev3:/var/www/dev/z/default/public/

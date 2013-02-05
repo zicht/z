@@ -1,4 +1,8 @@
-# Z #
+% Z
+
+* [FAQ](FAQ.html)
+* [tutorial](tutorial.html)
+* [roadmap](roadmap.html)
 
 Z is a build and deployment management tool, originally designed for PHP-based projects.
 
@@ -41,4 +45,4 @@ tasks:
 Tasks are defined by prerequisites, a body identified by the "do" section and task triggers, which trigger commands
 and/or other tasks when the task is executed.
 
-Read the [tutorial](tutorial.md.html) for a more detailed introduction.
+Read the [tutorial](tutorial.html) for a more detailed introduction.

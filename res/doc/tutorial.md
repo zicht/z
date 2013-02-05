@@ -1,3 +1,5 @@
+% Tutorial
+
 ## Writing a z.yml file ##
 
 ### Hello world ###
@@ -87,13 +89,14 @@ $ z say Boogiewoogie
 Boogiewoogie world!
 ```
 
-By simply adding a question mark to the input declaration, you have made the input variable. If you omit the default value, the input will become required:
+By simply adding a question mark to the input declaration, you have made the input variable. If you omit the default
+value, the input will become required:
 
 ```
 tasks:
     say:
         set:
-            what: ? "Hello"
+            what: ?
         do:
             - echo "$(what) world!"
 ```

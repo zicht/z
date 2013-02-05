@@ -57,17 +57,13 @@ class Container
         }
         $this->set('interactive', false);
 
-        // If you want to reuse any of the standard z options
-        // for nesting Z commands, you can use z.opts
-        $this->decl('z.opts', function($container) {
-            $opts = array();
-            foreach (array('force', 'verbose', 'explain') as $opt) {
-                if ($container->resolve($opt)) {
-                    $opts[]= '--' . $opt;
-                }
+        $opts = array();
+        foreach (array('force', 'verbose', 'explain') as $opt) {
+            if ($this->values[$opt]) {
+                $opts[]= '--' . $opt;
             }
-            return join(' ', $opts);
-        });
+        }
+        $this->set('z.opts', join(' ', $opts));
     }
 
     public function resolve($id)
