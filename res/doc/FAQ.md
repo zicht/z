@@ -14,7 +14,10 @@ don't need knowledge of much of the Z syntax or architecture to get started real
 
 # Why is it called Z? #
 We use Z for build, release and integration management at the company where it was originally developed:
-[Zicht Online](http://zicht.nl).
+[Zicht online](http://zicht.nl). Z was developed by [Gerard van Helden](http://melp.nl), lead developer at Zicht online.
+
+# How do you pronounce Z? #
+You pronounce it "Zee", and it rhymes with Bee, the one that goes buzzzzzzz.
 
 # Under what terms may I use and distribute Z? #
 Z is distributed under the MIT License. This means that you can do whatever you like with it, provided you include
@@ -28,7 +31,7 @@ disable or extend these plugins.
 # Why is there no default git plugin? #
 We don't use git as our primary VCS. This means that we can't test and utilitize it for real, which means that we
 can't be sure about how well it would work. But since the system is plugin-based, you could easily build and contribute
-your git implementation. Drop us a note if you have. No, really (!).
+your git implementation. Drop us a note if you have, because we would love to integrate it.
 
 # How can I get started the quick way? #
 All you need to get started is a working version of Z installed somewhere on your system, and the bin file in bin/z
@@ -67,20 +70,6 @@ To simulate a deploy. To see what exactly would be done, you can use the --expla
 
 ```shell
 $ z simulate production --explain
-```
-
-This will guide you to a set of questions you need to answer to get a z.yml file in your working directory. When
-finished, you will have a file you can use for deployment.
-
-```shell
-$ z simulate testing
-```
-
-This will simulate a deploy to the environment specified as 'testing' in your setup process. If you are wondering what
-the tasks would exactly do, use the --explain option:
-
-```shell
-$ z --explain simulate testing
 ```
 
 Read the [tutorial](tutorial.html) for a more detailed walkthrough of how Z works.
