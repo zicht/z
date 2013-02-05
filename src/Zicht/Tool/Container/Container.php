@@ -56,6 +56,16 @@ class Container
             $this->set('force', false);
         }
         $this->set('interactive', false);
+
+        $this->decl('opts', function($container) {
+            $opts = array();
+            foreach (array('force', 'verbose', 'explain') as $opt) {
+                if ($container->resolve($opt)) {
+                    $opts[]= '--' . $opt;
+                }
+            }
+            return join(' ', $opts);
+        });
     }
 
     public function resolve($id)

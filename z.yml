@@ -1,0 +1,3 @@
+tasks:
+    docs: cd res/doc && z docs $(opts)
+

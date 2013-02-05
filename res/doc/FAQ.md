@@ -5,7 +5,7 @@ Let me first say this. In the end it really is a matter of taste, and what you f
 you don't share my opinion, that is fine. I did not feel comfortable enough with any of these tools, though GNU Make
 has been my favorite for a long time.
 
-The power of Z is it's simple implementation and it's expressive syntax. By utilizing the Symfony
+The power of Z is it's simple implementation and it's expressive syntax. By utilizing the [Symfony](http://symfony.com/)
 Config, Yaml and Console components, combining it with a very simple yet powerful plugin mechanism, it is much
 easier to adapt and implement than many of the other tools out there. It is also easy to share your own recipes,
 because of it's ultimately simple YML-based configuration syntax. It depends on practically nothing but the mentioned
@@ -30,7 +30,7 @@ We don't use git as our primary VCS. This means that we can't test and utilitize
 can't be sure about how well it would work. But since the system is plugin-based, you could easily build and contribute
 your git implementation. Drop us a note if you have. No, really (!).
 
-# How to get started #
+# How can I get started the quick way? #
 All you need to get started is a working version of Z installed somewhere on your system, and the bin file in bin/z
 on your system path. You will now have Z available to run as such:
 
@@ -71,6 +71,4 @@ the tasks would exactly do, use the --explain option:
 
     $ z --explain simulate testing
 
-## How to expose a plugin to Z ##
-A plugin consists of at least a z.yml file, and optionally a Plugin.php file. You can see the core plugins
-to see what the possibilities are.
+Read the [tutorial](tutorial.md.html) for a more detailed walkthrough of how Z works.
