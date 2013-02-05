@@ -8,4 +8,4 @@ tasks:
             - echo $(one_time_random) $(all_time_random())
             - echo $(one_time_random) $(all_time_random())
 
-    rand20: echo $(all_time_random all_time_random 20)
+    rand20: echo $(all_time_random 20)
