@@ -16,6 +16,8 @@ don't need knowledge of much of the Z syntax or architecture to get started real
 We use Z for build, release and integration management at the company where it was originally developed:
 [Zicht online](http://zicht.nl). Z was developed by [Gerard van Helden](http://melp.nl), lead developer at Zicht online.
 
+You might notice the similarity in logos.
+
 # How do you pronounce Z? #
 You pronounce it "Zee", and it rhymes with Bee, the one that goes buzzzzzzz.
 
