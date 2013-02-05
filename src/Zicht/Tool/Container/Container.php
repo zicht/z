@@ -86,7 +86,6 @@ class Container
             if (array_key_exists($id, $this->declarations)) {
                 $this->values[$id] = call_user_func($this->declarations[$id], $this);
             } else {
-                var_dump(array_keys($this->declarations));
                 array_pop($this->stack);
                 throw new \InvalidArgumentException("Unresolvable value [$id]");
             }
