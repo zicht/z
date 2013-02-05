@@ -28,7 +28,7 @@ class FeatureContext extends BehatContext
      */
     public function __construct(array $parameters)
     {
-        $this->testDir = __DIR__ . '/../../feature-context';
+        $this->testDir = __DIR__ . '/../tmp';
     }
 
 
