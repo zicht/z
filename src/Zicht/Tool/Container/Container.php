@@ -66,10 +66,17 @@ class Container
         $this->set('z.opts', join(' ', $opts));
     }
 
+
     public function resolve($id)
     {
         if (in_array($id, $this->stack)) {
-            throw new \UnexpectedValueException("Circular reference detected: " . implode(' -> ', $this->stack) . ' -> ' . $id);
+            throw new \UnexpectedValueException(
+                sprintf(
+                    "Circular reference detected: %s->%s",
+                    implode(' -> ', $this->stack),
+                    $id
+                )
+            );
         }
 
         array_push($this->stack, $id);
@@ -106,7 +113,8 @@ class Container
     }
 
 
-    public function method($id, $callable) {
+    public function method($id, $callable)
+    {
         $this->fn($id, $callable, true);
     }
 
