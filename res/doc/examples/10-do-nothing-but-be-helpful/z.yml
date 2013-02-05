@@ -1,0 +1,9 @@
+tasks:
+    do_nothing:
+        help: |
+            Do nothing.
+
+            This task does nothing. No really. Nothing.
+            Well, alright, it displays help if you ask for it.
+
+        do: []
