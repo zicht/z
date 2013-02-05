@@ -8,7 +8,6 @@ namespace Zicht\Tool\Plugin\Core;
 
 use \Zicht\Tool\Plugin as BasePlugin;
 use Zicht\Tool\Container\Container;
-use \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 
 class Plugin extends BasePlugin
 {
@@ -17,9 +16,9 @@ class Plugin extends BasePlugin
 
     public function setContainer(Container $container)
     {
-        $container->set('now', date('Ymd-H.i.s'));
+        $container->set('now',  date('Ymd-H.i.s'));
         $container->set('date', date('Ymd'));
-        $container->set('cwd', getcwd());
+        $container->set('cwd',  getcwd());
         $container->set('user', getenv('USER'));
 
         // simple php functions
