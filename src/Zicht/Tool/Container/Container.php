@@ -17,6 +17,8 @@ use \Symfony\Component\Process\Process;
  */
 class Container
 {
+    const SHELL = '/bin/bash';
+
     protected $plugins = array();
     protected $subscribers = array();
 
@@ -208,7 +210,8 @@ class Container
             } elseif ($this->resolve('interactive')) {
                 passthru($cmd, $ret);
             } else {
-                $process = new \Symfony\Component\Process\Process($cmd);
+                $process = new Process(self::SHELL);
+                $process->setStdin($cmd);
                 $process->run(array($this, 'processCallback'));
                 $ret = $process->getExitCode();
             }
