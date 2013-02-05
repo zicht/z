@@ -4,3 +4,8 @@ tasks:
     publish:
         pre: @docs
         do: rsync -rv res/doc/html/ zichter@dev3:/var/www/dev/z/default/public/
+
+    qa:
+        - phpunit
+        - cd res && behat
+
