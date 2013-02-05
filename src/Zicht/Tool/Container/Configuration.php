@@ -45,7 +45,6 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->beforeNormalization()
                             ->ifTrue(function($in) {
-                                var_dump($in);
                                 return
                                     is_string($in)
 
