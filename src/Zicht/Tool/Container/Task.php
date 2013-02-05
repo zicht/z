@@ -88,19 +88,19 @@ class Task
             if ($scope === 'do' && !empty($this->taskDef['unless'])) {
                 $unlessExpr = $exprcompiler->compile($this->taskDef['unless']);
                 $buffer
-                    ->write('if (!$z->resolve(\'force\') && (')
+                    ->write('if (!$z->resolve(\'force\') && ($_unless = (')
                     ->write($unlessExpr)
-                    ->writeln(')) {')
+                    ->writeln('))) {')
                 ;
 
-                $buffer->writeln('$z->cmd(' . var_export(
+                $buffer->writeln('$z->cmd(sprintf(' . var_export(
                     sprintf(
-                        'echo "%s skipped, because (%s)"',
+                        'echo "%s skipped, because %s" evaluates to \'%%s\'',
                         $this->name,
-                        var_export($this->taskDef['unless'], true)
+                        $this->taskDef['unless']
                     ),
                     true
-                ) . ');');
+                ) . ', var_export($_unless, true)));');
 
                 $buffer->writeln('} else {');
                 $hasUnless = true;
