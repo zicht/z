@@ -44,7 +44,14 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('tasks')
                     ->prototype('array')
                         ->beforeNormalization()
-                            ->ifString()->then(
+                            ->ifTrue(function($in) {
+                                return
+                                    is_string($in)
+
+                                    // allow for 'lists' (skipping the 'do' key)
+                                 || (is_array($in) && range(0, count($in) -1) == array_keys($in));
+                            })
+                            ->then(
                                 function($v) {
                                     return array('do' => $v);
                                 }
