@@ -7,5 +7,5 @@ tasks:
 
     qa:
         - phpunit
-        - cd res && behat
+        - cd res && behat -f progress
 
