@@ -147,7 +147,7 @@ class Application extends BaseApplication
         $plugins     = array();
         foreach ($pluginFiles as $name => $file) {
             require_once $file;
-            $className = sprintf('Zicht\Tool\Plugin\%s\Plugin', ucfirst($name));
+            $className = sprintf('Zicht\Tool\Plugin\%s\Plugin', ucfirst(basename($name)));
             $class     = new \ReflectionClass($className);
             if (!$class->implementsInterface('Zicht\Tool\PluginInterface')) {
                 throw new \UnexpectedValueException("The class $className is not a 'Zicht\\Tool\\PluginInterface'");
