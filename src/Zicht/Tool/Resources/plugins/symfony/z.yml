@@ -1,6 +1,4 @@
-symfony:
-    web:     web
-    console: 'app/console'
+symfony: ~
 
 tasks:
     _symfony.build.copy_local_vendor: |
@@ -21,9 +19,9 @@ tasks:
         post:
             - @_symfony.build.copy_local_vendor
             - @_symfony.build.composer_install
-            - @_symfony.build.assets_install
-            - @_symfony.build.assetic_dump
+            - ?(symfony.assets)  @_symfony.build.assets_install
+            - ?(symfony.assetic) @_symfony.build.assetic_dump
 
     deploy:
         post:
-            - ssh $(env.ssh) "cd $(env.root) && php $(symfony.console) cache:clear --env=$(env) --no-debug"
+            - ?(symfony.cache) ssh $(env.ssh) "cd $(env.root) && php $(symfony.console) cache:clear --env=$(env) --no-debug"
