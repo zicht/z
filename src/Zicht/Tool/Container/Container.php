@@ -59,6 +59,7 @@ class Container
         }
         $this->set('interactive', false);
 
+        // gather the options for nested z calls.
         $opts = array();
         foreach (array('force', 'verbose', 'explain') as $opt) {
             if ($this->values[$opt]) {
@@ -240,6 +241,7 @@ class Container
      */
     public function cmd($cmd)
     {
+        $cmd = ltrim($cmd);
         if (substr($cmd, 0, 1) === '@') {
             return $this->resolve('tasks.' . substr($cmd, 1));
         }
