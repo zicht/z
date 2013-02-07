@@ -48,6 +48,9 @@ and major releases, e.g. 1.0 => 1.1 or 1.2 => 2.0, and they will all be incremen
 
   The downfall is that ssh connection can no longer be used with passwords, but this is something to avoid anyway.
 
+- The standard plugins will be removed from Z and published as a separate repository, so changes in plugin
+  implementation will not affect Z versions.
+
 ## version 1.2 ##
 - Remove the select() call for environments entirely and remove BC code for env variable usage.
 
