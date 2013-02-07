@@ -1,5 +1,8 @@
 # Roadmap for Z #
 
+One important goal for any Z upgrade is providing conversion scripts for the yml files. This will only be done for minor
+and major releases, e.g. 1.0 => 1.1 or 1.2 => 2.0, and they will all be incremental.
+
 ## version 1.1 ##
 - A new syntax for dynamic configuration will be introduced. At lower levels than top, you can now use a variable name
   to expand variables in the scope:
@@ -44,6 +47,9 @@
   In the above examples, env.remote(env) would yield something like 'ssh user@host'.
 
   The downfall is that ssh connection can no longer be used with passwords, but this is something to avoid anyway.
+
+## version 1.2 ##
+- Remove the select() call for environments entirely and remove BC code for env variable usage.
 
 ## version 2.0 ##
 - YAML will be replaced by a parser written entirely for Z, to get rid of the quirky YML vs Z syntax issues, such as
