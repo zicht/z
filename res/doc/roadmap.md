@@ -36,14 +36,6 @@
   such as:
 
   ```
-  - #!ssh("username@localhost")     do this remote
-  - #!env.remote(env)               do this at staging
-  - !"/bin/perl -w"                 do this with perl
-  ```
-
-  Or maybe
-
-  ```
   - Command         => env.remote(env)
   - Local command   => "/usr/local/bin/zsh"
   - Query           => "/bin/mysql"
@@ -55,4 +47,6 @@
 
 ## version 2.0 ##
 - YAML will be replaced by a parser written entirely for Z, to get rid of the quirky YML vs Z syntax issues, such as
-  quoting strings.
+  quoting strings. The main internal processing using Symfony\Component\Config will probably stay, though.
+
+
