@@ -24,4 +24,4 @@ tasks:
 
     deploy:
         post:
-            - ?(symfony.cache) ssh $(env.ssh) "cd $(env.root) && php $(symfony.console) cache:clear --env=$(env) --no-debug"
+            - ?(symfony.flush_cache) ssh $(env.ssh) "cd $(env.root) && php $(symfony.console) cache:clear --env=$(env) --no-debug"
