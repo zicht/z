@@ -37,7 +37,7 @@ and major releases, e.g. 1.0 => 1.1 or 1.2 => 2.0, and they will all be incremen
 
     Note that objects are not yet supported in 1.0, so that will be a side effect.
 
-    > *This will probably utility the PropertyPath component of Symfony 2.2. So Z will upgrade to run on the 2.2 branch*
+    > *This will possibly utilize the PropertyPath component of Symfony 2.2. So Z will upgrade to run on the 2.2 branch*
 
  +  `$(env.root)` and such will be replaced by `$(env:root)`, which is syntactical sugar for `$(env.$env.root)`. This
     eliminates the `select('env')` call in the setup of the commands. This way, other dynamic configuration can be used
