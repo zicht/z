@@ -190,6 +190,8 @@ class Container
                 }
                 $prefix = str_pad($prefix, 21, ' ', STR_PAD_LEFT);
                 $this->output->setPrefix('<info>[' . $prefix . ']</info> ');
+            } else {
+                $this->output->setPrefix('');
             }
         }
     }
