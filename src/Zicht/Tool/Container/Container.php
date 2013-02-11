@@ -11,6 +11,7 @@ use \Zicht\Tool\PluginInterface;
 use \UnexpectedValueException;
 use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Process\Process;
+use Zicht\Tool\Script\Compiler as ScriptCompiler;
 
 /**
  * Service container
@@ -127,6 +128,20 @@ class Container
             throw new \InvalidArgumentException("Not callable");
         }
         $this->declarations[$id] = $callable;
+    }
+
+
+    public function evaluate($script)
+    {
+        $exprcompiler  = new ScriptCompiler(
+            new \Zicht\Tool\Script\Parser\Expression(),
+            new \Zicht\Tool\Script\Tokenizer\Expression()
+        );
+
+        $z = $this;
+        $_value = null;
+        eval('$_value = ' . $exprcompiler->compile($script) . ';');
+        return $_value;
     }
 
 

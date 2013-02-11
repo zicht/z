@@ -43,7 +43,10 @@ class Task
     public function compile(Buffer $buffer)
     {
         $scriptcompiler = new ScriptCompiler(new \Zicht\Tool\Script\Parser());
-        $exprcompiler  = new ScriptCompiler(new \Zicht\Tool\Script\Parser\Expression(), new \Zicht\Tool\Script\Tokenizer\Expression());
+        $exprcompiler  = new ScriptCompiler(
+            new \Zicht\Tool\Script\Parser\Expression(),
+            new \Zicht\Tool\Script\Tokenizer\Expression()
+        );
 
         $taskName = var_export($this->name, true);
 
