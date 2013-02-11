@@ -49,7 +49,6 @@ class Task
 
         $buffer
             ->indent(1)->writeln('function($z) {')
-            ->writeln(sprintf('$z->notify(%s, "start");', $taskName))
         ;
 
         foreach ($this->taskDef['set'] as $name => $value) {
@@ -82,6 +81,7 @@ class Task
                 );
             }
         }
+        $buffer->writeln(sprintf('$z->notify(%s, "start");', $taskName));
 
         $hasUnless = false;
         foreach (array('pre', 'do', 'post') as $scope) {
