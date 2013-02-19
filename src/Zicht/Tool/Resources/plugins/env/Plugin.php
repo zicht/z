@@ -16,12 +16,12 @@ class Plugin extends BasePlugin
 {
     public function setContainer(Container $container)
     {
-        $container->method('env.versionat', function($container, $env, $verbose) {
+        $container->method('env.versionat', function($container, $env, $verbose = false) {
             $tmp = tempnam(sys_get_temp_dir(), 'z');
             $container->cmd(sprintf(
                 'scp %s:%s/%s %s',
-                $container->resolve('env.ssh'),
-                $container->resolve('env.root'),
+                $container->resolve('env.' . $env . '.ssh'),
+                $container->resolve('env.' . $env . '.root'),
                 $container->resolve('vcs.export.revfile'),
                 $tmp
             ));

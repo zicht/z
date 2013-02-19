@@ -74,6 +74,11 @@ class Plugin extends BasePlugin
             }
             return $container->call('vcs.versionid', $info);
         });
+        $container->method('vcs.diff', function($container, $left, $right, $verbose = false) {
+            $left = $container->resolve('vcs.url') . '/' . $left;
+            $right = $container->resolve('vcs.url') . '/' . $right;
+            return sprintf('svn diff %s %s %s', $left, $right, ($verbose ? '' : '--summarize'));
+        });
         $container->decl('vcs.current', function($container) {
             return $container->call('versionof', $container->resolve('cwd'));
         });

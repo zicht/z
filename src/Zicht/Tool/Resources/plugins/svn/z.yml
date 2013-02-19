@@ -73,9 +73,9 @@ tasks:
         help: |
             Diff two versions
         set:
-            version:     ?
+            version:   ?
         do:
-            - svn diff $(!verbose ? "--summarize") $(vcs.url)/$(version) $(vcs.url)/$(vcs.current)
+            - $(vcs.diff(version, vcs.current, verbose))
 
     # Print the url of the project
     v.url:

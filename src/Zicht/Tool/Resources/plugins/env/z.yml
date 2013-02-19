@@ -43,4 +43,15 @@ tasks:
         set:
             env: ?
         do:
-            - echo "$(env.versionat(env.ssh, verbose))"
+            - echo "$(env.versionat(env, verbose))"
+
+    env.diff:
+        help: |
+            Compare the current version to the version at a remote environment
+
+            Downloads the remote revision file to determine what version is currently there and executes a diff on them
+        set:
+            env: ?
+            version: ? vcs.current
+        do: |
+            $(vcs.diff(env.versionat(env), version, verbose))
