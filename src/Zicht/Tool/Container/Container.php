@@ -131,6 +131,13 @@ class Container
     }
 
 
+
+    public function notice($message)
+    {
+        $this->output->writeln("# <comment>NOTICE: $message</comment>");
+    }
+
+
     public function evaluate($script)
     {
         $exprcompiler  = new ScriptCompiler(

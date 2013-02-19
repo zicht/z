@@ -17,6 +17,9 @@ class Plugin extends BasePlugin
     public function setContainer(Container $container)
     {
         $container->method('env.versionat', function($container, $env, $verbose = false) {
+            if ($container->resolve('explain')) {
+                $container->notice('env.versionat() is not explain-safe. Following commands may not be accurate');
+            }
             $tmp = tempnam(sys_get_temp_dir(), 'z');
             $container->cmd(sprintf(
                 'scp %s:%s/%s %s',
