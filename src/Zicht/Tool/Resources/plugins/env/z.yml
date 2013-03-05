@@ -3,36 +3,36 @@ tasks:
     env.ssh:
         help: "Connect to the remote SSH"
         set:
-            env: ?
+            target_env: ?
             cmd: ? "bash"
             interactive: 1
-        do: ssh -tq $(env.ssh) "cd $(env.root); $(cmd)"
+        do: ssh -tq $(envs[target_env].ssh) "cd $(envs[target_env].root); $(cmd)"
 
     # Connect to the remote mysql shell using ssh
     env.mysql:
-        unless: !env.ssh.connectable
+        unless: !envs[target_env].ssh.connectable
         help: |
             Connect to the remote MySQL.
 
             This assumes that the local user on the remote machine has access to the local database.
             Configure the remote ~/.my.cnf if this is not the case.
         set:
-            env: ?
+            target_env: ?
             interactive: 1
-        do: ssh -tq $(env.ssh) "mysql $(env.db)"
+        do: ssh -tq $(envs[target_env].ssh) "mysql $(envs[target_env].db)"
 
     # Initialize the SSH session by copying a local public key to the remote machine
-    env.ssh.init:
-        unless: env.ssh.connectable
+    env.init.ssh:
+        unless: envs[target_env].ssh.connectable
         help: |
             Initialize an SSH key exchange
 
             Copies your local identity to the remote environment. The step is skipped if the environment
             already is connectable
         set:
-            env: ?
+            target_env: ?
             interactive: 1
-        do: ssh-copy-id $(env.ssh)
+        do: ssh-copy-id $(envs[target_env].ssh)
 
     # Show the deployed version of the remote machine
     env.version:
@@ -41,9 +41,9 @@ tasks:
 
             Downloads the remote revision file and shows which version is specified in it.
         set:
-            env: ?
+            target_env: ?
         do:
-            - echo "$(env.versionat(env, verbose))"
+            - echo "$(envs[target_env].versionat(env, verbose))"
 
     env.diff:
         help: |

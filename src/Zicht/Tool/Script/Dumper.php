@@ -18,7 +18,7 @@ class Dumper
      * @param Node\Node $b
      * @return array
      */
-    public function getAst(Node\Node $b)
+    public function getAst(Node\Node $b, $path = '')
     {
         $ret = array(
             'type' => str_replace('Zicht\Tool\Script\Node\\', '', get_class($b))
@@ -31,6 +31,9 @@ class Dumper
                     if (null === $n) {
                         $ret['nodes'][]= $n;
                     } else {
+                        if (! $n instanceof Node\Node) {
+                            throw new \InvalidArgumentException("Invalid child node in " . var_export($b, true));
+                        }
                         $ret['nodes'][]= $this->getAst($n);
                     }
                 }

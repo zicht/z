@@ -22,6 +22,6 @@ class Variable implements Node
 
     function compile(Buffer $compiler)
     {
-        $compiler->write('$z->resolve(' . var_export($this->name, true) . ')');
+        $compiler->write('$z->resolve(array(' . var_export($this->name, true) . '))');
     }
 }

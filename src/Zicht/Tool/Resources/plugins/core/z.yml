@@ -4,7 +4,7 @@ build:
     dir:            ./build
 
 # Environments
-env: ~
+envs: ~
 
 # Available default tasks. All tasks prefixed with '_' are considered 'private',
 # i.e. they are not published in the command line help / list commands.
@@ -14,7 +14,7 @@ tasks:
         help: |
             Creates a build for the specified environment
         set:
-            env: ?
+            target_env: ?
             build.version: ?vcs.current
         pre:
             - @_vcs.export
@@ -23,7 +23,7 @@ tasks:
     # Deploys a build
     deploy:
         set:
-            env: ?
+            target_env: ?
             build.version: ?vcs.current
         help: |
             Deploys a build to the specified environment
@@ -34,7 +34,7 @@ tasks:
         help: |
             Simulates a deploy of a build to the specified environment
         set:
-            env: ?
+            target_env: ?
             build.version: ?vcs.current
-        do: @_sync.simulate
+        do: @_sync_simulate
 

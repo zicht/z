@@ -42,26 +42,31 @@ class Application extends BaseApplication
         parent::__construct('z - The Zicht Tool', Version::VERSION);
     }
 
-
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
-        if (null === $input) {
-            $input = new ArgvInput();
-        }
-        if (null === $output) {
-            $output = new Output\ConsoleOutput();
+        return parent::run($input, new \Zicht\Tool\Output\ConsoleOutput());
+    }
+
+
+    public function doRun(InputInterface $input, OutputInterface $output)
+    {
+        if (true === $input->hasParameterOption(array('--quiet', '-q'))) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+        } elseif (true === $input->hasParameterOption(array('--verbose', '-v'))) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_VERBOSE);
         }
 
         $container = $this->initContainer(
             $input->hasParameterOption(array('--verbose', '-v')),
             $input->hasParameterOption(array('--force', '-f')),
-            $input->hasParameterOption(array('--explain'))
+            $input->hasParameterOption(array('--explain')),
+            getenv('ZFILE'),
+            getenv('ZPLUGINDIR')
         );
 
         $container->output = $output;
 
         $this->add(new Cmd\DumpCommand($container));
-//        $this->add(new Cmd\InitCommand($container));
 
         /** @var $task \Zicht\Tool\Container\Task */
         foreach ($this->tasks as $name => $task) {
@@ -80,7 +85,7 @@ class Application extends BaseApplication
         }
         $container->console_dialog_helper = $this->getHelperSet()->get('dialog');
 
-        return parent::run($input, $output);
+        return parent::doRun($input, $output);
     }
 
 
@@ -91,19 +96,13 @@ class Application extends BaseApplication
      *
      * @throws \UnexpectedValueException
      */
-    public function initContainer($verbose, $force, $explain)
+    public function initContainer($verbose, $force, $explain, $fileName, $pluginDir)
     {
-        list($plugins, $config) = $this->getConfig();
+        list($plugins, $config) = $this->getConfig($fileName, $pluginDir);
 
-        $compiler = new Flattener();
-        $flattened = $compiler->flatten($config);
-        $flattened += array(
-            'verbose'     => (bool)$verbose,
-            'force'       => (bool)$force,
-            'explain'     => (bool)$explain,
-            'interactive' => false
-        );
-        $z = new Container($flattened, $config);
+        $config += compact('verbose', 'force', 'explain');
+
+        $z = new Container($config);
 
         $buffer = new \Zicht\Tool\Script\Buffer();
         $this->tasks = array();
@@ -111,13 +110,14 @@ class Application extends BaseApplication
             $task = new Task($taskDef, $name);
             $this->tasks[$name]= $task;
             $buffer->indent(1)->writeln('$z->decl(');
-            $buffer->writeln(var_export('tasks.' . $name, true) . ',');
+            $buffer->writeln(var_export(array_merge(array('tasks'), explode('.', $name)), true) . ',');
             $task->compile($buffer);
             $buffer->indent(-1)->writeln(');');
         }
         unset($config['tasks']);
 
         $z->definition = $buffer->getResult();
+
         eval($buffer->getResult());
 
         foreach ($plugins as $plugin) {
@@ -127,15 +127,26 @@ class Application extends BaseApplication
         return $z;
     }
 
-    public function getConfig()
+    public function getConfig($fileName, $pluginDir)
     {
+        if (!$fileName) {
+            $fileName = 'z.yml';
+        }
+        if ($pluginDir) {
+            $pluginDirs = explode(PATH_SEPARATOR, $pluginDir);
+        } else {
+            $pluginDirs = array();
+        }
+        $pluginDirs[]= __DIR__ . '/Resources/plugins';
+        $pluginDirs[]= getcwd();
+
         $zFileLocator  = new FileLocator(array(getcwd(), getenv('HOME') . '/.config/z/'));
-        $pluginLocator = new FileLocator(__DIR__ . '/Resources/plugins');
+        $pluginLocator = new FileLocator($pluginDirs);
 
         $loader = new FileLoader($pluginLocator);
 
         try {
-            $zfiles = $zFileLocator->locate('z.yml', null, false);
+            $zfiles = $zFileLocator->locate($fileName, null, false);
         } catch (\InvalidArgumentException $e) {
             $zfiles = array();
         }

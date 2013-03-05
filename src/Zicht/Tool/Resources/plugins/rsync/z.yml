@@ -13,15 +13,15 @@ tasks:
             $(sync.options) \
                 $(sync.exclude_file ? sprintf("--exclude-from=%s/%s", tasks.build, sync.exclude_file)) \
                 -v \
-            $(tasks.build)/ $(env.ssh):$(env.root) \
+            $(tasks.build)/ $(envs[target_env].ssh):$(envs[target_env].root) \
         ;
 
     # Synchronize the build dir to the remote environment
-    _sync.simulate: |
+    _sync_simulate: |
         rsync \
             --dry-run \
             $(sync.options) \
                 $(sync.exclude_file ? sprintf("--exclude-from=%s/%s", tasks.build, sync.exclude_file)) \
                 -v \
-            $(tasks.build)/ $(env.ssh):$(env.root) \
+            $(tasks.build)/ $(envs[target_env].ssh):$(envs[target_env].root) \
         ;

@@ -30,9 +30,11 @@ class TaskCommand extends BaseCommand
             if ($arg->getName() === 'command') {
                 continue;
             }
-            $this->container->set($arg->getName(), $input->getArgument($arg->getName()));
+            if ($input->getArgument($arg->getName())) {
+                $this->container->set(explode('.', $arg->getName()), $input->getArgument($arg->getName()));
+            }
         }
 
-        return $this->container->resolve('tasks.' . str_replace(':', '.', $this->getName()));
+        return $this->container->resolve(array_merge(array('tasks'), explode(':', $this->getName())));
     }
 }

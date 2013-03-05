@@ -55,20 +55,22 @@ class Task
         ;
 
         foreach ($this->taskDef['set'] as $name => $value) {
+            $name = explode('.', $name);
+            $phpName = var_export($name, true);
             if ($value && preg_match('/^\?\s*(.*)/', trim($value), $m)) {
                 $m[1] = trim($m[1]);
 
-                $buffer->indent(1)->writeln(sprintf('if (!$z->has(%s)) {', var_export($name, true)));
+                $buffer->indent(1)->writeln(sprintf('if (!$z->has(%s)) {', $phpName));
                 if (!$m[1]) {
                     $buffer->writeln(sprintf(
                         'throw new \RuntimeException(\'required variable %s is not defined\');',
-                        $name
+                        join('.', $name)
                     ));
                 } else {
                     $buffer->writeln(
                         sprintf(
                             '$z->set(%s, %s);',
-                            var_export($name, true),
+                            $phpName,
                             $exprcompiler->compile($m[1])
                         )
                     );
@@ -78,7 +80,7 @@ class Task
                 $buffer->writeln(
                     sprintf(
                         '$z->set(%s, %s);',
-                        var_export($name, true),
+                        $phpName,
                         $exprcompiler->compile($value)
                     )
                 );
@@ -91,19 +93,23 @@ class Task
             if ($scope === 'do' && !empty($this->taskDef['unless'])) {
                 $unlessExpr = $exprcompiler->compile($this->taskDef['unless']);
                 $buffer
-                    ->write('if (!$z->resolve(\'force\') && ($_unless = (')
+                    ->write('if (!$z->resolve(array(\'force\')) && ($_unless = (')
                     ->write($unlessExpr)
                     ->writeln('))) {')
                 ;
 
-                $buffer->writeln('$z->cmd(sprintf(' . var_export(
-                    sprintf(
-                        'echo "%s skipped, because %s" evaluates to \'%%s\'',
-                        $this->name,
-                        $this->taskDef['unless']
-                    ),
-                    true
-                ) . ', var_export($_unless, true)));');
+                $buffer->writeln(
+                    '$z->cmd(sprintf('
+                        . var_export(
+                            sprintf(
+                                'echo "%s skipped, because %s" evaluates to \'%%s\'',
+                                $this->name,
+                                $this->taskDef['unless']
+                            ),
+                            true
+                        )
+                        . ', var_export($_unless, true)));'
+                );
 
                 $buffer->writeln('} else {');
                 $hasUnless = true;

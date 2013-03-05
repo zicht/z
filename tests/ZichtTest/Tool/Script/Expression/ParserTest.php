@@ -37,6 +37,12 @@ class ParserTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('w00t', array('type' => 'Expr\\Variable')),
+            array('w00t()', array('type' => 'Expr\\Call', 'nodes' => array(array('type' => 'Expr\\Variable')))),
+            array('w00t(w00t)', array('type' => 'Expr\\Call', 'nodes' => array(array('type' => 'Expr\\Variable'), array('type' => 'Expr\\Variable')))),
+            array('w00t(w00t1, w00t2)', array('type' => 'Expr\\Call', 'nodes' => array(array('type' => 'Expr\\Variable'), array('type' => 'Expr\\Variable'), array('type' => 'Expr\\Variable')))),
+            array('w00t["a"]', array('type' => 'Expr\\Subscript', 'nodes' => array(array('type' => 'Expr\\Variable'), array('type' => 'Expr\\Str')))),
+            array('w00t.a', array('type' => 'Expr\\Subscript', 'nodes' => array(array('type' => 'Expr\\Variable'), array('type' => 'Expr\\Str')))),
+            array('w00t[1]["a"]', array('type' => 'Expr\\Subscript', 'nodes' => array(array('type' => 'Expr\\Subscript', 'nodes' => array(array('type' => 'Expr\Variable'), array('type' => 'Expr\\Number'))), array('type' => 'Expr\\Str')))),
         );
     }
 }

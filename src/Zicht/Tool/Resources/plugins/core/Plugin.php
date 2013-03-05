@@ -82,7 +82,7 @@ class Plugin extends BasePlugin
             }
             return max($ret);
         });
-        $container->fn('url.host', function($url) {
+        $container->fn(array('url', 'host'), function($url) {
             return parse_url($url, PHP_URL_HOST);
         });
     }

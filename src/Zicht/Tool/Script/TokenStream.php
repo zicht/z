@@ -73,7 +73,7 @@ class TokenStream
     public function current()
     {
         if (!isset($this->tokenList[$this->ptr])) {
-            throw new \UnexpectedValueException("Unexpected input at offset {$this->ptr}");
+            throw new \UnexpectedValueException("Unexpected input at offset {$this->ptr}, unexpected end of stream");
         }
         return $this->tokenList[$this->ptr];
     }
@@ -115,9 +115,10 @@ class TokenStream
     public function expect($type, $value = null)
     {
         if (!$this->match($type, $value)) {
-            throw new \UnexpectedValueException("Unexpected token {$this->current()->type}, expected {$type}");
+            throw new \UnexpectedValueException("Unexpected token {$this->current()->type} '{$this->current()->value}', expected {$type}");
         }
+        $current = $this->current();
         $this->next();
-        return true;
+        return $current;
     }
 }

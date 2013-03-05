@@ -28,10 +28,14 @@ class Compiler
      */
     public function compile($input)
     {
-        $buffer = new Buffer();
-        $node = $this->parser->parse(new TokenStream($this->tokenizer->getTokens($input)));
-        $node->compile($buffer);
-        $code = $buffer->getResult();
-        return $code;
+        try {
+            $buffer = new Buffer();
+            $node = $this->parser->parse(new TokenStream($this->tokenizer->getTokens($input)));
+            $node->compile($buffer);
+            $code = $buffer->getResult();
+            return $code;
+        } catch(\UnexpectedValueException $e) {
+            throw new \UnexpectedValueException('Error while compiling input: ' . var_export($input, true), 0, $e);
+        }
     }
 }

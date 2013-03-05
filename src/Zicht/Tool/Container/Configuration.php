@@ -106,7 +106,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                     ->useAttributeAsKey('name')
                 ->end()
-                ->arrayNode('env')
+                ->arrayNode('envs')
                     ->prototype('array')
                         ->children()
                             ->scalarNode('ssh')->end()

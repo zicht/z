@@ -25,33 +25,7 @@ class Expression extends AbstractParser
             $name = $stream->current()->value;
             $stream->next();
 
-            if ($stream->valid()) {
-                // little syntactic sugar for function calls without parentheses:
-                if ($stream->match(Token::IDENTIFIER) || $stream->match(Token::STRING) || $stream->match(Token::NUMBER)) {
-                    $ret = new Node\Expr\Func($name);
-                    $ret->append($this->parse($stream));
-                } elseif ($stream->match('(')) {
-                    $stream->next();
-                    $ret = new Node\Expr\Func($name);
-                    if (!$stream->match(')')) {
-                        do {
-                            $arg = $this->parse($stream);
-                            $ret->append($arg);
-
-                            if ($stream->match(',')) {
-                                $stream->next();
-                            } else {
-                                break;
-                            }
-                        } while (true);
-                    }
-                    $stream->expect(')');
-                } else {
-                    $ret = new Node\Expr\Variable($name);
-                }
-            } else {
-                $ret = new Node\Expr\Variable($name);
-            }
+            $ret = new Node\Expr\Variable($name);
         } elseif ($stream->match(Token::STRING)) {
             $ret = new Node\Expr\Str($stream->current()->value);
             $stream->next();
@@ -80,7 +54,46 @@ class Expression extends AbstractParser
         }
 
         if ($stream->valid()) {
-            if ($stream->match(Token::OPERATOR, array('==', '!=', '<=', '>=', '<', '>', '&&', '||', 'or', 'and', 'xor', '.'))) {
+            while ($stream->valid() && $stream->match(Token::OPERATOR, array('(', '.', '['))) {
+                $type = $stream->current();
+
+                $stream->next();
+                if ($type->value === '(') {
+                    $ret = new Node\Expr\Call($ret);
+                    if (!$stream->match(Token::OPERATOR, ')')) {
+                        do {
+                            $arg = $this->parse($stream);
+                            $ret->append($arg);
+
+                            if ($stream->match(',')) {
+                                $stream->next();
+                            } else {
+                                break;
+                            }
+                        } while (true);
+                    }
+                    $stream->expect(Token::OPERATOR, ')');
+                } else {
+                    $ret = new Node\Expr\Subscript($ret);
+
+                    if ($type->value === '.') {
+                        $token = $stream->expect(Token::IDENTIFIER);
+                        $ret->append(new \Zicht\Tool\Script\Node\Expr\Str($token->value));
+                    } else {
+                        $ret->append($this->parse($stream));
+                    }
+
+                    switch($type->value) {
+                        case '[':
+                            $stream->expect(Token::OPERATOR, ']');
+                            break;
+                    }
+                }
+            }
+        }
+
+        if ($stream->valid()) {
+            if ($stream->match(Token::OPERATOR, array('==', '!=', '<=', '>=', '<', '>', '&&', '||', 'or', 'and', 'xor'/*, '.'*/))) {
                 $value = $stream->current()->value;
                 $stream->next();
                 $ret = new Op\Binary($value, $ret, $this->parse($stream));
@@ -100,6 +113,12 @@ class Expression extends AbstractParser
                 }
                 $ret = new Op\Ternary('?', $ret, $then, $else);
             }
+        }
+
+        // little syntactic sugar for function calls without parentheses:
+        if ($stream->valid() && ($stream->match(Token::IDENTIFIER) || $stream->match(Token::STRING) || $stream->match(Token::NUMBER))) {
+            $ret = new Node\Expr\Call($ret);
+            $ret->append($this->parse($stream));
         }
 
         return $ret;

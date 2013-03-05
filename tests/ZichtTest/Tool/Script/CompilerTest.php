@@ -37,7 +37,8 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
             array('', ''),
             array('$(w00t)', '$z->cmd($z->value($z->resolve(\'w00t\')));'),
             array('a $(w00t) b', "\$z->cmd('a ' . \$z->value(\$z->resolve('w00t')) . ' b');"),
-            array('a $(w00t()) b', "\$z->cmd('a ' . \$z->value(\$z->call('w00t')) . ' b');"),
+            array('a $(w00t()) b', "\$z->cmd('a ' . \$z->value(\$z->call(\$z->resolve('w00t'))) . ' b');"),
+            array('a $(w00t["a"]["b"]) b', "\$z->cmd('a ' . \$z->value(\$z->call(\$z->resolve('w00t'))) . ' b');"),
 //            array('a $(w00t(b)) b', "'a ' . \$z->value(call_user_func(\$z['w00t'], \$z['b'])) . ' b'"),
 //            array('a $(w00t(b())) b', "'a ' . \$z->value(call_user_func(\$z['w00t'], call_user_func(\$z['b']))) . ' b'"),
         );

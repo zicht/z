@@ -14,23 +14,23 @@ tasks:
 
             Provide "y" as a files argument if you want to include content directories.
 
-            The content archive will contain a dump of the configured env.db name,
+            The content archive will contain a dump of the configured envs[target_env].db name,
             and all content files of the remote installation
         set:
-            env: ?
+            target_env: ?
             files: ? "n"
             _backup.file: sprintf("content-%s-%s%s.tar.gz", env, now, files == "y" ? "-with-files")
         do:
             - |
-                ssh $(env.ssh) "                                                        \
-                    cd $(env.root);                                                     \
-                    mysqldump -Q --opt -d $(env.db) $(content.db.structure) > db.sql;   \
-                    mysqldump -Q --opt $(env.db) $(content.db.full) >> db.sql;          \
+                ssh $(envs[target_env].ssh) "                                                        \
+                    cd $(envs[target_env].root);                                                     \
+                    mysqldump -Q --opt -d $(envs[target_env].db) $(content.db.structure) > db.sql;   \
+                    mysqldump -Q --opt $(envs[target_env].db) $(content.db.full) >> db.sql;          \
                     tar zc$(verbose ? "v")f $(_backup.file) $(files == "y" ? content.dir) db.sql;      \
                     rm db.sql                                                           \
                 "
-            - rsync $(verbose ? "--progress") $(env.ssh):$(env.root)$(_backup.file) ./$(_backup.file)
-            - ssh $(env.ssh) "rm $(env.root)$(_backup.file)"
+            - rsync $(verbose ? "--progress") $(envs[target_env].ssh):$(envs[target_env].root)$(_backup.file) ./$(_backup.file)
+            - ssh $(envs[target_env].ssh) "rm $(envs[target_env].root)$(_backup.file)"
 
         yield: _backup.file
 
@@ -58,8 +58,8 @@ tasks:
             env:  ?
             file: ?
         do:
-            - scp $(file) $(env.ssh):$(env.root)$(file)
-            - ssh $(env.ssh) "cd $(env.root); tar zx$(verbose ? "v")f $(file); mysql $(env.db) < ./db.sql; rm $(file); rm db.sql;"
+            - scp $(file) $(envs[target_env].ssh):$(envs[target_env].root)$(file)
+            - ssh $(envs[target_env].ssh) "cd $(envs[target_env].root); tar zx$(verbose ? "v")f $(file); mysql $(envs[target_env].db) < ./db.sql; rm $(file); rm db.sql;"
 
     # Load a content archive
     content.load:

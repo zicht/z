@@ -44,7 +44,7 @@ class Plugin extends BasePlugin
 
     public function setContainer(Container $container)
     {
-        $container->method('vcs.versionid', function($container, $info) {
+        $container->method(array('vcs', 'versionid'), function($container, $info) {
             if (
                 trim($info)
                 && preg_match('/^URL: (.*)/m', $info, $urlMatch)
@@ -52,7 +52,7 @@ class Plugin extends BasePlugin
             ) {
                 $url = $urlMatch[1];
                 $rev = $revMatch[1];
-                $projectUrl = $container->resolve('vcs.url');
+                $projectUrl = $container->resolve(array('vcs', 'url'));
 
                 if (substr($url, 0, strlen($projectUrl)) != $projectUrl) {
                     $err = "The project url {$projectUrl} does not match the VCS url {$url}\n";
@@ -64,23 +64,23 @@ class Plugin extends BasePlugin
             }
             return null;
         });
-        $container->method('versionof', function($container, $dir) {
-            if (is_file($revFile = ($dir . '/' . $container->resolve('vcs.export.revfile')))) {
+        $container->method(array('versionof'), function($container, $dir) {
+            if (is_file($revFile = ($dir . '/' . $container->resolve(array('vcs', 'export', 'revfile'))))) {
                 $info = file_get_contents($revFile);
             } elseif (is_dir($dir)) {
                 $info = @shell_exec('svn info ' . $dir . ' 2>&1');
             } else {
                 return null;
             }
-            return $container->call('vcs.versionid', $info);
+            return $container->call($container->resolve(array('vcs', 'versionid')), $info);
         });
-        $container->method('vcs.diff', function($container, $left, $right, $verbose = false) {
-            $left = $container->resolve('vcs.url') . '/' . $left;
-            $right = $container->resolve('vcs.url') . '/' . $right;
+        $container->method(array('vcs', 'diff'), function($container, $left, $right, $verbose = false) {
+            $left = $container->resolve(array('vcs', 'url')) . '/' . $left;
+            $right = $container->resolve(array('vcs', 'url')) . '/' . $right;
             return sprintf('svn diff %s %s %s', $left, $right, ($verbose ? '' : '--summarize'));
         });
-        $container->decl('vcs.current', function($container) {
-            return $container->call('versionof', $container->resolve('cwd'));
+        $container->decl(array('vcs', 'current'), function($container) {
+            return $container->call($container->resolve('versionof'), $container->resolve('cwd'));
         });
     }
 }

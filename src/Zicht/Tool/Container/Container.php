@@ -42,24 +42,18 @@ class Container
      *
      * @param array $values
      */
-    public function __construct($vars, $config)
+    public function __construct($config)
     {
-        $this->values = $vars;
-        $this->config = $config;
+        $this->values = $config;
 
         $this->subscribe(array($this, 'prefixListener'));
 
-        if (!$this->has('explain')) {
-            $this->set('explain', false);
-        }
-        if (!$this->has('verbose')) {
-            $this->set('verbose', false);
-        }
-        if (!$this->has('force')) {
-            $this->set('force', false);
-        }
-        $this->set('interactive', false);
-
+        $this->values += array(
+            'explain'       => false,
+            'verbose'       => false,
+            'interactive'   => false,
+            'force'         => false
+        );
         // gather the options for nested z calls.
         $opts = array();
         foreach (array('force', 'verbose', 'explain') as $opt) {
@@ -67,40 +61,97 @@ class Container
                 $opts[]= '--' . $opt;
             }
         }
-        $this->set('z.opts', join(' ', $opts));
+        $this->set(array('z', 'opts'), join(' ', $opts));
+    }
+
+
+    public function lookup($ptr, array $path) {
+        $at = array();
+        while ($sub = array_shift($path)) {
+            if (is_object($ptr)) {
+                $ptr = $ptr->$sub;
+            } elseif (is_array($ptr)) {
+                if (!array_key_exists($sub, $ptr)) {
+                    throw new \InvalidArgumentException("Member not found: " . join('.', $at) . ".$sub, available keys are: " . join(', ', array_keys($ptr)));
+                }
+                $ptr = $ptr[$sub];
+            } else {
+                throw new \InvalidArgumentException("Item at path " . join('.', $at) . ".$sub, should either be object or array, but " . gettype($ptr) . ' found');
+            }
+            $at[]= $sub;
+        }
+        return $ptr;
     }
 
 
     public function resolve($id)
     {
-        if (in_array($id, $this->stack)) {
-            throw new \UnexpectedValueException(
-                sprintf(
-                    "Circular reference detected: %s->%s",
-                    implode(' -> ', $this->stack),
-                    $id
-                )
-            );
-        }
-
-        array_push($this->stack, $id);
-        if (!array_key_exists($id, $this->values)) {
-            if (array_key_exists($id, $this->declarations)) {
-                $this->values[$id] = call_user_func($this->declarations[$id], $this);
-            } else {
-                array_pop($this->stack);
-                throw new \InvalidArgumentException("Unresolvable value [$id]");
+        if (is_string($id)) {
+            if (strpos($id, '.') !== false) {
+                trigger_error("As of version 2.1, Resolving variables by string is deprecated ($id). Please use arrays in stead", E_USER_DEPRECATED);
             }
+            $id = explode('.', $id);
         }
-        array_pop($this->stack);
+        try {
+            if (in_array($id, $this->stack)) {
+                throw new \UnexpectedValueException(
+                    sprintf(
+                        "Circular reference detected: %s->%s",
+                        implode(' -> ', $this->stack),
+                        $id
+                    )
+                );
+            }
+            array_push($this->stack, $id);
+            if (!is_array($id)) {
+                $id = array($id);
+            }
+            $ret = $this->lookup($this->values, $id);
 
-        return $this->values[$id];
+            if ($ret instanceof \Closure) {
+                $this->set($id, $ret = call_user_func($ret, $this));
+            }
+            array_pop($this->stack);
+            return $ret;
+        } catch(\Exception $e) {
+            throw new \RuntimeException("Exception while resolving value " . join("->", $id), 0, $e);
+        }
     }
 
 
-    public function set($id, $value)
+    public function set($path, $value)
     {
-        $this->values[$id] = $value;
+        if (!is_array($path)) {
+            if (strpos($path, '.') !== false) {
+                trigger_error("As of version 2.1, setting variables by string is deprecated ($path). Please use arrays instead", E_USER_DEPRECATED);
+                $path = explode('.', $path);
+            } else {
+                $path = array($path);
+            }
+        }
+        $strPath = join('->', $path);
+        $ptr =& $this->values;
+        $last = array_pop($path);
+        foreach ($path as $key) {
+            if (is_array($ptr)) {
+                if (!isset($ptr[$key])) {
+                    $ptr[$key] = array();
+                }
+                $ptr =& $ptr[$key];
+            } else {
+                if (!isset($ptr->$key)) {
+                    $ptr->$key = array();
+                }
+                $ptr =& $ptr->$key;
+            }
+        }
+        if (is_array($ptr)) {
+            $ptr[$last] = $value;
+        } elseif (is_object($ptr) && ! $ptr instanceof \Closure) {
+            $ptr->$last = $value;
+        } else {
+            throw new UnexpectedValueException("Unexpected type " . (is_object($ptr) ? get_class($ptr) : gettype($ptr)) . " {$strPath}");
+        }
     }
 
 
@@ -112,7 +163,7 @@ class Container
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException("Not callable");
         }
-        $this->functions[$id] = array($callable, $needsContainer);
+        $this->set($id, array($callable, $needsContainer));
     }
 
 
@@ -127,7 +178,7 @@ class Container
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException("Not callable");
         }
-        $this->declarations[$id] = $callable;
+        $this->set($id, $callable);
     }
 
 
@@ -154,7 +205,15 @@ class Container
 
     public function has($id)
     {
-        return !empty($this->values[$id]);
+        if (is_string($id)) {
+            $id = array($id);
+        }
+        try {
+            $this->lookup($this->values, $id);
+        } catch(\InvalidArgumentException $e) {
+            return false;
+        }
+        return true;
     }
 
 
@@ -168,7 +227,6 @@ class Container
     {
         $args = func_get_args();
         $service = array_shift($args);
-        $service = $this->functions[$service];
         if (!is_callable($service[0])) {
             throw new \InvalidArgumentException("Can not use service '$service' as a function, it is not callable");
         }
@@ -177,14 +235,13 @@ class Container
         if ($service[1]) {
             array_unshift($args, $this);
         }
-
         return call_user_func_array($service[0], $args);
     }
 
 
     function prefixListener($task, $event)
     {
-        if ($this->resolve('explain') && !$this->resolve('verbose')) {
+        if ($this->resolve(array('explain')) && !$this->resolve(array('verbose'))) {
             // don't do prefixing if the "explain" option is given, unless the "verbose" option is given too
             // in the latter case we do want the prefixes (because then we would want to know why certain
             // pieces are executed
@@ -229,9 +286,9 @@ class Container
     {
         $ret = 0;
         if (trim($cmd)) {
-            if ($this->resolve('explain')) {
+            if ($this->resolve(array('explain'))) {
                 $this->output->writeln('( ' . rtrim($cmd, "\n") . ' );');
-            } elseif ($this->resolve('interactive')) {
+            } elseif ($this->resolve(array('interactive'))) {
                 passthru($cmd, $ret);
             } else {
                 $process = new Process(self::SHELL);
@@ -267,28 +324,9 @@ class Container
     {
         $cmd = ltrim($cmd);
         if (substr($cmd, 0, 1) === '@') {
-            return $this->resolve('tasks.' . substr($cmd, 1));
+            return $this->resolve(array_merge(array('tasks'), explode('.', substr($cmd, 1))));
         }
         return $this->exec($cmd);
-    }
-
-
-    /**
-     * Select a nested configuration for aliased use, typically for 'env'
-     *
-     * @param string $namespace
-     * @param string $key
-     * @return void
-     */
-    public function select($namespace, $key)
-    {
-        $this->values[$namespace] = $key;
-        if (!isset($this->config[$namespace][$key])) {
-            throw new \InvalidArgumentException("Invalid {$namespace} provided, {$namespace}.{$key} is not defined");
-        }
-        foreach ($this->config[$namespace][$key] as $name => $value) {
-            $this->values[$namespace . '.' . $name] = $value;
-        }
     }
 
 
@@ -301,7 +339,13 @@ class Container
     public function value($value)
     {
         if (is_array($value)) {
+            if (! array_reduce(array_map('is_scalar', $value), function($a, $b) { return is_scalar($a) && $b; }, true)) {
+                throw new UnexpectedValueException("Unexpected complex type " . var_export($value));
+            }
             return join(' ', $value);
+        }
+        if ($value instanceof \Closure) {
+            $value = call_user_func($value, $this);
         }
         return (string)$value;
     }

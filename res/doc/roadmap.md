@@ -39,7 +39,7 @@ and major releases, e.g. 1.0 => 1.1 or 1.2 => 2.0, and they will all be incremen
 
     > *This will possibly utilize the PropertyPath component of Symfony 2.2. So Z will upgrade to run on the 2.2 branch*
 
- +  `$(env.root)` and such will be replaced by `$(env:root)`, which is syntactical sugar for `$(env.$env.root)`. This
+ +  `$(env.root)` and such will be replaced by `$(env:root)`, which is syntactical sugar for `$(env[env].root)`. This
     eliminates the `select('env')` call in the setup of the commands. This way, other dynamic configuration can be used
     in the future. The 'select' call will be deprecated and removed in 1.2, so usage of `env.property` will be wrapped
     in a separate declaration, which will trigger an E_USER_DEPRECATED message.
@@ -51,9 +51,9 @@ and major releases, e.g. 1.0 => 1.1 or 1.2 => 2.0, and they will all be incremen
     such as:
 
     ```
-    - Command         => env.remote(env)
-    - Local command   => "/usr/local/bin/zsh"
-    - Query           => "/bin/mysql"
+    - Command         @ env.remote(env)
+    - Local command   @ "/usr/local/bin/zsh"
+    - Query           @ "/bin/mysql"
     ```
 
     In the above examples, env.remote(env) would yield something like 'ssh user@host'.

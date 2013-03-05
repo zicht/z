@@ -21,10 +21,25 @@ class Expression
             $substr = substr($string, $i);
             $before = $i;
 
-            if (preg_match('/^(==|<=?|>=?|!=?|\?|:|\|\||&&|xor|or|and|\.|\[|\])/', $substr, $m)) {
+            if (preg_match('/^(==|<=?|>=?|!=?|\?|:|\|\||&&|xor|or|and|\.|\[|\]|\(|\))/', $substr, $m)) {
+                if ($m[0] == '.' && end($ret)->type == Token::WHITESPACE) {
+                    trigger_error("As of version 2.1, using the dot-operator for concatenation is deprecated. Please use cat() or sprintf() in stead", E_USER_DEPRECATED);
+                    $m[0] = '.';
+                }
+
+                if ($m[0] == ')') {
+                    $depth --;
+                    if ($depth == 0) {
+                        $ret[] = new Token(Token::EXPR_END, ')');
+                        $i ++;
+                        break;
+                    }
+                } elseif ($m[0] === '(') {
+                    $depth ++;
+                }
                 $ret[]= new Token(Token::OPERATOR, $m[0]);
                 $i += strlen($m[0]);
-            } elseif (preg_match('/^[a-z_][\w.]*/i', $substr, $m)) {
+            } elseif (preg_match('/^[a-z_][\w]*/i', $substr, $m)) {
                 $ret[] = new Token(Token::IDENTIFIER, $m[0]);
                 $i += strlen($m[0]);
             } elseif (preg_match('/^\s+/', $substr, $m)) {
@@ -33,20 +48,6 @@ class Expression
             } elseif (preg_match('/^([0-9]*.)?[0-9]+/', $substr, $m)) {
                 $ret[]= new Token(Token::NUMBER, $m[0]);
                 $i += strlen($m[0]);
-            } elseif ($string{$i} == ')') {
-                $depth --;
-                if ($depth == 0) {
-                    $ret[] = new Token(Token::EXPR_END, ')');
-                    $i ++;
-                    break;
-                } else {
-                    $ret[] = new Token(')');
-                }
-                $i ++;
-            } elseif ($string{$i} == '(') {
-                $depth ++;
-                $ret[] = new Token('(');
-                $i ++;
             } elseif (preg_match('/^[\?,]/', $substr, $m)) {
                 $ret[] = new Token($m[0]);
                 $i ++;

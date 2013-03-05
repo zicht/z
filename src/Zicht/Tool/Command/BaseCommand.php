@@ -38,21 +38,4 @@ class BaseCommand extends Command
     {
         $this->container = $container;
     }
-
-
-    /**
-     * Initializes the environment in the container if set as an input option
-     *
-     * @param \Symfony\Component\Console\Input\InputInterface $input
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return void
-     */
-    protected function initialize(InputInterface $input, OutputInterface $output)
-    {
-        parent::initialize($input, $output);
-
-        if ($input->hasArgument('env') && $input->getArgument('env')) {
-            $this->container->select('env', $input->getArgument('env'));
-        }
-    }
 }

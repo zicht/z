@@ -11,20 +11,27 @@ use Zicht\Tool\Script\Buffer;
 use Zicht\Tool\Script\Node\Branch;
 
 
-class Func extends Branch
+class Call extends Branch
 {
-    public function __construct($name)
+    public function __construct($left)
     {
         parent::__construct();
-        $this->name = $name;
+        $this->nodes[]= $left;
     }
+
 
     public function compile(Buffer $compiler)
     {
-        $compiler->write('$z->call(' . var_export($this->name, true));
+        $compiler->write('$z->call(');
         foreach ($this->nodes as $i => $n) {
-            $compiler->write(', ');
-            $n->compile($compiler);
+            if ($i == 0) {
+                $n->compile($compiler);
+            } else {
+                $compiler->write(', ');
+                $compiler->write('$z->value(');
+                $n->compile($compiler);
+                $compiler->write(')');
+            }
         }
         $compiler->write(')');
     }

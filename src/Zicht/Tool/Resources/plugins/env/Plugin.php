@@ -16,13 +16,13 @@ class Plugin extends BasePlugin
 {
     public function setContainer(Container $container)
     {
-        $container->method('env.versionat', function($container, $env, $verbose = false) {
+        $container->method(array('env', 'versionat'), function($container, $env, $verbose = false) {
             $tmp = tempnam(sys_get_temp_dir(), 'z');
             passthru(sprintf(
                 'scp %s:%s/%s %s',
                 $container->resolve('env.' . $env . '.ssh'),
                 $container->resolve('env.' . $env . '.root'),
-                $container->resolve('vcs.export.revfile'),
+                $container->resolve(array('vcs', 'export', 'revfile')),
                 $tmp
             ));
             $vcsInfo = file_get_contents($tmp);
@@ -33,7 +33,7 @@ class Plugin extends BasePlugin
                 return $container->call('vcs.versionid', $vcsInfo);
             }
         });
-        $container->decl('env.ssh.connectable', function($container) {
+        $container->decl(array('env', 'ssh', 'connectable'), function($container) {
             return shell_exec(sprintf('ssh -oBatchMode=yes %s "echo 1" 2>/dev/null;', $container->resolve('env.ssh')));
         });
     }
