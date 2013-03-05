@@ -10,7 +10,7 @@ tasks:
 
     # Connect to the remote mysql shell using ssh
     env.mysql:
-        unless: !envs[target_env].ssh.connectable
+        unless: !ssh.connectable(envs[target_env].ssh)
         help: |
             Connect to the remote MySQL.
 
@@ -23,7 +23,7 @@ tasks:
 
     # Initialize the SSH session by copying a local public key to the remote machine
     env.init.ssh:
-        unless: envs[target_env].ssh.connectable
+        unless: ssh.connectable(envs[target_env].ssh)
         help: |
             Initialize an SSH key exchange
 
@@ -43,7 +43,7 @@ tasks:
         set:
             target_env: ?
         do:
-            - echo "$(envs[target_env].versionat(env, verbose))"
+            - echo "$(env.versionat(target_env, verbose))"
 
     env.diff:
         help: |
@@ -51,7 +51,7 @@ tasks:
 
             Downloads the remote revision file to determine what version is currently there and executes a diff on them
         set:
-            env: ?
+            target_env: ?
             version: ? vcs.current
         do: |
-            $(vcs.diff(env.versionat(env), version, verbose))
+            $(vcs.diff(env.versionat(target_env), version, verbose))

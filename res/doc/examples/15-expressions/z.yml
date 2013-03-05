@@ -7,5 +7,5 @@ tasks:
                 echo "$(
                     what == "hello"
                     ? "hello to you to!"
-                    : "I don't know what " . what . " means, sorry..."
+                    : cat("I don't know what ", what, " means, sorry...")
                 )"

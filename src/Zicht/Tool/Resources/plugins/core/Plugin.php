@@ -22,7 +22,6 @@ class Plugin extends BasePlugin
         $container->set('user', getenv('USER'));
 
         // simple php functions
-        $container->fn('sprintf');
         $container->fn('is_dir');
         $container->fn('is_file');
 

@@ -1,3 +1,8 @@
+1.1-dev
+* Added 'declare'
+* Deprecated the dot concatenation operator
+* Deprecated declaration by string
+
 1.0-beta8
 ---------
 * Added imports

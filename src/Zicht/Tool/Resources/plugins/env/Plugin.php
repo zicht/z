@@ -33,8 +33,8 @@ class Plugin extends BasePlugin
                 return $container->call('vcs.versionid', $vcsInfo);
             }
         });
-        $container->decl(array('env', 'ssh', 'connectable'), function($container) {
-            return shell_exec(sprintf('ssh -oBatchMode=yes %s "echo 1" 2>/dev/null;', $container->resolve('env.ssh')));
+        $container->fn(array('ssh', 'connectable'), function($ssh) {
+            return shell_exec(sprintf('ssh -oBatchMode=yes %s "echo 1" 2>/dev/null;', $ssh));
         });
     }
 }

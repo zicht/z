@@ -62,6 +62,11 @@ class Container
             }
         }
         $this->set(array('z', 'opts'), join(' ', $opts));
+
+        $this->fn('sprintf');
+        $this->fn('cat', function() {
+            return join('', func_get_args());
+        });
     }
 
 
@@ -88,7 +93,7 @@ class Container
     {
         if (is_string($id)) {
             if (strpos($id, '.') !== false) {
-                trigger_error("As of version 2.1, Resolving variables by string is deprecated ($id). Please use arrays in stead", E_USER_DEPRECATED);
+                trigger_error("As of version 1.1, Resolving variables by string is deprecated ($id). Please use arrays in stead", E_USER_DEPRECATED);
             }
             $id = explode('.', $id);
         }
@@ -123,7 +128,7 @@ class Container
     {
         if (!is_array($path)) {
             if (strpos($path, '.') !== false) {
-                trigger_error("As of version 2.1, setting variables by string is deprecated ($path). Please use arrays instead", E_USER_DEPRECATED);
+                trigger_error("As of version 1.1, setting variables by string is deprecated ($path). Please use arrays instead", E_USER_DEPRECATED);
                 $path = explode('.', $path);
             } else {
                 $path = array($path);

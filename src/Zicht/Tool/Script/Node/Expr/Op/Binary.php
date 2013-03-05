@@ -25,6 +25,10 @@ class Binary extends Branch
 
     public function compile(Buffer $compiler)
     {
+        //@deprecated, to be removed in 1.2
+        if ($this->operator === 'cat') {
+            $this->operator = '.';
+        }
         $this->nodes[0]->compile($compiler);
         $compiler->write($this->operator);
         $this->nodes[1]->compile($compiler);

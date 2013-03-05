@@ -6,19 +6,21 @@ One important goal for any Z upgrade is providing conversion scripts for the yml
 and major releases, e.g. 1.0 => 1.1 or 1.2 => 2.0, and they will all be incremental.
 
 # version 1.1 #
+ +  The name for configuring environments will be replaced by "envs" in stead of "env"
+
  +  A new syntax for dynamic configuration will be introduced. At lower levels than top, you can now use a variable name
     to expand variables in the scope:
 
     ```
     set:
         env: 'testing'
-    do: echo $(env[env].root)
+    do: echo $(envs[env].root)
     ```
 
     Will be expanded to:
 
     ```
-    do: echo $(env.testing.root)
+    do: echo $(envs.testing.root)
     ```
 
     This way, other names can be used to identify configured environment:
@@ -27,7 +29,7 @@ and major releases, e.g. 1.0 => 1.1 or 1.2 => 2.0, and they will all be incremen
     set:
         local: development
         env: ?
-    do: echo $(env[env].root) => $(env[local].root)
+    do: echo $(envs[env].root) => $(envs[local].root)
     ```
 
     The expression notation will therefore be similar to Javascript, such that any property can be accessed using the

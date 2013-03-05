@@ -23,8 +23,8 @@ class Expression
 
             if (preg_match('/^(==|<=?|>=?|!=?|\?|:|\|\||&&|xor|or|and|\.|\[|\]|\(|\))/', $substr, $m)) {
                 if ($m[0] == '.' && end($ret)->type == Token::WHITESPACE) {
-                    trigger_error("As of version 2.1, using the dot-operator for concatenation is deprecated. Please use cat() or sprintf() in stead", E_USER_DEPRECATED);
-                    $m[0] = '.';
+                    trigger_error("As of version 1.1, using the dot-operator for concatenation is deprecated. Please use cat() or sprintf() in stead", E_USER_DEPRECATED);
+                    $m[0] = 'cat';
                 }
 
                 if ($m[0] == ')') {
