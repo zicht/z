@@ -32,7 +32,7 @@ class Dumper
                         $ret['nodes'][]= $n;
                     } else {
                         if (! $n instanceof Node\Node) {
-                            throw new \InvalidArgumentException("Invalid child node in " . ZichtToolUtil(1););
+                            throw new \InvalidArgumentException("Invalid child node in " . \Zicht\Tool\Util::toPhp($path));
                         }
                         $ret['nodes'][]= $this->getAst($n);
                     }

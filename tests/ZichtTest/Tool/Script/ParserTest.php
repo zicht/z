@@ -38,7 +38,7 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         return array(
             array('', array('type' => 'Script')),
             array('$(w00t)', array('type' => 'Script', 'nodes' => array(array('type' => 'Expr\Expr', 'nodes' => array(array('type' => 'Expr\\Variable')))))),
-            array('$(w00t waaa)', array('type' => 'Script', 'nodes' => array(array('type' => 'Expr\Expr', 'nodes' => array(array('type' => 'Expr\\Call', 'nodes' => array(array('type' => 'Expr\Str'), array('type' => 'Expr\Variable')))))))),
+            array('$(w00t waaa)', array('type' => 'Script', 'nodes' => array(array('type' => 'Expr\Expr', 'nodes' => array(array('type' => 'Expr\\Call', 'nodes' => array(array('type' => 'Expr\Variable'), array('type' => 'Expr\Variable')))))))),
             array('$(1 ? 2)', array('type' => 'Script', 'nodes' => array(array('type' => 'Expr\Expr', 'nodes' => array(array('type' => 'Expr\\Op\\Ternary', 'nodes' => array(array('type' => 'Expr\Number'), array('type' => 'Expr\\Number'), null))))))),
             array('$(1 ? 2 : 3)', array('type' => 'Script', 'nodes' => array(array('type' => 'Expr\Expr', 'nodes' => array(array('type' => 'Expr\\Op\\Ternary', 'nodes' => array(array('type' => 'Expr\Number'), array('type' => 'Expr\\Number'), array('type' => 'Expr\\Number')))))))),
             array('$(1 ?: 3)', array('type' => 'Script', 'nodes' => array(array('type' => 'Expr\Expr', 'nodes' => array(array('type' => 'Expr\\Op\\Ternary', 'nodes' => array(array('type' => 'Expr\Number'), null, array('type' => 'Expr\\Number')))))))),
