@@ -5,9 +5,17 @@
  */
 require_once __DIR__ . '/../vendor/autoload.php';
 
-function deprecation_decorator($err, $errstr) {
+/**
+ * Emits deprecation warnings to stderr.
+ *
+ * @param int $err
+ * @param string $errstr
+ */
+function deprecation_decorator($err, $errstr)
+{
     fwrite(STDERR, "[DEPRECATED] $errstr\n");
 }
 set_error_handler('deprecation_decorator', E_USER_DEPRECATED);
+
 $app = new Zicht\Tool\Application();
 $app->run();
