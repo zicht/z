@@ -15,8 +15,16 @@ use \Symfony\Component\Yaml\Yaml;
 /**
  * Dumps the container
  */
-class DumpCommand extends BaseCommand
+class DumpCommand extends Command
 {
+    public function __construct($containerNode, $configTree)
+    {
+        parent::__construct();
+        $this->containerNode = $containerNode;
+        $this->configTree = $configTree;
+    }
+
+
     /**
      * Configures the command
      *
@@ -28,10 +36,8 @@ class DumpCommand extends BaseCommand
 
         $this
             ->setName('z:dump')
-            ->addArgument('path', InputArgument::OPTIONAL, 'Dump the specified path in the config')
             ->setHelp('Dumps container and/or configuration information')
             ->setDescription('Dumps container and/or configuration information')
-            ->addOption('verify', '', \Symfony\Component\Console\Input\InputOption::VALUE_NONE, 'Verifies the code (lint through php -l)')
         ;
     }
 
@@ -45,28 +51,16 @@ class DumpCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        if ($path = $input->getArgument('path')) {
-            $ptr = $this->container->config;
-            $parts = explode('.', $path);
-            while ($key = array_shift($parts)) {
-                if (isset($ptr[$key])) {
-                    $ptr = $ptr[$key];
-                } else {
-                    throw new \InvalidArgumentException("Key {$key} is not defined");
-                }
-            }
-            $slice = array($path => $ptr);
-            $output->writeln(Yaml::dump($slice, 5, 4));
-        } else {
-            $output->writeln(Yaml::dump($this->container->config, 5, 4));
-            if ($output->getVerbosity() > 1) {
-                $output->writeln($this->container->definition, OutputInterface::OUTPUT_RAW);
-            }
-        }
-        if ($input->getOption('verify')) {
-            $f = tempnam(sys_get_temp_dir(), 'z');
-            file_put_contents($f, '<?php' . PHP_EOL . $this->container['__definition']);
-            passthru('php -l ' . $f);
+        $output->writeln(Yaml::dump($this->configTree, 5, 4));
+        if ($output->getVerbosity() > 1) {
+            $buffer = new \Zicht\Tool\Script\Buffer();
+            $this->containerNode->compile($buffer);
+            $result = $buffer->getResult();
+
+            $output->writeln(
+                preg_replace_callback('/^/m', function() { static $i = 1; return sprintf("%3d. ", $i ++); }, $result),
+                OutputInterface::OUTPUT_RAW
+            );
         }
     }
 }

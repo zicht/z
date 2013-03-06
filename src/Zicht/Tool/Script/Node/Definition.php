@@ -19,6 +19,6 @@ class Definition implements Node
 
     public function compile(Buffer $compiler)
     {
-        $compiler->raw('$z->set(')->asPhp($this->path)->raw(',')->asPhp($this->value)->raw(');');
+        $compiler->write('$z->set(')->asPhp($this->path)->raw(',')->asPhp($this->value)->raw(');')->eol();
     }
 }

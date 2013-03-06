@@ -93,7 +93,7 @@ class ContainerBuilder
 
     function createScriptNode($path, $node)
     {
-        return $this->scriptcompiler->parse($node);
+        return $this->scriptcompiler->parse(trim($node));
     }
 
 

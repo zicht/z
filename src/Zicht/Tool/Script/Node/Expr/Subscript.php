@@ -22,14 +22,14 @@ class Subscript extends Branch
 
     public function compile(Buffer $compiler)
     {
-        $compiler->write('$z->lookup(');
+        $compiler->raw('$z->lookup(');
         foreach ($this->nodes as $i => $node) {
             if ($i > 0) {
-                $compiler->write(',');
-                $compiler->write('array(');
+                $compiler->raw(', ');
+                $compiler->raw('array(');
             }
             $node->compile($compiler);
         }
-        $compiler->write('))');
+        $compiler->raw('))');
     }
 }

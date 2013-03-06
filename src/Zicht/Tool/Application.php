@@ -56,21 +56,21 @@ class Application extends BaseApplication
             $output->setVerbosity(OutputInterface::VERBOSITY_VERBOSE);
         }
 
-        list($plugins, $config) = $this->getConfig(getenv('ZFILE'), getenv('ZPLUGINDIR'));
+        list($plugins, $configTree) = $this->getConfig(getenv('ZFILE'), getenv('ZPLUGINDIR'));
 
-        $builder = new \Zicht\Tool\Container\ContainerBuilder($config);
-        $containerBuilder = $builder->build();
-        $container = $this->initContainer($plugins, $containerBuilder);
+        $builder = new \Zicht\Tool\Container\ContainerBuilder($configTree);
+
+        $containerNode = $builder->build();
+        $container = $this->initContainer($plugins, $containerNode);
         $container->output = $output;
 
+        $container->set('verbose',  $input->hasParameterOption(array('--verbose', '-v')));
+        $container->set('force',    $input->hasParameterOption(array('--force', '-f')));
+        $container->set('explain',  $input->hasParameterOption(array('--explain')));
 
-        $container->set('verbose', $input->hasParameterOption(array('--verbose', '-v')));
-        $container->set('force', $input->hasParameterOption(array('--force', '-f')));
-        $container->set('explain', $input->hasParameterOption(array('--explain')));
+        $this->add(new Cmd\DumpCommand($containerNode, $configTree));
 
-        $this->add(new Cmd\DumpCommand($container));
-
-        foreach ($containerBuilder->getTasks() as $task) {
+        foreach ($containerNode->getTasks() as $task) {
             $name = $task->getName();
             if (substr($name, 0, 1) !== '_') {
                 $cmd = new TaskCommand($container, $task->getName());
@@ -97,11 +97,11 @@ class Application extends BaseApplication
      *
      * @throws \UnexpectedValueException
      */
-    public function initContainer($plugins, $containerBuilder)
+    public function initContainer($plugins, $containerNode)
     {
         $buffer = new \Zicht\Tool\Script\Buffer();
 
-        $containerBuilder->compile($buffer);
+        $containerNode->compile($buffer);
 
         $z = null;
         eval($buffer->getResult());

@@ -23,6 +23,10 @@ class Task implements \Zicht\Tool\Script\Node\Node
     public function __construct($path, $node)
     {
         $this->name = $path;
+        if (strpos(end($this->name), '.') !== false) {
+            $end = array_pop($this->name);
+            $this->name = array_merge($this->name, explode('.', $end));
+        }
         $this->taskDef = $node;
     }
 
