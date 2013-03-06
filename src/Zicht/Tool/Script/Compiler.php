@@ -6,6 +6,8 @@
 
 namespace Zicht\Tool\Script;
 
+use Zicht\Tool\Util;
+
 /**
  * Wraps the tokenization, parsing and compiling into one convenience class.
  */
@@ -20,6 +22,15 @@ class Compiler
         $this->parser = (null === $parser ? new Parser() : $parser);
     }
 
+
+    public function parse($input)
+    {
+        if (strlen($input) == 0) {
+            return null;
+        }
+        return $this->parser->parse(new TokenStream($this->tokenizer->getTokens($input)));
+    }
+
     /**
      * Compile an input string to PHP code
      *
@@ -28,14 +39,16 @@ class Compiler
      */
     public function compile($input)
     {
+        if (strlen($input) == 0) {
+            return null;
+        }
         try {
             $buffer = new Buffer();
-            $node = $this->parser->parse(new TokenStream($this->tokenizer->getTokens($input)));
-            $node->compile($buffer);
+            $this->parse($input)->compile($buffer);
             $code = $buffer->getResult();
             return $code;
         } catch(\UnexpectedValueException $e) {
-            throw new \UnexpectedValueException('Error while compiling input: ' . var_export($input, true), 0, $e);
+            throw new \UnexpectedValueException('Error while compiling input: ' . Util::toPhp($input), 0, $e);
         }
     }
 }

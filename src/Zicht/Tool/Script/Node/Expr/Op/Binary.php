@@ -30,7 +30,7 @@ class Binary extends Branch
             $this->operator = '.';
         }
         $this->nodes[0]->compile($compiler);
-        $compiler->write($this->operator);
+        $compiler->raw($this->operator);
         $this->nodes[1]->compile($compiler);
     }
 }

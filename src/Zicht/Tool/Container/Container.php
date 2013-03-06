@@ -12,6 +12,7 @@ use \UnexpectedValueException;
 use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Process\Process;
 use Zicht\Tool\Script\Compiler as ScriptCompiler;
+use Zicht\Tool\Util;
 
 /**
  * Service container
@@ -24,9 +25,6 @@ class Container
     protected $subscribers = array();
 
     public $output;
-
-    // TODO check if config really needs to be public
-    public $config;
 
     public $definition = '';
 
@@ -42,9 +40,9 @@ class Container
      *
      * @param array $values
      */
-    public function __construct($config)
+    public function __construct()
     {
-        $this->values = $config;
+        $this->values = array();
 
         $this->subscribe(array($this, 'prefixListener'));
 
@@ -67,6 +65,12 @@ class Container
         $this->fn('cat', function() {
             return join('', func_get_args());
         });
+    }
+
+
+    public function get($path)
+    {
+        return $this->lookup($this->values, $path);
     }
 
 
@@ -128,7 +132,11 @@ class Container
     {
         if (!is_array($path)) {
             if (strpos($path, '.') !== false) {
-                trigger_error("As of version 1.1, setting variables by string is deprecated ($path). Please use arrays instead", E_USER_DEPRECATED);
+                trigger_error(
+                    "As of version 1.1, setting variables by string is deprecated ($path)."
+                    . "Please use arrays instead",
+                    E_USER_DEPRECATED
+                );
                 $path = explode('.', $path);
             } else {
                 $path = array($path);
@@ -255,7 +263,7 @@ class Container
         $reset = false;
         switch ($event) {
             case 'start':
-                $this->prefix[]= (string)$task;
+                $this->prefix[]= join(':', $task);
                 $reset = true;
                 break;
             case 'end':
@@ -345,7 +353,7 @@ class Container
     {
         if (is_array($value)) {
             if (! array_reduce(array_map('is_scalar', $value), function($a, $b) { return is_scalar($a) && $b; }, true)) {
-                throw new UnexpectedValueException("Unexpected complex type " . var_export($value));
+                throw new UnexpectedValueException("Unexpected complex type " . Util::toPhp($value));
             }
             return join(' ', $value);
         }

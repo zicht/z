@@ -19,9 +19,9 @@ class Script extends Branch
             $depth = 0;
             if ($this->nodes[0] instanceof Expr\Conditional) {
                 $nodes = $this->nodes;
-                $compiler->indent(1)->write('if (');
+                $compiler->write('if (');
                 $this->nodes[0]->compile($compiler);
-                $compiler->writeln(') {');
+                $compiler->raw(') {')->eol()->indent(1);
                 array_shift($nodes);
                 $depth ++;
             } else {
@@ -31,14 +31,14 @@ class Script extends Branch
             $compiler->write('$z->cmd(');
             foreach ($nodes as $i => $node) {
                 if ($i > 0) {
-                    $compiler->write(' . ');
+                    $compiler->raw(' . ');
                 }
                 $node->compile($compiler);
             }
-            $compiler->write(');');
+            $compiler->raw(');')->eol();
 
             while ($depth--) {
-                $compiler->indent(-1)->write('}');
+                $compiler->indent(-1)->writeln('}');
             }
         }
     }

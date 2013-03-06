@@ -12,7 +12,7 @@ use Zicht\Tool\Script\Buffer;
 /**
  * Compilable node that represents an executable task
  */
-class Task
+class Task implements \Zicht\Tool\Script\Node\Node
 {
     /**
      * Construct the task with the provided array as task definition
@@ -20,10 +20,15 @@ class Task
      * @param array $taskDef
      * @param string $name
      */
-    public function __construct(array $taskDef, $name)
+    public function __construct($path, $node)
     {
-        $this->taskDef = $taskDef;
-        $this->name = $name;
+        $this->name = $path;
+        $this->taskDef = $node;
+    }
+
+    public function getName()
+    {
+        return join(':', array_slice($this->name, 1));
     }
 
 
@@ -42,93 +47,46 @@ class Task
      */
     public function compile(Buffer $buffer)
     {
-        $scriptcompiler = new ScriptCompiler(new \Zicht\Tool\Script\Parser());
-        $exprcompiler  = new ScriptCompiler(
-            new \Zicht\Tool\Script\Parser\Expression(),
-            new \Zicht\Tool\Script\Tokenizer\Expression()
-        );
-
-        $taskName = var_export($this->name, true);
+        $taskName = \Zicht\Tool\Util::toPhp($this->name);
 
         $buffer
-            ->indent(1)->writeln('function($z) {')
+            ->writeln('$z->decl(')->indent(1)->writeln($taskName . ',')
+            ->writeln('function($z) {')->indent(1);
         ;
-
-        foreach ($this->taskDef['set'] as $name => $value) {
-            $name = explode('.', $name);
-            $phpName = var_export($name, true);
-            if ($value && preg_match('/^\?\s*(.*)/', trim($value), $m)) {
-                $m[1] = trim($m[1]);
-
-                $buffer->indent(1)->writeln(sprintf('if (!$z->has(%s)) {', $phpName));
-                if (!$m[1]) {
-                    $buffer->writeln(sprintf(
-                        'throw new \RuntimeException(\'required variable %s is not defined\');',
-                        join('.', $name)
-                    ));
-                } else {
-                    $buffer->writeln(
-                        sprintf(
-                            '$z->set(%s, %s);',
-                            $phpName,
-                            $exprcompiler->compile($m[1])
-                        )
-                    );
-                }
-                $buffer->indent(-1)->writeln('}');
-            } else {
-                $buffer->writeln(
-                    sprintf(
-                        '$z->set(%s, %s);',
-                        $phpName,
-                        $exprcompiler->compile($value)
-                    )
-                );
-            }
+        foreach ($this->taskDef['set'] as $name => $node) {
+            $node->compile($buffer);
         }
         $buffer->writeln(sprintf('$z->notify(%s, "start");', $taskName));
 
         $hasUnless = false;
         foreach (array('pre', 'do', 'post') as $scope) {
             if ($scope === 'do' && !empty($this->taskDef['unless'])) {
-                $unlessExpr = $exprcompiler->compile($this->taskDef['unless']);
-                $buffer
-                    ->write('if (!$z->resolve(array(\'force\')) && ($_unless = (')
-                    ->write($unlessExpr)
-                    ->writeln('))) {')
-                ;
 
-                $buffer->writeln(
-                    '$z->cmd(sprintf('
-                        . var_export(
-                            sprintf(
-                                'echo "%s skipped, because %s" evaluates to \'%%s\'',
-                                $this->name,
-                                $this->taskDef['unless']
-                            ),
-                            true
-                        )
-                        . ', var_export($_unless, true)));'
-                );
-
-                $buffer->writeln('} else {');
+                $buffer->write('if (!$z->resolve(array(\'force\')) && ($_unless = (');
+                $this->taskDef['unless']->compile($buffer);
+                $buffer->raw('))) {')->eol()->indent(1);
+                $buffer->writeln(sprintf('$z->cmd(%s);', \Zicht\Tool\Util::toPhp(sprintf('echo "%s skipped"', join('.', $this->name)), true)));
+                $buffer->indent(-1)->writeln('} else {')->indent(1);
                 $hasUnless = true;
             }
             foreach ($this->taskDef[$scope] as $cmd) {
-                $buffer->writeln($scriptcompiler->compile($cmd));
+                $cmd->compile($buffer);
             }
             if ($hasUnless && $scope == 'post') {
-                $buffer->writeln('}');
+                $buffer->indent(-1)->writeln('}');
             }
         }
         if (!empty($this->taskDef['yield'])) {
-            $buffer->writeln('$ret = ' . $exprcompiler->compile($this->taskDef['yield']) . ';');
+            $buffer->writeln('$ret = ');
+            $this->taskDef['yield']->compile($buffer);
+            $buffer->write(';');
         } else {
             $buffer->writeln('$ret = null;');
         }
         $buffer->writeln(sprintf('$z->notify(%s, "end");', $taskName));
         $buffer->writeln('return $ret;');
-        $buffer->writeln('}')->indent(-1);
+        $buffer->indent(-1)->writeln('}')->indent(-1);
+        $buffer->writeln(');');
     }
 
 
@@ -147,12 +105,10 @@ class Task
                     // Variables prefixed with an underscore are considered non public
                     continue;
                 }
-                // TODO remove duplicated pattern match in this method and the 'compile'.
-                // possibly make a variable declaration a Compilable node too (or just make a real AST)
-                if (preg_match('/^\?\s*(.*)/', $expr, $m)) {
+                if ($expr->conditional) {
                     // if the part after the question mark is empty, the variable is assumed to be required
                     // for execution of the task
-                    $ret[$name] = ($m[1] === '');
+                    $ret[$name] = ($expr->nodes[0] === null);
                 }
             }
         }

@@ -37,6 +37,18 @@ class Buffer
      */
     public function write($data)
     {
+        return $this->indent()->raw($data);
+    }
+
+
+    public function eol()
+    {
+        $this->result .= PHP_EOL;
+        return $this;
+    }
+
+    public function raw($data)
+    {
         $this->result .= $data;
         return $this;
     }
@@ -44,8 +56,7 @@ class Buffer
 
     public function writeln($data)
     {
-        $this->result .= $data . PHP_EOL . str_repeat('    ', $this->indent);
-        return $this;
+        return $this->write($data)->eol();
     }
 
 
@@ -53,6 +64,8 @@ class Buffer
     {
         if (false !== $increment) {
             $this->indent += $increment;
+        } else {
+            $this->raw(str_repeat('    ', $this->indent));
         }
         return $this;
     }
@@ -66,5 +79,12 @@ class Buffer
     public function getResult()
     {
         return $this->result;
+    }
+
+
+
+    public function asPhp($var)
+    {
+        return $this->raw(\Zicht\Tool\Util::toPhp($var));
     }
 }

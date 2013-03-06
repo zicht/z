@@ -5,15 +5,9 @@
  */
 require_once __DIR__ . '/../vendor/autoload.php';
 
-
-set_error_handler(function($err, $errstr) {
-    static $stack = array();
-    if ($err & error_reporting()) {
-        if (!in_array($errstr, $stack)) {
-            fwrite(STDERR, "[$err] $errstr\n");
-            $stack[]= $errstr;
-        }
-    }
-});
+function deprecation_decorator($err, $errstr) {
+    fwrite(STDERR, "[DEPRECATED] $errstr\n");
+}
+set_error_handler('deprecation_decorator', E_USER_DEPRECATED);
 $app = new Zicht\Tool\Application();
 $app->run();

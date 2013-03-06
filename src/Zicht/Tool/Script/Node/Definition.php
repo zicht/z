@@ -6,23 +6,19 @@
  * @copyright 2012 Gerard van Helden <http://melp.nl>
  */
 
-namespace Zicht\Tool\Script\Node\Expr;
-
+namespace Zicht\Tool\Script\Node;
 use Zicht\Tool\Script\Buffer;
 
-class Parens extends \Zicht\Tool\Script\Node\Branch
+class Definition implements Node
 {
-    function __construct($node)
+    function __construct($path, $value)
     {
-        parent::__construct();
-        $this->nodes[0] = $node;
+        $this->path = $path;
+        $this->value = $value;
     }
-
 
     public function compile(Buffer $compiler)
     {
-        $compiler->raw('(');
-        $this->nodes[0]->compile($compiler);
-        $compiler->raw(')');
+        $compiler->raw('$z->set(')->asPhp($this->path)->raw(',')->asPhp($this->value)->raw(');');
     }
 }

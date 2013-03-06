@@ -15,6 +15,9 @@ use Zicht\Tool\Script\AbstractParser;
 
 class Expression extends AbstractParser
 {
+    public static $PREFIX_UNARY = array('!', '-', '~');
+    public static $INFIX_BINARY = array('==', '!=', '<=', '>=', '<', '>', '&&', '||');
+
     function parse(\Zicht\Tool\Script\TokenStream $stream)
     {
         if ($stream->match(Token::OPERATOR, array('!', '-'))) {
@@ -32,10 +35,10 @@ class Expression extends AbstractParser
         } elseif ($stream->match(Token::NUMBER)) {
             $ret = new Node\Expr\Number($stream->current()->value);
             $stream->next();
-        } elseif ($stream->match('(')) {
+        } elseif ($stream->match(Token::OPERATOR, '(')) {
             $stream->next();
             $ret = new \Zicht\Tool\Script\Node\Expr\Parens($this->parse($stream));
-            $stream->expect(')');
+            $stream->expect(Token::OPERATOR, ')');
         } elseif ($stream->match(Token::OPERATOR, '[')) {
             $stream->next();
             $ret = new \Zicht\Tool\Script\Node\Expr\ListNode();
@@ -93,7 +96,7 @@ class Expression extends AbstractParser
         }
 
         if ($stream->valid()) {
-            if ($stream->match(Token::OPERATOR, array('==', '!=', '<=', '>=', '<', '>', '&&', '||', 'or', 'and', 'xor'/*, '.'*/))) {
+            if ($stream->match(Token::OPERATOR, self::$INFIX_BINARY)) {
                 $value = $stream->current()->value;
                 $stream->next();
                 $ret = new Op\Binary($value, $ret, $this->parse($stream));

@@ -13,14 +13,14 @@ class ListNode extends Branch
 {
     public function compile(Buffer $compiler)
     {
-        $compiler->write('array(');
+        $compiler->raw('array(');
         $i = 0;
         foreach ($this->nodes as $child) {
             if ($i++ > 0) {
-                $compiler->write(', ');
+                $compiler->raw(', ');
             }
             $child->compile($compiler);
         }
-        $compiler->write(')');
+        $compiler->raw(')');
     }
 }

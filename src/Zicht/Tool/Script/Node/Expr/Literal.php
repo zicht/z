@@ -18,6 +18,6 @@ class Literal implements Node
 
     public function compile(Buffer $compiler)
     {
-        $compiler->write(var_export($this->value, true));
+        $compiler->asPhp($this->value);
     }
 }

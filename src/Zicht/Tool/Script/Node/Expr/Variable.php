@@ -22,6 +22,6 @@ class Variable implements Node
 
     function compile(Buffer $compiler)
     {
-        $compiler->write('$z->resolve(array(' . var_export($this->name, true) . '))');
+        $compiler->raw('$z->resolve(' . \Zicht\Tool\Util::toPhp($this->name) . ')');
     }
 }

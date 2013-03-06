@@ -56,23 +56,24 @@ class Application extends BaseApplication
             $output->setVerbosity(OutputInterface::VERBOSITY_VERBOSE);
         }
 
-        $container = $this->initContainer(
-            $input->hasParameterOption(array('--verbose', '-v')),
-            $input->hasParameterOption(array('--force', '-f')),
-            $input->hasParameterOption(array('--explain')),
-            getenv('ZFILE'),
-            getenv('ZPLUGINDIR')
-        );
+        list($plugins, $config) = $this->getConfig(getenv('ZFILE'), getenv('ZPLUGINDIR'));
 
+        $builder = new \Zicht\Tool\Container\ContainerBuilder($config);
+        $containerBuilder = $builder->build();
+        $container = $this->initContainer($plugins, $containerBuilder);
         $container->output = $output;
+
+
+        $container->set('verbose', $input->hasParameterOption(array('--verbose', '-v')));
+        $container->set('force', $input->hasParameterOption(array('--force', '-f')));
+        $container->set('explain', $input->hasParameterOption(array('--explain')));
 
         $this->add(new Cmd\DumpCommand($container));
 
-        /** @var $task \Zicht\Tool\Container\Task */
-        foreach ($this->tasks as $name => $task) {
-            // if a tasks is prefixed with an underscore, it is considered an internal task
+        foreach ($containerBuilder->getTasks() as $task) {
+            $name = $task->getName();
             if (substr($name, 0, 1) !== '_') {
-                $cmd = new TaskCommand($container, str_replace('.', ':', $name));
+                $cmd = new TaskCommand($container, $task->getName());
                 foreach ($task->getArguments() as $var => $isRequired) {
                     $cmd->addArgument($var, $isRequired ? InputArgument::REQUIRED : InputArgument::OPTIONAL);
                 }
@@ -96,28 +97,13 @@ class Application extends BaseApplication
      *
      * @throws \UnexpectedValueException
      */
-    public function initContainer($verbose, $force, $explain, $fileName, $pluginDir)
+    public function initContainer($plugins, $containerBuilder)
     {
-        list($plugins, $config) = $this->getConfig($fileName, $pluginDir);
-
-        $config += compact('verbose', 'force', 'explain');
-
-        $z = new Container($config);
-
         $buffer = new \Zicht\Tool\Script\Buffer();
-        $this->tasks = array();
-        foreach ($config['tasks'] as $name => $taskDef) {
-            $task = new Task($taskDef, $name);
-            $this->tasks[$name]= $task;
-            $buffer->indent(1)->writeln('$z->decl(');
-            $buffer->writeln(var_export(array_merge(array('tasks'), explode('.', $name)), true) . ',');
-            $task->compile($buffer);
-            $buffer->indent(-1)->writeln(');');
-        }
-        unset($config['tasks']);
 
-        $z->definition = $buffer->getResult();
+        $containerBuilder->compile($buffer);
 
+        $z = null;
         eval($buffer->getResult());
 
         foreach ($plugins as $plugin) {

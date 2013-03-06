@@ -23,6 +23,6 @@ class Data implements Node
 
     function compile(Buffer $compiler)
     {
-        $compiler->write(var_export($this->data, true));
+        $compiler->asPhp($this->data);
     }
 }

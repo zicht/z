@@ -22,17 +22,17 @@ class Call extends Branch
 
     public function compile(Buffer $compiler)
     {
-        $compiler->write('$z->call(');
+        $compiler->raw('$z->call(');
         foreach ($this->nodes as $i => $n) {
             if ($i == 0) {
                 $n->compile($compiler);
             } else {
-                $compiler->write(', ');
-                $compiler->write('$z->value(');
+                $compiler->raw(', ');
+                $compiler->raw('$z->value(');
                 $n->compile($compiler);
-                $compiler->write(')');
+                $compiler->raw(')');
             }
         }
-        $compiler->write(')');
+        $compiler->raw(')');
     }
 }
