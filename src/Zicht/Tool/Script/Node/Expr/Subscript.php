@@ -8,28 +8,41 @@
 
 namespace Zicht\Tool\Script\Node\Expr;
 
-use Zicht\Tool\Script\Node\Branch;
-use Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Node\Branch;
+use \Zicht\Tool\Script\Node\Node;
+use \Zicht\Tool\Script\Buffer;
 
+/**
+ * A subscript node is a node that refers another element inside the node, either though dot notation (a,b) or bracket
+ * notation (a["b"]).
+ */
 class Subscript extends Branch
 {
-    function __construct($n)
+    /**
+     * Constructor.
+     *
+     * @param Node $n
+     */
+    public function __construct(Node $n)
     {
         parent::__construct();
         $this->append($n);
     }
 
 
-    public function compile(Buffer $compiler)
+    /**
+     * @{inheritDoc}
+     */
+    public function compile(Buffer $buffer)
     {
-        $compiler->raw('$z->lookup(');
+        $buffer->raw('$z->lookup(');
         foreach ($this->nodes as $i => $node) {
             if ($i > 0) {
-                $compiler->raw(', ');
-                $compiler->raw('array(');
+                $buffer->raw(', ');
+                $buffer->raw('array(');
             }
-            $node->compile($compiler);
+            $node->compile($buffer);
         }
-        $compiler->raw('))');
+        $buffer->raw('))');
     }
 }

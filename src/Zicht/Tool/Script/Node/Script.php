@@ -8,37 +8,45 @@
 
 namespace Zicht\Tool\Script\Node;
 
+use \Zicht\Tool\Script\Buffer;
 
-use Zicht\Tool\Script\Buffer;
-
+/**
+ * A Script node is used as the body for each of the nodes executed in a pre, do, or post section in a Task
+ */
 class Script extends Branch
 {
-    function compile(Buffer $compiler)
+    /**
+     * Compiles the node.
+     *
+     * @param \Zicht\Tool\Script\Buffer $buffer
+     * @return void
+     */
+    public function compile(Buffer $buffer)
     {
         if (count($this->nodes)) {
             $depth = 0;
             if ($this->nodes[0] instanceof Expr\Conditional) {
                 $nodes = $this->nodes;
-                $compiler->write('if (');
-                $this->nodes[0]->compile($compiler);
-                $compiler->raw(') {')->eol()->indent(1);
+                $buffer->write('if (');
+                $this->nodes[0]->compile($buffer);
+                $buffer->raw(') {')->eol()->indent(1);
                 array_shift($nodes);
                 $depth ++;
             } else {
                 $nodes = $this->nodes;
             }
 
-            $compiler->write('$z->cmd(');
+            $buffer->write('$z->cmd(');
             foreach ($nodes as $i => $node) {
                 if ($i > 0) {
-                    $compiler->raw(' . ');
+                    $buffer->raw(' . ');
                 }
-                $node->compile($compiler);
+                $node->compile($buffer);
             }
-            $compiler->raw(');')->eol();
+            $buffer->raw(');')->eol();
 
             while ($depth--) {
-                $compiler->indent(-1)->writeln('}');
+                $buffer->indent(-1)->writeln('}');
             }
         }
     }

@@ -8,12 +8,24 @@
 
 namespace Zicht\Tool\Script\Node\Expr\Op;
 
-use Zicht\Tool\Script\Node\Branch;
-use Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Node\Branch;
+use \Zicht\Tool\Script\Node\Node;
+use \Zicht\Tool\Script\Buffer;
 
+/**
+ * Represents a ternary expression
+ */
 class Ternary extends Branch
 {
-    function __construct($operator, $condition, $then, $else)
+    /**
+     * Constructor.
+     *
+     * @param string $operator
+     * @param Node $condition
+     * @param Node $then
+     * @param Node $else
+     */
+    public function __construct($operator, $condition, $then, $else)
     {
         parent::__construct();
         $this->operator = $operator;
@@ -23,18 +35,21 @@ class Ternary extends Branch
     }
 
 
-    public function compile(Buffer $compiler)
+    /**
+     * @{inheritDoc}
+     */
+    public function compile(Buffer $buffer)
     {
-        $this->nodes[0]->compile($compiler);
-        $compiler->write('?');
+        $this->nodes[0]->compile($buffer);
+        $buffer->write('?');
         if ($this->nodes[1]) {
-            $this->nodes[1]->compile($compiler);
+            $this->nodes[1]->compile($buffer);
         }
-        $compiler->write(':');
+        $buffer->write(':');
         if ($this->nodes[2]) {
-            $this->nodes[2]->compile($compiler);
+            $this->nodes[2]->compile($buffer);
         } else {
-            $compiler->write('null');
+            $buffer->write('null');
         }
     }
 }

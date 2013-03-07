@@ -8,13 +8,23 @@
 
 namespace Zicht\Tool\Script\Node\Expr\Op;
 
-use Zicht\Tool\Script\Node\Branch;
-use Zicht\Tool\Script\Node\Node;
-use Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Node\Branch;
+use \Zicht\Tool\Script\Node\Node;
+use \Zicht\Tool\Script\Buffer;
 
+/**
+ * Represents a binary expression node.
+ */
 class Binary extends Branch
 {
-    function __construct($operator, $left, $right)
+    /**
+     * Constructor.
+     *
+     * @param string $operator
+     * @param Node $left
+     * @param Node $right
+     */
+    public function __construct($operator, $left, $right)
     {
         parent::__construct();
         $this->operator = $operator;
@@ -23,14 +33,17 @@ class Binary extends Branch
     }
 
 
-    public function compile(Buffer $compiler)
+    /**
+     * @{inheritDoc}
+     */
+    public function compile(Buffer $buffer)
     {
         //@deprecated, to be removed in 1.2
         if ($this->operator === 'cat') {
             $this->operator = '.';
         }
-        $this->nodes[0]->compile($compiler);
-        $compiler->raw($this->operator);
-        $this->nodes[1]->compile($compiler);
+        $this->nodes[0]->compile($buffer);
+        $buffer->raw($this->operator);
+        $this->nodes[1]->compile($buffer);
     }
 }

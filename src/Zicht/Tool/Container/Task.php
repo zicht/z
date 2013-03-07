@@ -6,19 +6,20 @@
 
 namespace Zicht\Tool\Container;
 
-use Zicht\Tool\Script\Compiler as ScriptCompiler;
-use Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Node\Node;
+use \Zicht\Tool\Util;
 
 /**
  * Compilable node that represents an executable task
  */
-class Task implements \Zicht\Tool\Script\Node\Node
+class Task implements Node
 {
     /**
      * Construct the task with the provided array as task definition
      *
-     * @param array $taskDef
-     * @param string $name
+     * @param array $path
+     * @param array $node
      */
     public function __construct($path, $node)
     {
@@ -30,13 +31,24 @@ class Task implements \Zicht\Tool\Script\Node\Node
         $this->taskDef = $node;
     }
 
+
+    /**
+     * Returns the task name.
+     *
+     * @return string
+     */
     public function getName()
     {
         return join(':', array_slice($this->name, 1));
     }
 
 
-    function getHelp()
+    /**
+     * Returns the task help
+     *
+     * @return mixed
+     */
+    public function getHelp()
     {
         return $this->taskDef['help'];
     }
@@ -45,19 +57,18 @@ class Task implements \Zicht\Tool\Script\Node\Node
     /**
      * Compile the node
      *
-     * @param Flattener $compiler
-     * @param int $indent
-     * @return string
+     * @param Buffer $buffer
+     * @return void
      */
     public function compile(Buffer $buffer)
     {
-        $taskName = \Zicht\Tool\Util::toPhp($this->name);
+        $taskName = Util::toPhp($this->name);
 
         $buffer
             ->writeln('$z->decl(')->indent(1)->writeln($taskName . ',')
             ->writeln('function($z) {')->indent(1);
         ;
-        foreach ($this->taskDef['set'] as $name => $node) {
+        foreach ($this->taskDef['set'] as $node) {
             $node->compile($buffer);
         }
         $buffer->writeln(sprintf('$z->notify(%s, "start");', $taskName));
@@ -65,11 +76,12 @@ class Task implements \Zicht\Tool\Script\Node\Node
         $hasUnless = false;
         foreach (array('pre', 'do', 'post') as $scope) {
             if ($scope === 'do' && !empty($this->taskDef['unless'])) {
-
                 $buffer->write('if (!$z->resolve(array(\'force\')) && ($_unless = (');
                 $this->taskDef['unless']->compile($buffer);
                 $buffer->raw('))) {')->eol()->indent(1);
-                $buffer->writeln(sprintf('$z->cmd(%s);', \Zicht\Tool\Util::toPhp(sprintf('echo "%s skipped"', join('.', $this->name)), true)));
+
+                $echoStr = sprintf('echo "%s skipped"', join('.', $this->name));
+                $buffer->writeln(sprintf('$z->cmd(%s);', Util::toPhp($echoStr)));
                 $buffer->indent(-1)->writeln('} else {')->indent(1);
                 $hasUnless = true;
             }

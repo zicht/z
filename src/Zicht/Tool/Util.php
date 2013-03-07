@@ -9,9 +9,19 @@
 namespace Zicht\Tool;
 
 
+/**
+ * Utility container
+ */
 final class Util
 {
-    static function toPhp($var)
+    /**
+     * A wrapper for var_export, having list-style arrays (0-indexed incremental keys) compile without the keys in
+     * the code.
+     *
+     * @param mixed $var
+     * @return string
+     */
+    public static function toPhp($var)
     {
         switch (gettype($var)) {
             case 'array':
@@ -32,5 +42,17 @@ final class Util
                 $ret = var_export($var, true);
         }
         return $ret;
+    }
+
+
+    /**
+     * Returns the type of the variable, and it's class if it's an object.
+     *
+     * @param mixed $what
+     * @return string
+     */
+    public static function typeOf($what)
+    {
+        return is_object($what) ? get_class($what) : gettype($what);
     }
 }

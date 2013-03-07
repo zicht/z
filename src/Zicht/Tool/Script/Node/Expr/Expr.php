@@ -8,22 +8,35 @@
 
 namespace Zicht\Tool\Script\Node\Expr;
 
-use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Branch;
+use \Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Node\Branch;
+use \Zicht\Tool\Script\Node\Node;
 
+/**
+ * Represents an expression node.
+ * TODO, can we eliminate this?
+ */
 class Expr extends Branch
 {
-    function __construct($node)
+    /**
+     * Constructor.
+     *
+     * @param Node $node
+     */
+    public function __construct($node)
     {
         parent::__construct();
         $this->nodes[0] = $node;
     }
 
 
-    public function compile(Buffer $compiler)
+    /**
+     * @{inheritDoc}
+     */
+    public function compile(Buffer $buffer)
     {
-        $compiler->raw('$z->value(');
-        $this->nodes[0]->compile($compiler);
-        $compiler->raw(')');
+        $buffer->raw('$z->value(');
+        $this->nodes[0]->compile($buffer);
+        $buffer->raw(')');
     }
 }

@@ -16,6 +16,9 @@ use \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
  */
 class Plugin extends BasePlugin
 {
+    /**
+     * @{inheritDoc}
+     */
     public function appendConfiguration(ArrayNodeDefinition $rootNode)
     {
         $rootNode

@@ -54,8 +54,14 @@ final class Token
      */
     const OPERATOR = 'operator';
 
-
+    /**
+     * @var string
+     */
     public $type;
+
+    /**
+     * @var mixed
+     */
     public $value;
 
     /**
@@ -74,8 +80,8 @@ final class Token
     /**
      * Checks if the token matches the passed type and/or value
      *
-     * @param string $type
-     * @param string $value
+     * @param mixed $type
+     * @param mixed $value
      * @return bool
      */
     public function match($type, $value = null)

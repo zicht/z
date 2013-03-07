@@ -8,22 +8,34 @@
 
 namespace Zicht\Tool\Container;
 
-use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Node;
+use \Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Node\Branch;
 
-class ContainerNode extends \Zicht\Tool\Script\Node\Branch
+/**
+ * The root node of a container definition
+ */
+class ContainerNode extends Branch
 {
-    public function compile(Buffer $compiler)
+    /**
+     * @{inheritDoc}
+     */
+    public function compile(Buffer $buffer)
     {
-        $compiler->writeln('$z = new \Zicht\Tool\Container\Container();');
+        $buffer->writeln('$z = new \Zicht\Tool\Container\Container();');
 
         foreach ($this->nodes as $node) {
-            $node->compile($compiler);
+            $node->compile($buffer);
         }
     }
 
 
-    public function getTasks() {
+    /**
+     * Returns all tasks specified in the container.
+     *
+     * @return array
+     */
+    public function getTasks()
+    {
         $ret = array();
         foreach ($this->nodes as $node) {
             if ($node instanceof Task) {

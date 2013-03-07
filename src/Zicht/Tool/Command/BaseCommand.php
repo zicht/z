@@ -20,7 +20,12 @@ class BaseCommand extends Command
 {
     protected $container;
 
-
+    /**
+     * Constructor.
+     *
+     * @param \Zicht\Tool\Container\Container $container
+     * @param string $name
+     */
     public function __construct(Container $container, $name = null)
     {
         parent::__construct($name);

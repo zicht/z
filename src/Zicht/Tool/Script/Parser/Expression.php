@@ -8,17 +8,38 @@
 
 namespace Zicht\Tool\Script\Parser;
 
-use Zicht\Tool\Script\Token;
-use Zicht\Tool\Script\Node;
-use Zicht\Tool\Script\Node\Expr\Op;
-use Zicht\Tool\Script\AbstractParser;
-
+use \Zicht\Tool\Script\Token;
+use \Zicht\Tool\Script\Node;
+use \Zicht\Tool\Script\Node\Expr\Op;
+use \Zicht\Tool\Script\AbstractParser;
+use \Zicht\Tool\Script\TokenStream;
+/**
+ * Expression parser
+ */
 class Expression extends AbstractParser
 {
+    /**
+     * Unary prefix operators
+     *
+     * @var array
+     */
     public static $PREFIX_UNARY = array('!', '-', '~');
+
+    /**
+     * Binary infix operators
+     *
+     * @var array
+     */
     public static $INFIX_BINARY = array('==', '!=', '<=', '>=', '<', '>', '&&', '||');
 
-    function parse(\Zicht\Tool\Script\TokenStream $stream)
+
+    /**
+     * Does a recursive descent parsing of the token stream and returns the resulting node.
+     *
+     * @param \Zicht\Tool\Script\TokenStream $stream
+     * @return \Zicht\Tool\Script\Node\Node
+     */
+    public function parse(TokenStream $stream)
     {
         if ($stream->match(Token::OPERATOR, array('!', '-'))) {
             $value = $stream->current()->value;
@@ -37,11 +58,11 @@ class Expression extends AbstractParser
             $stream->next();
         } elseif ($stream->match(Token::OPERATOR, '(')) {
             $stream->next();
-            $ret = new \Zicht\Tool\Script\Node\Expr\Parens($this->parse($stream));
+            $ret = new Node\Expr\Parens($this->parse($stream));
             $stream->expect(Token::OPERATOR, ')');
         } elseif ($stream->match(Token::OPERATOR, '[')) {
             $stream->next();
-            $ret = new \Zicht\Tool\Script\Node\Expr\ListNode();
+            $ret = new Node\Expr\ListNode();
             if (!$stream->match(Token::OPERATOR, ']')) {
                 $ret->append($this->parse($stream));
                 while ($stream->match(',')) {
@@ -51,7 +72,6 @@ class Expression extends AbstractParser
             }
             $stream->expect(Token::OPERATOR, ']');
         } else {
-            var_dump($stream);
             $this->err($stream);
             return null;
         }
@@ -81,7 +101,7 @@ class Expression extends AbstractParser
 
                     if ($type->value === '.') {
                         $token = $stream->expect(Token::IDENTIFIER);
-                        $ret->append(new \Zicht\Tool\Script\Node\Expr\Str($token->value));
+                        $ret->append(new Node\Expr\Str($token->value));
                     } else {
                         $ret->append($this->parse($stream));
                     }
@@ -119,7 +139,7 @@ class Expression extends AbstractParser
         }
 
         // little syntactic sugar for function calls without parentheses:
-        if ($stream->valid() && ($stream->match(Token::IDENTIFIER) || $stream->match(Token::STRING) || $stream->match(Token::NUMBER))) {
+        if ($stream->valid() && ($stream->match(array(Token::IDENTIFIER, Token::STRING, Token::NUMBER)))) {
             $ret = new Node\Expr\Call($ret);
             $ret->append($this->parse($stream));
         }

@@ -33,15 +33,4 @@ abstract class Plugin implements PluginInterface
     public function setContainer(Container\Container $container)
     {
     }
-
-
-    /**
-     * Initialize/alter the config
-     *
-     * @param array &$config
-     * @return void
-     */
-    public function init(array &$config)
-    {
-    }
 }

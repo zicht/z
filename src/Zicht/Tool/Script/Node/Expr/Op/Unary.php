@@ -8,14 +8,22 @@
 
 namespace Zicht\Tool\Script\Node\Expr\Op;
 
-use Zicht\Tool\Script\Node\Branch;
-use Zicht\Tool\Script\Node\Node;
-use Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Node\Branch;
+use \Zicht\Tool\Script\Node\Node;
+use \Zicht\Tool\Script\Buffer;
 
+/**
+ * Represents a unary expression
+ */
 class Unary extends Branch
 {
-
-    function __construct($operator, $subject)
+    /**
+     * Constructor.
+     *
+     * @param string $operator
+     * @param Node $subject
+     */
+    public function __construct($operator, $subject)
     {
         parent::__construct();
         $this->operator = $operator;
@@ -23,9 +31,12 @@ class Unary extends Branch
     }
 
 
-    public function compile(Buffer $compiler)
+    /**
+     * @{inheritDoc}
+     */
+    public function compile(Buffer $buffer)
     {
-        $compiler->write($this->operator);
-        $this->nodes[0]->compile($compiler);
+        $buffer->write($this->operator);
+        $this->nodes[0]->compile($buffer);
     }
 }

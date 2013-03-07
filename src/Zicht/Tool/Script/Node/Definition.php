@@ -7,18 +7,31 @@
  */
 
 namespace Zicht\Tool\Script\Node;
-use Zicht\Tool\Script\Buffer;
 
+use \Zicht\Tool\Script\Buffer;
+
+/**
+ * Represents a value declaration in the container context.
+ */
 class Definition implements Node
 {
-    function __construct($path, $value)
+    /**
+     * Constructor.
+     *
+     * @param array $path
+     * @param mixed $value
+     */
+    public function __construct(array $path, $value)
     {
         $this->path = $path;
         $this->value = $value;
     }
 
-    public function compile(Buffer $compiler)
+    /**
+     * @{inheritDoc}
+     */
+    public function compile(Buffer $buffer)
     {
-        $compiler->write('$z->set(')->asPhp($this->path)->raw(',')->asPhp($this->value)->raw(');')->eol();
+        $buffer->write('$z->set(')->asPhp($this->path)->raw(',')->asPhp($this->value)->raw(');')->eol();
     }
 }

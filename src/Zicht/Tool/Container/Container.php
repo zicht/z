@@ -9,16 +9,20 @@ namespace Zicht\Tool\Container;
 use \Zicht\Tool\Script;
 use \Zicht\Tool\PluginInterface;
 use \UnexpectedValueException;
-use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Process\Process;
-use Zicht\Tool\Script\Compiler as ScriptCompiler;
-use Zicht\Tool\Util;
+use \Zicht\Tool\Script\Compiler as ScriptCompiler;
+use \Zicht\Tool\Util;
+use \Zicht\Tool\Script\Parser\Expression as ExpressionParser;
+use \Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
 
 /**
  * Service container
  */
 class Container
 {
+    /**
+     * The default shell used for scripts.
+     */
     const SHELL = '/bin/bash';
 
     protected $plugins = array();
@@ -37,8 +41,6 @@ class Container
 
     /**
      * Construct the container with the specified values as services/values.
-     *
-     * @param array $values
      */
     public function __construct()
     {
@@ -62,42 +64,82 @@ class Container
         $this->set(array('z', 'opts'), join(' ', $opts));
 
         $this->fn('sprintf');
-        $this->fn('cat', function() {
-            return join('', func_get_args());
-        });
+        $this->fn(
+            'cat',
+            function() {
+                return join('', func_get_args());
+            }
+        );
     }
 
 
+    /**
+     * Return the raw context value at the specified path.
+     *
+     * @param array $path
+     * @return mixed
+     */
     public function get($path)
     {
         return $this->lookup($this->values, $path);
     }
 
 
-    public function lookup($ptr, array $path) {
+    /**
+     * Looks up a path in the specified context
+     *
+     * @param array $context
+     * @param array $path
+     * @return mixed
+     */
+    public function lookup($context, array $path)
+    {
         $at = array();
         while ($sub = array_shift($path)) {
-            if (is_object($ptr)) {
-                $ptr = $ptr->$sub;
-            } elseif (is_array($ptr)) {
-                if (!array_key_exists($sub, $ptr)) {
-                    throw new \InvalidArgumentException("Member not found: " . join('.', $at) . ".$sub, available keys are: " . join(', ', array_keys($ptr)));
+            if (is_object($context)) {
+                $context = $context->$sub;
+            } elseif (is_array($context)) {
+                if (!array_key_exists($sub, $context)) {
+                    $at[] = $sub;
+                    throw new \InvalidArgumentException(
+                        sprintf(
+                            "Member not found: %s, available keys are: %s",
+                            join('.', $at),
+                            join(', ', array_keys($context))
+                        )
+                    );
                 }
-                $ptr = $ptr[$sub];
+                $context = $context[$sub];
             } else {
-                throw new \InvalidArgumentException("Item at path " . join('.', $at) . ".$sub, should either be object or array, but " . gettype($ptr) . ' found');
+                $at[] = $sub;
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        "Item at path %s should either be object or array, but %s found",
+                        join('.', $at),
+                        Util::typeOf($context)
+                    )
+                );
             }
             $at[]= $sub;
         }
-        return $ptr;
+        return $context;
     }
 
-
+    /**
+     * Resolve the specified path. If the resulting value is a Closure, it's assumed a declaration.
+     *
+     * @param array $id
+     * @return mixed
+     */
     public function resolve($id)
     {
         if (is_string($id)) {
             if (strpos($id, '.') !== false) {
-                trigger_error("As of version 1.1, Resolving variables by string is deprecated ($id). Please use arrays in stead", E_USER_DEPRECATED);
+                trigger_error(
+                    "As of version 1.1, Resolving variables by strings containing dots is deprecated ($id). "
+                    . "Please use arrays in stead",
+                    E_USER_DEPRECATED
+                );
             }
             $id = explode('.', $id);
         }
@@ -122,12 +164,19 @@ class Container
             }
             array_pop($this->stack);
             return $ret;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             throw new \RuntimeException("Exception while resolving value " . join("->", $id), 0, $e);
         }
     }
 
 
+    /**
+     * Set the value at the specified path
+     *
+     * @param array $path
+     * @param mixed $value
+     * @return void
+     */
     public function set($path, $value)
     {
         if (!is_array($path)) {
@@ -163,11 +212,21 @@ class Container
         } elseif (is_object($ptr) && ! $ptr instanceof \Closure) {
             $ptr->$last = $value;
         } else {
-            throw new UnexpectedValueException("Unexpected type " . (is_object($ptr) ? get_class($ptr) : gettype($ptr)) . " {$strPath}");
+            throw new UnexpectedValueException(
+                "Unexpected type " . Util::typeOf($ptr) . " {$strPath}"
+            );
         }
     }
 
 
+    /**
+     * Set a function at the specified path.
+     *
+     * @param array $id
+     * @param callable $callable
+     * @param bool $needsContainer
+     * @return void
+     */
     public function fn($id, $callable = null, $needsContainer = false)
     {
         if ($callable === null) {
@@ -180,12 +239,27 @@ class Container
     }
 
 
+    /**
+     * Creates a method-type function, i.e. the first parameter will always be the container.
+     *
+     * @param array $id
+     * @param callable $callable
+     * @return void
+     */
     public function method($id, $callable)
     {
         $this->fn($id, $callable, true);
     }
 
 
+    /**
+     * Does a declaration, i.e., the first time the declaration is called, it's resulting value overwrites the
+     * declaration.
+     *
+     * @param array $id
+     * @param callable $callable
+     * @return void
+     */
     public function decl($id, $callable)
     {
         if (!is_callable($callable)) {
@@ -194,39 +268,52 @@ class Container
         $this->set($id, $callable);
     }
 
-
-
+    /**
+     * Output a notice
+     *
+     * @param string $message
+     * @return void
+     */
     public function notice($message)
     {
         $this->output->writeln("# <comment>NOTICE: $message</comment>");
     }
 
 
-    public function evaluate($script)
+    /**
+     * Does an on-the-fly evaluation of the specified expression.
+     *
+     * @param string $expression
+     * @return mixed
+     */
+    public function evaluate($expression)
     {
-        $exprcompiler  = new ScriptCompiler(
-            new \Zicht\Tool\Script\Parser\Expression(),
-            new \Zicht\Tool\Script\Tokenizer\Expression()
-        );
+        $exprcompiler  = new ScriptCompiler(new ExpressionParser(), new ExpressionTokenizer());
 
         $z = $this;
         $_value = null;
-        eval('$_value = ' . $exprcompiler->compile($script) . ';');
+        eval('$_value = ' . $exprcompiler->compile($expression) . ';');
         return $_value;
     }
 
 
+    /**
+     * Checks for existence of the specified path.
+     *
+     * @param string $id
+     * @return string
+     */
     public function has($id)
     {
         if (is_string($id)) {
             $id = array($id);
         }
         try {
-            $this->lookup($this->values, $id);
-        } catch(\InvalidArgumentException $e) {
+            $existing = $this->lookup($this->values, $id);
+        } catch (\InvalidArgumentException $e) {
             return false;
         }
-        return true;
+        return Util::typeOf($existing);
     }
 
 
@@ -234,7 +321,6 @@ class Container
      * Separate helper for calling a service as a function.
      *
      * @return mixed
-     * @throws \InvalidArgumentException
      */
     public function call()
     {
@@ -252,7 +338,14 @@ class Container
     }
 
 
-    function prefixListener($task, $event)
+    /**
+     * The prefix listener makes sure the output gets the right prefix at the right time.
+     *
+     * @param array $task
+     * @param string $event
+     * @return void
+     */
+    public function prefixListener($task, $event)
     {
         if ($this->resolve(array('explain')) && !$this->resolve(array('verbose'))) {
             // don't do prefixing if the "explain" option is given, unless the "verbose" option is given too
@@ -318,6 +411,13 @@ class Container
     }
 
 
+    /**
+     * The callback used for the process executed by exec()
+     *
+     * @param mixed $mode
+     * @param string $data
+     * @return void
+     */
     public function processCallback($mode, $data)
     {
         if (isset($this->output)) {
@@ -352,7 +452,10 @@ class Container
     public function value($value)
     {
         if (is_array($value)) {
-            if (! array_reduce(array_map('is_scalar', $value), function($a, $b) { return is_scalar($a) && $b; }, true)) {
+            $allScalar = function ($a, $b) {
+                return is_scalar($a) && $b;
+            };
+            if (! array_reduce($allScalar, true)) {
                 throw new UnexpectedValueException("Unexpected complex type " . Util::toPhp($value));
             }
             return join(' ', $value);

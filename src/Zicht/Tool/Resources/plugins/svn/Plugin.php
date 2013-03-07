@@ -42,45 +42,60 @@ class Plugin extends BasePlugin
         ;
     }
 
+    /**
+     * @{inheritDoc}
+     */
     public function setContainer(Container $container)
     {
-        $container->method(array('vcs', 'versionid'), function($container, $info) {
-            if (
-                trim($info)
-                && preg_match('/^URL: (.*)/m', $info, $urlMatch)
-                && preg_match('/^Revision: (.*)/m', $info, $revMatch)
-            ) {
-                $url = $urlMatch[1];
-                $rev = $revMatch[1];
-                $projectUrl = $container->resolve(array('vcs', 'url'));
+        $container->method(
+            array('vcs', 'versionid'),
+            function($container, $info) {
+                if (
+                    trim($info)
+                    && preg_match('/^URL: (.*)/m', $info, $urlMatch)
+                    && preg_match('/^Revision: (.*)/m', $info, $revMatch)
+                ) {
+                    $url = $urlMatch[1];
+                    $rev = $revMatch[1];
+                    $projectUrl = $container->resolve(array('vcs', 'url'));
 
-                if (substr($url, 0, strlen($projectUrl)) != $projectUrl) {
-                    $err = "The project url {$projectUrl} does not match the VCS url {$url}\n";
-                    $err .= "Maybe you need to relocate your working copy?";
-                    throw new \UnexpectedValueException($err);
+                    if (substr($url, 0, strlen($projectUrl)) != $projectUrl) {
+                        $err = "The project url {$projectUrl} does not match the VCS url {$url}\n";
+                        $err .= "Maybe you need to relocate your working copy?";
+                        throw new \UnexpectedValueException($err);
+                    }
+
+                    return ltrim(substr($url, strlen($projectUrl)), '/') . '@' . $rev;
                 }
-
-                return ltrim(substr($url, strlen($projectUrl)), '/') . '@' . $rev;
-            }
-            return null;
-        });
-        $container->method(array('versionof'), function($container, $dir) {
-            if (is_file($revFile = ($dir . '/' . $container->resolve(array('vcs', 'export', 'revfile'))))) {
-                $info = file_get_contents($revFile);
-            } elseif (is_dir($dir)) {
-                $info = @shell_exec('svn info ' . $dir . ' 2>&1');
-            } else {
                 return null;
             }
-            return $container->call($container->resolve(array('vcs', 'versionid')), $info);
-        });
-        $container->method(array('vcs', 'diff'), function($container, $left, $right, $verbose = false) {
-            $left = $container->resolve(array('vcs', 'url')) . '/' . $left;
-            $right = $container->resolve(array('vcs', 'url')) . '/' . $right;
-            return sprintf('svn diff %s %s %s', $left, $right, ($verbose ? '' : '--summarize'));
-        });
-        $container->decl(array('vcs', 'current'), function($container) {
-            return $container->call($container->resolve('versionof'), $container->resolve('cwd'));
-        });
+        );
+        $container->method(
+            array('versionof'),
+            function($container, $dir) {
+                if (is_file($revFile = ($dir . '/' . $container->resolve(array('vcs', 'export', 'revfile'))))) {
+                    $info = file_get_contents($revFile);
+                } elseif (is_dir($dir)) {
+                    $info = @shell_exec('svn info ' . $dir . ' 2>&1');
+                } else {
+                    return null;
+                }
+                return $container->call($container->resolve(array('vcs', 'versionid')), $info);
+            }
+        );
+        $container->method(
+            array('vcs', 'diff'),
+            function($container, $left, $right, $verbose = false) {
+                $left = $container->resolve(array('vcs', 'url')) . '/' . $left;
+                $right = $container->resolve(array('vcs', 'url')) . '/' . $right;
+                return sprintf('svn diff %s %s %s', $left, $right, ($verbose ? '' : '--summarize'));
+            }
+        );
+        $container->decl(
+            array('vcs', 'current'),
+            function($container) {
+                return $container->call($container->resolve('versionof'), $container->resolve('cwd'));
+            }
+        );
     }
 }

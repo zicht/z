@@ -8,21 +8,31 @@
 
 namespace Zicht\Tool\Script\Node\Expr;
 
-use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Node;
+use \Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Node\Node;
 
 
+/**
+ * Represents a raw data node inside a script
+ */
 class Data implements Node
 {
-    function __construct($data)
+    /**
+     * Construct the node.
+     *
+     * @param string $data
+     */
+    public function __construct($data)
     {
         $this->data = $data;
     }
 
 
-
-    function compile(Buffer $compiler)
+    /**
+     * @{inheritDoc}
+     */
+    public function compile(Buffer $buffer)
     {
-        $compiler->asPhp($this->data);
+        $buffer->asPhp($this->data);
     }
 }

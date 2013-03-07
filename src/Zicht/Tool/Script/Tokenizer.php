@@ -8,10 +8,12 @@
 
 namespace Zicht\Tool\Script;
 
+use \Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
+
 /**
  * Tokenizer for the script language
  */
-class Tokenizer
+class Tokenizer implements TokenizerInterface
 {
     /**
      * Construct the tokenizer with the given input string.
@@ -24,22 +26,24 @@ class Tokenizer
     /**
      * Returns an array of tokens
      *
-     * @return array
+     * @param string $string
+     * @param int &$needle
      * @throws \UnexpectedValueException
+     * @return array
      */
-    public function getTokens($string, &$i = 0)
+    public function getTokens($string, &$needle = 0)
     {
-        $exprTokenizer = new \Zicht\Tool\Script\Tokenizer\Expression();
+        $exprTokenizer = new ExpressionTokenizer();
         $ret = array();
         $depth = 0;
-        $i = 0;
+        $needle = 0;
         $len = strlen($string);
-        while ($i < $len) {
-            $before = $i;
-            $substr = substr($string, $i);
+        while ($needle < $len) {
+            $before = $needle;
+            $substr = substr($string, $needle);
             if ($depth === 0) {
                 if (preg_match('/^(\$|\?)\(/', $substr, $m)) {
-                    $i += strlen($m[0]);
+                    $needle += strlen($m[0]);
                     $ret[]= new Token(Token::EXPR_START, $m[0]);
                     $depth ++;
                 } else {
@@ -47,10 +51,10 @@ class Tokenizer
 
                     if (preg_match('/^\$\$\(/', $substr, $m)) {
                         $value = substr($m[0], 1);
-                        $i += strlen($m[0]);
+                        $needle += strlen($m[0]);
                     } else {
-                        $value = $string{$i};
-                        $i += strlen($value);
+                        $value = $string{$needle};
+                        $needle += strlen($value);
                     }
                     if ($token && $token->match(Token::DATA)) {
                         $token->value .= $value;
@@ -60,12 +64,12 @@ class Tokenizer
                     }
                 }
             } else {
-                $ret = array_merge($ret, $exprTokenizer->getTokens($string, $i));
+                $ret = array_merge($ret, $exprTokenizer->getTokens($string, $needle));
                 $depth = 0;
             }
-            if ($before === $i) {
+            if ($before === $needle) {
                 // safety net.
-                throw new \UnexpectedValueException("Unexpected input near token {$string{$i}}");
+                throw new \UnexpectedValueException("Unexpected input near token {$string{$needle}}");
             }
         }
         return $ret;

@@ -6,7 +6,8 @@
 
 namespace Zicht\Tool\Script;
 
-use Zicht\Tool\Util;
+use \Zicht\Tool\Util;
+use \Zicht\Tool\Script\Node\Node;
 
 /**
  * Wraps the tokenization, parsing and compiling into one convenience class.
@@ -15,6 +16,9 @@ class Compiler
 {
     /**
      * Constructor.
+     *
+     * @param ParserInterface $parser
+     * @param TokenizerInterface $tokenizer
      */
     public function __construct($parser = null, $tokenizer = null)
     {
@@ -23,6 +27,12 @@ class Compiler
     }
 
 
+    /**
+     * Parses the raw string input and returns the resulting root node.
+     *
+     * @param string $input
+     * @return Node
+     */
     public function parse($input)
     {
         if (strlen($input) == 0) {
@@ -47,7 +57,7 @@ class Compiler
             $this->parse($input)->compile($buffer);
             $code = $buffer->getResult();
             return $code;
-        } catch(\UnexpectedValueException $e) {
+        } catch (\UnexpectedValueException $e) {
             throw new \UnexpectedValueException('Error while compiling input: ' . Util::toPhp($input), 0, $e);
         }
     }

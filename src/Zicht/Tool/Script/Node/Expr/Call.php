@@ -7,32 +7,42 @@
  */
 namespace Zicht\Tool\Script\Node\Expr;
 
-use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Branch;
+use \Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Node\Branch;
+use \Zicht\Tool\Script\Node\Node;
 
-
+/**
+ * Represents a function call node
+ */
 class Call extends Branch
 {
-    public function __construct($left)
+    /**
+     * Constructor
+     *
+     * @param Node $function
+     */
+    public function __construct($function)
     {
         parent::__construct();
-        $this->nodes[]= $left;
+        $this->nodes[]= $function;
     }
 
-
-    public function compile(Buffer $compiler)
+    /**
+     * @{inheritDoc}
+     */
+    public function compile(Buffer $buffer)
     {
-        $compiler->raw('$z->call(');
+        $buffer->raw('$z->call(');
         foreach ($this->nodes as $i => $n) {
             if ($i == 0) {
-                $n->compile($compiler);
+                $n->compile($buffer);
             } else {
-                $compiler->raw(', ');
-                $compiler->raw('$z->value(');
-                $n->compile($compiler);
-                $compiler->raw(')');
+                $buffer->raw(', ');
+                $buffer->raw('$z->value(');
+                $n->compile($buffer);
+                $buffer->raw(')');
             }
         }
-        $compiler->raw(')');
+        $buffer->raw(')');
     }
 }

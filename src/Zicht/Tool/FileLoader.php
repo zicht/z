@@ -19,7 +19,18 @@ class FileLoader extends BaseFileLoader
      */
     const PLUGIN = 'plugin';
 
+    /**
+     * Contains all loaded config trees.
+     *
+     * @var array
+     */
     protected $configs = array();
+
+    /**
+     * Contains all loaded plugin config trees.
+     *
+     * @var array
+     */
     protected $plugins = array();
 
 
@@ -58,6 +69,7 @@ class FileLoader extends BaseFileLoader
      * Processes plugin definitions
      *
      * @param array $plugins
+     * @param string $dir
      * @return void
      */
     protected function processPlugins($plugins, $dir)
@@ -77,7 +89,9 @@ class FileLoader extends BaseFileLoader
             }
 
             if (!$hasPlugin && !$hasZfile) {
-                throw new \InvalidArgumentException("You need at least either a z.yml or a Plugin.php in the plugin path for {$plugin}");
+                throw new \InvalidArgumentException(
+                    "You need at least either a z.yml or a Plugin.php in the plugin path for {$plugin}"
+                );
             }
         }
     }

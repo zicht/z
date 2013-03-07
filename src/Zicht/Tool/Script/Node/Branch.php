@@ -7,20 +7,34 @@
  */
 namespace Zicht\Tool\Script\Node;
 
+/**
+ * Base class for nodes that can have children.
+ */
 abstract class Branch implements Node
 {
     /**
+     * The child nodes.
+     *
      * @var Node[]
      */
-    public $nodes ;
+    public $nodes;
 
-    function __construct()
+    /**
+     * Constructor.
+     */
+    public function __construct()
     {
         $this->nodes = array();
     }
 
 
-    function append($node)
+    /**
+     * Append a node.
+     *
+     * @param Node $node
+     * @return void
+     */
+    public function append(Node $node)
     {
         $this->nodes[]= $node;
     }

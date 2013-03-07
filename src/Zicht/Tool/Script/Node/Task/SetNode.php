@@ -8,11 +8,23 @@
 
 namespace Zicht\Tool\Script\Node\Task;
 
-use Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Node\Branch;
+use \Zicht\Tool\Util;
 
-class SetNode extends \Zicht\Tool\Script\Node\Branch
+/**
+ * A node for the "set" section of a task
+ */
+class SetNode extends Branch
 {
-    function __construct($name, $expr, $conditional)
+    /**
+     * Constructor.
+     *
+     * @param string $name
+     * @param \Zicht\Tool\Script\Node\Node $expr
+     * @param bool $conditional
+     */
+    public function __construct($name, $expr, $conditional)
     {
         parent::__construct();
         $this->nodes[0]= $expr;
@@ -21,17 +33,26 @@ class SetNode extends \Zicht\Tool\Script\Node\Branch
     }
 
 
-    function compile(Buffer $buffer) {
+    /**
+     * Compiles the set node.
+     *
+     * @param \Zicht\Tool\Script\Buffer $buffer
+     * @return void
+     */
+    public function compile(Buffer $buffer)
+    {
         $name = explode('.', $this->name);
-        $phpName = \Zicht\Tool\Util::toPhp($name);
+        $phpName = Util::toPhp($name);
 
         if ($this->conditional) {
             $buffer->writeln(sprintf('if (!$z->has(%s)) {', $phpName))->indent(1);
             if (!$this->nodes[0]) {
-                $buffer->writeln(sprintf(
-                    'throw new \RuntimeException(\'required variable %s is not defined\');',
-                    join('.', $name)
-                ));
+                $buffer->writeln(
+                    sprintf(
+                        'throw new \RuntimeException(\'required variable %s is not defined\');',
+                        join('.', $name)
+                    )
+                );
             }
         }
         if ($this->nodes[0]) {
@@ -39,7 +60,7 @@ class SetNode extends \Zicht\Tool\Script\Node\Branch
             $this->nodes[0]->compile($buffer);
             $buffer->raw(');')->eol();
         }
-        if($this->conditional) {
+        if ($this->conditional) {
             $buffer->indent(-1)->writeln('}');
         }
     }

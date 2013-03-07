@@ -8,6 +8,7 @@
 
 namespace Zicht\Tool\Script;
 
+
 /**
  * Parser for root nodes of the script
  */
@@ -23,10 +24,10 @@ class Parser extends AbstractParser
     {
         $exprParser = new Parser\Expression($this);
         $ret = new Node\Script();
-        if ($input->valid()){
-            if($input->match(Token::EXPR_START, '?(')) {
+        if ($input->valid()) {
+            if ($input->match(Token::EXPR_START, '?(')) {
                 $input->next();
-                $ret->append(new \Zicht\Tool\Script\Node\Expr\Conditional($exprParser->parse($input)));
+                $ret->append(new Node\Expr\Conditional($exprParser->parse($input)));
                 $input->expect(Token::EXPR_END);
             }
         }
@@ -34,7 +35,7 @@ class Parser extends AbstractParser
             $cur = $input->current();
             if ($cur->match(Token::EXPR_START, '$(')) {
                 $input->next();
-                $ret->append(new \Zicht\Tool\Script\Node\Expr\Expr($exprParser->parse($input)));
+                $ret->append(new Node\Expr\Expr($exprParser->parse($input)));
                 $input->expect(Token::EXPR_END);
             } elseif ($cur->match(token::DATA)) {
                 $ret->append(new Node\Expr\Data($cur->value));

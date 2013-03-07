@@ -7,13 +7,17 @@
 namespace Zicht\Tool\Plugin\Core;
 
 use \Zicht\Tool\Plugin as BasePlugin;
-use Zicht\Tool\Container\Container;
+use \Zicht\Tool\Container\Container;
 
+
+/**
+ * Provides some core utilities
+ */
 class Plugin extends BasePlugin
 {
-    public $prefix = array();
-    public $prefixer = null;
-
+    /**
+     * @{inheritDoc}
+     */
     public function setContainer(Container $container)
     {
         $container->set('now',  date('Ymd-H.i.s'));
@@ -66,23 +70,29 @@ class Plugin extends BasePlugin
                 );
             }
         );
-        $container->fn('mtime', function($glob) {
-            if (!is_array($glob)) {
-                $glob = array($glob);
-            }
-            $ret = array();
-            foreach ($glob as $pattern) {
-                foreach (glob($pattern) as $file) {
-                    $ret[]= filemtime($file);
+        $container->fn(
+            'mtime',
+            function($glob) {
+                if (!is_array($glob)) {
+                    $glob = array($glob);
                 }
+                $ret = array();
+                foreach ($glob as $pattern) {
+                    foreach (glob($pattern) as $file) {
+                        $ret[]= filemtime($file);
+                    }
+                }
+                if (!count($ret)) {
+                    return -1;
+                }
+                return max($ret);
             }
-            if (!count($ret)) {
-                return -1;
+        );
+        $container->fn(
+            array('url', 'host'),
+            function($url) {
+                return parse_url($url, PHP_URL_HOST);
             }
-            return max($ret);
-        });
-        $container->fn(array('url', 'host'), function($url) {
-            return parse_url($url, PHP_URL_HOST);
-        });
+        );
     }
 }

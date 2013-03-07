@@ -17,13 +17,13 @@ use \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 class Plugin extends BasePlugin
 {
     /**
-     * Appends the content configuration
-     *
-     * @param \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition $rootNode
-     * @return mixed|void
+     * @{inheritDoc}
      */
     public function appendConfiguration(ArrayNodeDefinition $rootNode)
     {
+        $filter = function ($s) {
+            return array_filter(array($s));
+        };
         $rootNode
             ->children()
                 ->arrayNode('content')
@@ -35,12 +35,12 @@ class Plugin extends BasePlugin
                         ->arrayNode('db')
                             ->children()
                                 ->arrayNode('structure')
-                                    ->beforeNormalization()->ifString()->then(function($s) { return array_filter(array($s)); })->end()
+                                    ->beforeNormalization()->ifString()->then($filter)->end()
                                     ->prototype('scalar')->end()
                                     ->performNoDeepMerging()
                                 ->end()
                                 ->arrayNode('full')
-                                    ->beforeNormalization()->ifString()->then(function($s) { return array_filter(array($s)); })->end()
+                                    ->beforeNormalization()->ifString()->then($filter)->end()
                                     ->prototype('scalar')->end()
                                     ->performNoDeepMerging()
                                 ->end()

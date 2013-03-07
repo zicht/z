@@ -44,13 +44,15 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('tasks')
                     ->prototype('array')
                         ->beforeNormalization()
-                            ->ifTrue(function($in) {
-                                return
-                                    is_string($in)
+                            ->ifTrue(
+                                function($in) {
+                                    return
+                                        is_string($in)
 
-                                    // allow for 'lists' (skipping the 'do' key)
-                                 || (is_array($in) && range(0, count($in) -1) === array_keys($in));
-                            })
+                                        // allow for 'lists' (skipping the 'do' key)
+                                     || (is_array($in) && range(0, count($in) -1) === array_keys($in));
+                                }
+                            )
                             ->then(
                                 function($v) {
                                     return array('do' => $v);
@@ -112,8 +114,16 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('ssh')->end()
                             ->scalarNode('root')
                                 ->validate()
-                                    ->ifTrue(function($v) { return preg_match('~[^/]$~', $v); })
-                                    ->then(function($v) { return $v . '/'; })
+                                    ->ifTrue(
+                                        function($v) {
+                                            return preg_match('~[^/]$~', $v);
+                                        }
+                                    )
+                                    ->then(
+                                        function($v) {
+                                            return $v . '/';
+                                        }
+                                    )
                                 ->end()
                             ->end()
                             ->scalarNode('web')->end()

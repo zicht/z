@@ -8,22 +8,33 @@
 
 namespace Zicht\Tool\Script\Tokenizer;
 
-use Zicht\Tool\Script\Token;
+use \Zicht\Tool\Script\Token;
+use \Zicht\Tool\Script\TokenizerInterface;
 
-class Expression
+/**
+ * Tokenizer for expressions
+ */
+class Expression implements TokenizerInterface
 {
-    function getTokens($string, &$i = 0)
+    /**
+     * @{inheritDoc}
+     */
+    public function getTokens($string, &$needle = 0)
     {
         $depth = 1;
         $ret = array();
         $len = strlen($string);
-        while ($i < $len) {
-            $substr = substr($string, $i);
-            $before = $i;
+        while ($needle < $len) {
+            $substr = substr($string, $needle);
+            $before = $needle;
 
             if (preg_match('/^(==|<=?|>=?|!=?|\?|:|\|\||&&|xor|or|and|\.|\[|\]|\(|\))/', $substr, $m)) {
                 if ($m[0] == '.' && end($ret)->type == Token::WHITESPACE) {
-                    trigger_error("As of version 1.1, using the dot-operator for concatenation is deprecated. Please use cat() or sprintf() in stead", E_USER_DEPRECATED);
+                    trigger_error(
+                        "As of version 1.1, using the dot-operator for concatenation is deprecated. "
+                        . "Please use cat() or sprintf() in stead",
+                        E_USER_DEPRECATED
+                    );
                     $m[0] = 'cat';
                 }
 
@@ -31,31 +42,31 @@ class Expression
                     $depth --;
                     if ($depth == 0) {
                         $ret[] = new Token(Token::EXPR_END, ')');
-                        $i ++;
+                        $needle ++;
                         break;
                     }
                 } elseif ($m[0] === '(') {
                     $depth ++;
                 }
                 $ret[]= new Token(Token::OPERATOR, $m[0]);
-                $i += strlen($m[0]);
+                $needle += strlen($m[0]);
             } elseif (preg_match('/^[a-z_][\w]*/i', $substr, $m)) {
                 $ret[] = new Token(Token::IDENTIFIER, $m[0]);
-                $i += strlen($m[0]);
+                $needle += strlen($m[0]);
             } elseif (preg_match('/^\s+/', $substr, $m)) {
                 $ret[]= new Token(Token::WHITESPACE, $m[0]);
-                $i += strlen($m[0]);
+                $needle += strlen($m[0]);
             } elseif (preg_match('/^([0-9]*.)?[0-9]+/', $substr, $m)) {
                 $ret[]= new Token(Token::NUMBER, $m[0]);
-                $i += strlen($m[0]);
+                $needle += strlen($m[0]);
             } elseif (preg_match('/^[\?,]/', $substr, $m)) {
                 $ret[] = new Token($m[0]);
-                $i ++;
-            } elseif ($string{$i} == '"') {
+                $needle ++;
+            } elseif ($string{$needle} == '"') {
                 $strData = '';
 
                 $escape = false;
-                for ($j = $i +1; $j < $len; $j ++) {
+                for ($j = $needle +1; $j < $len; $j ++) {
                     $ch = $string{$j};
 
                     if ($ch == '\\') {
@@ -87,11 +98,11 @@ class Expression
                     }
                 }
                 $ret[]= new Token(Token::STRING, $strData);
-                $i = $j;
+                $needle = $j;
             }
-            if ($before === $i) {
+            if ($before === $needle) {
                 // safety net.
-                throw new \UnexpectedValueException("Unexpected input near token {$string{$i}}");
+                throw new \UnexpectedValueException("Unexpected input near token {$string{$needle}}");
             }
         }
         return $ret;

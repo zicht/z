@@ -7,11 +7,25 @@
  */
 namespace Zicht\Tool\Container;
 
-use Zicht\Tool\Script\Node\Definition;
+use \Zicht\Tool\Script\Node\Definition;
+use \Zicht\Tool\Script\Node\Node;
+use \Zicht\Tool\Script\Compiler;
+use \Zicht\Tool\Script\Parser;
+use \Zicht\Tool\Script\Parser\Expression as ExpressionParser;
+use \Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
+use \Zicht\Tool\Script\Node\Task\SetNode;
 
+/**
+ * The container builder converts a config tree into a compilable ContainerNode
+ */
 class ContainerBuilder
 {
-    function __construct($config)
+    /**
+     * Constructor.
+     *
+     * @param array $config
+     */
+    public function __construct($config)
     {
         $this->config = $config;
 
@@ -19,28 +33,40 @@ class ContainerBuilder
         $this->scriptcompiler = $this->createScriptCompiler();
     }
 
-
-
+    /**
+     * Build the container node
+     *
+     * @return ContainerNode
+     */
     public function build()
     {
-        $this->node = new ContainerNode();
-
         $traverser = $this->createNodeCreatorTraverser($this->config);
         $result = $traverser->traverse();
-        $gatherer = $this->createNodeGathererTraverser($result);
+
+        $node = new ContainerNode();
+        $gatherer = $this->createNodeGathererTraverser($result, $node);
         $gatherer->traverse();
 
-        return $this->node;
+        return $node;
     }
 
 
-    public function createNodeGathererTraverser($result)
+    /**
+     * Creates the traverser that gathers all nodes that are specified in the tree.
+     *
+     * @param array $result
+     * @param \Zicht\Tool\Script\Node\Branch $containerNode
+     * @return Traverser
+     */
+    public function createNodeGathererTraverser($result, $containerNode)
     {
         $gatherer = new Traverser($result);
         $gatherer->addVisitor(
-            array($this, 'addNode'),
+            function($path, $node) use($containerNode) {
+                $containerNode->append($node);
+            },
             function ($path, $node) {
-                return $node instanceof \Zicht\Tool\Script\Node\Node;
+                return $node instanceof Node;
             },
             Traverser::AFTER
         );
@@ -48,32 +74,63 @@ class ContainerBuilder
     }
 
 
-    function createTaskNode($path, $node)
+    /**
+     * Creates a task node for the specified path
+     *
+     * @param array $path
+     * @param array $node
+     * @return Task
+     */
+    public function createTaskNode($path, $node)
     {
         return new Task($path, $node);
     }
 
 
-    function createDefinitionNode($path, $node)
+    /**
+     * Creates a definition node for the specified path
+     *
+     * @param array $path
+     * @param array $node
+     * @return \Zicht\Tool\Script\Node\Definition
+     */
+    public function createDefinitionNode($path, $node)
     {
         return new Definition($path, $node);
     }
 
 
-    function createScriptCompiler()
+    /**
+     * Creates the script compiler.
+     *
+     * @return \Zicht\Tool\Script\Compiler
+     */
+    public function createScriptCompiler()
     {
-        return new \Zicht\Tool\Script\Compiler(new \Zicht\Tool\Script\Parser());
+        return new Compiler(new Parser());
     }
 
 
-    function createExpressionCompiler()
+    /**
+     * Creates the expression compiler
+     *
+     * @return \Zicht\Tool\Script\Compiler
+     */
+    public function createExpressionCompiler()
     {
-        return new \Zicht\Tool\Script\Compiler(new \Zicht\Tool\Script\Parser\Expression(), new \Zicht\Tool\Script\Tokenizer\Expression());
+        return new Compiler(new ExpressionParser(), new ExpressionTokenizer());
     }
 
 
-
-    function createSetNode($path, $node) {
+    /**
+     * Creates a node for the 'set' definition of the task.
+     *
+     * @param array $path
+     * @param array $node
+     * @return \Zicht\Tool\Script\Node\Task\SetNode
+     */
+    public function createSetNode($path, $node)
+    {
         $v = trim($node);
         if (substr($v, 0, 1) == '?') {
             $conditional = true;
@@ -81,31 +138,45 @@ class ContainerBuilder
         } else {
             $conditional = false;
         }
-        return new \Zicht\Tool\Script\Node\Task\SetNode(end($path), $this->exprcompiler->parse($v), $conditional);
+        return new SetNode(end($path), $this->exprcompiler->parse($v), $conditional);
     }
 
 
-    function createExpressionNode($path, $node)
+    /**
+     * Creates an expression node at the specified path.
+     *
+     * @param array $path
+     * @param array $node
+     * @return \Zicht\Tool\Script\Node\Node
+     */
+    public function createExpressionNode($path, $node)
     {
         return $this->exprcompiler->parse($node);
     }
 
 
-    function createScriptNode($path, $node)
+    /**
+     * Creates a script node at the specified path.
+     *
+     * @param array $path
+     * @param array $node
+     * @return \Zicht\Tool\Script\Node\Node
+     */
+    public function createScriptNode($path, $node)
     {
         return $this->scriptcompiler->parse(trim($node));
     }
 
 
-    function addNode($path, $node)
+    /**
+     * Creates the traverser that creates relevant nodes at all known paths.
+     *
+     * @param array $config
+     * @return Traverser
+     */
+    public function createNodeCreatorTraverser($config)
     {
-        $this->node->append($node);
-        return $node;
-    }
-
-
-    function createNodeCreatorTraverser($config) {
-        $traverser = new \Zicht\Tool\Container\Traverser($config);
+        $traverser = new Traverser($config);
 
         $traverser->addVisitor(
             array($this, 'createSetNode'),
@@ -118,14 +189,22 @@ class ContainerBuilder
         $traverser->addVisitor(
             array($this, 'createExpressionNode'),
             function($path) {
-                return count($path) === 3 && $path[0] == 'tasks' && in_array($path[2], array('unless', 'assert', 'yield'));
+                return
+                    count($path) === 3
+                    && $path[0] == 'tasks'
+                    && in_array($path[2], array('unless', 'assert', 'yield'))
+                ;
             },
             Traverser::BEFORE
         );
         $traverser->addVisitor(
             array($this, 'createScriptNode'),
             function($path) {
-                return count($path) == 4 && $path[0] == 'tasks' && in_array($path[2], array('do', 'pre' ,'post'));
+                return
+                    count($path) == 4
+                    && $path[0] == 'tasks'
+                    && in_array($path[2], array('do', 'pre' ,'post'))
+                ;
             },
             Traverser::BEFORE
         );

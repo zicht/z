@@ -115,7 +115,8 @@ class TokenStream
     public function expect($type, $value = null)
     {
         if (!$this->match($type, $value)) {
-            throw new \UnexpectedValueException("Unexpected token {$this->current()->type} '{$this->current()->value}', expected {$type}");
+            $msg = "Unexpected token {$this->current()->type} '{$this->current()->value}', expected {$type}";
+            throw new \UnexpectedValueException($msg);
         }
         $current = $this->current();
         $this->next();

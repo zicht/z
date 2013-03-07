@@ -12,18 +12,16 @@ use \Symfony\Component\Config\FileLocator;
 use \Symfony\Component\Config\Definition\Processor;
 use \Symfony\Component\Console\Input\InputArgument;
 use \Symfony\Component\Console\Input\InputOption;
-use \Symfony\Component\Console\Command\Command;
 use \Symfony\Component\Console\Input\InputInterface;
 use \Symfony\Component\Console\Output\OutputInterface;
-use \Symfony\Component\Console\Input\ArgvInput;
 
 use \Zicht\Tool\Command as Cmd;
 use \Zicht\Tool\Command\TaskCommand;
 use \Zicht\Tool\Container\Configuration;
 use \Zicht\Tool\Container\Container;
-use \Zicht\Tool\Container\Flattener;
+use \Zicht\Tool\Container\ContainerBuilder;
 use \Zicht\Tool\Version;
-use \Zicht\Tool\Container\Task;
+use \Zicht\Tool\Script\Buffer;
 
 /**
  * Z CLI Application
@@ -42,12 +40,23 @@ class Application extends BaseApplication
         parent::__construct('z - The Zicht Tool', Version::VERSION);
     }
 
+
+    /**
+     * Replaces the default Output class with one specifically for this application
+     *
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @return int
+     */
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
-        return parent::run($input, new \Zicht\Tool\Output\ConsoleOutput());
+        return parent::run($input, null !== $output ? $output : new Output\ConsoleOutput());
     }
 
 
+    /**
+     * @{inheritDoc}
+     */
     public function doRun(InputInterface $input, OutputInterface $output)
     {
         if (true === $input->hasParameterOption(array('--quiet', '-q'))) {
@@ -58,7 +67,7 @@ class Application extends BaseApplication
 
         list($plugins, $configTree) = $this->getConfig(getenv('ZFILE'), getenv('ZPLUGINDIR'));
 
-        $builder = new \Zicht\Tool\Container\ContainerBuilder($configTree);
+        $builder = new ContainerBuilder($configTree);
 
         $containerNode = $builder->build();
         $container = $this->initContainer($plugins, $containerNode);
@@ -73,15 +82,7 @@ class Application extends BaseApplication
         foreach ($containerNode->getTasks() as $task) {
             $name = $task->getName();
             if (substr($name, 0, 1) !== '_') {
-                $cmd = new TaskCommand($container, $task->getName());
-                foreach ($task->getArguments() as $var => $isRequired) {
-                    $cmd->addArgument($var, $isRequired ? InputArgument::REQUIRED : InputArgument::OPTIONAL);
-                }
-                $cmd->addOption('explain', '', InputOption::VALUE_NONE, 'Explains the commands that are executed without executing them.');
-                $cmd->addOption('force', 'f', InputOption::VALUE_NONE, 'Force execution of otherwise skipped tasks.');
-                $cmd->setHelp($task->getHelp());
-                $cmd->setDescription(preg_replace('/^([^\n]*).*/s', '$1', $task->getHelp()));
-                $this->add($cmd);
+                $this->addTaskCommand($container, $task);
             }
         }
         $container->console_dialog_helper = $this->getHelperSet()->get('dialog');
@@ -91,16 +92,37 @@ class Application extends BaseApplication
 
 
     /**
+     * Adds a command for the specified task.
+     *
+     * @param Container $container
+     * @param \Zicht\Tool\Container\Task $task
+     * @return void
+     */
+    public function addTaskCommand($container, $task)
+    {
+        $cmd = new TaskCommand($container, $task->getName());
+        foreach ($task->getArguments() as $var => $isRequired) {
+            $cmd->addArgument($var, $isRequired ? InputArgument::REQUIRED : InputArgument::OPTIONAL);
+        }
+        $cmd->addOption('explain', '', InputOption::VALUE_NONE, 'Explains the commands that would be executed.');
+        $cmd->addOption('force', 'f', InputOption::VALUE_NONE, 'Force execution of otherwise skipped tasks.');
+        $cmd->setHelp($task->getHelp());
+        $cmd->setDescription(preg_replace('/^([^\n]*).*/s', '$1', $task->getHelp()));
+        $this->add($cmd);
+    }
+
+
+    /**
      * Initializes the container.
      *
+     * @param array $plugins
+     * @param \Zicht\Tool\Container\ContainerNode $containerNode
      * @return Container
      *
-     * @throws \UnexpectedValueException
      */
     public function initContainer($plugins, $containerNode)
     {
-        $buffer = new \Zicht\Tool\Script\Buffer();
-
+        $buffer = new Buffer();
         $containerNode->compile($buffer);
 
         $z = null;
@@ -113,6 +135,15 @@ class Application extends BaseApplication
         return $z;
     }
 
+
+    /**
+     * Loads the configuration based on the specified file name convention. and plugin dir location
+     *
+     * @param string $fileName
+     * @param string $pluginDir
+     * @return array
+     * @throws \UnexpectedValueException
+     */
     public function getConfig($fileName, $pluginDir)
     {
         if (!$fileName) {

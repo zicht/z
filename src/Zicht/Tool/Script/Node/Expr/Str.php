@@ -6,6 +6,9 @@
 
 namespace Zicht\Tool\Script\Node\Expr;
 
+/**
+ * Represents a string literal
+ */
 class Str extends Literal
 {
 }

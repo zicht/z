@@ -6,17 +6,27 @@
 
 namespace Zicht\Tool\Plugin\Notify;
 
-use Zicht\Tool\Plugin as BasePlugin;
-use Zicht\Tool\Container\Container;
-use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+use \Zicht\Tool\Plugin as BasePlugin;
+use \Zicht\Tool\Container\Container;
+use \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 
+/**
+ * Plugin for notification of external services.
+ */
 class Plugin extends BasePlugin
 {
+    /**
+     * @{inheritDoc}
+     */
     public function setContainer(Container $container)
     {
         $container->subscribe(array($this, 'propagate'));
     }
 
+
+    /**
+     * @{inheritDoc}
+     */
     public function appendConfiguration(ArrayNodeDefinition $rootNode)
     {
         $rootNode
@@ -40,6 +50,9 @@ class Plugin extends BasePlugin
     }
 
 
+    /**
+     * @{inheritDoc}
+     */
     public function propagate($task, $event, $container)
     {
         try {
@@ -51,7 +64,7 @@ class Plugin extends BasePlugin
                 }
                 $container->cmd('curl -d\'' . json_encode($post) . '\' \'' . $notifyConfig['url'] . '\'');
             }
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
         }
     }
 }

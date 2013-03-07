@@ -6,6 +6,9 @@
 
 namespace Zicht\Tool\Script\Node\Expr;
 
+/**
+ * Represents a numeric literal
+ */
 class Number extends Literal
 {
 }

@@ -8,21 +8,34 @@
 
 namespace Zicht\Tool\Script\Node\Expr;
 
-use Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Node\Node;
+use \Zicht\Tool\Script\Node\Branch;
 
-class Parens extends \Zicht\Tool\Script\Node\Branch
+/**
+ * A parenthesized expression, i.e. enclosed in parentheses.
+ */
+class Parens extends Branch
 {
-    function __construct($node)
+    /**
+     * Constructor.
+     *
+     * @param Node $node
+     */
+    public function __construct(Node $node)
     {
         parent::__construct();
         $this->nodes[0] = $node;
     }
 
 
-    public function compile(Buffer $compiler)
+    /**
+     * @{inheritDoc}
+     */
+    public function compile(Buffer $buffer)
     {
-        $compiler->raw('(');
-        $this->nodes[0]->compile($compiler);
-        $compiler->raw(')');
+        $buffer->raw('(');
+        $this->nodes[0]->compile($buffer);
+        $buffer->raw(')');
     }
 }

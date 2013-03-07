@@ -6,6 +6,8 @@
 
 namespace Zicht\Tool\Script;
 
+use \Zicht\Tool\Util;
+
 /**
  * Buffer to write compiled code to
  */
@@ -33,7 +35,7 @@ class Buffer
      * Write some code to the buffer
      *
      * @param string $data
-     * @return Buffer
+     * @return self
      */
     public function write($data)
     {
@@ -41,12 +43,23 @@ class Buffer
     }
 
 
+    /**
+     * Write an EOL character
+     *
+     * @return self
+     */
     public function eol()
     {
         $this->result .= PHP_EOL;
         return $this;
     }
 
+    /**
+     * Write some data without formatting.
+     *
+     * @param string $data
+     * @return self
+     */
     public function raw($data)
     {
         $this->result .= $data;
@@ -54,15 +67,28 @@ class Buffer
     }
 
 
+    /**
+     * Write a line with indentation and a newline at the end.
+     *
+     * @param string $data
+     * @return self
+     */
     public function writeln($data)
     {
         return $this->write($data)->eol();
     }
 
 
-    public function indent($increment = false)
+    /**
+     * Adds indentation to the buffer if $increment is not specified. Otherwise increment the current indentation
+     * $increment steps. You should pass a negative number to outdent.
+     *
+     * @param bool $increment
+     * @return Buffer
+     */
+    public function indent($increment = null)
     {
-        if (false !== $increment) {
+        if (null !== $increment) {
             $this->indent += $increment;
         } else {
             $this->raw(str_repeat('    ', $this->indent));
@@ -82,9 +108,14 @@ class Buffer
     }
 
 
-
+    /**
+     * Shorthand method to add the specified variable as it's php representation.
+     *
+     * @param mixed $var
+     * @return Buffer
+     */
     public function asPhp($var)
     {
-        return $this->raw(\Zicht\Tool\Util::toPhp($var));
+        return $this->raw(Util::toPhp($var));
     }
 }

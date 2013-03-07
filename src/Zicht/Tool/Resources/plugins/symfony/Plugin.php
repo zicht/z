@@ -10,8 +10,14 @@ use \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 
 use \Zicht\Tool\Plugin as BasePlugin;
 
+/**
+ * Provides the configuration for the symfony tasks
+ */
 class Plugin extends BasePlugin
 {
+    /**
+     * @{inheritDoc}
+     */
     public function appendConfiguration(ArrayNodeDefinition $rootNode)
     {
         $rootNode

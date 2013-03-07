@@ -6,6 +6,6 @@ tasks:
         do: rsync -rv res/doc/html/ zichter@dev3:/var/www/dev/z/default/public/
 
     qa:
-        - phpunit
-        - phpcs --standard=Zicht src
-        - cd res && behat -f progress
+        - phpunit                     $(force ? " || true")
+        - phpcs --standard=Zicht src  $(force ? " || true")
+        - cd res && behat -f progress $(force ? " || true")

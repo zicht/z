@@ -1,7 +1,11 @@
 1.1-dev
-* Added 'declare'
+
 * Deprecated the dot concatenation operator
 * Deprecated declaration by string
+* Added the ZFILE and ZPLUGINDIR environment variables
+* Reworked the compiler logic to be able to generate a standalone Container instantation. This makes it possible
+  to cache the generated code in any near version.
+
 
 1.0-beta8
 ---------

@@ -7,6 +7,8 @@
  */
 namespace Zicht\Tool\Script;
 
+use \Zicht\Tool\Util;
+
 /**
  * Dumps a compiled node AST as an array
  */
@@ -16,6 +18,7 @@ class Dumper
      * Returns the AST for a specified node as an array representation
      *
      * @param Node\Node $b
+     * @param string $path
      * @return array
      */
     public function getAst(Node\Node $b, $path = '')
@@ -32,7 +35,7 @@ class Dumper
                         $ret['nodes'][]= $n;
                     } else {
                         if (! $n instanceof Node\Node) {
-                            throw new \InvalidArgumentException("Invalid child node in " . \Zicht\Tool\Util::toPhp($path));
+                            throw new \InvalidArgumentException("Invalid child node in " . Util::toPhp($path));
                         }
                         $ret['nodes'][]= $this->getAst($n);
                     }

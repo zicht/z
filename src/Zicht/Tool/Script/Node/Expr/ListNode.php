@@ -5,22 +5,28 @@
  */
 namespace Zicht\Tool\Script\Node\Expr;
 
-use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Branch;
+use \Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Node\Branch;
 
 
+/**
+ * Represents a list (0-indexed numeric key array).
+ */
 class ListNode extends Branch
 {
-    public function compile(Buffer $compiler)
+    /**
+     * @{inheritDoc}
+     */
+    public function compile(Buffer $buffer)
     {
-        $compiler->raw('array(');
+        $buffer->raw('array(');
         $i = 0;
         foreach ($this->nodes as $child) {
             if ($i++ > 0) {
-                $compiler->raw(', ');
+                $buffer->raw(', ');
             }
-            $child->compile($compiler);
+            $child->compile($buffer);
         }
-        $compiler->raw(')');
+        $buffer->raw(')');
     }
 }

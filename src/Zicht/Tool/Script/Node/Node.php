@@ -8,9 +8,18 @@
 
 namespace Zicht\Tool\Script\Node;
 
-use Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Buffer;
 
+/**
+ * Common interface for syntax tree nodes.
+ */
 interface Node
 {
-    public function compile(Buffer $compiler);
+    /**
+     * Compiles the node into the buffer.
+     *
+     * @param \Zicht\Tool\Script\Buffer $buffer
+     * @return mixed
+     */
+    public function compile(Buffer $buffer);
 }

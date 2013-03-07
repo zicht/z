@@ -8,20 +8,31 @@
 
 namespace Zicht\Tool\Script\Node\Expr;
 
-use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Branch;
+use \Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Node\Branch;
+use \Zicht\Tool\Script\Node\Node;
 
+/**
+ * Represents a conditional for a script node.
+ */
 class Conditional extends Branch
 {
-    function __construct($node)
+    /**
+     * Constructor.
+     *
+     * @param Node $node
+     */
+    public function __construct($node)
     {
         parent::__construct();
         $this->nodes[0] = $node;
     }
 
-
-    public function compile(Buffer $compiler)
+    /**
+     * @{inheritDoc}
+     */
+    public function compile(Buffer $buffer)
     {
-        $this->nodes[0]->compile($compiler);
+        $this->nodes[0]->compile($buffer);
     }
 }

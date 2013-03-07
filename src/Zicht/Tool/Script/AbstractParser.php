@@ -28,11 +28,11 @@ abstract class AbstractParser implements ParserInterface
      *
      * @param TokenStream $stream
      * @return void
-     *
-     * @throws \UnexpectedValueException
      */
     final public function err(TokenStream $stream)
     {
-        throw new \UnexpectedValueException("Unexpected input near {$stream->current()->value} at offset {$stream->key()}");
+        throw new \UnexpectedValueException(
+            "Unexpected input near {$stream->current()->value} at offset {$stream->key()}"
+        );
     }
 }
