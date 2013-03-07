@@ -16,7 +16,6 @@ use \Symfony\Component\Console\Input\InputInterface;
 use \Symfony\Component\Console\Output\OutputInterface;
 
 use \Zicht\Tool\Command as Cmd;
-use \Zicht\Tool\Command\TaskCommand;
 use \Zicht\Tool\Container\Configuration;
 use \Zicht\Tool\Container\Container;
 use \Zicht\Tool\Container\ContainerBuilder;
@@ -100,7 +99,7 @@ class Application extends BaseApplication
      */
     public function addTaskCommand($container, $task)
     {
-        $cmd = new TaskCommand($container, $task->getName());
+        $cmd = new Cmd\TaskCommand($container, $task->getName());
         foreach ($task->getArguments() as $var => $isRequired) {
             $cmd->addArgument($var, $isRequired ? InputArgument::REQUIRED : InputArgument::OPTIONAL);
         }
