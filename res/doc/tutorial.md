@@ -416,10 +416,10 @@ $ z answer --explain
 ( echo "answer skipped, because ('explain')" );
 
 $ z answer --explain --force -- verbose
-[answer] (  echo "May it be with you" );
-[answer] (  echo "Now printing 42...." );
-[answer] (  echo "You just gone option-crazy dude!" );
-[answer] (  echo "42" );
+[answer] ( echo "May it be with you" );
+[answer] ( echo "Now printing 42...." );
+[answer] ( echo "You just gone option-crazy dude!" );
+[answer] ( echo "42" );
 ```
 
 # Using expressions in your script snippets #
@@ -438,7 +438,7 @@ tasks:
                 echo "$(
                     what == "hello"
                     ? "hello to you to!"
-                    : "I don't know what " . what . " means, sorry..."
+                    : cat("I don't know what ",  what, " means, sorry...")
                 )"
 ```
 
@@ -451,16 +451,15 @@ expression that is evaluated is:
 ```
 what == "hello"
 ? "hello to you to!"
-: "I don't know what " . what . " means, sorry..."
+: cat("I don't know what ",  what, " means, sorry...")
 ```
 
-You must recognize the `... ? ... : ...` ternary operator and the `"string" . "concatenation"` operator from PHP. You
-probably noted that the variables aren't prefixed with a dollar sign as in PHP. During the development of Z, I decided
-not to use prefixed variables, because they unnessecarily clutter the```` code.
+You must recognize the `... ? ... : ...` ternary operator and the from PHP. You probably noted that the variables aren't
+prefixed with a dollar sign as in PHP. During the development of Z, I decided not to use prefixed variables, because
+they unnessecarily clutter the code. Finally, that cat() functions concatenates the string. There is no operator for
+this.
 
 See the [reference](reference.html) for more information on supported operators.
-
-
 
 # Creating a plugin #
 
