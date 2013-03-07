@@ -80,7 +80,7 @@ final class Token
      */
     public function match($type, $value = null)
     {
-        if ($this->type === $type) {
+        if ($this->type === $type || (is_array($type) && in_array($this->type, $type))) {
             if (null === $value || $this->value == $value || (is_array($value) && in_array($this->value, $value))) {
                 return true;
             }
