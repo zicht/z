@@ -1,7 +1,7 @@
-Feature: Task definition
-In order to have flexible tasks
+Feature: Plugin definition
+In order to be able to extend Z
 As a user
-I need to be able to define required and non-required parameters
+I need to be able to add tasks, functions and declarations in a Plugin
 
   Background:
     Given I am in a test directory
