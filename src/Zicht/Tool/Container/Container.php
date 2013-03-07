@@ -165,7 +165,7 @@ class Container
             array_pop($this->stack);
             return $ret;
         } catch (\Exception $e) {
-            throw new \RuntimeException("Exception while resolving value " . join("->", $id), 0, $e);
+            throw new \RuntimeException("Exception while resolving value " . join(".", $id), 0, $e);
         }
     }
 
@@ -455,7 +455,7 @@ class Container
             $allScalar = function ($a, $b) {
                 return is_scalar($a) && $b;
             };
-            if (! array_reduce($allScalar, true)) {
+            if (! array_reduce($value, $allScalar, true)) {
                 throw new UnexpectedValueException("Unexpected complex type " . Util::toPhp($value));
             }
             return join(' ', $value);
