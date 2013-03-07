@@ -18,6 +18,7 @@ abstract class Plugin implements PluginInterface
      *
      * @param \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition $rootNode
      * @return mixed
+     * @codeCoverageIgnore
      */
     public function appendConfiguration(ArrayNodeDefinition $rootNode)
     {
@@ -29,6 +30,7 @@ abstract class Plugin implements PluginInterface
      *
      * @param Container\Container $container
      * @return mixed
+     * @codeCoverageIgnore
      */
     public function setContainer(Container\Container $container)
     {

@@ -25,19 +25,20 @@ final class Util
     {
         switch (gettype($var)) {
             case 'array':
-                if (range(0, count($var)-1) === array_keys($var)) {
-                    $ret = 'array(';
-                    $i = 0;
-                    foreach ($var as $value) {
-                        if ($i ++ > 0) {
-                            $ret .= ', ';
-                        }
-                        $ret .= self::toPhp($value);
+                $skipKeys = (range(0, count($var)-1) === array_keys($var));
+                $ret = 'array(';
+                $i = 0;
+                foreach ($var as $key => $value) {
+                    if ($i ++ > 0) {
+                        $ret .= ', ';
                     }
-                    $ret .= ')';
-                    break;
+                    if (!$skipKeys) {
+                        $ret .= self::toPhp($key) . ' => ';
+                    }
+                    $ret .= self::toPhp($value);
                 }
-                // intended fallthrough for associative arrays.
+                $ret .= ')';
+                break;
             default:
                 $ret = var_export($var, true);
         }

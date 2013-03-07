@@ -8,6 +8,8 @@ namespace Zicht\Tool;
 
 /**
  * Placeholder class for the application version
+ *
+ * @codeCoverageIgnore
  */
 class Version
 {
