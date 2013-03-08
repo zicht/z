@@ -39,15 +39,10 @@ class Container
      */
     public function __construct()
     {
-        $this->values = array();
-
         $this->subscribe(array($this, 'prefixListener'));
 
-        $this->values += array(
-            'explain'       => false,
-            'verbose'       => false,
+        $this->values = array(
             'interactive'   => false,
-            'force'         => false
         );
         // gather the options for nested z calls.
         $opts = array();
