@@ -51,6 +51,7 @@ class Configuration implements ConfigurationInterface
             );
             $config['envs'] = $config['env'];
             unset($config['env']);
+            return $config;
         };
         $hasLegacyEnv = function ($config) {
             return isset($config['env']);
