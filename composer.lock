@@ -1,5 +1,5 @@
 {
-    "hash": "ee2aad99429e716c2e66fc913fa331b6",
+    "hash": "35647f69a5a752ff061ceab555caf5ff",
     "packages": [
         {
             "name": "symfony/config",
@@ -188,11 +188,32 @@
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
             "time": "2013-01-27 16:49:19"
-        }
-    ],
-    "packages-dev": [
+        },
+        {
+            "name": "zicht/z-plugins",
+            "version": "dev-trunk",
+            "source": {
+                "type": "svn",
+                "url": "svn://zon/projecten/zicht-libraries/z-plugins",
+                "reference": "/trunk/@17384"
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "scripts": {
+                "post-install-cmd": [
 
     ],
+                "post-update-cmd": [
+
+    ]
+            },
+            "description": "Plugins for Z",
+            "time": "2013-03-08 19:23:39"
+        }
+    ],
+    "packages-dev": null,
     "aliases": [
 
     ],
@@ -202,11 +223,5 @@
         "symfony/process": 0,
         "symfony/config": 0,
         "symfony/console": 0
-    },
-    "platform": {
-        "php": ">=5.3.3"
-    },
-    "platform-dev": [
-
-    ]
+    }
 }

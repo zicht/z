@@ -164,7 +164,7 @@ class Application extends BaseApplication
         } else {
             $pluginDirs = array();
         }
-        $pluginDirs[]= __DIR__ . '/Resources/plugins';
+        $pluginDirs[]= ZPREFIX . '/vendor/zicht/z-plugins/';
         $pluginDirs[]= getcwd();
 
         $zFileLocator  = new FileLocator(array(getcwd(), getenv('HOME') . '/.config/z/'));
