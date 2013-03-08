@@ -33,8 +33,6 @@ class Definition implements Node
      */
     public function compile(Buffer $buffer)
     {
-        $buffer->write('$z->set(')->asPhp($this->path)->raw(',');
-        $this->value->compile($buffer);
-        $buffer->raw(');')->eol();
+        $buffer->write('$z->set(')->asPhp($this->path)->raw(',')->asPhp($this->value)->raw(');')->eol();
     }
 }

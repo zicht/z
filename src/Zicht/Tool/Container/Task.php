@@ -24,10 +24,10 @@ class Task extends Declaration
     public function __construct($path, $node)
     {
         parent::__construct($path);
-        $this->name = $path;
-        if (strpos(end($this->name), '.') !== false) {
-            $end = array_pop($this->name);
-            $this->name = array_merge($this->name, explode('.', $end));
+
+        if (strpos(end($this->path), '.') !== false) {
+            $end = array_pop($this->path);
+            $this->path = array_merge($this->path, explode('.', $end));
         }
         $this->taskDef = $node;
     }
@@ -40,7 +40,7 @@ class Task extends Declaration
      */
     public function getName()
     {
-        return join(':', array_slice($this->name, 1));
+        return join(':', array_slice($this->path, 1));
     }
 
 
@@ -63,7 +63,7 @@ class Task extends Declaration
      */
     public function compileBody(Buffer $buffer)
     {
-        $taskName = Util::toPhp($this->name);
+        $taskName = Util::toPhp($this->path);
 
         foreach ($this->taskDef['set'] as $node) {
             $node->compile($buffer);
@@ -77,7 +77,7 @@ class Task extends Declaration
                 $this->taskDef['unless']->compile($buffer);
                 $buffer->raw('))) {')->eol()->indent(1);
 
-                $echoStr = sprintf('echo "%s skipped"', join('.', $this->name));
+                $echoStr = sprintf('echo "%s skipped"', join('.', $this->path));
                 $buffer->writeln(sprintf('$z->cmd(%s);', Util::toPhp($echoStr)));
                 $buffer->indent(-1)->writeln('} else {')->indent(1);
                 $hasUnless = true;

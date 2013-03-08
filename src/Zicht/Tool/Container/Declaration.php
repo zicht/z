@@ -16,6 +16,9 @@ use \Zicht\Tool\Script\Node\Node;
  */
 class Declaration implements Node
 {
+    protected $path;
+    protected $expr;
+
     /**
      * Constructor.
      *
