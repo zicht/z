@@ -36,7 +36,7 @@ class Application extends BaseApplication
      */
     public function __construct()
     {
-        parent::__construct('z - The Zicht Tool', Version::VERSION);
+        parent::__construct('The Zicht Tool', Version::VERSION);
     }
 
 
@@ -87,6 +87,13 @@ class Application extends BaseApplication
         $container->console_dialog_helper = $this->getHelperSet()->get('dialog');
 
         return parent::doRun($input, $output);
+    }
+
+    public function getHelp()
+    {
+        $ret = parent::getHelp();
+
+        return Version::Z . PHP_EOL . PHP_EOL . $ret;
     }
 
 
