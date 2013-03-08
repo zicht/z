@@ -8,7 +8,7 @@ namespace Zicht\Tool\Plugin\Core;
 
 use \Zicht\Tool\Plugin as BasePlugin;
 use \Zicht\Tool\Container\Container;
-
+use \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 
 /**
  * Provides some core utilities
@@ -94,5 +94,19 @@ class Plugin extends BasePlugin
                 return parse_url($url, PHP_URL_HOST);
             }
         );
+    }
+
+    public function appendConfiguration(ArrayNodeDefinition $rootNode)
+    {
+        parent::appendConfiguration($rootNode);
+        $rootNode
+            ->children()
+                ->arrayNode('build')
+                    ->children()
+                        ->scalarNode('dir')->end()
+                    ->end()
+                ->end()
+            ->end()
+        ;
     }
 }
