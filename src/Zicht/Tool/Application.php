@@ -89,6 +89,10 @@ class Application extends BaseApplication
         return parent::doRun($input, $output);
     }
 
+
+    /**
+     * @{inheritDoc}
+     */
     public function getHelp()
     {
         $ret = parent::getHelp();
@@ -112,7 +116,8 @@ class Application extends BaseApplication
         }
         $cmd->addOption('explain', '', InputOption::VALUE_NONE, 'Explains the commands that would be executed.');
         $cmd->addOption('force', 'f', InputOption::VALUE_NONE, 'Force execution of otherwise skipped tasks.');
-        $cmd->setHelp($task->getHelp());
+        $help = $task->getHelp();
+        $cmd->setHelp(empty($help) ? '(no help available for this task)' : $help);
         $cmd->setDescription(preg_replace('/^([^\n]*).*/s', '$1', $task->getHelp()));
         $this->add($cmd);
     }

@@ -7,7 +7,6 @@
  */
 namespace Zicht\Tool\Container;
 
-use \Zicht\Tool\Script\Node\Definition;
 use \Zicht\Tool\Script\Node\Node;
 use \Zicht\Tool\Script\Compiler;
 use \Zicht\Tool\Script\Parser;
@@ -20,6 +19,7 @@ use \Zicht\Tool\Script\Node\Task\SetNode;
  */
 class ContainerBuilder
 {
+    protected $expressionPaths = array();
     /**
      * Constructor.
      *
@@ -29,9 +29,42 @@ class ContainerBuilder
     {
         $this->config = $config;
 
-        $this->exprcompiler  = $this->createExpressionCompiler();
-        $this->scriptcompiler = $this->createScriptCompiler();
+        $this->exprcompiler  = new Compiler(new ExpressionParser(), new ExpressionTokenizer());
+        $this->scriptcompiler = new Compiler(new Parser());
     }
+
+
+    /**
+     * Adds a callable to decide if a path should be an expression node.
+     *
+     * @param callable $callable
+     * @return void
+     */
+    public function addExpressionPath($callable)
+    {
+        $this->expressionPaths[]= $callable;
+    }
+
+
+    /**
+     * Decides if a node should be an expression.
+     *
+     * @param array $path
+     * @param mixed $node
+     * @return bool
+     */
+    public function isExpressionPath($path, $node)
+    {
+        if (is_scalar($node)) {
+            foreach ($this->expressionPaths as $callable) {
+                if (call_user_func($callable, $path)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     /**
      * Build the container node
@@ -92,7 +125,7 @@ class ContainerBuilder
      *
      * @param array $path
      * @param array $node
-     * @return \Zicht\Tool\Script\Node\Definition
+     * @return Definition
      */
     public function createDefinitionNode($path, $node)
     {
@@ -101,24 +134,15 @@ class ContainerBuilder
 
 
     /**
-     * Creates the script compiler.
+     * Creates a definition node for the specified path
      *
-     * @return \Zicht\Tool\Script\Compiler
+     * @param array $path
+     * @param array $node
+     * @return Declaration
      */
-    public function createScriptCompiler()
+    public function createDeclarationNode($path, $node)
     {
-        return new Compiler(new Parser());
-    }
-
-
-    /**
-     * Creates the expression compiler
-     *
-     * @return \Zicht\Tool\Script\Compiler
-     */
-    public function createExpressionCompiler()
-    {
-        return new Compiler(new ExpressionParser(), new ExpressionTokenizer());
+        return new Declaration($path, $this->exprcompiler->parse($node));
     }
 
 
@@ -193,7 +217,7 @@ class ContainerBuilder
                     count($path) === 3
                     && $path[0] == 'tasks'
                     && in_array($path[2], array('unless', 'assert', 'yield'))
-                ;
+                    ;
             },
             Traverser::BEFORE
         );
@@ -213,6 +237,11 @@ class ContainerBuilder
             function($path) {
                 return count($path) == 2 && $path[0] == 'tasks';
             },
+            Traverser::AFTER
+        );
+        $traverser->addVisitor(
+            array($this, 'createDeclarationNode'),
+            array($this, 'isExpressionPath'),
             Traverser::AFTER
         );
         $traverser->addVisitor(

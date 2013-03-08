@@ -6,9 +6,10 @@
  * @copyright 2012 Gerard van Helden <http://melp.nl>
  */
 
-namespace Zicht\Tool\Script\Node;
+namespace Zicht\Tool\Container;
 
 use \Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Node\Node;
 
 /**
  * Represents a value declaration in the container context.
@@ -32,6 +33,8 @@ class Definition implements Node
      */
     public function compile(Buffer $buffer)
     {
-        $buffer->write('$z->set(')->asPhp($this->path)->raw(',')->asPhp($this->value)->raw(');')->eol();
+        $buffer->write('$z->set(')->asPhp($this->path)->raw(',');
+        $this->value->compile($buffer);
+        $buffer->raw(');')->eol();
     }
 }

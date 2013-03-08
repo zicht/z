@@ -21,10 +21,12 @@ abstract class Branch implements Node
 
     /**
      * Constructor.
+     *
+     * @param Node[] $nodes
      */
-    public function __construct()
+    public function __construct(array $nodes = array())
     {
-        $this->nodes = array();
+        $this->nodes = $nodes;
     }
 
 

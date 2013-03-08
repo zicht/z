@@ -13,7 +13,7 @@ use \Zicht\Tool\Util;
 /**
  * Compilable node that represents an executable task
  */
-class Task implements Node
+class Task extends Declaration
 {
     /**
      * Construct the task with the provided array as task definition
@@ -23,6 +23,7 @@ class Task implements Node
      */
     public function __construct($path, $node)
     {
+        parent::__construct($path);
         $this->name = $path;
         if (strpos(end($this->name), '.') !== false) {
             $end = array_pop($this->name);
@@ -60,14 +61,10 @@ class Task implements Node
      * @param Buffer $buffer
      * @return void
      */
-    public function compile(Buffer $buffer)
+    public function compileBody(Buffer $buffer)
     {
         $taskName = Util::toPhp($this->name);
 
-        $buffer
-            ->writeln('$z->decl(')->indent(1)->writeln($taskName . ',')
-            ->writeln('function($z) {')->indent(1);
-        ;
         foreach ($this->taskDef['set'] as $node) {
             $node->compile($buffer);
         }
@@ -101,8 +98,6 @@ class Task implements Node
         }
         $buffer->writeln(sprintf('$z->notify(%s, "end");', $taskName));
         $buffer->writeln('return $ret;');
-        $buffer->indent(-1)->writeln('}')->indent(-1);
-        $buffer->writeln(');');
     }
 
 

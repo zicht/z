@@ -9,3 +9,5 @@ tasks:
         - phpunit                     $(force ? " || true")
         - phpcs --standard=Zicht src  $(force ? " || true")
         - cd res && behat -f progress $(force ? " || true")
+
+    coverage: phpunit --coverage-html=./tmp/ && firefox ./tmp/index.html

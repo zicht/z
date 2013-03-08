@@ -13,8 +13,7 @@ use \Zicht\Tool\Script\Node\Branch;
 use \Zicht\Tool\Script\Node\Node;
 
 /**
- * Represents an expression node.
- * TODO, can we eliminate this?
+ * Represents an expression node in a script.
  */
 class Expr extends Branch
 {

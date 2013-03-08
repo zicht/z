@@ -39,6 +39,9 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
 
         $zConfig = $treeBuilder->root('z');
+        $toArray = function ($s) {
+            return array($s);
+        };
         $zConfig
             ->children()
                 ->arrayNode('tasks')
@@ -61,43 +64,32 @@ class Configuration implements ConfigurationInterface
                         ->end()
                         ->children()
                             ->scalarNode('name')->end()
-                            ->scalarNode('help')->defaultValue('(no help available for this task)')->end()
+                            ->scalarNode('help')->defaultValue(null)->end()
                             ->arrayNode('set')
                                 ->prototype('scalar')
                                 ->end()
                                 ->useAttributeAsKey('name')
                                 ->defaultValue(array())
                             ->end()
-                            ->scalarNode('unless')->end()
+                            ->scalarNode('unless')->defaultValue(null)->end()
+                            ->scalarNode('assert')->defaultValue(null)->end()
                             ->arrayNode('pre')
                                 ->beforeNormalization()
-                                    ->ifString()->then(
-                                        function($s) {
-                                            return array($s);
-                                        }
-                                    )
+                                    ->ifString()->then($toArray)
                                 ->end()
                                 ->prototype('scalar')->end()
                                 ->defaultValue(array())
                             ->end()
                             ->arrayNode('post')
                                 ->beforeNormalization()
-                                    ->ifString()->then(
-                                        function($s) {
-                                            return array($s);
-                                        }
-                                    )
+                                    ->ifString()->then($toArray)
                                 ->end()
                                 ->prototype('scalar')->end()
                                 ->defaultValue(array())
                             ->end()
                             ->arrayNode('do')
                                 ->beforeNormalization()
-                                    ->ifString()->then(
-                                        function($s) {
-                                            return array($s);
-                                        }
-                                    )
+                                    ->ifString()->then($toArray)
                                  ->end()
                                 ->performNoDeepMerging()
                                 ->prototype('scalar')->end()
@@ -132,11 +124,6 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                     ->useAttributeAsKey('name')
-                ->end()
-                ->arrayNode('build')
-                    ->children()
-                        ->scalarNode('dir')->end()
-                    ->end()
                 ->end()
             ->end()
         ->end();
