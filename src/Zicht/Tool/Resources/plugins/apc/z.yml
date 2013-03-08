@@ -6,13 +6,13 @@ tasks:
             A file __apc_clear_cache.php containing the code the clear the cache file is transferred
             to the remote machine's "web" dir and then wget by prepending the env's "url" before it
         set:
-            _file:  envs[target_env].root . envs[target_env].web . "/__apc_clear_cache.php"
+            _file:  cat(envs[target_env].root, envs[target_env].web, "/__apc_clear_cache.php")
             target_env:    ?
         do:
             - echo '<?php apc_clear_cache("user"); apc_clear_cache(); ' | ssh $(envs[target_env].ssh) "cat > $(_file)"
             - wget -qO - $(envs[target_env].url)/__apc_clear_cache.php > /dev/null
             - ssh $(envs[target_env].ssh) "rm $(_file)"
-            - ?(verbose) echo "Cache cleared at $(env) $(envs[target_env].url)"
+            - ?(verbose) echo "Cache cleared at $(target_env) $(envs[target_env].url)"
 
     deploy:
         post:
