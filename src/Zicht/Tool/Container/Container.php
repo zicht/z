@@ -27,17 +27,12 @@ class Container
 
     protected $plugins = array();
     protected $subscribers = array();
+    protected $values = array();
+    protected $prefix = array();
+
+    private $stack = array();
 
     public $output;
-
-    public $definition = '';
-
-    protected $values = array();
-    protected $declarations = array();
-    protected $functions = array();
-
-    protected $stack = array();
-    protected $prefix = array();
 
     /**
      * Construct the container with the specified values as services/values.
@@ -70,6 +65,8 @@ class Container
                 return join('', func_get_args());
             }
         );
+        $this->set('cwd',  getcwd());
+        $this->set('user', getenv('USER'));
     }
 
 
