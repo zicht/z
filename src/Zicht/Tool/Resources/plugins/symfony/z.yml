@@ -25,3 +25,15 @@ tasks:
     deploy:
         post:
             - ?(symfony.flush_cache) ssh $(envs[target_env].ssh) "cd $(envs[target_env].root) && php $(symfony.console) cache:clear --env=$(target_env) --no-debug"
+
+    symfony.logs:
+        help: |
+            Tail the logs at the specified environment.
+
+            If run in verbose mode, the logs are cat'ed.
+        set:
+            target_env: ?
+            level: ? ""
+        do: |
+            ssh $(envs[target_env].ssh) \
+                "$(verbose ? "tail" : "cat") $(envs[target_env].root)app/logs/$(target_env).log"
