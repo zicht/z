@@ -42,7 +42,24 @@ class Configuration implements ConfigurationInterface
         $toArray = function ($s) {
             return array($s);
         };
+
+        // to be removed in 1.2
+        $replaceLegacyEnv = function ($config) {
+            trigger_error(
+                'As of version 1.1, the "env" configuration is deprecated and must be replaced by "envs".',
+                E_USER_DEPRECATED
+            );
+            $config['envs'] = $config['env'];
+            unset($config['env']);
+        };
+        $hasLegacyEnv = function ($config) {
+            return isset($config['env']);
+        };
+
         $zConfig
+            ->beforeNormalization()
+                ->ifTrue($hasLegacyEnv)->then($replaceLegacyEnv)
+            ->end()
             ->children()
                 ->arrayNode('tasks')
                     ->prototype('array')

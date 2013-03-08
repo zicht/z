@@ -2,8 +2,8 @@
 
 # Overall #
 
-One important goal for any Z upgrade is providing conversion scripts for the yml files. This will only be done for minor
-and major releases, e.g. 1.0 => 1.1 or 1.2 => 2.0, and they will all be incremental.
+All upgrade instructions are available in the UPGRADING document. Usually no BC breaks will be done in a minor version
+increment. If there are BC breaks planned for a next version, you will be warned about this with a DEPRECATED message.
 
 # version 1.1 #
  +  The name for configuring environments will be replaced by "envs" in stead of "env"
@@ -41,27 +41,15 @@ and major releases, e.g. 1.0 => 1.1 or 1.2 => 2.0, and they will all be incremen
 
     > *This will possibly utilize the PropertyPath component of Symfony 2.2. So Z will upgrade to run on the 2.2 branch*
 
- +  `$(env.root)` and such will be replaced by `$(env:root)`, which is syntactical sugar for `$(env[env].root)`. This
-    eliminates the `select('env')` call in the setup of the commands. This way, other dynamic configuration can be used
-    in the future. The 'select' call will be deprecated and removed in 1.2, so usage of `env.property` will be wrapped
-    in a separate declaration, which will trigger an E_USER_DEPRECATED message.
+ +  `$(env.root)` and such will be deprecated, so usage of `env.property` will be wrapped in a separate function as
+    a convenience, which will resolve to `envs[target_env].root`, and it will trigger an E_USER_DEPRECATED message.
+    As such, all 'set' definitions using 'env' will be deprecated as well, internally rewriting them to 'target_env'.
  +  The plugins will be removed from the default installation of Z and become a composer suggestion for the tool. It
     will get its own version tree and history, and be removed from releases of Z altogether. Possibly the plugins will
     gain their own repository.
- +  The shell will be configurable per command line, syntax yet to be decided. Probably there will be a separate shell
-    factory which can be used to specify the shell, so that any plugin can provide the actual shell to use in a command,
-    such as:
-
-    ```
-    - Command         @ env.remote(env)
-    - Local command   @ "/usr/local/bin/zsh"
-    - Query           @ "/bin/mysql"
-    ```
-
-    In the above examples, env.remote(env) would yield something like 'ssh user@host'.
-
- +  The standard plugins will be removed from Z and published as a separate repository, so changes in plugin
-    implementation will not affect Z versions.
+ +  An additional "assert" will be added to tasks, which will cause a RuntimeException to be thrown if the assertion
+    fails. The assertion is called after 'unless' evaluation, which is right after the execution of the "pre" section,
+    and right before the "do".
 
 # version 1.2 #
 
