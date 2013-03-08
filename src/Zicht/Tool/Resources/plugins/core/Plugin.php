@@ -96,6 +96,13 @@ class Plugin extends BasePlugin
         );
     }
 
+
+    /**
+     * Adds a build configuration to the configuration tree.
+     *
+     * @param \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition $rootNode
+     * @return mixed|void
+     */
     public function appendConfiguration(ArrayNodeDefinition $rootNode)
     {
         parent::appendConfiguration($rootNode);

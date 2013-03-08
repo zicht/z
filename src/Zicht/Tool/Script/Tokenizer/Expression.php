@@ -102,7 +102,9 @@ class Expression implements TokenizerInterface
             }
             if ($before === $needle) {
                 // safety net.
-                throw new \UnexpectedValueException("Unexpected input near token {$string{$needle}}");
+                throw new \UnexpectedValueException(
+                    "Unexpected input near token {$string{$needle}}, unsupported character ($string)"
+                );
             }
         }
         return $ret;

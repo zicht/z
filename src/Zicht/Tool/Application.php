@@ -67,7 +67,6 @@ class Application extends BaseApplication
         list($plugins, $configTree) = $this->getConfig(getenv('ZFILE'), getenv('ZPLUGINDIR'));
 
         $builder = new ContainerBuilder($configTree);
-
         $containerNode = $builder->build();
         $container = $this->initContainer($plugins, $containerNode);
         $container->output = $output;
