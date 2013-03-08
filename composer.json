@@ -4,12 +4,19 @@
     "autoload": {
         "psr-0": { "": "src/" }
     },
+    "repositories": [
+        {
+            "type": "svn",
+            "url": "svn://zon/projecten/zicht-libraries/z-plugins"
+        }
+    ],
     "require": {
         "php": ">=5.3.3",
         "symfony/yaml": "2.2.*@stable",
         "symfony/process": "2.2.*@stable",
         "symfony/config": "2.2.*@stable",
-        "symfony/console": "2.2.*@stable"
+        "symfony/console": "2.2.*@stable",
+        "zicht/z-plugins": "*"
     },
     "scripts": {
         "post-install-cmd": [
