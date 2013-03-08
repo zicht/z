@@ -140,7 +140,11 @@ class Traverser
     {
         foreach ($this->visitors as $visitor) {
             if ($visitor[0] === $when && call_user_func($visitor[1], $path, $value)) {
-                $value = call_user_func($visitor[2], $path, $value);
+                try {
+                    $value = call_user_func($visitor[2], $path, $value);
+                } catch (\Exception $e) {
+                    throw new \RuntimeException("Exception while visiting value {$value}", 0, $e);
+                }
             }
         }
         return $value;
