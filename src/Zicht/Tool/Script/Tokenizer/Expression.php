@@ -35,7 +35,9 @@ class Expression implements TokenizerInterface
                         . "Please use cat() or sprintf() in stead",
                         E_USER_DEPRECATED
                     );
-                    $m[0] = 'cat';
+                    $ret[]= new Token(Token::OPERATOR, 'cat');
+                    $needle += strlen($m[0]);
+                    continue;
                 }
 
                 if ($m[0] == ')') {

@@ -30,7 +30,10 @@ class Expression extends AbstractParser
      *
      * @var array
      */
-    public static $INFIX_BINARY = array('==', '!=', '<=', '>=', '<', '>', '&&', '||');
+    public static $INFIX_BINARY = array(
+        '==', '!=', '<=', '>=', '<', '>', '&&', '||', 'cat' // 'cat' is a hack for supporting
+                                                            // the dot operator for concatenation
+    );
 
 
     /**
