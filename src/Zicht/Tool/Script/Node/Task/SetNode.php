@@ -45,7 +45,7 @@ class SetNode extends Branch
         $phpName = Util::toPhp($name);
 
         if ($this->conditional) {
-            $buffer->writeln(sprintf('if (!$z->has(%s)) {', $phpName))->indent(1);
+            $buffer->writeln(sprintf('if ($z->isEmpty(%s)) {', $phpName))->indent(1);
             if (!$this->nodes[0]) {
                 $buffer->writeln(
                     sprintf(
