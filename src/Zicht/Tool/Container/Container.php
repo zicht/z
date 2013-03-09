@@ -45,13 +45,19 @@ class Container
             'interactive'   => false,
         );
         // gather the options for nested z calls.
-        $opts = array();
-        foreach (array('force', 'verbose', 'explain') as $opt) {
-            if ($this->values[$opt]) {
-                $opts[]= '--' . $opt;
+        $this->set(
+            array('z', 'opts'),
+            function($z) {
+                $opts = array();
+                foreach (array('force', 'verbose', 'explain') as $opt) {
+                    if ($z->has($opt) && $z->get($opt)) {
+                        $opts[]= '--' . $opt;
+                    }
+                }
+                return join(' ', $opts);
             }
-        }
-        $this->set(array('z', 'opts'), join(' ', $opts));
+        );
+
 
         $this->fn('sprintf');
         $this->fn(
@@ -73,7 +79,7 @@ class Container
      */
     public function get($path)
     {
-        return $this->lookup($this->values, $path);
+        return $this->lookup($this->values, (array)$path);
     }
 
 
@@ -83,6 +89,8 @@ class Container
      * @param array $context
      * @param array $path
      * @return mixed
+     *
+     * @throws \InvalidArgumentException
      */
     public function lookup($context, array $path)
     {
