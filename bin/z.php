@@ -19,7 +19,5 @@ function deprecation_decorator($err, $errstr)
 }
 set_error_handler('deprecation_decorator', E_USER_DEPRECATED);
 
-class_exists('Zicht\Tool\Container\Context\ArrayPropertyPath');
-
 $app = new Zicht\Tool\Application();
 $app->run();
