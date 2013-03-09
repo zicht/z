@@ -73,9 +73,9 @@ class Task extends Declaration
         $hasUnless = false;
         foreach (array('pre', 'do', 'post') as $scope) {
             if ($scope === 'do' && !empty($this->taskDef['unless'])) {
-                $buffer->write('if (!$z->resolve(array(\'force\')) && ($_unless = (');
+                $buffer->write('if (!$z->resolve(array(\'force\')) && (');
                 $this->taskDef['unless']->compile($buffer);
-                $buffer->raw('))) {')->eol()->indent(1);
+                $buffer->raw(')) {')->eol()->indent(1);
 
                 $echoStr = sprintf('echo "%s skipped"', join('.', $this->path));
                 $buffer->writeln(sprintf('$z->cmd(%s);', Util::toPhp($echoStr)));

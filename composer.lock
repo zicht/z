@@ -1,5 +1,5 @@
 {
-    "hash": "35647f69a5a752ff061ceab555caf5ff",
+    "hash": "4ab1275e1517e1596a58b72b031e35ec",
     "packages": [
         {
             "name": "symfony/config",
@@ -143,6 +143,64 @@
             "time": "2013-02-18 21:28:10"
         },
         {
+            "name": "symfony/property-access",
+            "version": "v2.2.0",
+            "target-dir": "Symfony/Component/PropertyAccess",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/PropertyAccess.git",
+                "reference": "v2.2.0-RC3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/PropertyAccess/zipball/v2.2.0-RC3",
+                "reference": "v2.2.0-RC3",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\PropertyAccess\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony PropertyAccess Component",
+            "homepage": "http://symfony.com",
+            "keywords": [
+                "access",
+                "array",
+                "extraction",
+                "index",
+                "injection",
+                "object",
+                "property",
+                "property path",
+                "reflection"
+            ],
+            "time": "2013-02-04 20:27:45"
+        },
+        {
             "name": "symfony/yaml",
             "version": "v2.2.0",
             "target-dir": "Symfony/Component/Yaml",
@@ -204,16 +262,18 @@
             "scripts": {
                 "post-install-cmd": [
 
-    ],
+                ],
                 "post-update-cmd": [
 
-    ]
+                ]
             },
             "description": "Plugins for Z",
             "time": "2013-03-08 19:23:39"
         }
     ],
-    "packages-dev": null,
+    "packages-dev": [
+
+    ],
     "aliases": [
 
     ],
@@ -222,6 +282,13 @@
         "symfony/yaml": 0,
         "symfony/process": 0,
         "symfony/config": 0,
-        "symfony/console": 0
-    }
+        "symfony/console": 0,
+        "symfony/property-access": 0
+    },
+    "platform": {
+        "php": ">=5.3.3"
+    },
+    "platform-dev": [
+
+    ]
 }

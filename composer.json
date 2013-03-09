@@ -16,6 +16,7 @@
         "symfony/process": "2.2.*@stable",
         "symfony/config": "2.2.*@stable",
         "symfony/console": "2.2.*@stable",
+        "symfony/property-access": "2.2.*@stable",
         "zicht/z-plugins": "*"
     },
     "scripts": {

@@ -6,10 +6,11 @@
 
 namespace Zicht\Tool\Container;
 
+use \Symfony\Component\Process\Process;
+use \Symfony\Component\PropertyAccess\PropertyAccess;
 use \Zicht\Tool\Script;
 use \Zicht\Tool\PluginInterface;
 use \UnexpectedValueException;
-use \Symfony\Component\Process\Process;
 use \Zicht\Tool\Script\Compiler as ScriptCompiler;
 use \Zicht\Tool\Util;
 use \Zicht\Tool\Script\Parser\Expression as ExpressionParser;
@@ -79,7 +80,7 @@ class Container
      */
     public function get($path)
     {
-        return $this->lookup($this->values, (array)$path);
+        return $this->lookup($this->values, $path);
     }
 
 
@@ -92,37 +93,12 @@ class Container
      *
      * @throws \InvalidArgumentException
      */
-    public function lookup($context, array $path)
+    public function lookup($context, $path)
     {
-        $at = array();
-        while ($sub = array_shift($path)) {
-            if (is_object($context)) {
-                $context = $context->$sub;
-            } elseif (is_array($context)) {
-                if (!array_key_exists($sub, $context)) {
-                    $at[] = $sub;
-                    throw new \InvalidArgumentException(
-                        sprintf(
-                            "Member not found: %s, available keys are: %s",
-                            join('.', $at),
-                            join(', ', array_keys($context))
-                        )
-                    );
-                }
-                $context = $context[$sub];
-            } else {
-                $at[] = $sub;
-                throw new \InvalidArgumentException(
-                    sprintf(
-                        "Item at path %s should either be object or array, but %s found",
-                        join('.', $at),
-                        Util::typeOf($context)
-                    )
-                );
-            }
-            $at[]= $sub;
-        }
-        return $context;
+        return PropertyAccess::getPropertyAccessor()->getValue(
+            $context,
+            new Context\ArrayPropertyPath($this->path($path))
+        );
     }
 
     /**
@@ -130,6 +106,9 @@ class Container
      *
      * @param array $id
      * @return mixed
+     *
+     * @throws \UnexpectedValueException
+     * @throws \RuntimeException
      */
     public function resolve($id)
     {
@@ -179,11 +158,27 @@ class Container
      */
     public function set($path, $value)
     {
+        PropertyAccess::getPropertyAccessor()->setValue(
+            $this->values,
+            new Context\ArrayPropertyPath($this->path($path)),
+            $value
+        );
+    }
+
+
+    /**
+     * Wrapper for converting string paths to arrays.
+     *
+     * @param mixed $path
+     * @return array
+     */
+    private function path($path)
+    {
         if (!is_array($path)) {
             if (strpos($path, '.') !== false) {
                 trigger_error(
-                    "As of version 1.1, setting variables by string is deprecated ($path)."
-                    . "Please use arrays instead",
+                    "As of version 1.1, setting variable paths by string is deprecated ($path)."
+                        . "Please use arrays instead",
                     E_USER_DEPRECATED
                 );
                 $path = explode('.', $path);
@@ -191,31 +186,7 @@ class Container
                 $path = array($path);
             }
         }
-        $strPath = join('->', $path);
-        $ptr =& $this->values;
-        $last = array_pop($path);
-        foreach ($path as $key) {
-            if (is_array($ptr)) {
-                if (!isset($ptr[$key])) {
-                    $ptr[$key] = array();
-                }
-                $ptr =& $ptr[$key];
-            } else {
-                if (!isset($ptr->$key)) {
-                    $ptr->$key = array();
-                }
-                $ptr =& $ptr->$key;
-            }
-        }
-        if (is_array($ptr)) {
-            $ptr[$last] = $value;
-        } elseif (is_object($ptr) && ! $ptr instanceof \Closure) {
-            $ptr->$last = $value;
-        } else {
-            throw new UnexpectedValueException(
-                "Unexpected type " . Util::typeOf($ptr) . " {$strPath}"
-            );
-        }
+        return $path;
     }
 
 
@@ -305,15 +276,29 @@ class Container
      */
     public function has($id)
     {
-        if (is_string($id)) {
-            $id = array($id);
-        }
         try {
-            $existing = $this->lookup($this->values, $id);
-        } catch (\InvalidArgumentException $e) {
+            $existing = $this->get($id);
+        } catch (\OutOfBoundsException $e) {
             return false;
         }
         return Util::typeOf($existing);
+    }
+
+
+    /**
+     * Checks if a value is empty.
+     *
+     * @param mixed $path
+     * @return bool
+     */
+    public function isEmpty($path)
+    {
+        try {
+            $value = $this->get($path);
+        } catch (\OutOfBoundsException $e) {
+            return false;
+        }
+        return empty($value);
     }
 
 

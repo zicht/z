@@ -16,7 +16,7 @@ use \Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
 class Tokenizer implements TokenizerInterface
 {
     /**
-     * Construct the tokenizer with the given input string.
+     * Constructor.
      */
     public function __construct()
     {
