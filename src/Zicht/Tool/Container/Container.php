@@ -107,8 +107,8 @@ class Container
      * @param array $id
      * @return mixed
      *
-     * @throws \UnexpectedValueException
      * @throws \RuntimeException
+     * @throws \UnexpectedValueException
      */
     public function resolve($id)
     {
@@ -155,6 +155,8 @@ class Container
      * @param array $path
      * @param mixed $value
      * @return void
+     *
+     * @throws \UnexpectedValueException
      */
     public function set($path, $value)
     {
@@ -197,6 +199,8 @@ class Container
      * @param callable $callable
      * @param bool $needsContainer
      * @return void
+     *
+     * @throws \InvalidArgumentException
      */
     public function fn($id, $callable = null, $needsContainer = false)
     {
@@ -230,6 +234,8 @@ class Container
      * @param array $id
      * @param callable $callable
      * @return void
+     *
+     * @throws \InvalidArgumentException
      */
     public function decl($id, $callable)
     {
@@ -306,6 +312,8 @@ class Container
      * Separate helper for calling a service as a function.
      *
      * @return mixed
+     *
+     * @throws \InvalidArgumentException
      */
     public function call()
     {
@@ -371,7 +379,10 @@ class Container
      * Executes a script snippet using the 'executor' service.
      *
      * @param string $cmd
+     * @return integer
      * @return int
+     *
+     * @throws \UnexpectedValueException
      */
     public function exec($cmd)
     {
@@ -433,6 +444,8 @@ class Container
      *
      * @param string $value
      * @return string
+     *
+     * @throws \UnexpectedValueException
      */
     public function value($value)
     {
