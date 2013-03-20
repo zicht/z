@@ -151,7 +151,8 @@ class Expression extends AbstractParser
         }
 
         // little syntactic sugar for function calls without parentheses:
-        if ($stream->valid() && ($stream->match(array(Token::IDENTIFIER, Token::STRING, Token::NUMBER, Token::LEGACY_ENV)))) {
+        $allowInlineCallTokens = array(Token::IDENTIFIER, Token::STRING, Token::NUMBER, Token::LEGACY_ENV);
+        if ($stream->valid() && ($stream->match($allowInlineCallTokens))) {
             $ret = new Node\Expr\Call($ret);
             $ret->append($this->parse($stream));
         }
