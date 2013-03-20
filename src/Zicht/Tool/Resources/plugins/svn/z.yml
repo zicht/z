@@ -1,0 +1,85 @@
+# Version Control System settings
+vcs:
+    # The SVN url to the project. Currently, only SVN is supported
+    url:            ~
+
+    export:
+        # The revision info file to write when exporting
+        revfile:    .z.rev
+
+
+tasks:
+    # Clean the build
+    _clean:         rm -rf $(build.dir)
+
+    # Export the specified version to the build dir
+    _vcs.export:
+        unless: build.version == versionof(build.dir)
+        do:
+            - @_clean
+            - echo "Exporting version $(build.version) to $(build.dir)\n"
+            - svn export $(!verbose ? "-q") $(vcs.url)/$(build.version) $(build.dir)
+            - svn info $(vcs.url)/$(build.version) > $(build.dir)/$(vcs.export.revfile)
+        yield:      build.dir
+
+    # Create a version branch
+    v.branch:
+        help: |
+            Create a branch of the current working revision.
+
+            Note that the working copy is updated you should take care that you are actually tagging the right revision.
+        set:
+            branch:     ?
+            _tgt:       sprintf("%s/branches/%s", vcs.url, branch)
+            _src:       ? sprintf("%s/%s", vcs.url, vcs.current)
+        do: |
+            svn cp $(_src) $(_tgt) -m"(Z) Created branch '$(branch)' from $(vcs.current)"
+
+    # Create a version tag
+    v.tag:
+        help: |
+            Tags the current working revision
+
+            The local working copy is checked to see if it contains mixed revisions
+            (i.e. child dirs are committed, but the root is not updated), which might cause the wrong
+            revision to be branched.
+
+        set:
+            tag:        ?
+            _tgt:       sprintf("%s/tags/%s", vcs.url, tag)
+            _src:       sprintf("%s/%s", vcs.url, vcs.current)
+
+        do:
+            - svn cp $(_src) $(_tgt) -m"(Z) Created tag '$(tag)' from $(vcs.current)"
+
+    # List all versions
+    v.versions:
+        help: |
+            List all available tags and branches
+        do:
+            - svn ls $(vcs.url)/tags     | awk '{print "tags/" $1}'
+            - svn ls $(vcs.url)/branches | awk '{print "branches/" $1}'
+
+    v.version:
+        help: |
+            Display current local working version.
+
+        do:
+            - ?(verbose) svn st
+            - echo $(versionof(cwd, verbose))
+
+    # Diff to specific version
+    v.diff:
+        help: |
+            Diff two versions
+        set:
+            version:     ?
+        do:
+            - svn diff $(!verbose ? "--summarize") $(vcs.url)/$(version) $(vcs.url)/$(vcs.current)
+
+    # Print the url of the project
+    v.url:
+        help: "Print the svn url of the project"
+        set:
+            _path: ? ""
+        do: echo $(vcs.url)/$(_path)

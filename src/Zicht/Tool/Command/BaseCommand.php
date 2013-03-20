@@ -5,39 +5,54 @@
  */
 namespace Zicht\Tool\Command;
 
-use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\DependencyInjection\ContainerInterface;
+use \Symfony\Component\Console\Input\InputInterface;
+use \Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\Console\Command\Command;
+use \Symfony\Component\Console\Input\InputOption;
 
-class BaseCommand extends \Symfony\Component\Console\Command\Command
+use \Zicht\Tool\Container\Container;
+
+/**
+ * Base command containing a reference to the container
+ */
+class BaseCommand extends Command
 {
-    function __construct(ContainerInterface $container)
+    protected $container;
+
+
+    public function __construct(Container $container, $name = null)
     {
-        $this->container = $container;
-        parent::__construct();
+        parent::__construct($name);
+        $this->setContainer($container);
     }
 
 
-    protected function initialize(InputInterface $input, OutputInterface $output) {
+    /**
+     * Set the container instance
+     *
+     * @param \Zicht\Tool\Container\Container $container
+     * @return void
+     */
+    public function setContainer(Container $container)
+    {
+        $this->container = $container;
+    }
+
+
+    /**
+     * Initializes the environment in the container if set as an input option
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return void
+     */
+    protected function initialize(InputInterface $input, OutputInterface $output)
+    {
         parent::initialize($input, $output);
 
-        $env = null;
-        try {
-            $env = $input->getArgument('environment');
-        } catch(\Exception $e) {
-        }
-        if (null !== $env) {
-            foreach ($input->getArguments() as $name => $value) {
-                if ($name === 'command') {
-                    continue;
-                }
-
-                if ($name == 'environment') {
-                    $this->container->get('task_context')->setEnvironment($env);
-                } else {
-                    $this->container->get('task_context')->set($name, $value);
-                }
-            }
+        if ($input->hasArgument('env') && $input->getArgument('env')) {
+            $this->container->select('env', $input->getArgument('env'));
         }
     }
 }

@@ -6,7 +6,13 @@
 
 namespace Zicht\Tool;
 
+/**
+ * Placeholder class for the application version
+ */
 class Version
 {
+    /**
+     * Version identifier of the app
+     */
     const VERSION = 'development';
 }

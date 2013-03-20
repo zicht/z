@@ -1,0 +1,13 @@
+tasks:
+    say_hello:
+        set:
+            what: ? "Hello"
+            _what: what
+        do:
+            - @say
+
+    say:
+        set:
+            _what: ?
+        do:
+            - echo "$(_what) world!"

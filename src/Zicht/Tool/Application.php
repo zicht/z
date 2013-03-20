@@ -6,66 +6,161 @@
 
 namespace Zicht\Tool;
 
-use Symfony\Component\Console\Application as BaseApplication;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use \Symfony\Component\Console\Application as BaseApplication;
 use \Symfony\Component\Yaml\Yaml;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use \Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use \Symfony\Component\Config\FileLocator;
 use \Symfony\Component\Config\Definition\Processor;
-use Zicht\Tool\Command\TaskCommand;
 use \Symfony\Component\Console\Input\InputArgument;
+use \Symfony\Component\Console\Input\InputOption;
+use \Symfony\Component\Console\Command\Command;
+use \Symfony\Component\Console\Input\InputInterface;
+use \Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\Console\Input\ArgvInput;
 
+use \Zicht\Tool\Command as Cmd;
+use \Zicht\Tool\Command\TaskCommand;
+use \Zicht\Tool\Container\Configuration;
+use \Zicht\Tool\Container\Container;
+use \Zicht\Tool\Container\Flattener;
+use \Zicht\Tool\Version;
+use \Zicht\Tool\Container\Task;
+
+/**
+ * Z CLI Application
+ */
 class Application extends BaseApplication
 {
     protected $config;
     protected $container;
+    protected $tasks;
 
-    function __construct() {
-        parent::__construct('z - The Zicht Tool', \Zicht\Tool\Version::VERSION);
-
-        $this->initContainer();
-
-        foreach ($this->config['tasks'] as $name => $options) {
-            $class = $this->container->get('task_resolver')->resolve($name);
-            $parameters = call_user_func(array($class, 'uses'));
-
-            $list = new \Zicht\Tool\Task\TaskList($this->container->get('task_builder'), $this->config['tasks']);
-            $list->addTask($name);
-
-            $command = new TaskCommand($name, $this->container);
-            foreach ($parameters as $name) {
-                $required = true;
-                foreach ($list as $task) {
-                    if (in_array($name, $task->provides())) {
-                        $required = false;
-                        break;
-                    }
-                }
-                $command->addArgument($name, $required ? InputArgument::REQUIRED : InputArgument::OPTIONAL);
-            }
-            $this->add($command);
-        }
+    /**
+     * Constructor, initializes the application, container and the commands
+     */
+    public function __construct()
+    {
+        parent::__construct('z - The Zicht Tool', Version::VERSION);
     }
 
 
-    function initContainer() {
-        $locator = new FileLocator(array(__DIR__ . '/Resources/', getcwd()));
-        $configs = array();
-        foreach ($locator->locate('z.yml', null, false) as $file) {
-            $configs[]= Yaml::parse($file);
+    public function run(InputInterface $input = null, OutputInterface $output = null)
+    {
+        if (null === $input) {
+            $input = new ArgvInput();
+        }
+        if (null === $output) {
+            $output = new Output\ConsoleOutput();
+        }
+
+        $container = $this->initContainer(
+            $input->hasParameterOption(array('--verbose', '-v')),
+            $input->hasParameterOption(array('--force', '-f')),
+            $input->hasParameterOption(array('--explain'))
+        );
+
+        $container->output = $output;
+
+        $this->add(new Cmd\DumpCommand($container));
+//        $this->add(new Cmd\InitCommand($container));
+
+        /** @var $task \Zicht\Tool\Container\Task */
+        foreach ($this->tasks as $name => $task) {
+            // if a tasks is prefixed with an underscore, it is considered an internal task
+            if (substr($name, 0, 1) !== '_') {
+                $cmd = new TaskCommand($container, str_replace('.', ':', $name));
+                foreach ($task->getArguments() as $var => $isRequired) {
+                    $cmd->addArgument($var, $isRequired ? InputArgument::REQUIRED : InputArgument::OPTIONAL);
+                }
+                $cmd->addOption('explain', '', InputOption::VALUE_NONE, 'Explains the commands that are executed without executing them.');
+                $cmd->addOption('force', 'f', InputOption::VALUE_NONE, 'Force execution of otherwise skipped tasks.');
+                $cmd->setHelp($task->getHelp());
+                $cmd->setDescription(preg_replace('/^([^\n]*).*/s', '$1', $task->getHelp()));
+                $this->add($cmd);
+            }
+        }
+        $container->console_dialog_helper = $this->getHelperSet()->get('dialog');
+
+        return parent::run($input, $output);
+    }
+
+
+    /**
+     * Initializes the container.
+     *
+     * @return Container
+     *
+     * @throws \UnexpectedValueException
+     */
+    public function initContainer($verbose, $force, $explain)
+    {
+        list($plugins, $config) = $this->getConfig();
+
+        $compiler = new Flattener();
+        $flattened = $compiler->flatten($config);
+        $flattened += array(
+            'verbose'     => (bool)$verbose,
+            'force'       => (bool)$force,
+            'explain'     => (bool)$explain,
+            'interactive' => false
+        );
+        $z = new Container($flattened, $config);
+
+        $buffer = new \Zicht\Tool\Script\Buffer();
+        $this->tasks = array();
+        foreach ($config['tasks'] as $name => $taskDef) {
+            $task = new Task($taskDef, $name);
+            $this->tasks[$name]= $task;
+            $buffer->indent(1)->writeln('$z->decl(');
+            $buffer->writeln(var_export('tasks.' . $name, true) . ',');
+            $task->compile($buffer);
+            $buffer->indent(-1)->writeln(');');
+        }
+        unset($config['tasks']);
+
+        $z->definition = $buffer->getResult();
+        eval($buffer->getResult());
+
+        foreach ($plugins as $plugin) {
+            $plugin->setContainer($z);
+        }
+
+        return $z;
+    }
+
+    public function getConfig()
+    {
+        $zFileLocator  = new FileLocator(array(getcwd(), getenv('HOME') . '/.config/z/'));
+        $pluginLocator = new FileLocator(__DIR__ . '/Resources/plugins');
+
+        $loader = new FileLoader($pluginLocator);
+
+        try {
+            $zfiles = $zFileLocator->locate('z.yml', null, false);
+        } catch (\InvalidArgumentException $e) {
+            $zfiles = array();
+        }
+        foreach ($zfiles as $file) {
+            $loader->load($file);
+        }
+
+        $pluginFiles = $loader->getPlugins();
+        $plugins     = array();
+        foreach ($pluginFiles as $name => $file) {
+            require_once $file;
+            $className = sprintf('Zicht\Tool\Plugin\%s\Plugin', ucfirst(basename($name)));
+            $class     = new \ReflectionClass($className);
+            if (!$class->implementsInterface('Zicht\Tool\PluginInterface')) {
+                throw new \UnexpectedValueException("The class $className is not a 'Zicht\\Tool\\PluginInterface'");
+            }
+            $plugins[$name] = $class->newInstance();
         }
 
         $processor = new Processor();
-        $this->config = $processor->processConfiguration(new Configuration(), $configs);
+        $config = $processor->processConfiguration(
+            new Configuration($plugins),
+            $loader->getConfigs()
+        );
 
-        $params = new ParameterBag($this->config);
-        $builder = new ContainerBuilder($params);
-        $loader = new XmlFileLoader($builder, new FileLocator(__DIR__ . '/Resources/'));
-        $loader->load('services.xml');
-        $builder->compile();
-
-        $this->container = $builder;
+        return array($plugins, $config);
     }
 }

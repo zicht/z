@@ -1,0 +1,6 @@
+tasks:
+    say:
+        set:
+            what: ?
+        do:
+            - echo "$(what) world!"

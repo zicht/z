@@ -7,32 +7,32 @@
 namespace Zicht\Tool\Command;
 use \Symfony\Component\Console\Command\Command;
 
-use Symfony\Component\Console\Input\InputOption;
-use Zicht\Tool\Task\TaskInterface;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\Console\Input\InputOption;
+use \Zicht\Tool\Task\TaskInterface;
+use \Symfony\Component\Console\Input\InputInterface;
+use \Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Command to execute a specific task
+ */
 class TaskCommand extends BaseCommand
 {
-    protected $taskName;
-
-    function __construct($taskName, $container) {
-        $this->taskName = $taskName;
-        parent::__construct($container);
-    }
-
-
-    function configure()
+    /**
+     * Executes the specified task
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return mixed
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this
-            ->setName(str_replace('.', ':', $this->taskName))
-            ->addOption('simulate', 's', InputOption::VALUE_NONE, "Simulate the task")
-        ;
-    }
+        foreach ($this->getDefinition()->getArguments() as $arg) {
+            if ($arg->getName() === 'command') {
+                continue;
+            }
+            $this->container->set($arg->getName(), $input->getArgument($arg->getName()));
+        }
 
-
-
-    protected function execute(InputInterface $input, OutputInterface $output) {
-        $this->container->get('task_runner')->run(array($this->taskName), $input->getOption('simulate'));
+        return $this->container->resolve('tasks.' . str_replace(':', '.', $this->getName()));
     }
 }

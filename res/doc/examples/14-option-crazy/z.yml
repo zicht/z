@@ -1,0 +1,10 @@
+tasks:
+    answer:
+        # Don't actually do this. It's weird. But.... you could. If you were just a weird man.
+        unless: explain
+        do:
+            - ?(!(force || verbose) ) echo "Please pass either --force or --verbose or both, just for kicks!"
+            - ?(force) echo "May it be with you"
+            - ?(verbose) echo "Now printing 42...."
+            - ?(force && verbose) echo "You just gone option-crazy dude!"
+            - ?(42) echo "42"

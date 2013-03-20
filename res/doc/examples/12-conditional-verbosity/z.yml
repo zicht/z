@@ -1,0 +1,8 @@
+tasks:
+    say:
+        set:
+            times: ? 2
+        do:
+            - for i in $$(seq 1 $(times)); do echo "Hello!"; done;
+            - ?(verbose) echo "I just said Hello $(times) times"
+
