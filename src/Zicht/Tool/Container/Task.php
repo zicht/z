@@ -69,7 +69,7 @@ class Task extends Declaration
             $node->compile($buffer);
         }
         $buffer->writeln(sprintf('$z->notify(%s, "start");', $taskName));
-
+        $buffer->writeln('try {')->indent(1);
         $hasUnless = false;
         foreach (array('pre', 'do', 'post') as $scope) {
             if ($scope === 'do' && !empty($this->taskDef['unless'])) {
@@ -96,6 +96,9 @@ class Task extends Declaration
         } else {
             $buffer->writeln('$ret = null;');
         }
+        $buffer->indent(-1)->writeln('} catch (\Exception $e) {')->indent(1);
+        $buffer->writeln(sprintf('throw new \RuntimeException("While executing task %s", 0, $e);', $taskName));
+        $buffer->indent(-1)->writeln('}');
         $buffer->writeln(sprintf('$z->notify(%s, "end");', $taskName));
         $buffer->writeln('return $ret;');
     }

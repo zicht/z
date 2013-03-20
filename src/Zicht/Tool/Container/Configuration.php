@@ -86,6 +86,22 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('set')
                                 ->prototype('scalar')
                                 ->end()
+                                ->beforeNormalization()
+                                    ->ifTrue(function($v) { return isset($v['env']); })
+                                    ->then(function($set) {
+                                        trigger_error(
+                                            "As of version 1.1, Using 'env' as a set variable is deprecated. "
+                                            . "Please use 'target_env' in stead",
+                                            E_USER_DEPRECATED
+                                        );
+                                        $repl = array();
+                                        // this foreach is needed to maintain the internal sorting
+                                        foreach ($set as $k => $v) {
+                                            $repl[$k == 'env' ? 'target_env' : $k] = $v;
+                                        }
+                                        return $repl;
+                                    })
+                                ->end()
                                 ->useAttributeAsKey('name')
                                 ->defaultValue(array())
                             ->end()

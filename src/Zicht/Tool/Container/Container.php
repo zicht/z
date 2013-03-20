@@ -91,14 +91,24 @@ class Container
      * @param array $path
      * @return mixed
      *
+     * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     public function lookup($context, $path)
     {
-        return PropertyAccess::getPropertyAccessor()->getValue(
-            $context,
-            new Context\ArrayPropertyPath($this->path($path))
-        );
+        if (empty($path)) {
+            throw new \InvalidArgumentException("Passed lookup path is empty.");
+        }
+        try {
+            return PropertyAccess::getPropertyAccessor()->getValue(
+                $context,
+                new Context\ArrayPropertyPath($this->path($path))
+            );
+        } catch (\Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException $e) {
+            throw new \RuntimeException("Error resolving " . join(".", $path), 0, $e);
+        } catch (\Symfony\Component\PropertyAccess\Exception\OutOfBoundsException $e) {
+            throw new \RuntimeException("Error resolving " . join(".", $path), 0, $e);
+        }
     }
 
     /**
@@ -173,11 +183,15 @@ class Container
      *
      * @param mixed $path
      * @return array
+     *
+     * @throws \InvalidArgumentException
      */
     private function path($path)
     {
         if (!is_array($path)) {
-            if (strpos($path, '.') !== false) {
+            if (null === $path) {
+                throw new \InvalidArgumentException("Invalid path");
+            } elseif (strpos($path, '.') !== false) {
                 trigger_error(
                     "As of version 1.1, setting variable paths by string is deprecated ($path)."
                         . "Please use arrays instead",

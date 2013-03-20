@@ -14,6 +14,11 @@ require_once __DIR__ . '/../vendor/autoload.php';
  */
 function deprecation_decorator($err, $errstr)
 {
+    static $repeating = array();
+    if (in_array($errstr, $repeating)) {
+        return;
+    }
+    $repeating[]= $errstr;
     fwrite(STDERR, "[DEPRECATED] $errstr\n");
 }
 set_error_handler('deprecation_decorator', E_USER_DEPRECATED);

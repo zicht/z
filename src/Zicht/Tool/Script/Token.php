@@ -14,6 +14,11 @@ namespace Zicht\Tool\Script;
 final class Token
 {
     /**
+     * @deprecated
+     */
+    const LEGACY_ENV = 'env';
+
+    /**
      * Data token type
      */
     const DATA = 'data';

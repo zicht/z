@@ -31,8 +31,8 @@ class Expression extends AbstractParser
      * @var array
      */
     public static $INFIX_BINARY = array(
-        '==', '!=', '<=', '>=', '<', '>', '&&', '||', 'cat' // 'cat' is a hack for supporting
-                                                            // the dot operator for concatenation
+        '==', '!=', '<=', '>=', '<', '>', '&&', '||',
+        'cat' // 'cat' is a hack for BC supporting the dot operator for concatenation
     );
 
 
@@ -44,7 +44,16 @@ class Expression extends AbstractParser
      */
     public function parse(TokenStream $stream)
     {
-        if ($stream->match(Token::OPERATOR, array('!', '-'))) {
+        if ($stream->match(Token::LEGACY_ENV)) {
+            $stream->next();
+
+            if ($stream->match(Token::OPERATOR, '.')) {
+                $ret = new Node\Expr\Subscript(new Node\Expr\Variable('envs'));
+                $ret->append(new Node\Expr\Variable('target_env'));
+            } else {
+                $ret = new Node\Expr\Variable('target_env');
+            }
+        } elseif ($stream->match(Token::OPERATOR, array('!', '-'))) {
             $value = $stream->current()->value;
             $stream->next();
             $ret = new Op\Unary($value, $this->parse($stream));
