@@ -12,10 +12,10 @@ use \Symfony\Component\Config\Definition\Processor;
 
 class ConfigurationLoader
 {
-    public static function fromEnv()
+    public static function fromEnv($configFilename = 'z.yml')
     {
         return new self(
-            getenv('ZFILE') ? getenv('ZFILE') : 'z.yml',
+            getenv('ZFILE') ? getenv('ZFILE') : $configFilename,
             new PathDefaultFileLocator('ZPATH', array(getcwd(), getenv('HOME') . '/.config/z')),
             new PathDefaultFileLocator('ZPLUGINPATH', array(ZPREFIX . '/vendor/zicht/z-plugins/', getcwd()))
         );
@@ -43,7 +43,7 @@ class ConfigurationLoader
             $this->loader->load($file);
         }
 
-        $this->plugins     = array();
+        $this->plugins = array();
         foreach ($this->loader->getPlugins() as $name => $file) {
             require_once $file;
             $className = sprintf('Zicht\Tool\Plugin\%s\Plugin', ucfirst(basename($name)));

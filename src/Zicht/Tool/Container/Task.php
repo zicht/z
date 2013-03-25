@@ -58,17 +58,19 @@ class Task extends Declaration
     public function compile(Buffer $buffer)
     {
         parent::compile($buffer);
-        $buffer->writeln('$z->addCommand(')->indent(1);
-        $buffer
-            ->write('new \Zicht\Tool\Command\TaskCommand(')
-            ->asPhp($this->getName())
-            ->raw(',')
-            ->asPhp($this->getArguments(true))
-            ->raw(',')
-            ->asPhp($this->getHelp() ? $this->getHelp() : "(no help available for this task)")
-            ->raw(')')->eol()
-        ;
-        $buffer->indent(-1)->writeln(');');
+        if (substr($this->getName(), 0, 1) !== '_') {
+            $buffer
+                ->writeln('$z->addCommand(')->indent(1)
+                ->write('new \Zicht\Tool\Command\TaskCommand(')
+                ->asPhp($this->getName())
+                ->raw(',')
+                ->asPhp($this->getArguments(true))
+                ->raw(',')
+                ->asPhp($this->getHelp() ? $this->getHelp() : "(no help available for this task)")
+                ->raw(')')->eol()
+                ->indent(-1)->writeln(');')
+            ;
+        }
     }
 
 

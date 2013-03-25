@@ -30,14 +30,21 @@ class StaticStub extends Stub
         );
 
         $compiler = new \Zicht\Tool\Container\ContainerCompiler($configurationLoader->processConfiguration());
-
-//        foreach ($this->loader->getPlugins() as $plugin) {
-//            $c = new \ReflectionClass(get_class($plugin));
-//
-//        }
         $this->phar['container.php'] = $compiler->getContainerCode();
         $buffer->writeln('$container = require_once \'phar://z.phar/container.php\';');
-        $buffer->writeln('$app = new Zicht\Tool\Application(')->asPhp($this->appName)->raw(', ')->asPhp($this->appVersion)->raw(');')->eol();
+
+        foreach ($configurationLoader->getPlugins() as $name => $plugin) {
+            $className = get_class($plugin);
+            $embeddedFilename = 'plugins/' . $name . '.php';
+
+            $class = new \ReflectionClass($className);
+
+            $this->phar[$embeddedFilename] = file_get_contents($class->getFileName());
+            $buffer->write('require_once ')->asPhp('phar://z.phar/' . $embeddedFilename)->raw(';')->eol();
+            $buffer->write('$p = new ')->write($className)->raw('();')->eol();
+            $buffer->writeln('$p->setContainer($container);');
+        }
+        $buffer->write('$app = new Zicht\Tool\Application(')->asPhp($this->appName)->raw(', ')->asPhp($this->appVersion)->raw(');')->eol();
         $buffer->writeln('$app->setContainer($container);');
     }
 }

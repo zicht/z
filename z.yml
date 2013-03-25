@@ -1,4 +1,4 @@
-#plugins: ['core']
+plugins: ['core', 'svn', 'env']
 
 tasks:
     docs: cd res/doc && z docs $(z.opts)
