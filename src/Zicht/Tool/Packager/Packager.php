@@ -18,6 +18,7 @@ class Packager
             'app-name'          => 'The Zicht Tool',
             'app-version'       => 'development build (' . date('r') . ')',
             'static'            => false,
+            'static-plugin-paths' => array(getcwd(), $root . '/vendor/zicht/z-plugins')
         );
     }
 
@@ -38,6 +39,30 @@ class Packager
         $buildFile = 'build.phar';
 
         $phar = new \Phar($buildFile);
+        if ($static = $this->options['static']) {
+            $stub = new Node\StaticStub(
+                $phar,
+                $this->options['app-name'],
+                $this->options['app-version'],
+                $this->options['static'],
+                $this->options['static-plugin-paths']
+            );
+        } else {
+            $stub = new Node\DynamicStub(
+                $phar,
+                $this->options['app-name'],
+                $this->options['app-version'],
+                $this->options['config-filename']
+            );
+        }
+        $buffer = new \Zicht\Tool\Script\Buffer();
+        $buffer
+            ->writeln('#!/usr/bin/env php')
+            ->writeln('<?php')
+            ->writeln(self::$HEADER)
+        ;
+        $stub->compile($buffer);
+
         foreach (array('vendor', 'src') as $dir) {
             foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir)) as $file) {
                 if (!$file->isFile()) {
@@ -48,17 +73,16 @@ class Packager
         }
         $phar['LICENSE'] = file_get_contents('LICENSE');
 
-        $version        = var_export($this->options['app-version'], true);
-        $appName        = var_export($this->options['app-name'], true);
-        $configFilename = var_export($this->options['config-filename'], true);
+        $phar->setStub($buffer->getResult());
 
-        if ($static = $this->options['static']) {
+        rename($buildFile, $targetFile);
+        chmod($targetFile, 0755);
+        chdir($curDir);
+    }
 
-        }
 
-        $stub =<<<EOF
-#!/usr/bin/env php
-<?php
+
+    private static $HEADER =<<<EOHEADER
 /**
  * Copyright (C) 2013 Zicht Online, Gerard van Helden
  *
@@ -75,25 +99,10 @@ class Packager
  * OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
  * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
 /**
  * This file was built with the Z packager. For more information, visit the Z website at http://z.zicht.nl/
  *
  * Please pay your respects by at least leaving these notices in tact.
  */
-
-Phar::mapPhar('z.phar');
-define('ZPREFIX', 'phar://z.phar/');
-require_once 'phar://z.phar/vendor/autoload.php';
-\$app = new Zicht\Tool\Application($appName, $version, $configFilename);
-Zicht\Tool\Application::\$HEADER = '';
-\$app->run();
-__HALT_COMPILER();
-EOF;
-        $phar->setStub($stub);
-
-        rename($buildFile, $targetFile);
-        chmod($targetFile, 0755);
-        chdir($curDir);
-    }
+EOHEADER;
 }

@@ -35,10 +35,10 @@ EOSTR;
     protected $container = null;
 
 
-    public function __construct($name, $version, $configFilename = 'z.yml')
+    public function __construct($name, $version, ConfigurationLoader $loader = null)
     {
         parent::__construct($name, $version);
-        $this->configFilename = $configFilename;
+        $this->loader = $loader;
     }
 
 
@@ -81,26 +81,10 @@ EOSTR;
     public function getContainer()
     {
         if (null === $this->container) {
-            $configurationLoader = new ConfigurationLoader(
-                $this->configFilename,
-                new FileLocator(
-                    array(
-                        getcwd(),
-                        getenv('HOME') .'/.config/z/'
-                    )
-                ),
-                new FileLocator(
-                    array(
-                        ZPREFIX . '/vendor/zicht/z-plugins/',
-                        getcwd()
-                    )
-                )
-            );
-            $config = $configurationLoader->processConfiguration();
-
+            $config = $this->loader->processConfiguration();
             $compiler = new ContainerCompiler($config, '.z.php');
             $this->container = $compiler->getContainer();
-            foreach ($configurationLoader->getPlugins() as $plugin) {
+            foreach ($this->loader->getPlugins() as $plugin) {
                 $plugin->setContainer($this->container);
             }
         }
@@ -142,9 +126,9 @@ EOSTR;
     public function getHelp()
     {
         $ret = parent::getHelp();
-        if (self::$HEADER) {
-            $ret = self::$HEADER . PHP_EOL . PHP_EOL . $ret;
-        }
+//        if (self::$HEADER) {
+//            $ret = self::$HEADER . PHP_EOL . PHP_EOL . $ret;
+//        }
         return $ret;
     }
 }

@@ -24,6 +24,17 @@ class ContainerCompiler
 
     function getContainer()
     {
+        $code = $this->getContainerCode();
+
+        file_put_contents($this->file, $code);
+
+        $ret = include $this->file;
+        unlink($this->file);
+        return $ret;
+    }
+
+    public function getContainerCode()
+    {
         $builder = new ContainerBuilder($this->configTree);
         $containerNode = $builder->build();
         $buffer = new Buffer();
@@ -31,11 +42,7 @@ class ContainerCompiler
         $buffer->write('<?php')->eol();
         $containerNode->compile($buffer);
         $buffer->writeln('return $z;');
-
-        file_put_contents($this->file, $buffer->getResult());
-
-        $ret = include $this->file;
-        unlink($this->file);
-        return $ret;
+        $code = $buffer->getResult();
+        return $code;
     }
 }

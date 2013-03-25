@@ -12,6 +12,17 @@ use \Symfony\Component\Config\Definition\Processor;
 
 class ConfigurationLoader
 {
+    public static function fromEnv()
+    {
+        return new self(
+            getenv('ZFILE') ? getenv('ZFILE') : 'z.yml',
+            new PathDefaultFileLocator('ZPATH', array(getcwd(), getenv('HOME') . '/.config/z')),
+            new PathDefaultFileLocator('ZPLUGINPATH', array(ZPREFIX . '/vendor/zicht/z-plugins/', getcwd()))
+        );
+    }
+
+
+
     function __construct($configFilename, FileLocatorInterface $configLocator, FileLocatorInterface $pluginLocator)
     {
         $this->configFilename = $configFilename;
