@@ -1,5 +1,5 @@
 {
-    "hash": "4ab1275e1517e1596a58b72b031e35ec",
+    "hash": "46105db79009c10ce8de96ae57359676",
     "packages": [
         {
             "name": "symfony/config",
@@ -94,6 +94,53 @@
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
             "time": "2013-03-01 06:43:14"
+        },
+        {
+            "name": "symfony/finder",
+            "version": "v2.2.0",
+            "target-dir": "Symfony/Component/Finder",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/Finder.git",
+                "reference": "v2.2.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/Finder/zipball/v2.2.0",
+                "reference": "v2.2.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Finder\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Finder Component",
+            "homepage": "http://symfony.com",
+            "time": "2013-02-28 14:06:36"
         },
         {
             "name": "symfony/process",
@@ -283,7 +330,8 @@
         "symfony/process": 0,
         "symfony/config": 0,
         "symfony/console": 0,
-        "symfony/property-access": 0
+        "symfony/property-access": 0,
+        "symfony/finder": 0
     },
     "platform": {
         "php": ">=5.3.3"

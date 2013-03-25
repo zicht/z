@@ -63,13 +63,15 @@ class Packager
         ;
         $stub->compile($buffer);
 
-        foreach (array('vendor', 'src') as $dir) {
-            foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($dir)) as $file) {
-                if (!$file->isFile()) {
-                    continue;
-                }
-                $phar[$file->getPathname()] = file_get_contents($file->getPathname());
-            }
+        $finder = new \Symfony\Component\Finder\Finder();
+        $files = $finder
+            ->in(array('vendor', 'src'))
+            ->ignoreVCS(true)
+            ->exclude(array('vendor/symfony/finder'))
+            ->files();
+
+        foreach ($files as $file) {
+            $phar[$file->getPathname()] = file_get_contents($file->getPathname());
         }
         $phar['LICENSE'] = file_get_contents('LICENSE');
 
