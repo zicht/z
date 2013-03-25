@@ -3,7 +3,7 @@
  * @author Gerard van Helden <gerard@zicht.nl>
  * @copyright Zicht Online <http://zicht.nl>
  */
-namespace Zicht\Tool\Container;
+namespace Zicht\Tool\Configuration;
 
 use \Symfony\Component\Config\Definition\ConfigurationInterface;
 use \Symfony\Component\Config\Definition\Builder\TreeBuilder;

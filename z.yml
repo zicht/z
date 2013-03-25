@@ -1,3 +1,5 @@
+#plugins: ['core']
+
 tasks:
     docs: cd res/doc && z docs $(z.opts)
 
@@ -11,3 +13,5 @@ tasks:
         - cd res && behat -f progress $(force ? " || true")
 
     coverage: phpunit --coverage-html=./tmp/ && firefox ./tmp/index.html
+
+    build: php bin/package.php --force build z

@@ -24,7 +24,7 @@ class Container
     /**
      * The default shell used for scripts.
      */
-    const SHELL = '/bin/bash';
+    public static $SHELL = '/bin/bash';
 
     protected $plugins = array();
     protected $subscribers = array();
@@ -407,7 +407,7 @@ class Container
             } elseif ($this->resolve(array('interactive'))) {
                 passthru($cmd, $ret);
             } else {
-                $process = new Process(self::SHELL);
+                $process = new Process(self::$SHELL);
                 $process->setStdin($cmd);
                 $process->run(array($this, 'processCallback'));
                 $ret = $process->getExitCode();
@@ -514,5 +514,18 @@ class Container
     public function subscribe($callback)
     {
         $this->subscribers[]= $callback;
+    }
+
+
+
+    public function addCommand(\Symfony\Component\Console\Command\Command $command)
+    {
+        $this->commands[]= $command;
+    }
+
+
+    public function getCommands()
+    {
+        return $this->commands;
     }
 }

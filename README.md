@@ -12,14 +12,14 @@ data:
     vcs:
         url: "svn://url/to/your/vcs"
 
-    env:
+    envs:
         some_remote_env:
             ssh:    "user@remotehost"
             root:   "~/path/to/the/projects/root"
 
 For some tasks and/or configurations you will additionally need a remote database name, relative web root, and url:
 
-    env:
+    envs:
         some_remote_env:
             url:    "http://my-site/"
             ssh:    "user@remotehost"
@@ -34,7 +34,7 @@ The "some_remote_env" would typically be testing, staging and production.
 To prepare for deployment, it's best to issue your SSH key to the remote machine to avoid having to enter passwords
 every time the tool connects to the remote machine. You can accomplish this by running
 
-    z env:ssh:init staging
+    z env:init:ssh staging
 
 An `ssh-copy-id` command will be executed to copy your public key to the remote machine. After this, you enter a
 remote shell by calling
@@ -46,8 +46,8 @@ The shell will be started at the remote machine and you will be in the remote ro
 ## Simulate a deploy
 
 The `simulate` task will execute a build and simulated sync. The version that will be deployed is specified in your
-YML file under vcs.version. By default, this is set at trunk@HEAD. To deploy a different branch, you should specify
-the version in your z.yml file as such:
+YML file under vcs.version. By default, this is set at the current working copy version. To deploy a different branch,
+you should specify the version in your z.yml file as such:
 
     vcs:
         version: branches/maintenance@HEAD

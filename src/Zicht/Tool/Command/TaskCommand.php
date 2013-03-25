@@ -16,6 +16,32 @@ use \Symfony\Component\Console\Output\OutputInterface;
  */
 class TaskCommand extends BaseCommand
 {
+    public function __construct($name, $arguments, $help)
+    {
+        parent::__construct($name);
+
+        foreach ($arguments as $name => $required) {
+            $this->addArgument(
+                $name,
+                $required
+                    ? \Symfony\Component\Console\Input\InputArgument::REQUIRED
+                    : \Symfony\Component\Console\Input\InputArgument::OPTIONAL
+            );
+        }
+        $this->setHelp($help ? $help : '(no help available for this task)');
+        $this->setDescription(preg_replace('/^([^\n]*).*/s', '$1', $help));
+    }
+
+
+    protected function configure()
+    {
+        $this
+            ->addOption('explain', '', InputOption::VALUE_NONE, 'Explains the commands that would be executed.')
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force execution of otherwise skipped tasks.')
+        ;
+    }
+
+
     /**
      * Executes the specified task
      *

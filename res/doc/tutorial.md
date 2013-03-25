@@ -299,7 +299,7 @@ tasks:
         # avoid over-exaggerated hello-saying
         unless: times > 5
         do:
-            - for i in $$(seq 1 $(times)); do echo "Hello!"; done;
+            - for i in {1..$(times)}; do echo "Hello!"; done;
 ```
 
 ```shell

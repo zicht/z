@@ -16,19 +16,5 @@ class Version
     /**
      * Version identifier of the app
      */
-    const VERSION = '1.1-dev';
-
-
-    /**
-     * You can see perfectly well what this does ;)
-     */
-    const Z =<<<EOSTR
-  ______
- /___  /
-    / /
-   / /
-  / /
- / /___
-/_____/
-EOSTR;
+    public static $VERSION = '1.1-dev';
 }

@@ -15,21 +15,6 @@ use \Zicht\Tool\Container\Container;
  */
 class BaseCommand extends Command
 {
-    protected $container;
-
-    /**
-     * Constructor.
-     *
-     * @param \Zicht\Tool\Container\Container $container
-     * @param string $name
-     */
-    public function __construct(Container $container, $name = null)
-    {
-        parent::__construct($name);
-        $this->setContainer($container);
-    }
-
-
     /**
      * Set the container instance
      *

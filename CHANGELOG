@@ -5,7 +5,7 @@
 * Added the ZFILE and ZPLUGINDIR environment variables
 * Reworked the compiler logic to be able to generate a standalone Container instantation. This makes it possible
   to cache the generated code in any near version.
-
+* Added a PHAR builder
 
 1.0-beta8
 ---------

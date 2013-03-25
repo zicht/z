@@ -27,21 +27,4 @@ class ContainerNode extends Branch
             $node->compile($buffer);
         }
     }
-
-
-    /**
-     * Returns all tasks specified in the container.
-     *
-     * @return array
-     */
-    public function getTasks()
-    {
-        $ret = array();
-        foreach ($this->nodes as $node) {
-            if ($node instanceof Task) {
-                $ret[]= $node;
-            }
-        }
-        return $ret;
-    }
 }

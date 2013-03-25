@@ -4,7 +4,7 @@
  * @copyright Zicht Online <http://zicht.nl>
  */
 
-namespace Zicht\Tool;
+namespace Zicht\Tool\Configuration;
 
 use \Symfony\Component\Config\Loader\FileLoader as BaseFileLoader;
 use \Symfony\Component\Yaml\Yaml;
