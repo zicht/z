@@ -91,15 +91,24 @@ class Task extends Declaration
         $buffer->writeln('try {')->indent(1);
         $hasUnless = false;
         foreach (array('pre', 'do', 'post') as $scope) {
-            if ($scope === 'do' && !empty($this->taskDef['unless'])) {
-                $buffer->write('if (!$z->resolve(array(\'force\')) && (');
-                $this->taskDef['unless']->compile($buffer);
-                $buffer->raw(')) {')->eol()->indent(1);
+            if ($scope === 'do') {
+                if (!empty($this->taskDef['unless'])) {
+                    $buffer->write('if (!$z->resolve(array(\'force\')) && (');
+                    $this->taskDef['unless']->compile($buffer);
+                    $buffer->raw(')) {')->eol()->indent(1);
 
-                $echoStr = sprintf('echo "%s skipped"', join('.', $this->path));
-                $buffer->writeln(sprintf('$z->cmd(%s);', Util::toPhp($echoStr)));
-                $buffer->indent(-1)->writeln('} else {')->indent(1);
-                $hasUnless = true;
+                    $echoStr = sprintf('echo "%s skipped"', join('.', $this->path));
+                    $buffer->writeln(sprintf('$z->cmd(%s);', Util::toPhp($echoStr)));
+                    $buffer->indent(-1)->writeln('} else {')->indent(1);
+                    $hasUnless = true;
+                }
+                if (!empty($this->taskDef['assert'])) {
+                    $buffer->write('if (');
+                    $this->taskDef['assert']->compile($buffer);
+                    $buffer->raw(') {')->eol()->indent(1);
+                    $buffer->writeln('throw new \RuntimeException("Assertion failed");');
+                    $buffer->indent(-1)->writeln('}');
+                }
             }
             foreach ($this->taskDef[$scope] as $cmd) {
                 $cmd->compile($buffer);
