@@ -40,8 +40,7 @@ class FileLoader extends BaseFileLoader
     public function load($resource, $type = null)
     {
         $config = Yaml::parse($resource);
-        var_dump($resource);
-        var_dump($config);
+
         if (isset($config['plugins'])) {
             $this->processPlugins($config['plugins'], dirname($resource));
             unset($config['plugins']);
