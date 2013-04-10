@@ -8,7 +8,7 @@
 namespace ZichtTest\Tool\Container;
 
 /**
- * @covers \Zicht\Tool\Container\Configuration
+ * @covers \Zicht\Tool\Configuration\Configuration
  */
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,7 +18,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     function testValidConfigurations($input, $expectedOutput)
     {
         $processor = new \Symfony\Component\Config\Definition\Processor();
-        $config = new \Zicht\Tool\Container\Configuration(array());
+        $config = new \Zicht\Tool\Configuration\Configuration(array());
         $result = $processor->process($config->getConfigTreeBuilder()->buildTree(), array($input));
         $this->assertEquals($result, $expectedOutput);
     }
@@ -43,7 +43,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             ->getMock()
         ;
 
-        $config = new \Zicht\Tool\Container\Configuration(array($plugin));
+        $config = new \Zicht\Tool\Configuration\Configuration(array($plugin));
         $self = $this;
         $plugin->expects($this->once())->method('appendConfiguration')->will($this->returnCallback(function($o) use($self) {
             $self->assertInstanceOf('Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition', $o);
