@@ -71,6 +71,38 @@ EOSTR;
         return parent::run($input, $output);
     }
 
+    /**
+     * @param \Exception $e
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     */
+    public function renderException($e, $output)
+    {
+        if ($output->getVerbosity() == OutputInterface::VERBOSITY_NORMAL) {
+            /** @var $ancestry \Exception[] */
+            $ancestry = array();
+            $maxLength = 0;
+            do {
+                $ancestry[] = $e;
+                $maxLength = max($maxLength, strlen(get_class($e)));
+            } while ($e = $e->getPrevious());
+
+            $depth = 0;
+            foreach ($ancestry as $e) {
+                $output->writeln(
+                    sprintf(
+                        '%s %s%s',
+                        str_pad('<error>' . get_class($e) . '</error>', $maxLength + 15, ' '),
+                        ($depth > 0 ? str_repeat('   ', $depth - 1) . '-> ' : ''),
+                        $e->getMessage()
+                    )
+                );
+                $depth ++;
+            }
+        } else {
+            parent::renderException($e, $output);
+        }
+    }
+
 
     public function setContainer(Container $container)
     {

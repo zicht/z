@@ -94,16 +94,22 @@ class Container
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public function lookup($context, $path)
+    public function lookup($context, $path, $require = false)
     {
         if (empty($path)) {
             throw new \InvalidArgumentException("Passed lookup path is empty.");
         }
         try {
-            return PropertyAccess::getPropertyAccessor()->getValue(
+            $ret = PropertyAccess::getPropertyAccessor()->getValue(
                 $context,
                 new Context\ArrayPropertyPath($this->path($path))
             );
+
+            if ($require && !isset($ret)) {
+                throw new \RuntimeException("Error resolving " . join(".", $path));
+            }
+
+            return $ret;
         } catch (\Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException $e) {
             throw new \RuntimeException("Error resolving " . join(".", $path), 0, $e);
         } catch (\Symfony\Component\PropertyAccess\Exception\OutOfBoundsException $e) {
