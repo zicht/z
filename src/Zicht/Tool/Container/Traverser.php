@@ -143,7 +143,10 @@ class Traverser
                 try {
                     $value = call_user_func($visitor[2], $path, $value);
                 } catch (\Exception $e) {
-                    throw new \RuntimeException("Exception while visiting value {$value}", 0, $e);
+                    if ($path) {
+                        $path = join('.', $path);
+                    }
+                    throw new \RuntimeException("Exception while visiting value '{$value}' at path {$path}", 0, $e);
                 }
             }
         }
