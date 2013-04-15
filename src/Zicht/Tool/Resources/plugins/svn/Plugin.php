@@ -68,7 +68,7 @@ class Plugin extends BasePlugin
             if (is_file($revFile = ($dir . '/' . $container->resolve('vcs.export.revfile')))) {
                 $info = file_get_contents($revFile);
             } elseif (is_dir($dir)) {
-                $info = @shell_exec('svn info ' . $dir . ' 2>&1');
+                $info = @shell_exec('svn info ' . escapeshellarg($dir) . ' 2>&1');
             } else {
                 return null;
             }
