@@ -37,10 +37,11 @@ class ConsoleOutput extends BaseOutput
         $messages = (array)$messages;
 
         foreach ($messages as $message) {
+            $message = preg_replace('/\r(.*)/', "\r" . $this->prefix . '$1', $message);
+            $message = preg_replace('/\n(.*)/', "\n" . $this->prefix . '$1', $message);
             if ($newline) {
                 $message .= PHP_EOL;
             }
-            $message = preg_replace('/.*\n/', $this->prefix . '$0', $message);
 
             switch ($type) {
                 case self::OUTPUT_NORMAL:
