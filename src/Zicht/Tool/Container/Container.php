@@ -61,6 +61,9 @@ class Container
 
 
         $this->fn('sprintf');
+        $this->fn('is_file');
+        $this->fn('is_dir');
+        $this->fn('filemtime');
         $this->fn(
             'cat',
             function() {
@@ -105,7 +108,7 @@ class Container
                 new Context\ArrayPropertyPath($this->path($path))
             );
 
-            if ($require && !isset($ret)) {
+            if ($require && null === $ret) {
                 throw new \RuntimeException("Error resolving " . join(".", $path));
             }
 
@@ -126,7 +129,7 @@ class Container
      * @throws \RuntimeException
      * @throws \UnexpectedValueException
      */
-    public function resolve($id)
+    public function resolve($id, $required = false)
     {
         if (is_string($id)) {
             if (strpos($id, '.') !== false) {
@@ -152,7 +155,7 @@ class Container
             if (!is_array($id)) {
                 $id = array($id);
             }
-            $ret = $this->lookup($this->values, $id);
+            $ret = $this->lookup($this->values, $id, $required);
 
             if ($ret instanceof \Closure) {
                 $this->set($id, $ret = call_user_func($ret, $this));
@@ -453,7 +456,7 @@ class Container
     {
         $cmd = ltrim($cmd);
         if (substr($cmd, 0, 1) === '@') {
-            return $this->resolve(array_merge(array('tasks'), explode('.', substr($cmd, 1))));
+            return $this->resolve(array_merge(array('tasks'), explode('.', substr($cmd, 1))), true);
         }
         return $this->exec($cmd);
     }
