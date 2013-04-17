@@ -27,7 +27,7 @@ class Plugin extends BasePlugin
                     ->append($this->getBaseConfigNode('phpcs', function ($node) {
                         $node->children()->scalarNode('standard')->end()->end();
                     }))
-                    ->append($this->getBaseConfigNode('phpcd'))
+                    ->append($this->getBaseConfigNode('phpcpd'))
                     ->append($this->getBaseConfigNode('phploc'))
                     ->append($this->getBaseConfigNode('phpcb'))
                     ->append($this->getBaseConfigNode('phpunit', function($node){

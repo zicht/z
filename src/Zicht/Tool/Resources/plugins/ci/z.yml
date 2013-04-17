@@ -9,7 +9,7 @@ ci:
     phpcs:
         enabled:  true
         standard: Zicht
-    phpcd:      true
+    phpcpd:     true
     phpdox:
         enabled:    true
         file:       ""
@@ -68,10 +68,10 @@ tasks:
                 --standard=$(ci.phpcs.standard) src > /dev/null \
                 || true                                             # makes sure the exit code is 0
 
-    ci.phpcd:
-        unless: !ci.phpcd.enabled
+    ci.phpcpd:
+        unless: !ci.phpcpd.enabled
         help:   "Runs php copy detector tool"
-        do:     phpcd --log-pmd build/logs/pmd-cpd.xml src
+        do:     phpcpd --log-pmd build/logs/pmd-cpd.xml src
 
     ci.phpdox:
         unless: !ci.phpdox.enabled
