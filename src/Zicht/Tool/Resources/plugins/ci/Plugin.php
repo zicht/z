@@ -54,7 +54,7 @@ class Plugin extends BasePlugin
 
     public function setContainer(Container $container)
     {
-        $container->fn(array('ci', 'resource'), function($path) use($container) {
+        $container->fn('ci.resource', function($path) use($container) {
             return __DIR__ . '/' . $path;
         });
     }
