@@ -48,6 +48,10 @@ class Container
 
         $this->subscribe(array($this, 'prefixListener'));
 
+        $this->fn('is_file');
+        $this->fn('is_dir');
+        $this->fn('filemtime');
+
         if (!$this->has('explain')) {
             $this->set('explain', false);
         }
