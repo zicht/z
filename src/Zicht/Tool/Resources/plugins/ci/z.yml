@@ -22,7 +22,7 @@ tasks:
     ci.build:
         help:   "Does a build for continuous integration"
         pre:    [ @ci.prepare, @ci.skel ]
-        do:     [ @ci.lint, @ci.pdepend, @ci.phpmd, @ci.phpcs, @ci.phploc, @ci.phpdox, @ci.phpunit, @ci.phpcb ]
+        do:     [ @ci.lint, @ci.pdepend, @ci.phpmd, @ci.phpcs, @ci.phploc, @ci.phpcpd, @ci.phpdox, @ci.phpunit, @ci.phpcb ]
 
     ci.clean:
         help:   "Clean up the build dirs"
