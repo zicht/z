@@ -1,9 +1,14 @@
+# This file is more or less a copy of Sebastian Bergmann's build.xml on http://jenkins-php.org/
+# Credits go where credit's due.
+
 ci:
     lint:       true
     phploc:     true
     pdepend:    true
     phpmd:      true
-    phpcs:      true
+    phpcs:
+        enabled:  true
+        standard: Zicht
     phpcd:      true
     phpdox:
         enabled:    true
@@ -16,7 +21,7 @@ ci:
 tasks:
     ci.build:
         help:   "Does a build for continuous integration"
-        pre:    [ @ci.prepare ]
+        pre:    [ @ci.prepare, @ci.skel ]
         do:     [ @ci.lint, @ci.pdepend, @ci.phpmd, @ci.phpcs, @ci.phploc, @ci.phpdox, @ci.phpunit, @ci.phpcb ]
 
     ci.clean:
@@ -60,7 +65,7 @@ tasks:
             phpcs \
                 --report=checkstyle \
                 --report-file=build/logs/checkstyle.xml \
-                --standard=Zicht src > /dev/null \
+                --standard=$(ci.phpcs.standard) src > /dev/null \
                 || true                                             # makes sure the exit code is 0
 
     ci.phpcd:
@@ -82,3 +87,19 @@ tasks:
         unless: !ci.phpunit.enabled
         help:   "Runs the pdepend code metrics tool"
         do:     phpunit $(ci.phpunit.opts ? ci.phpunit.opts)
+
+    ci.skel:
+        help:   "Initialize sane skeleton files for all of the CI tasks"
+        do:     [ @_ci.init.phpmd, @_ci.init.phpunit, @_ci.init.phpdox ]
+
+    _ci.init.phpmd:
+        unless: !ci.phpmd.enabled || is_file("phpmd.xml")
+        do:     cp $(ci.resource("skel/phpmd.xml")) phpmd.xml
+
+    _ci.init.phpunit:
+        unless: !ci.phpunit.enabled || is_file("phpunit.xml.dist")
+        do:     cp $(ci.resource("skel/phpunit.xml.dist")) phpunit.xml.dist
+
+    _ci.init.phpdox:
+        unless: !ci.phpdox.enabled || is_file("phpdox.xml.dist")
+        do:     cp $(ci.resource("skel/phpdox.xml.dist")) phpdox.xml.dist

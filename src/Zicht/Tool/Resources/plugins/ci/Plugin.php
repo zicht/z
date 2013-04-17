@@ -24,7 +24,9 @@ class Plugin extends BasePlugin
                     }))
                     ->append($this->getBaseConfigNode('pdepend'))
                     ->append($this->getBaseConfigNode('phpmd'))
-                    ->append($this->getBaseConfigNode('phpcs'))
+                    ->append($this->getBaseConfigNode('phpcs', function ($node) {
+                        $node->children()->scalarNode('standard')->end()->end();
+                    }))
                     ->append($this->getBaseConfigNode('phpcd'))
                     ->append($this->getBaseConfigNode('phploc'))
                     ->append($this->getBaseConfigNode('phpcb'))
@@ -48,6 +50,15 @@ class Plugin extends BasePlugin
             ->end()
         ;
     }
+
+
+    public function setContainer(Container $container)
+    {
+        $container->fn(array('ci', 'resource'), function($path) use($container) {
+            return __DIR__ . '/' . $path;
+        });
+    }
+
 
     function getBaseConfigNode($name, $callable = null)
     {
