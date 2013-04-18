@@ -71,7 +71,7 @@ tasks:
     ci.phpcpd:
         unless: !ci.phpcpd.enabled
         help:   "Runs php copy detector tool"
-        do:     phpcpd --log-pmd build/logs/pmd-cpd.xml src
+        do:     phpcpd --log-pmd build/logs/pmd-cpd.xml src || true
 
     ci.phpdox:
         unless: !ci.phpdox.enabled
