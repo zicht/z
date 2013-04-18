@@ -1,4 +1,4 @@
-plugins: ['core', 'svn', 'env']
+plugins: ['core', 'svn', 'env', 'ci']
 
 tasks:
     docs: cd res/doc && z docs $(z.opts)
@@ -15,3 +15,6 @@ tasks:
     coverage: phpunit --coverage-html=./tmp/ && firefox ./tmp/index.html
 
     build: php bin/package.php --force build z
+
+    ci.build:
+        post: cd res && behat
