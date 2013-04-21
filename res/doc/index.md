@@ -1,13 +1,16 @@
 % Z
 
+## Introduction ##
+
+Z is a build and deployment management tool, originally designed for PHP-based projects. It utilizes a simple declarative DSL, 
+based on YML, to define tasks and configuration. The configuration can be used (and validated) by plugins, that provide their 
+own set of tasks and / or language extensions.
+
 * [FAQ](FAQ.html)
 * [tutorial](tutorial.html)
 * [roadmap](roadmap.html)
-
-Z is a build and deployment management tool, originally designed for PHP-based projects.
-
-It utilizes a simple declarative DSL, based on YML, to define tasks and configuration. The configuration can be used
-(and validated) by plugins, that provide their own set of tasks and / or language extensions.
+* [The Z App Builder](app-builder.html)
+* [Reference](reference.html)
 
 ## Task definition ##
 
