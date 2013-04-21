@@ -103,9 +103,9 @@ class Task extends Declaration
                     $hasUnless = true;
                 }
                 if (!empty($this->taskDef['assert'])) {
-                    $buffer->write('if (');
+                    $buffer->write('if (!(');
                     $this->taskDef['assert']->compile($buffer);
-                    $buffer->raw(') {')->eol()->indent(1);
+                    $buffer->raw(')) {')->eol()->indent(1);
                     $buffer->writeln('throw new \RuntimeException("Assertion failed");');
                     $buffer->indent(-1)->writeln('}');
                 }
