@@ -12,6 +12,9 @@ because of it's ultimately simple YML-based configuration syntax. It depends on 
 components and a shell, and they are all at both our disposal. Furthermore, if you ever used bash, you can use Z, you
 don't need knowledge of much of the Z syntax or architecture to get started real quick.
 
+# Why not Capistrano, Capifony, Vagrant, Puppet, etc? #
+See above.
+
 # Why is it called Z? #
 We use Z for build, release and integration management at the company where it was originally developed:
 [Zicht online](http://zicht.nl). Z was developed by [Gerard van Helden](http://melp.nl), lead developer at Zicht online.

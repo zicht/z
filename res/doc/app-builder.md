@@ -23,7 +23,7 @@ package.php comes with a variety of options to control the build output:
   + `--static`: Create a static build of Z, i.e., it is entirely self contained and will include the compiled code. You
     must provide the config file you want to include in the build. Plugins will be resolved automatically and added to
     the build as well. When using such build, it is no longer possible to modify your z config afterwards, so the
-    application of this is entirely different from using Z files in your projects for example.
+    application of this is entirely separated from using Z files in your projects for example.
 
 # When you would use a static build #
 

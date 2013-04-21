@@ -22,7 +22,12 @@ class ConfigurationLoader
         return new self(
             getenv('ZFILE') ? getenv('ZFILE') : $configFilename,
             new PathDefaultFileLocator('ZPATH', array(getcwd(), getenv('HOME') . '/.config/z')),
-            new FileLoader(PathDefaultFileLocator('ZPLUGINPATH', array(ZPREFIX . '/vendor/zicht/z-plugins/', getcwd())))
+            new FileLoader(
+                new PathDefaultFileLocator(
+                    'ZPLUGINPATH',
+                    array(ZPREFIX . '/vendor/zicht/z-plugins/', getcwd())
+                )
+            )
         );
     }
 

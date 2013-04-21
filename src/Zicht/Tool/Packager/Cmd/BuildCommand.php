@@ -8,10 +8,11 @@
 
 namespace Zicht\Tool\Packager\Cmd;
 
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\Console\Input\InputInterface;
+use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Console\Input\InputOption;
 use \Symfony\Component\Console\Input\InputArgument;
+use \Zicht\Tool\Packager\Packager;
 
 class BuildCommand extends \Symfony\Component\Console\Command\Command
 {
@@ -34,10 +35,7 @@ class BuildCommand extends \Symfony\Component\Console\Command\Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $packager = new \Zicht\Tool\Packager\Packager(
-            __DIR__ . '/../../../../../',
-            array_filter($input->getOptions())
-        );
+        $packager = new Packager(__DIR__ . '/../../../../../', array_filter($input->getOptions()));
         $packager->package($input->getArgument('file'), $input->getOption('force'));
     }
 }
