@@ -1,1 +1,1 @@
-Read the docs in [res/docs/]
+Read the docs in [res/docs/](res/docs/)
