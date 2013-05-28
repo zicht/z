@@ -12,7 +12,7 @@ define('ZPREFIX', __DIR__ . '/../');
 
 $app = new Zicht\Tool\Application(
     'The Zicht Tool',
-    '1.2-dev',
+    '1.1-dev',
     Zicht\Tool\Configuration\ConfigurationLoader::fromEnv()
 );
 
