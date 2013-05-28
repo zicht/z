@@ -58,11 +58,15 @@ class Container
                 return join(' ', $opts);
             }
         );
-
+        $this->set(
+            array('z', 'cmd'),
+            $_SERVER['argv'][0]
+        );
 
         $this->fn('sprintf');
         $this->fn('is_file');
         $this->fn('is_dir');
+        $this->fn('keys', 'array_keys');
         $this->fn('filemtime');
         $this->fn(
             'cat',
@@ -468,10 +472,23 @@ class Container
      * @param string $value
      * @return string
      *
+     * @deprecated
      * @throws \UnexpectedValueException
      */
     public function value($value)
     {
+        if ($value instanceof \Closure) {
+            $value = call_user_func($value, $this);
+        }
+        return $value;
+    }
+
+
+    public function str($value)
+    {
+//        if ($value instanceof \Closure) {
+//            $value = call_user_func($value, $this);
+//        }
         if (is_array($value)) {
             $allScalar = function ($a, $b) {
                 return is_scalar($a) && $b;
@@ -480,9 +497,6 @@ class Container
                 throw new UnexpectedValueException("Unexpected complex type " . Util::toPhp($value));
             }
             return join(' ', $value);
-        }
-        if ($value instanceof \Closure) {
-            $value = call_user_func($value, $this);
         }
         return (string)$value;
     }

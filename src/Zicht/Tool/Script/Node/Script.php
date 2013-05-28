@@ -41,7 +41,9 @@ class Script extends Branch
                 if ($i > 0) {
                     $buffer->raw(' . ');
                 }
+                $buffer->write('$z->str(');
                 $node->compile($buffer);
+                $buffer->write(')');
             }
             $buffer->raw(');')->eol();
 
