@@ -122,7 +122,7 @@ class Task extends Declaration
             $this->taskDef['yield']->compile($buffer);
             $buffer->write(';');
         } else {
-            $buffer->writeln('$ret = null;');
+            $buffer->writeln('$ret = true;');
         }
         $buffer->indent(-1)->writeln('} catch (\Exception $e) {')->indent(1);
         $buffer->writeln(sprintf('throw new \RuntimeException("While executing task %s", 0, $e);', $taskName));
