@@ -76,7 +76,7 @@ class FeatureContext extends BehatContext
     {
         $res = preg_match($pattern, $this->response);
         if ((bool)$res == (bool)$negate) {
-            throw new UnexpectedValueException("Pattern {$pattern} was not found in program response {$this->response}");
+            throw new UnexpectedValueException("Pattern {$pattern} was not found in program response:\n{$this->response}");
         }
     }
 }
