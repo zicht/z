@@ -57,8 +57,8 @@ tasks:
 > *Note that the notation for the string "Hello" is a bit awkward, because YML would interpret the double quotes as
 a regular string, and Z would never know that you put quotes there. Fortunately, this use case isn't that common.*
 
-This is not very helpful, because we would still have the hard coded "Hello" value in our code, even though executing would do the
-same as our first example:
+This is not very helpful, because we would still have the hard coded "Hello" value in our code, even though executing
+would do the same as our first example:
 
 ```shell
 z say

@@ -6,7 +6,10 @@
 
 namespace Zicht\Tool\Container;
 
+use \Symfony\Component\Console\Command\Command;
 use \Symfony\Component\Process\Process;
+use \Symfony\Component\PropertyAccess\Exception\OutOfBoundsException;
+use \Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use \Symfony\Component\PropertyAccess\PropertyAccess;
 use \Zicht\Tool\Script;
 use \Zicht\Tool\PluginInterface;
@@ -25,9 +28,11 @@ class Container
      * The default shell used for scripts.
      */
     public static $SHELL = '/bin/bash';
+    public static $TIMEOUT = 300;
 
     protected $plugins = array();
     protected $subscribers = array();
+    protected $commands = array();
     protected $values = array();
     protected $prefix = array();
 
@@ -96,6 +101,7 @@ class Container
      *
      * @param array $context
      * @param array $path
+     * @param bool $require
      * @return mixed
      *
      * @throws \RuntimeException
@@ -117,9 +123,9 @@ class Container
             }
 
             return $ret;
-        } catch (\Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException $e) {
+        } catch (UnexpectedTypeException $e) {
             throw new \RuntimeException("Error resolving " . join(".", $path), 0, $e);
-        } catch (\Symfony\Component\PropertyAccess\Exception\OutOfBoundsException $e) {
+        } catch (OutOfBoundsException $e) {
             throw new \RuntimeException("Error resolving " . join(".", $path), 0, $e);
         }
     }
@@ -128,6 +134,7 @@ class Container
      * Resolve the specified path. If the resulting value is a Closure, it's assumed a declaration.
      *
      * @param array $id
+     * @param bool $required
      * @return mixed
      *
      * @throws \RuntimeException
@@ -420,7 +427,7 @@ class Container
             } elseif ($this->resolve(array('interactive'))) {
                 passthru($cmd, $ret);
             } else {
-                $process = new Process(self::$SHELL);
+                $process = $this->createProcess();
                 $process->setStdin($cmd);
                 $process->run(array($this, 'processCallback'));
                 $ret = $process->getExitCode();
@@ -431,6 +438,27 @@ class Container
         }
 
         return $ret;
+    }
+
+    /**
+     * Creates a process for shell execution
+     *
+     * @param string $shell
+     * @param string $timeout
+     * @return \Symfony\Component\Process\Process
+     */
+    protected function createProcess($shell = null, $timeout = null)
+    {
+        if (null === $shell) {
+            $shell = self::$SHELL;
+        }
+        if (null === $timeout) {
+            $timeout = self::$TIMEOUT;
+        }
+
+        $process = new Process($shell);
+        $process->setTimeout($timeout);
+        return $process;
     }
 
 
@@ -484,11 +512,15 @@ class Container
     }
 
 
+    /**
+     * Convert the value to a string.
+     *
+     * @param mixed $value
+     * @return string
+     * @throws \UnexpectedValueException
+     */
     public function str($value)
     {
-//        if ($value instanceof \Closure) {
-//            $value = call_user_func($value, $this);
-//        }
         if (is_array($value)) {
             $allScalar = function ($a, $b) {
                 return is_scalar($a) && $b;
@@ -540,13 +572,23 @@ class Container
     }
 
 
-
-    public function addCommand(\Symfony\Component\Console\Command\Command $command)
+    /**
+     * Register a command
+     *
+     * @param \Symfony\Component\Console\Command\Command $command
+     * @return void
+     */
+    public function addCommand(Command $command)
     {
         $this->commands[]= $command;
     }
 
 
+    /**
+     * Returns the registered commands
+     *
+     * @return mixed
+     */
     public function getCommands()
     {
         return $this->commands;
