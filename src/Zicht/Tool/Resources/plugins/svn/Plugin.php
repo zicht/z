@@ -108,6 +108,8 @@ class Plugin extends BasePlugin
                     )
                 );
             }
+
+            return $ret;
         });
     }
 }
