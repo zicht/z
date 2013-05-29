@@ -59,7 +59,6 @@ class Plugin extends BasePlugin
                     $err .= "Maybe you need to relocate your working copy?";
                     throw new \UnexpectedValueException($err);
                 }
-
                 return ltrim(substr($url, strlen($projectUrl)), '/') . '@' . $rev;
             }
             return null;
@@ -74,8 +73,41 @@ class Plugin extends BasePlugin
             }
             return $container->call('vcs.versionid', $info);
         });
+        $container->fn(
+            'svn.wc.lastchange',
+            function ($dir) {
+                $data = shell_exec('svn status -v ' . escapeshellarg($dir) . ' --xml');
+
+                $status = new \SimpleXMLElement($data);
+
+                $max = 0;
+                foreach ($status->target->entry as $entry) {
+                    $rev = (int)(string)$entry->{'wc-status'}['revision'];
+                    if ($rev > $max) {
+                        $file = ltrim(str_replace(realpath($dir), '', realpath($entry['path'])), '/');
+                        $max = $rev;
+                    }
+                }
+
+                return array($max, $file);
+            }
+        );
+
         $container->decl('vcs.current', function($container) {
-            return $container->call('versionof', $container->resolve('cwd'));
+            $ret = $container->call('versionof', $container->resolve('cwd'));
+
+            list($lastRev, $file) = $container->call('svn.wc.lastchange', $container->resolve('cwd'));
+            list(,$rev) = explode('@', $ret);
+            if ($lastRev > $rev) {
+                $container->output->writeln(
+                    sprintf(
+                        "<comment>Warning: Mixed revision working copy.</comment>\n"
+                        . "The last revision number is <info>@{$lastRev}</info>\n"
+                        . "Your working copy root is   <info>@{$rev}</info>.\n"
+                        . "You should consider updating your working copy.\n"
+                    )
+                );
+            }
         });
     }
 }
