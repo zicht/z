@@ -1,0 +1,17 @@
+tasks:
+    # Synchronize the build dir to the remote environment
+    _sync: |
+        lftp \
+              -u $(ftp.username),$(ftp.password) \
+              -e "mirror --no-perms --verbose --reverse --only-newer $(sync.exclude_file ? sync.exludes) $(tasks.build) $(env.root)" \
+              $(ftp.domain) \
+        ;
+
+    # Synchronize the build dir to the remote environment
+    _sync.simulate: |
+        lftp \
+             -u $(ftp.username),$(ftp.password) \
+             -e "mirror  --no-perms --dry-run --reverse --only-newer $(sync.exclude_file ? sync.exludes) $(tasks.build) $(env.root)" \
+             $(ftp.domain) \
+        ;
+

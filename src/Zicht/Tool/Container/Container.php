@@ -11,6 +11,7 @@ use \Zicht\Tool\PluginInterface;
 use \UnexpectedValueException;
 use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Process\Process;
+use Zicht\Tool\Script\Compiler as ScriptCompiler;
 
 /**
  * Service container
@@ -63,6 +64,7 @@ class Container
         }
         $this->set('interactive', false);
 
+        // gather the options for nested z calls.
         $opts = array();
         foreach (array('force', 'verbose', 'explain') as $opt) {
             if ($this->values[$opt]) {
@@ -133,6 +135,20 @@ class Container
     }
 
 
+    public function evaluate($script)
+    {
+        $exprcompiler  = new ScriptCompiler(
+            new \Zicht\Tool\Script\Parser\Expression(),
+            new \Zicht\Tool\Script\Tokenizer\Expression()
+        );
+
+        $z = $this;
+        $_value = null;
+        eval('$_value = ' . $exprcompiler->compile($script) . ';');
+        return $_value;
+    }
+
+
     public function has($id)
     {
         return !empty($this->values[$id]);
@@ -193,6 +209,8 @@ class Container
                 }
                 $prefix = str_pad($prefix, 21, ' ', STR_PAD_LEFT);
                 $this->output->setPrefix('<info>[' . $prefix . ']</info> ');
+            } else {
+                $this->output->setPrefix('');
             }
         }
     }
@@ -244,6 +262,7 @@ class Container
      */
     public function cmd($cmd)
     {
+        $cmd = ltrim($cmd);
         if (substr($cmd, 0, 1) === '@') {
             return $this->resolve('tasks.' . substr($cmd, 1));
         }

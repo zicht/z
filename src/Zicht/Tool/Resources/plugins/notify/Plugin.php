@@ -47,7 +47,7 @@ class Plugin extends BasePlugin
                 $notifyConfig = $container->config['notify'][$task][$event];
                 $post = array();
                 foreach ($notifyConfig['post'] as $key => $value) {
-                    $post[$key] = $container->resolve($value);
+                    $post[$key] = $container->evaluate($value);
                 }
                 $container->cmd('curl -d\'' . json_encode($post) . '\' \'' . $notifyConfig['url'] . '\'');
             }

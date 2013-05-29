@@ -14,5 +14,5 @@ class Version
     /**
      * Version identifier of the app
      */
-    const VERSION = 'development';
+    const VERSION = '1.0.1';
 }

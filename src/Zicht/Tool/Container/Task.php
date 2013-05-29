@@ -43,13 +43,15 @@ class Task
     public function compile(Buffer $buffer)
     {
         $scriptcompiler = new ScriptCompiler(new \Zicht\Tool\Script\Parser());
-        $exprcompiler  = new ScriptCompiler(new \Zicht\Tool\Script\Parser\Expression(), new \Zicht\Tool\Script\Tokenizer\Expression());
+        $exprcompiler  = new ScriptCompiler(
+            new \Zicht\Tool\Script\Parser\Expression(),
+            new \Zicht\Tool\Script\Tokenizer\Expression()
+        );
 
         $taskName = var_export($this->name, true);
 
         $buffer
             ->indent(1)->writeln('function($z) {')
-            ->writeln(sprintf('$z->notify(%s, "start");', $taskName))
         ;
 
         foreach ($this->taskDef['set'] as $name => $value) {
@@ -82,6 +84,7 @@ class Task
                 );
             }
         }
+        $buffer->writeln(sprintf('$z->notify(%s, "start");', $taskName));
 
         $hasUnless = false;
         foreach (array('pre', 'do', 'post') as $scope) {
