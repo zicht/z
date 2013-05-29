@@ -29,6 +29,7 @@ class FeatureContext extends BehatContext
     public function __construct(array $parameters)
     {
         $this->testDir = __DIR__ . '/../tmp';
+        $this->zBinary = __DIR__ . '/../../../bin/z';
     }
 
 
@@ -60,11 +61,11 @@ class FeatureContext extends BehatContext
 
 
     /**
-     * @When /^I run "([^"]*)"$/
+     * @When /^I run "z ([^"]*)"$/
      */
     public function iRun($cmd)
     {
-        $this->response = shell_exec($cmd . ' 2>&1');
+        $this->response = shell_exec($this->zBinary . ' ' . $cmd . ' 2>&1');
     }
 
 

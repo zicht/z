@@ -42,6 +42,10 @@ I need to be able to add tasks, functions and declarations in a Plugin
                 $container->fn('hello2', function() {
                     return 'Foo baz!';
                 });
+                $container->decl('resolve_me_once', function() {
+                    static $i = 0;
+                    return (string) $i;
+                });
             }
         }
 
