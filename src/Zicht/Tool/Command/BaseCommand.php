@@ -51,8 +51,17 @@ class BaseCommand extends Command
     {
         parent::initialize($input, $output);
 
+        $env = null;
         if ($input->hasArgument('env') && $input->getArgument('env')) {
-            $this->container->select('env', $input->getArgument('env'));
+            $env = $input->getArgument('env');
+        } elseif ($input->hasArgument('target_env') && $input->getArgument('target_env')) {
+            $env = $input->hasArgument('target_env');
+        }
+
+        if ($env) {
+            $this->container->select('env', $env);
+            // forward compatibility with 1.1+
+            $this->container->set('target_env', $env);
         }
     }
 }
