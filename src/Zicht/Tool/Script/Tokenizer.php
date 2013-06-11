@@ -47,7 +47,7 @@ class Tokenizer implements TokenizerInterface
                     $ret[]= new Token(Token::EXPR_START, $m[0]);
                     $depth ++;
                 } else {
-                    $token =& end($ret);
+                    $token = end($ret);
 
                     if (preg_match('/^\$\$\(/', $substr, $m)) {
                         $value = substr($m[0], 1);
