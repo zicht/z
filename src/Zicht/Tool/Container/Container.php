@@ -232,6 +232,7 @@ class Container
                 passthru($cmd, $ret);
             } else {
                 $process = new Process(self::SHELL);
+                $process->setTimeout(null);
                 $process->setStdin($cmd);
                 $process->run(array($this, 'processCallback'));
                 $ret = $process->getExitCode();
