@@ -8,10 +8,25 @@
 
 namespace Zicht\Tool\Packager\Node;
 
-use Zicht\Tool\Script\Buffer;
+use \Symfony\Component\Config\FileLocator;
+use \Zicht\Tool\Configuration\ConfigurationLoader;
+use \Zicht\Tool\Container\ContainerCompiler;
+use \Zicht\Tool\Script\Buffer;
 
+/**
+ * PHAR Stub implementation for a static build
+ */
 class StaticStub extends Stub
 {
+    /**
+     * Construct the stub with the specified details
+     *
+     * @param \Phar $phar
+     * @param string $appName
+     * @param string $appVersion
+     * @param array $staticConfig
+     * @param array $staticPluginPaths
+     */
     public function __construct(\Phar $phar, $appName, $appVersion, $staticConfig, $staticPluginPaths)
     {
         parent::__construct($phar, $appName, $appVersion);
@@ -21,15 +36,21 @@ class StaticStub extends Stub
     }
 
 
-    function compileInitialization(Buffer $buffer)
+    /**
+     * Writes the initialization code for a static build of Z.
+     *
+     * @param \Zicht\Tool\Script\Buffer $buffer
+     * @return mixed|void
+     */
+    protected function compileInitialization(Buffer $buffer)
     {
-        $configurationLoader = new \Zicht\Tool\Configuration\ConfigurationLoader(
+        $configurationLoader = new ConfigurationLoader(
             $this->staticConfig,
-            new \Symfony\Component\Config\FileLocator(array(getcwd())),
-            new \Symfony\Component\Config\FileLocator($this->staticPluginPaths)
+            new FileLocator(array(getcwd())),
+            new FileLocator($this->staticPluginPaths)
         );
 
-        $compiler = new \Zicht\Tool\Container\ContainerCompiler($configurationLoader->processConfiguration());
+        $compiler = new ContainerCompiler($configurationLoader->processConfiguration());
         $this->phar['container.php'] = $compiler->getContainerCode();
         $buffer->writeln('$container = require_once \'phar://z.phar/container.php\';');
 
@@ -44,7 +65,14 @@ class StaticStub extends Stub
             $buffer->write('$p = new ')->write($className)->raw('();')->eol();
             $buffer->writeln('$p->setContainer($container);');
         }
-        $buffer->write('$app = new Zicht\Tool\Application(')->asPhp($this->appName)->raw(', ')->asPhp($this->appVersion)->raw(');')->eol();
+        $buffer
+            ->write('$app = new Zicht\Tool\Application(')
+            ->asPhp($this->appName)
+            ->raw(', ')
+            ->asPhp($this->appVersion)
+            ->raw(');')
+            ->eol()
+        ;
         $buffer->writeln('$app->setContainer($container);');
     }
 }

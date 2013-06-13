@@ -8,14 +8,21 @@
 
 namespace Zicht\Tool\Packager\Cmd;
 
+use \Symfony\Component\Console\Command\Command;
 use \Symfony\Component\Console\Input\InputInterface;
 use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Console\Input\InputOption;
 use \Symfony\Component\Console\Input\InputArgument;
 use \Zicht\Tool\Packager\Packager;
 
-class BuildCommand extends \Symfony\Component\Console\Command\Command
+/**
+ * Command for building a package.
+ */
+class BuildCommand extends Command
 {
+    /**
+     * @{inheritDoc}
+     */
     protected function configure()
     {
         parent::configure();
@@ -29,10 +36,16 @@ class BuildCommand extends \Symfony\Component\Console\Command\Command
                 'config-filename', '', InputOption::VALUE_REQUIRED,
                 'The config file name for the app to use (typically z.yml)'
             )
-            ->addOption('static', '', InputOption::VALUE_REQUIRED, "Create a static build using the specified config file")
+            ->addOption(
+                'static', '', InputOption::VALUE_REQUIRED,
+                "Create a static build using the specified config file"
+            )
         ;
     }
 
+    /**
+     * @{inheritDoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $packager = new Packager(__DIR__ . '/../../../../../', array_filter($input->getOptions()));

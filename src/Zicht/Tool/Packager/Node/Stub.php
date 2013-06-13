@@ -6,11 +6,26 @@
  * @copyright 2012 Gerard van Helden <http://melp.nl>
  */
 namespace Zicht\Tool\Packager\Node;
+
 use \Zicht\Tool\Script\Buffer;
 use \Zicht\Tool\Script\Node\Node;
 
+/**
+ * Phar stub
+ */
 abstract class Stub implements Node
 {
+    protected $phar;
+    protected $appName;
+    protected $appVersion;
+
+    /**
+     * Writes the header stub to the phar.
+     *
+     * @param \Phar $phar
+     * @param string $appName
+     * @param string $appVersion
+     */
     public function __construct(\Phar $phar, $appName, $appVersion)
     {
         $this->phar = $phar;
@@ -18,7 +33,14 @@ abstract class Stub implements Node
         $this->appVersion = $appVersion;
     }
 
-    final function compile(Buffer $buffer)
+
+    /**
+     * Compiles into the specified buffer.
+     *
+     * @param \Zicht\Tool\Script\Buffer $buffer
+     * @return void
+     */
+    final public function compile(Buffer $buffer)
     {
         $buffer
             ->writeln("Phar::mapPhar('z.phar');")
@@ -34,5 +56,11 @@ abstract class Stub implements Node
     }
 
 
-    abstract function compileInitialization(Buffer $buffer);
+    /**
+     * Should compile the initialization code into the buffer.
+     *
+     * @param \Zicht\Tool\Script\Buffer $buffer
+     * @return void
+     */
+    abstract protected function compileInitialization(Buffer $buffer);
 }
