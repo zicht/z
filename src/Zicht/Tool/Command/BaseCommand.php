@@ -15,6 +15,8 @@ use \Zicht\Tool\Container\Container;
  */
 class BaseCommand extends Command
 {
+    protected $container;
+
     /**
      * Set the container instance
      *

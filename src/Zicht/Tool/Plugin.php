@@ -14,11 +14,7 @@ use \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 abstract class Plugin implements PluginInterface
 {
     /**
-     * Appends the configuration to the node
-     *
-     * @param \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition $rootNode
-     * @return mixed
-     * @codeCoverageIgnore
+     * @{inheritDoc}
      */
     public function appendConfiguration(ArrayNodeDefinition $rootNode)
     {
@@ -26,11 +22,7 @@ abstract class Plugin implements PluginInterface
 
 
     /**
-     * Set the container instance
-     *
-     * @param Container\Container $container
-     * @return mixed
-     * @codeCoverageIgnore
+     * @{inheritDoc}
      */
     public function setContainer(Container\Container $container)
     {
