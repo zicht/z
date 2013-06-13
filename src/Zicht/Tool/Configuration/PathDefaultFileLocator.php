@@ -15,6 +15,12 @@ use \Symfony\Component\Config\FileLocator;
  */
 class PathDefaultFileLocator extends FileLocator
 {
+    /**
+     * Construct the locator based on the passed environment variable.
+     *
+     * @param array|string $envName
+     * @param array $defaultPaths
+     */
     public function __construct($envName, $defaultPaths = array())
     {
         parent::__construct(

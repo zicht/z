@@ -8,11 +8,20 @@
 
 namespace Zicht\Tool\Container;
 
-use Zicht\Tool\Script\Buffer;
+use \Zicht\Tool\Script\Buffer;
 
+/**
+ * Compiler to compile the entire container into PHP code.
+ */
 class ContainerCompiler
 {
-    function __construct($configTree, $file = null)
+    /**
+     * Construct the compiler
+     *
+     * @param array $configTree
+     * @param null $file
+     */
+    public function __construct($configTree, $file = null)
     {
         $this->configTree = $configTree;
         if (null === $file) {
@@ -22,7 +31,12 @@ class ContainerCompiler
     }
 
 
-    function getContainer()
+    /**
+     * Writes the code to a temporary file and returns the resulting Container object.
+     *
+     * @return mixed
+     */
+    public function getContainer()
     {
         $code = $this->getContainerCode();
 
@@ -33,6 +47,12 @@ class ContainerCompiler
         return $ret;
     }
 
+
+    /**
+     * Returns the code for initializing the container.
+     *
+     * @return string
+     */
     public function getContainerCode()
     {
         $builder = new ContainerBuilder($this->configTree);

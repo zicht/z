@@ -23,6 +23,9 @@ use \Symfony\Component\Console\Output\OutputInterface;
  */
 class Application extends BaseApplication
 {
+    /**
+     * @{inheritDoc}
+     */
     public function __construct($name = 'Zicht Tool packager', $version = 'development')
     {
         parent::__construct($name, $version);
@@ -30,4 +33,3 @@ class Application extends BaseApplication
         $this->add(new Cmd\BuildCommand());
     }
 }
-

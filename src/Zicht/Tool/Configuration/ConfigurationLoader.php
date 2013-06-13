@@ -7,12 +7,18 @@
  */
 namespace Zicht\Tool\Configuration;
 
-use Symfony\Component\Config\FileLocatorInterface;
+use \Symfony\Component\Config\FileLocatorInterface;
 use \Symfony\Component\Config\Definition\Processor;
 
+
+/**
+ * Z-file configuration loader.
+ */
 class ConfigurationLoader
 {
     /**
+     * Create the configuration loader based the current shell environment variables.
+     *
      * @param string $configFilename
      * @return ConfigurationLoader
      * @codeCoverageIgnore
@@ -32,8 +38,14 @@ class ConfigurationLoader
     }
 
 
-
-    function __construct($configFilename, FileLocatorInterface $configLocator, FileLoader $loader)
+    /**
+     * Construct the loader.
+     *
+     * @param string $configFilename
+     * @param \Symfony\Component\Config\FileLocatorInterface $configLocator
+     * @param FileLoader $loader
+     */
+    public function __construct($configFilename, FileLocatorInterface $configLocator, FileLoader $loader)
     {
         $this->configFilename = $configFilename;
         $this->loader = $loader;
@@ -42,7 +54,13 @@ class ConfigurationLoader
     }
 
 
-    function processConfiguration()
+    /**
+     * Processes the configuration contents
+     *
+     * @return array
+     * @throws \UnexpectedValueException
+     */
+    public function processConfiguration()
     {
         try {
             $zfiles = $this->configLocator->locate($this->configFilename, null, false);
@@ -72,8 +90,12 @@ class ConfigurationLoader
     }
 
 
-
-    function getPlugins()
+    /**
+     * Returns all plugins registered while loading.
+     *
+     * @return array
+     */
+    public function getPlugins()
     {
         return $this->plugins;
     }

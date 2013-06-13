@@ -19,7 +19,7 @@ interface Node
      * Compiles the node into the buffer.
      *
      * @param \Zicht\Tool\Script\Buffer $buffer
-     * @return mixed
+     * @return void
      */
     public function compile(Buffer $buffer);
 }

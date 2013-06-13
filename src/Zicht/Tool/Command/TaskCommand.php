@@ -10,12 +10,20 @@ use \Symfony\Component\Console\Command\Command;
 use \Symfony\Component\Console\Input\InputOption;
 use \Symfony\Component\Console\Input\InputInterface;
 use \Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\Console\Input\InputArgument;
 
 /**
  * Command to execute a specific task
  */
 class TaskCommand extends BaseCommand
 {
+    /**
+     * Construct the front end command for the specified task name.
+     *
+     * @param null|string $name
+     * @param array $arguments
+     * @param string $help
+     */
     public function __construct($name, $arguments, $help)
     {
         parent::__construct($name);
@@ -24,8 +32,8 @@ class TaskCommand extends BaseCommand
             $this->addArgument(
                 $name,
                 $required
-                    ? \Symfony\Component\Console\Input\InputArgument::REQUIRED
-                    : \Symfony\Component\Console\Input\InputArgument::OPTIONAL
+                    ? InputArgument::REQUIRED
+                    : InputArgument::OPTIONAL
             );
         }
         $this->setHelp($help ? $help : '(no help available for this task)');
@@ -33,6 +41,11 @@ class TaskCommand extends BaseCommand
     }
 
 
+    /**
+     * Adds the default '--explain' and '--force' options
+     *
+     * @return void
+     */
     protected function configure()
     {
         $this

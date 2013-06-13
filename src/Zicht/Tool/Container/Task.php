@@ -55,6 +55,12 @@ class Task extends Declaration
     }
 
 
+    /**
+     * Compiles the task initialization code into the buffer.
+     *
+     * @param \Zicht\Tool\Script\Buffer $buffer
+     * @return void
+     */
     public function compile(Buffer $buffer)
     {
         parent::compile($buffer);
