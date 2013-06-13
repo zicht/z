@@ -8,9 +8,21 @@
 
 namespace Zicht\Tool\Packager;
 
+use \Zicht\Tool\Script\Buffer;
+use \Symfony\Component\Finder\Finder;
+
+/**
+ * PHAR Packager tool
+ */
 class Packager
 {
-    function __construct($root, $options)
+    /**
+     * Packager to generate an executable PHAR for Z or a derivative tool.
+     *
+     * @param string $root
+     * @param array $options
+     */
+    public function __construct($root, array $options)
     {
         $this->srcRoot = $root;
         $this->options = $options + array(
@@ -23,7 +35,17 @@ class Packager
     }
 
 
-    function package($targetFile, $force)
+    /**
+     * Build the package file.
+     * Throws an exception if the file already exists. Pass $force as true to override this.
+     *
+     * @param string $targetFile
+     * @param bool $force
+     * @return void
+     *
+     * @throws \RuntimeException
+     */
+    public function package($targetFile, $force)
     {
         if (is_file($targetFile)) {
             if ($force) {
@@ -55,7 +77,7 @@ class Packager
                 $this->options['config-filename']
             );
         }
-        $buffer = new \Zicht\Tool\Script\Buffer();
+        $buffer = new Buffer();
         $buffer
             ->writeln('#!/usr/bin/env php')
             ->writeln('<?php')
@@ -63,7 +85,7 @@ class Packager
         ;
         $stub->compile($buffer);
 
-        $finder = new \Symfony\Component\Finder\Finder();
+        $finder = new Finder();
         $files = $finder
             ->in(array('vendor', 'src'))
             ->ignoreVCS(true)
@@ -82,29 +104,35 @@ class Packager
         chdir($curDir);
     }
 
-
-
     private static $HEADER =<<<EOHEADER
 /**
- * Copyright (C) 2013 Zicht Online, Gerard van Helden
+ * Copyright (C) 2013 Zicht online, Gerard van Helden
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
- * documentation files (the "Software"), to deal in the Software without restriction, including without limitation the
- * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
- * persons to whom the Software is furnished to do so, subject to the following conditions:
+ * Permission is hereby granted, free of charge, to any person
+ * obtaining a copy of this software and associated documentation
+ * files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge,
+ * publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
  *
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
- * Software.
+ * The above copyright notice and this permission notice shall be
+ * included in all copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
- * WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS
- * OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
- * OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+ * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+ * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS
+ * BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN
+ * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 /**
- * This file was built with the Z packager. For more information, visit the Z website at http://z.zicht.nl/
+ * This file was built with the Z packager. For more information,
+ * visit the Z website at http://z.zicht.nl/, or contact gerard@zicht.nl
  *
- * Please pay your respects by at least leaving these notices in tact.
+ * Please pay your respects by leaving these notices in tact.
  */
 EOHEADER;
 }
