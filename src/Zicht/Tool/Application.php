@@ -15,7 +15,7 @@ use \Symfony\Component\Console\Input\InputInterface;
 use \Symfony\Component\Console\Output\OutputInterface;
 
 use \Zicht\Tool\Command as Cmd;
-use Zicht\Tool\Configuration\ConfigurationLoader;
+use \Zicht\Tool\Configuration\ConfigurationLoader;
 use \Zicht\Tool\Container\Container;
 use \Zicht\Tool\Container\ContainerCompiler;
 
@@ -35,6 +35,13 @@ EOSTR;
     protected $container = null;
 
 
+    /**
+     * Construct the application with the specified name, version and config loader.
+     *
+     * @param string $name
+     * @param string $version
+     * @param Configuration\ConfigurationLoader $loader
+     */
     public function __construct($name, $version, ConfigurationLoader $loader = null)
     {
         parent::__construct($name, $version);
@@ -59,21 +66,28 @@ EOSTR;
          * @param int $err
          * @param string $errstr
          */
-        set_error_handler(function($err, $errstr) use($output) {
-            static $repeating = array();
-            if (in_array($errstr, $repeating)) {
-                return;
-            }
-            $repeating[]= $errstr;
-            $output->writeln("[DEPRECATED] $errstr\n");
-        }, E_USER_DEPRECATED);
+        set_error_handler(
+            function($err, $errstr) use($output) {
+                static $repeating = array();
+                if (in_array($errstr, $repeating)) {
+                    return;
+                }
+                $repeating[]= $errstr;
+                $output->writeln("[DEPRECATED] $errstr\n");
+            },
+            E_USER_DEPRECATED
+        );
 
         return parent::run($input, $output);
     }
 
     /**
+     * Custom exception rendering, renders only the exception types and messages, hierarchically, but with regular
+     * formatting if verbosity is higher.
+     *
      * @param \Exception $e
      * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return void
      */
     public function renderException($e, $output)
     {
@@ -104,12 +118,23 @@ EOSTR;
     }
 
 
+    /**
+     * Set the container instance
+     *
+     * @param Container\Container $container
+     * @return void
+     */
     public function setContainer(Container $container)
     {
         $this->container = $container;
     }
 
 
+    /**
+     * Returns the container instance, and initializes it if not yet available.
+     *
+     * @return Container\Container
+     */
     public function getContainer()
     {
         if (null === $this->container) {
