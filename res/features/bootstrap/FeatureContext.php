@@ -29,7 +29,7 @@ class FeatureContext extends BehatContext
     public function __construct(array $parameters)
     {
         $this->testDir = __DIR__ . '/../tmp';
-        $this->zBinary = __DIR__ . '/../../../bin/z';
+        $this->zBinary = escapeshellarg(__DIR__ . '/../../../bin/z');
     }
 
 
