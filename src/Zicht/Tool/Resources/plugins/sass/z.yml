@@ -1,14 +1,21 @@
 sass:
     # The style to use when
-    build_style: compressed
-    default_style: nested
-    opts: "--scss"
-    dirs: []
+    build_style:    compressed
+    default_style:  nested
+    opts:           "--scss"
+    dirs:           []
 
 tasks:
     # Add the sass build trigger
     build:
         post: @_sass.build
+
+    # Trigger used to build the sass in the build process
+    _sass.build:
+        set:
+            _root: build.dir
+            _style: sass.build_style
+        do: @sass
 
     # Watch the sass dirs in the current working dir
     sass.watch:
@@ -17,12 +24,7 @@ tasks:
             mode: '"watch"'
         do: @sass
 
-    _sass.build:
-        set:
-            _root: build.dir
-            _style: sass.build_style
-        do: @sass
-
+    # Update the sass dirs in the current working dir
     sass.update:
         help: "Compile sass"
         set:
