@@ -1,0 +1,34 @@
+sass:
+    # The style to use when
+    build_style: compressed
+    default_style: nested
+    opts: "--scss"
+    dirs: []
+
+tasks:
+    # Add the sass build trigger
+    build:
+        post: @_sass.build
+
+    # Watch the sass dirs in the current working dir
+    sass.watch:
+        help: "Watch the configured sass dirs"
+        set:
+            mode: '"watch"'
+        do: @sass
+
+    _sass.build:
+        set:
+            _root: build.dir
+            _style: sass.build_style
+        do: @sass
+
+    sass.update:
+        help: "Compile sass"
+        set:
+            mode:   ? "update"
+            _root:  ? cwd
+            _style: ? "nested"
+        do: |
+            sass $(sass.opts) $(force ? "--force") -t $(_style) --unix-newlines --no-cache \
+            --$(mode) $(sass.dir_spec(_root, sass.dirs))
