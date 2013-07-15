@@ -15,14 +15,14 @@ tasks:
         set:
             _root: build.dir
             _style: sass.build_style
-        do: @sass
+        do: @sass.update
 
     # Watch the sass dirs in the current working dir
     sass.watch:
         help: "Watch the configured sass dirs"
         set:
             mode: '"watch"'
-        do: @sass
+        do: @sass.update
 
     # Update the sass dirs in the current working dir
     sass.update:
