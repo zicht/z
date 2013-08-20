@@ -14,6 +14,6 @@ tasks:
         lftp 
         open $(ftp.domain)
         user $(ftp.username) $(ftp.password)
-	lcd $(tasks.build)
+        lcd $(tasks.build)
         mirror --dry-run --reverse --delete $(sync.exclude_file ? sync.exludes) --verbose ./ $(env.root)
         bye
