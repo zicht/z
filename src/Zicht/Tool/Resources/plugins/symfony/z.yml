@@ -26,4 +26,5 @@ tasks:
             - ?(symfony.assetic) @_symfony.build.assetic_dump
 
     deploy:
-        post: [?(symfony.flush_cache) @_symfony.env.flush_cache]
+        post:
+            - ?(symfony.flush_cache) @_symfony.env.flush_cache
