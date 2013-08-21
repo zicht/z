@@ -68,6 +68,6 @@ and major releases, e.g. 1.0 => 1.1 or 1.2 => 2.0, and they will all be incremen
 # version 2.0 #
 
  +  YAML will be replaced by a parser written entirely for Z, to get rid of the quirky YML vs Z syntax issues, such as
-    quoting strings. The main internal processing using Symfony\Component\Config will probably stay, though.
+    quoting strings. The direction of the syntax is not decided yet.
 
 
