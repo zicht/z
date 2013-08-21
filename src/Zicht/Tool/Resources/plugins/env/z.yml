@@ -44,3 +44,13 @@ tasks:
             env: ?
         do:
             - echo "$(env.versionat(env.ssh, verbose))"
+
+
+    env.diff:
+        help: |
+            Show the diff against a deployed version
+        set:
+            env: ?
+            version: ?vcs.current
+        do:
+            - $(vcs.diff(env.versionat(env.ssh, 0), vcs.current, verbose))
