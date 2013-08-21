@@ -60,7 +60,7 @@ tasks:
             src.version: env.versionat(env.ssh)
             _simulate: ? "no"
             _revert: ? "no"
-            _patchfile: sprintf("%s-%s.patch", src.version, build.version)
+            _patchfile: safename(sprintf("%s-%s.patch", src.version, build.version))
         do:
             - ?(verbose) echo "Applying patch for $(src.version) -> $(build.version)"
             - $(vcs.diff(src.version, build.version, 1)) > $(_patchfile)
