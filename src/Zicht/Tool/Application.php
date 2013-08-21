@@ -130,7 +130,7 @@ class Application extends BaseApplication
     public function getConfig()
     {
         $zFileLocator  = new FileLocator(array(getcwd(), getenv('HOME') . '/.config/z/'));
-        $pluginLocator = new FileLocator(__DIR__ . '/Resources/plugins');
+        $pluginLocator = new FileLocator(__DIR__ . '/../../../vendor/zicht/z-plugins/');
 
         $loader = new FileLoader($pluginLocator);
 

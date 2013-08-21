@@ -1,5 +1,9 @@
 {
-    "hash": "bc5009b8abb251507ea5191516593357",
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "f6941070419239f1e8ebbcda0d35adf8",
     "packages": [
         {
             "name": "symfony/config",
@@ -19,7 +23,6 @@
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2012-10-20 00:10:30",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -45,7 +48,8 @@
                 }
             ],
             "description": "Symfony Config Component",
-            "homepage": "http://symfony.com"
+            "homepage": "http://symfony.com",
+            "time": "2012-10-20 00:10:30"
         },
         {
             "name": "symfony/console",
@@ -65,7 +69,6 @@
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2012-10-22 07:37:12",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -91,7 +94,8 @@
                 }
             ],
             "description": "Symfony Console Component",
-            "homepage": "http://symfony.com"
+            "homepage": "http://symfony.com",
+            "time": "2012-10-22 07:37:12"
         },
         {
             "name": "symfony/process",
@@ -111,7 +115,6 @@
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2012-10-20 00:10:30",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -137,7 +140,8 @@
                 }
             ],
             "description": "Symfony Process Component",
-            "homepage": "http://symfony.com"
+            "homepage": "http://symfony.com",
+            "time": "2012-10-20 00:10:30"
         },
         {
             "name": "symfony/yaml",
@@ -157,7 +161,6 @@
             "require": {
                 "php": ">=5.3.3"
             },
-            "time": "2012-10-29 04:15:41",
             "type": "library",
             "extra": {
                 "branch-alias": {
@@ -183,15 +186,47 @@
                 }
             ],
             "description": "Symfony Yaml Component",
-            "homepage": "http://symfony.com"
+            "homepage": "http://symfony.com",
+            "time": "2012-10-29 04:15:41"
+        },
+        {
+            "name": "zicht/z-plugins",
+            "version": "1.0.x-dev",
+            "source": {
+                "type": "svn",
+                "url": "svn://zon/projecten/zicht-libraries/z-plugins",
+                "reference": "/branches/1.0/@24048"
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "scripts": {
+                "post-install-cmd": [
+
+                ],
+                "post-update-cmd": [
+
+                ]
+            },
+            "description": "Plugins for Z",
+            "time": "2013-08-21 15:20:16"
         }
     ],
-    "packages-dev": null,
+    "packages-dev": [
+
+    ],
     "aliases": [
 
     ],
     "minimum-stability": "dev",
-    "stability-flags": [
+    "stability-flags": {
+        "zicht/z-plugins": 20
+    },
+    "platform": {
+        "php": ">=5.3.3"
+    },
+    "platform-dev": [
 
     ]
 }
