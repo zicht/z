@@ -29,6 +29,15 @@ tasks:
             Deploys a build to the specified environment
         do: @_sync
 
+    # Redeploys a build
+    redeploy:
+        set:
+            env: ?
+            build.version: env.versionat(env)
+        help: |
+            Redeploys the version that is installed on the specified environment.
+        do: @deploy
+
     # Simulates a deploy
     simulate:
         help: |
@@ -38,3 +47,54 @@ tasks:
             build.version: ?vcs.current
         do: @_sync.simulate
 
+    # Generate a patch for the difference between local a
+    patch:
+        help: |
+            Quickly apply a patch to a remote installation without doing an entire sync.
+
+            This only works for files within the versioning tree, not for external files or build artifacts.
+            Patch does not update the installed version.
+        set:
+            env: ?
+            build.version: ?vcs.current
+            src.version: env.versionat(env.ssh)
+            _simulate: ? "no"
+            _revert: ? "no"
+            _patchfile: sprintf("%s-%s.patch", src.version, build.version)
+        do:
+            - ?(verbose) echo "Applying patch for $(src.version) -> $(build.version)"
+            - $(vcs.diff(src.version, build.version, 1)) > $(_patchfile)
+            - scp $(_patchfile) $(env.ssh):$(env.root)/$(_patchfile)
+            - |
+                ssh $(env.ssh) "                                \
+                    cd $(env.root);                             \
+                    patch -r - -p0                              \
+                        $(_simulate == "yes"    ? "--dry-run")  \
+                        $(_revert == "yes"      ? "--reverse")  \
+                        $(verbose               ? "--verbose")  \
+                        < $(_patchfile);                        \
+                    rm $(_patchfile)                            \
+                "
+            - rm $(_patchfile)
+
+    # Simulate applying a patch.
+    sim-patch:
+        help: |
+            Simulate patching a remote installation
+        set:
+            env: ?
+            build.version: ?vcs.current
+            src.version: env.versionat(env.ssh)
+            _simulate: '"yes"'
+        do: @patch
+
+    # Revert the patch
+    revert-patch:
+        help: |
+            Revert a previously applied patch.
+        set:
+            env: ?
+            build.version: ?vcs.current
+            src.version: env.versionat(env.ssh)
+            _revert: '"yes"'
+        do: @patch
