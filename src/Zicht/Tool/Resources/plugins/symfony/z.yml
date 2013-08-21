@@ -15,6 +15,9 @@ tasks:
     _symfony.build.assetic_dump: |
         cd $(build.dir) && php $(symfony.console) assetic:dump --env=$(env) --no-debug;
 
+    _symfony.env.flush_cache: |
+        ssh $(env.ssh) "cd $(env.root) && php $(symfony.console) cache:clear --env=$(env) --no-debug"
+
     build:
         post:
             - @_symfony.build.copy_local_vendor
@@ -23,5 +26,4 @@ tasks:
             - ?(symfony.assetic) @_symfony.build.assetic_dump
 
     deploy:
-        post:
-            - ?(symfony.flush_cache) ssh $(env.ssh) "cd $(env.root) && php $(symfony.console) cache:clear --env=$(env) --no-debug"
+        post: [?(symfony.flush_cache) @_symfony.env.flush_cache]
