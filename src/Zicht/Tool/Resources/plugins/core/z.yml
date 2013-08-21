@@ -25,18 +25,12 @@ tasks:
         set:
             env: ?
             build.version: ?vcs.current
+            _mode: ? "build"
         help: |
             Deploys a build to the specified environment
-        do: @_sync
-
-    # Redeploys a build
-    redeploy:
-        set:
-            env: ?
-            build.version: env.versionat(env)
-        help: |
-            Redeploys the version that is installed on the specified environment.
-        do: @deploy
+        do:
+            - ?(_mode == "build") @_sync
+            - ?(_mode == "patch") @patch
 
     # Simulates a deploy
     simulate:
@@ -46,6 +40,29 @@ tasks:
             env: ?
             build.version: ?vcs.current
         do: @_sync.simulate
+
+    # Do a quick deploy based on a patch file rather than build and sync.
+    qdeploy:
+        help: |
+            Do a quick deploy with patch in stead of build+sync
+
+            Note build artifacts will not be patched, so only version-controlled files are patched and deployed.
+        set:
+            env: ?
+            build.version: ?vcs.current
+            _mode: '"patch"'
+        do:
+            - @deploy
+            - echo "Remember to do a full deploy to avoid future version mismatches!"
+
+    # Redeploys a build
+    redeploy:
+        set:
+            env: ?
+            build.version: env.versionat(env)
+        help: |
+            Redeploys the version that is installed on the specified environment.
+        do: @deploy
 
     # Generate a patch for the difference between local a
     patch:
@@ -78,7 +95,7 @@ tasks:
             - rm $(_patchfile)
 
     # Simulate applying a patch.
-    sim-patch:
+    qsimulate:
         help: |
             Simulate patching a remote installation
         set:
@@ -89,7 +106,7 @@ tasks:
         do: @patch
 
     # Revert the patch
-    revert-patch:
+    unpatch:
         help: |
             Revert a previously applied patch.
         set:

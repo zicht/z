@@ -17,20 +17,25 @@ class Plugin extends BasePlugin
     public function setContainer(Container $container)
     {
         $container->method('env.versionat', function($container, $env, $verbose = false) {
-            $tmp = tempnam(sys_get_temp_dir(), 'z');
-            $container->cmd(sprintf(
-                'scp %s:%s/%s %s',
-                $container->resolve('env.ssh'),
-                $container->resolve('env.root'),
-                $container->resolve('vcs.export.revfile'),
-                $tmp
-            ));
-            $vcsInfo = file_get_contents($tmp);
-            unlink($tmp);
+            static $envVcsInfo = array();
+
+            if (!isset($envVcsInfo[$env])) {
+                $tmp = tempnam(sys_get_temp_dir(), 'z');
+                $container->helperExec(sprintf(
+                    'scp %s:%s/%s %s # (get remote version id)',
+                    $container->resolve('env.ssh'),
+                    $container->resolve('env.root'),
+                    $container->resolve('vcs.export.revfile'),
+                    $tmp
+                ));
+                $envVcsInfo[$env] = file_get_contents($tmp);
+                unlink($tmp);
+            }
+
             if ($verbose) {
-                return $vcsInfo;
+                return $envVcsInfo[$env];
             } else {
-                return $container->call('vcs.versionid', $vcsInfo);
+                return $container->call('vcs.versionid', $envVcsInfo[$env]);
             }
         });
         $container->decl('env.ssh.connectable', function($container) {
