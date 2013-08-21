@@ -26,6 +26,11 @@ class Plugin extends BasePlugin
         $container->fn('is_dir');
         $container->fn('is_file');
 
+        // utility functions
+        $container->fn('safename', function($str) {
+            return preg_replace('/[^a-z._0-9-]/i', '-', $str);
+        });
+
         $container->method(
             'ask',
             function($container, $q, $default = null) {
