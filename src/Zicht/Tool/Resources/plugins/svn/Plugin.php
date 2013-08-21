@@ -44,6 +44,9 @@ class Plugin extends BasePlugin
 
     public function setContainer(Container $container)
     {
+        $container->method('vcs.abs', function($container, $path) {
+            return rtrim($container->resolve('vcs.url', '/') . '/') . $path;
+        });
         $container->method('vcs.versionid', function($container, $info) {
             if (
                 trim($info)
@@ -110,6 +113,16 @@ class Plugin extends BasePlugin
             }
 
             return $ret;
+        });
+
+
+        $container->method('vcs.diff', function($container, $from, $to, $verbose = true) {
+            return sprintf(
+                'svn diff %s %s %s',
+                $verbose ? '' : '--summarize ',
+                escapeshellarg($container->call('vcs.abs', $from)),
+                escapeshellarg($container->call('vcs.abs', $to))
+            );
         });
     }
 }
