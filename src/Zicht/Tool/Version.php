@@ -16,5 +16,5 @@ class Version
     /**
      * Version identifier of the app
      */
-    public static $VERSION = '1.0.7';
+    public static $VERSION = '1.1.dev';
 }
