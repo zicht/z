@@ -1,0 +1,13 @@
+tasks:
+     long_line:
+        do: |
+            echo            \
+                This        \
+                is          \
+                spanned     \
+            ;               \
+            echo            \
+                Over        \
+                multiple    \
+                lines       \
+            ;

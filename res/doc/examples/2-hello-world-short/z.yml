@@ -1,0 +1,10 @@
+tasks:
+    say_hello:
+        do:
+            - echo "Hello world!"
+
+    say_hello_short:
+        do: echo "Hello world!"
+
+    say_hello_shorter: echo "Hello world!"
+

@@ -1,0 +1,11 @@
+tasks:
+    talk:
+        set:
+            what: ?
+        do:
+            - |
+                echo "$(
+                    what == "hello"
+                    ? "hello to you to!"
+                    : "I don't know what " . what . " means, sorry..."
+                )"
