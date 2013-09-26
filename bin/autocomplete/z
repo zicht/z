@@ -28,10 +28,10 @@ _z()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     # Default options
-    opts=$(echo '' | /usr/bin/php $PWD/helper.php)
+    opts=$(echo '' | /usr/bin/php /opt/z/bin/autocomplete/helper.php)
     case "${prev}" in
         simulate|deploy|env:*|content:*|patch|unpatch)
-            envs=$(echo '' | /usr/bin/php $PWD/helper.php --get=env)
+            envs=$(echo '' | /usr/bin/php /opt/z/bin/autocomplete/helper.php --get=env)
             # Add to COMPREPLY array
             COMPREPLY=( $(compgen -W "${envs}" -- "${cur}") )
             return 0
