@@ -3,6 +3,7 @@
 * changed lftp commands
 * added --login to env:ssh so .profile gets loaded on ssh login
 * added backup option for rsync
+* fix bash completion for colon in arguments
 
 1.0.6
 -----
