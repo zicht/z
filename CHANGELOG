@@ -1,3 +1,14 @@
+1.0.10
+-----
+* Added port forward function to env
+
+1.0.9
+-----
+* changed lftp commands
+* added --login to env:ssh so .profile gets loaded on ssh login
+* added backup option for rsync
+* fix bash completion for colon in arguments
+
 1.0.6
 -----
 * The 'safename()' utility function was added to the core plugin.
