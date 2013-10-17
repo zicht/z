@@ -195,7 +195,7 @@
             "source": {
                 "type": "svn",
                 "url": "svn://zon/projecten/zicht-libraries/z-plugins",
-                "reference": "/branches/1.0/@26618"
+                "reference": "/branches/1.0/@26631"
             },
             "require": {
                 "php": ">=5.3.3"
@@ -210,7 +210,7 @@
                 ]
             },
             "description": "Plugins for Z",
-            "time": "2013-10-16 17:59:00"
+            "time": "2013-10-17 10:43:54"
         }
     ],
     "packages-dev": [
