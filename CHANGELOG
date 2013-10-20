@@ -1,7 +1,7 @@
 1.1-dev
 
 * Deprecated the dot concatenation operator
-* Deprecated declaration by string
+* Deprecated declaration and resolution by string (all references should now be an array representing a property path)
 * Added the ZFILE and ZPLUGINDIR environment variables
 * Reworked the compiler logic to be able to generate a standalone Container instantation. This makes it possible
   to cache the generated code in any near version.
