@@ -44,6 +44,7 @@ class Expression extends AbstractParser
      */
     public function parse(TokenStream $stream)
     {
+        // BC feature: if a legacy env token is matched, replace it with envs[target_env]
         if ($stream->match(Token::LEGACY_ENV)) {
             $stream->next();
 
