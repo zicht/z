@@ -25,11 +25,14 @@ use \Zicht\Tool\Container\ContainerCompiler;
 class Application extends BaseApplication
 {
     public static $HEADER = <<<EOSTR
-  ___
- /_ /
-  //
- //_
-/__/
+.------------.
+|    ____    |
+|   |__  |   |
+|     / /    |
+|    / /_    |
+|   |____|   |
+|   ------   |
+'------------'
 EOSTR;
 
     protected $container = null;
@@ -105,9 +108,9 @@ EOSTR;
                 $output->writeln(
                     sprintf(
                         '%s %s%s',
-                        str_pad('<error>' . get_class($e) . '</error>', $maxLength + 15, ' '),
+                        str_pad('[' . get_class($e) . ']', $maxLength + 15, ' '),
                         ($depth > 0 ? str_repeat('   ', $depth - 1) . '-> ' : ''),
-                        $e->getMessage()
+                        '<fg=red>' . $e->getMessage() . '</fg=red>'
                     )
                 );
                 $depth ++;
@@ -183,9 +186,9 @@ EOSTR;
     public function getHelp()
     {
         $ret = parent::getHelp();
-//        if (self::$HEADER) {
-//            $ret = self::$HEADER . PHP_EOL . PHP_EOL . $ret;
-//        }
+        if (self::$HEADER) {
+            $ret = self::$HEADER . PHP_EOL . PHP_EOL . $ret;
+        }
         return $ret;
     }
 }
