@@ -119,7 +119,9 @@ class Container
             );
 
             if ($require && null === $ret) {
-                throw new \RuntimeException("Error resolving " . join(".", $path));
+                throw new \RuntimeException(
+                    "Error resolving " . join(".", $path) . ': the path could not be found in the specified context'
+                );
             }
 
             return $ret;
