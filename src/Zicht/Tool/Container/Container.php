@@ -113,7 +113,7 @@ class Container
             throw new \InvalidArgumentException("Passed lookup path is empty.");
         }
         try {
-            $ret = PropertyAccess::getPropertyAccessor()->getValue(
+            $ret = PropertyAccess::createPropertyAccessor()->getValue(
                 $context,
                 new Context\ArrayPropertyPath($this->path($path))
             );
