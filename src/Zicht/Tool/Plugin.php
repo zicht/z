@@ -13,6 +13,7 @@ use \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
  */
 abstract class Plugin implements PluginInterface
 {
+    // @codeCoverageIgnoreStart
     /**
      * @{inheritDoc}
      */
@@ -27,4 +28,5 @@ abstract class Plugin implements PluginInterface
     public function setContainer(Container\Container $container)
     {
     }
+    // @codeCoverageIgnoreEnd
 }

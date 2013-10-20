@@ -1,4 +1,4 @@
-plugins: ['core', 'svn', 'env', 'ci']
+plugins: ['core', 'deploy', 'svn', 'env', 'ci']
 
 tasks:
     docs: cd res/doc && z docs $(z.opts)

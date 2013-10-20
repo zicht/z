@@ -1,28 +1,27 @@
 {
-    "hash": "46105db79009c10ce8de96ae57359676",
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "97668f6e1805d5e3211d5fb7a50c9952",
     "packages": [
         {
             "name": "symfony/config",
-            "version": "v2.2.0",
+            "version": "v2.3.6",
             "target-dir": "Symfony/Component/Config",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Config.git",
-                "reference": "v2.2.0-RC3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Config/zipball/v2.2.0-RC3",
-                "reference": "v2.2.0-RC3",
-                "shasum": ""
+                "url": "zichter@dev3:github/symfony/Config.git",
+                "reference": "v2.3.6"
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=5.3.3",
+                "symfony/filesystem": "~2.3"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.3-dev"
                 }
             },
             "autoload": {
@@ -30,7 +29,6 @@
                     "Symfony\\Component\\Config\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -46,30 +44,30 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "http://symfony.com",
-            "time": "2013-02-17 12:27:42"
+            "time": "2013-09-19 09:45:20"
         },
         {
             "name": "symfony/console",
-            "version": "v2.2.0",
+            "version": "v2.3.6",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Console.git",
-                "reference": "v2.2.0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/v2.2.0",
-                "reference": "v2.2.0",
-                "shasum": ""
+                "url": "zichter@dev3:github/symfony/Console.git",
+                "reference": "v2.3.6"
             },
             "require": {
                 "php": ">=5.3.3"
             },
+            "require-dev": {
+                "symfony/event-dispatcher": "~2.1"
+            },
+            "suggest": {
+                "symfony/event-dispatcher": ""
+            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.3-dev"
                 }
             },
             "autoload": {
@@ -77,7 +75,6 @@
                     "Symfony\\Component\\Console\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -93,22 +90,16 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2013-03-01 06:43:14"
+            "time": "2013-09-25 06:04:15"
         },
         {
-            "name": "symfony/finder",
-            "version": "v2.2.0",
-            "target-dir": "Symfony/Component/Finder",
+            "name": "symfony/filesystem",
+            "version": "v2.3.6",
+            "target-dir": "Symfony/Component/Filesystem",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Finder.git",
-                "reference": "v2.2.0"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Finder/zipball/v2.2.0",
-                "reference": "v2.2.0",
-                "shasum": ""
+                "url": "zichter@dev3:github/symfony/Filesystem.git",
+                "reference": "v2.3.6"
             },
             "require": {
                 "php": ">=5.3.3"
@@ -116,7 +107,47 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.3-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Symfony\\Component\\Filesystem\\": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "http://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Filesystem Component",
+            "homepage": "http://symfony.com",
+            "time": "2013-09-19 09:45:20"
+        },
+        {
+            "name": "symfony/finder",
+            "version": "v2.3.6",
+            "target-dir": "Symfony/Component/Finder",
+            "source": {
+                "type": "git",
+                "url": "zichter@dev3:github/symfony/Finder.git",
+                "reference": "v2.3.6"
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.3-dev"
                 }
             },
             "autoload": {
@@ -124,7 +155,6 @@
                     "Symfony\\Component\\Finder\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -140,22 +170,16 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
-            "time": "2013-02-28 14:06:36"
+            "time": "2013-09-19 09:45:20"
         },
         {
             "name": "symfony/process",
-            "version": "v2.2.0",
+            "version": "v2.3.6",
             "target-dir": "Symfony/Component/Process",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Process.git",
-                "reference": "v2.2.0-RC3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Process/zipball/v2.2.0-RC3",
-                "reference": "v2.2.0-RC3",
-                "shasum": ""
+                "url": "zichter@dev3:github/symfony/Process.git",
+                "reference": "v2.3.6"
             },
             "require": {
                 "php": ">=5.3.3"
@@ -163,7 +187,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.3-dev"
                 }
             },
             "autoload": {
@@ -171,7 +195,6 @@
                     "Symfony\\Component\\Process\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -187,22 +210,16 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2013-02-18 21:28:10"
+            "time": "2013-10-09 21:17:57"
         },
         {
             "name": "symfony/property-access",
-            "version": "v2.2.0",
+            "version": "v2.3.6",
             "target-dir": "Symfony/Component/PropertyAccess",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/PropertyAccess.git",
-                "reference": "v2.2.0-RC3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/PropertyAccess/zipball/v2.2.0-RC3",
-                "reference": "v2.2.0-RC3",
-                "shasum": ""
+                "url": "zichter@dev3:github/symfony/PropertyAccess.git",
+                "reference": "v2.3.6"
             },
             "require": {
                 "php": ">=5.3.3"
@@ -210,7 +227,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.3-dev"
                 }
             },
             "autoload": {
@@ -218,7 +235,6 @@
                     "Symfony\\Component\\PropertyAccess\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -245,22 +261,16 @@
                 "property path",
                 "reflection"
             ],
-            "time": "2013-02-04 20:27:45"
+            "time": "2013-09-19 09:45:20"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.2.0",
+            "version": "v2.3.6",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/Yaml.git",
-                "reference": "v2.2.0-RC3"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Yaml/zipball/v2.2.0-RC3",
-                "reference": "v2.2.0-RC3",
-                "shasum": ""
+                "url": "zichter@dev3:github/symfony/Yaml.git",
+                "reference": "v2.3.6"
             },
             "require": {
                 "php": ">=5.3.3"
@@ -268,7 +278,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.2-dev"
+                    "dev-master": "2.3-dev"
                 }
             },
             "autoload": {
@@ -276,7 +286,6 @@
                     "Symfony\\Component\\Yaml\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -292,30 +301,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2013-01-27 16:49:19"
-        },
-        {
-            "name": "zicht/z-plugins",
-            "version": "dev-trunk",
-            "source": {
-                "type": "svn",
-                "url": "svn://zon/projecten/zicht-libraries/z-plugins",
-                "reference": "/trunk/@17384"
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "scripts": {
-                "post-install-cmd": [
-
-                ],
-                "post-update-cmd": [
-
-                ]
-            },
-            "description": "Plugins for Z",
-            "time": "2013-03-08 19:23:39"
+            "time": "2013-09-22 18:04:39"
         }
     ],
     "packages-dev": [
@@ -324,7 +310,7 @@
     "aliases": [
 
     ],
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "stability-flags": {
         "symfony/yaml": 0,
         "symfony/process": 0,

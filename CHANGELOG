@@ -8,6 +8,51 @@
 * Moved the plugins to a separate repository.
 * Added a PHAR builder
 
+1.0.10
+-----
+* Added port forward function to env
+
+1.0.9
+-----
+* changed lftp commands
+* added --login to env:ssh so .profile gets loaded on ssh login
+* added backup option for rsync
+* fix bash completion for colon in arguments
+
+1.0.6
+-----
+* The 'safename()' utility function was added to the core plugin.
+* The 'vcs.abs()' and 'vcs.diff()' utility methods were added to the svn plugin.
+* The 'qsimulate', 'qdeploy', 'patch', 'unpatch' and 'redeploy' tasks were added to the core plugin.
+* Moved the plugins to a separate library. They are now maintained separately.
+
+1.0.5
+-----
+* Added a sass plugin
+
+1.0.4
+-----
+* Fixes a php5.4 compatibility bug (E_STRICT warning in tokenizer)
+* Excluded translation files from code coverage
+* Disabled the Symfony Process default timeout for processes
+* Added forward compatibility for 'target_env' and 'envs' references
+
+1.0.3
+-----
+* Fixes a bug where vcs.current did not work properly
+
+1.0.2
+-----
+* Added warning in svn plugin when the working copy has mixed revions
+
+1.0.1
+-----
+bugfix release
+
+1.0
+---
+* stable version
+
 1.0-beta8
 ---------
 * Added imports
