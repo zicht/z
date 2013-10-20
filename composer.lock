@@ -14,6 +14,12 @@
                 "url": "zichter@dev3:github/symfony/Config.git",
                 "reference": "v2.3.6"
             },
+            "dist": {
+                "type": "zip",
+                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Config.git/v2.3.6.zip",
+                "reference": null,
+                "shasum": null
+            },
             "require": {
                 "php": ">=5.3.3",
                 "symfony/filesystem": "~2.3"
@@ -54,6 +60,12 @@
                 "type": "git",
                 "url": "zichter@dev3:github/symfony/Console.git",
                 "reference": "v2.3.6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Console.git/v2.3.6.zip",
+                "reference": null,
+                "shasum": null
             },
             "require": {
                 "php": ">=5.3.3"
@@ -101,6 +113,12 @@
                 "url": "zichter@dev3:github/symfony/Filesystem.git",
                 "reference": "v2.3.6"
             },
+            "dist": {
+                "type": "zip",
+                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Filesystem.git/v2.3.6.zip",
+                "reference": null,
+                "shasum": null
+            },
             "require": {
                 "php": ">=5.3.3"
             },
@@ -140,6 +158,12 @@
                 "type": "git",
                 "url": "zichter@dev3:github/symfony/Finder.git",
                 "reference": "v2.3.6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Finder.git/v2.3.6.zip",
+                "reference": null,
+                "shasum": null
             },
             "require": {
                 "php": ">=5.3.3"
@@ -181,6 +205,12 @@
                 "url": "zichter@dev3:github/symfony/Process.git",
                 "reference": "v2.3.6"
             },
+            "dist": {
+                "type": "zip",
+                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Process.git/v2.3.6.zip",
+                "reference": null,
+                "shasum": null
+            },
             "require": {
                 "php": ">=5.3.3"
             },
@@ -220,6 +250,12 @@
                 "type": "git",
                 "url": "zichter@dev3:github/symfony/PropertyAccess.git",
                 "reference": "v2.3.6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/PropertyAccess.git/v2.3.6.zip",
+                "reference": null,
+                "shasum": null
             },
             "require": {
                 "php": ">=5.3.3"
@@ -271,6 +307,12 @@
                 "type": "git",
                 "url": "zichter@dev3:github/symfony/Yaml.git",
                 "reference": "v2.3.6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Yaml.git/v2.3.6.zip",
+                "reference": null,
+                "shasum": null
             },
             "require": {
                 "php": ">=5.3.3"
