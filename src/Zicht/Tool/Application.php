@@ -124,7 +124,7 @@ EOSTR;
     /**
      * Set the container instance
      *
-     * @param Container\Container $container
+     * @param Container $container
      * @return void
      */
     public function setContainer(Container $container)
