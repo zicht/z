@@ -56,7 +56,7 @@ class ConfigurationLoader
 
     public function addPlugin($name)
     {
-        $this->loader->addPlugin($name, null);
+        $this->loader->addPlugin($name, getcwd());
     }
 
 

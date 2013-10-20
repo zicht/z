@@ -291,7 +291,11 @@ class Container
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException("Not callable");
         }
-        $this->set($id, $callable);
+        $this->set($id, function(Container $c) use($callable, $id) {
+            $value = call_user_func($callable, $c);
+            $c->set($id, $value);
+            return $value;
+        });
     }
 
     /**

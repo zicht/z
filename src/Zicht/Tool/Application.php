@@ -143,7 +143,7 @@ EOSTR;
     {
         if (null === $this->container) {
             $config = $this->loader->processConfiguration();
-            $compiler = new ContainerCompiler($config, '.z.php');
+            $compiler = new ContainerCompiler($config);
             $this->container = $compiler->getContainer();
             foreach ($this->loader->getPlugins() as $plugin) {
                 $plugin->setContainer($this->container);

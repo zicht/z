@@ -66,3 +66,17 @@ I need to be able to add tasks, functions and declarations in a Plugin
     Then I should see text matching "/Post from plugin!.*Post from z.yml/s"
     But I should not see text matching "/Do from plugin/s"
 
+  Scenario: When the plugin is loaded by option, it works as well
+    Given I am in a test directory
+    And there is file "z.yml"
+        """
+        tasks:
+            t: echo "$(hello)"
+            t2: echo "$(hello2())"
+            t3:
+                pre: echo "Pre from z.yml"
+                do: echo "$(hello2())"
+                post: echo "Post from z.yml"
+        """
+    When I run "z t --plugin=myplugin"
+    Then I should see text matching "/Foo bar!/"
