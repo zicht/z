@@ -7,6 +7,7 @@
   to cache the generated code in any near version.
 * Moved the plugins to a separate repository.
 * Added a PHAR builder
+* The --plugin option was added
 
 1.0.10
 -----
