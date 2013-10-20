@@ -190,13 +190,26 @@ class Container
      */
     public function set($path, $value)
     {
-        PropertyAccess::getPropertyAccessor()->setValue(
+        PropertyAccess::createPropertyAccessor()->setValue(
             $this->values,
             new Context\ArrayPropertyPath($this->path($path)),
             $value
         );
     }
 
+    /**
+     * This is useful for commands that need the shell regardless of the 'explain' value setting.
+     *
+     * @param string $cmd
+     */
+    public function helperExec($cmd)
+    {
+        if ($this->resolve('explain')) {
+            $this->output->writeln("# Task needs the following helper command:");
+            $this->output->writeln("# " . str_replace("\n", "\\n", $cmd));
+        }
+        $this->doExec($cmd);
+    }
 
     /**
      * Wrapper for converting string paths to arrays.
@@ -408,37 +421,49 @@ class Container
         }
     }
 
-
     /**
      * Executes a script snippet using the 'executor' service.
      *
      * @param string $cmd
-     * @return integer
+     * @return void
+     */
+    public function exec($cmd)
+    {
+        if (trim($cmd)) {
+            if ($this->resolve('explain')) {
+                $this->output->writeln('( ' . rtrim($cmd, "\n") . ' );');
+            } else {
+                $this->doExec($cmd);
+            }
+        }
+    }
+
+
+    /**
+     * Method to do an actual shell command. It uses 'passthru' if 'interactive' is set, otherwise uses a
+     * process wrapper.
+     *
+     * @param string $cmd
      * @return int
      *
      * @throws \UnexpectedValueException
      */
-    public function exec($cmd)
+    protected function doExec($cmd)
     {
-        $ret = 0;
-        if (trim($cmd)) {
-            if ($this->resolve(array('explain'))) {
-                $this->output->writeln('( ' . rtrim($cmd, "\n") . ' );');
-            } elseif ($this->resolve(array('interactive'))) {
-                passthru($cmd, $ret);
-            } else {
-                $process = $this->createProcess();
-                $process->setStdin($cmd);
-                $process->run(array($this, 'processCallback'));
-                $ret = $process->getExitCode();
-            }
+        if ($this->resolve('interactive')) {
+            passthru($cmd, $ret);
+        } else {
+            $process = $this->createProcess();
+            $process->setStdin($cmd);
+            $process->run(array($this, 'processCallback'));
+            $ret = $process->getExitCode();
         }
         if ($ret != 0) {
             throw new \UnexpectedValueException("Command '$cmd' failed with exit code {$ret}");
         }
-
         return $ret;
     }
+
 
     /**
      * Creates a process for shell execution
