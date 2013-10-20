@@ -40,7 +40,7 @@ class Configuration implements ConfigurationInterface
 
         $zConfig = $treeBuilder->root('z');
         $zConfig
-            ->beforeNormalization()->ifTrue(function($v) { return isset($v['envs']);})->then(function($v) {
+            ->beforeNormalization()->ifTrue(function($v) { return !empty($v) && array_key_exists('envs', $v); })->then(function($v) {
                 $v['env'] = $v['envs'];
                 unset($v['envs']);
                 return $v;
