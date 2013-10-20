@@ -54,13 +54,19 @@ class ConfigurationLoader
     }
 
 
+    public function addPlugin($name)
+    {
+        $this->loader->addPlugin($name, null);
+    }
+
+
     /**
      * Processes the configuration contents
      *
      * @return array
      * @throws \UnexpectedValueException
      */
-    public function processConfiguration()
+    public function processConfiguration($initialConfig = array())
     {
         try {
             $zfiles = $this->configLocator->locate($this->configFilename, null, false);
@@ -71,7 +77,6 @@ class ConfigurationLoader
             $this->loader->load($file);
         }
 
-        $this->plugins = array();
         foreach ($this->loader->getPlugins() as $name => $file) {
             require_once $file;
             $className = sprintf('Zicht\Tool\Plugin\%s\Plugin', ucfirst(basename($name)));
@@ -85,7 +90,7 @@ class ConfigurationLoader
         $processor = new Processor();
         return $processor->processConfiguration(
             new Configuration($this->plugins),
-            $this->loader->getConfigs()
+            array_merge(array($initialConfig), $this->loader->getConfigs())
         );
     }
 

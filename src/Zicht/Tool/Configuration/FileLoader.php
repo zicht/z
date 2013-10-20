@@ -74,25 +74,31 @@ class FileLoader extends BaseFileLoader
      */
     protected function processPlugins($plugins, $dir)
     {
-        foreach ($plugins as $plugin) {
-            $hasPlugin = $hasZfile = false;
-            try {
-                $this->plugins[$plugin] = $this->getLocator()->locate($plugin . '/Plugin.php', $dir, true);
-                $hasPlugin = true;
-            } catch (\InvalidArgumentException $e) {
-            }
+        foreach ($plugins as $name) {
+            $this->addPlugin($name, $dir);
+        }
+    }
 
-            try {
-                $this->import($this->getLocator()->locate($plugin . '/z.yml', $dir), self::PLUGIN);
-                $hasZfile = true;
-            } catch (\InvalidArgumentException $e) {
-            }
 
-            if (!$hasPlugin && !$hasZfile) {
-                throw new \InvalidArgumentException(
-                    "You need at least either a z.yml or a Plugin.php in the plugin path for {$plugin}"
-                );
-            }
+    public function addPlugin($plugin, $dir)
+    {
+        $hasPlugin = $hasZfile = false;
+        try {
+            $this->plugins[$plugin] = $this->getLocator()->locate($plugin . '/Plugin.php', $dir, true);
+            $hasPlugin = true;
+        } catch (\InvalidArgumentException $e) {
+        }
+
+        try {
+            $this->import($this->getLocator()->locate($plugin . '/z.yml', $dir), self::PLUGIN);
+            $hasZfile = true;
+        } catch (\InvalidArgumentException $e) {
+        }
+
+        if (!$hasPlugin && !$hasZfile) {
+            throw new \InvalidArgumentException(
+                "Error loading plugin '{$plugin}'. Did you configure ZPLUGINPATH?"
+            );
         }
     }
 

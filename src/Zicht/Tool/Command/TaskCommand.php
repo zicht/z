@@ -51,6 +51,7 @@ class TaskCommand extends BaseCommand
         $this
             ->addOption('explain', '', InputOption::VALUE_NONE, 'Explains the commands that would be executed.')
             ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force execution of otherwise skipped tasks.')
+            ->addOption('plugin', '', InputOption::VALUE_REQUIRED, 'Load additional plugins on-the-fly')
         ;
     }
 

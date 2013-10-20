@@ -49,6 +49,7 @@ EOSTR;
     {
         parent::__construct($name, $version);
         $this->loader = $loader;
+        $this->plugins = array();
     }
 
 
@@ -107,10 +108,10 @@ EOSTR;
             foreach ($ancestry as $e) {
                 $output->writeln(
                     sprintf(
-                        '%s %s%s',
-                        str_pad('[' . get_class($e) . ']', $maxLength + 15, ' '),
+                        '%s%-40s %s',
                         ($depth > 0 ? str_repeat('   ', $depth - 1) . '-> ' : ''),
-                        '<fg=red>' . $e->getMessage() . '</fg=red>'
+                        '<fg=red>' . $e->getMessage() . '</fg=red>',
+                        $depth == count($ancestry) -1 ? str_pad('[' . get_class($e) . ']', $maxLength + 15, ' ') : ''
                     )
                 );
                 $depth ++;
@@ -136,7 +137,7 @@ EOSTR;
     /**
      * Returns the container instance, and initializes it if not yet available.
      *
-     * @return Container\Container
+     * @return Container
      */
     public function getContainer()
     {
@@ -161,6 +162,16 @@ EOSTR;
             $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         } elseif (true === $input->hasParameterOption(array('--verbose', '-v'))) {
             $output->setVerbosity(OutputInterface::VERBOSITY_VERBOSE);
+        }
+
+        $this->plugins = array();
+
+        if ($input->hasParameterOption('--plugin')) {
+            $value = array_filter(array_map('trim', explode(',', $input->getParameterOption('--plugin'))));
+
+            foreach ($value as $name) {
+                $this->loader->addPlugin($name);
+            }
         }
 
         $container = $this->getContainer();

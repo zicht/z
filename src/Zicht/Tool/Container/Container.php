@@ -614,7 +614,7 @@ class Container
     /**
      * Returns the registered commands
      *
-     * @return mixed
+     * @return Task[]
      */
     public function getCommands()
     {
