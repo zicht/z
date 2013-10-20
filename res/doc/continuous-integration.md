@@ -5,7 +5,7 @@ You can use Z to integrate your projects in Jenkins. The easiest way to do this,
 `jenkins`'s homedir at `~/.config/z/z.yml`. Of course, you will need the standard plugin repository available on the Z
 plugin path.
 
-Add the following like to the file:
+Add the following line to the file:
 
 ~~~~yml
 plugins: ['ci']
