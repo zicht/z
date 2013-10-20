@@ -28,7 +28,7 @@ class Expression implements TokenizerInterface
             $substr = substr($string, $needle);
             $before = $needle;
 
-            if (preg_match('/^env(?=(?:\.(root|web|url|db|ssh)|\b))/', $substr, $m)) {
+            if (preg_match('/^env(?=(?:\.(root|web|url|db|ssh))|[^.\w])/', $substr, $m)) {
                 trigger_error(
                     "As of version 1.1, using 'env' for referencing environments configuration is deprecated. "
                     . "Use envs[target_env] instead",
