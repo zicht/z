@@ -2,7 +2,7 @@
 
 * Deprecated the dot concatenation operator
 * Deprecated declaration and resolution by string (all references should now be an array representing a property path)
-* Added the ZFILE and ZPLUGINDIR environment variables
+* Added the ZFILE and ZPLUGINPATH environment variables
 * Reworked the compiler logic to be able to generate a standalone Container instantation. This makes it possible
   to cache the generated code in any near version.
 * Moved the plugins to a separate repository.
