@@ -135,6 +135,8 @@ class Traverser
      * @param mixed $value
      * @param int $when
      * @return mixed
+     *
+     * @throws \RuntimeException
      */
     private function doVisit($path, $value, $when)
     {
