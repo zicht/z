@@ -13,7 +13,7 @@ I need to be able to build a phar package from my zfile.
     And I run "package build a.out --static=z.yml --verbose --force"
 
   Scenario: The packager reports the written file
-    Then I should see text matching "/^.* written/m"
+    Then I should see text matching "/Built [^\n]+a.out in \d+(\.\d+)? seconds/"
 
   Scenario: The value in the task resolves to the declaration of the plugin
     When I run "./a.out t"
