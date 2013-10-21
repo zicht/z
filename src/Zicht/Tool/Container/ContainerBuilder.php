@@ -247,7 +247,7 @@ class ContainerBuilder
         $traverser->addVisitor(
             array($this, 'createDefinitionNode'),
             function($path, $node) {
-                return $path[0] !== 'tasks' && is_scalar($node);
+                return $path[0] !== 'tasks' && (is_scalar($node) || (is_array($node) && count($node) === 0));
             },
             Traverser::AFTER
         );
