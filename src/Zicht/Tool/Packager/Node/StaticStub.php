@@ -71,6 +71,7 @@ class StaticStub extends Stub
             $buffer->writeln('$p->setContainer($container);');
         }
         $buffer
+            ->writeln('Zicht\Tool\Application::$HEADER = \'\';')
             ->write('$app = new Zicht\Tool\Application(')
             ->asPhp($this->appName)
             ->raw(', ')
