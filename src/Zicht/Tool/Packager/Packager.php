@@ -54,13 +54,10 @@ class Packager
                 throw new \RuntimeException("File {$targetFile} already exists");
             }
         }
-
         $curDir = getcwd();
-        chdir($this->srcRoot);
-
         $buildFile = 'build.phar';
-
         $phar = new \Phar($buildFile);
+
         if ($static = $this->options['static']) {
             $stub = new Node\StaticStub(
                 $phar,
@@ -85,10 +82,12 @@ class Packager
         ;
         $stub->compile($buffer);
 
+        chdir($this->srcRoot);
         $finder = new Finder();
         $files = $finder
             ->in(array('vendor', 'src'))
             ->ignoreVCS(true)
+            // Finder is only used by the packager, not by Z itself.
             ->exclude(array('vendor/symfony/finder'))
             ->files();
 
@@ -96,15 +95,23 @@ class Packager
             $phar[$file->getPathname()] = file_get_contents($file->getPathname());
         }
         $phar['LICENSE'] = file_get_contents('LICENSE');
+        chdir($curDir);
 
         $phar->setStub($buffer->getResult());
-
         rename($buildFile, $targetFile);
         chmod($targetFile, 0755);
         chdir($curDir);
+
+        return realpath($targetFile);
     }
 
     private static $HEADER =<<<EOHEADER
+/**
+ * This file was built with the Z packager. For more information,
+ * visit the Z website at http://z.zicht.nl/, or contact gerard@zicht.nl
+ *
+ * Please pay your respects by leaving these notices in tact.
+ */
 /**
  * Copyright (C) 2013 Zicht online, Gerard van Helden
  *
@@ -127,12 +134,6 @@ class Packager
  * ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- */
-/**
- * This file was built with the Z packager. For more information,
- * visit the Z website at http://z.zicht.nl/, or contact gerard@zicht.nl
- *
- * Please pay your respects by leaving these notices in tact.
  */
 EOHEADER;
 }

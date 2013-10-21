@@ -48,7 +48,13 @@ class BuildCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $t = microtime(true);
         $packager = new Packager(__DIR__ . '/../../../../../', array_filter($input->getOptions()));
-        $packager->package($input->getArgument('file'), $input->getOption('force'));
+
+        $result = $packager->package($input->getArgument('file'), $input->getOption('force'));
+
+        if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
+            $output->writeln(sprintf("Built {$result} in %.2f seconds", microtime(true) -$t));
+        }
     }
 }

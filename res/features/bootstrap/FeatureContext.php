@@ -30,6 +30,7 @@ class FeatureContext extends BehatContext
     {
         $this->testDir = __DIR__ . '/../tmp';
         $this->zBinary = escapeshellarg(__DIR__ . '/../../../bin/z');
+        $this->packageBinary = escapeshellarg(__DIR__ . '/../../../bin/package.php');
     }
 
 
@@ -63,11 +64,26 @@ class FeatureContext extends BehatContext
     /**
      * @When /^I run "z ([^"]*)"$/
      */
-    public function iRun($cmd)
+    public function iRunZ($cmd)
     {
         $this->response = shell_exec($this->zBinary . ' ' . $cmd . ' 2>&1');
     }
 
+    /**
+     * @When /^I run "package ([^"]*)"$/
+     */
+    public function iRunPackage($cmd)
+    {
+        $this->response = shell_exec('php ' . $this->packageBinary . ' ' . $cmd . ' 2>&1');
+    }
+
+    /**
+     * @When /^I run ".\/([^"]*)"$/
+     */
+    public function iRunALocalScript($cmd)
+    {
+        $this->response = shell_exec('./' . $cmd . ' 2>&1');
+    }
 
     /**
      * @Then /^I should (?P<negate>not )?see text matching "(?P<pattern>[^"]*)"$/
