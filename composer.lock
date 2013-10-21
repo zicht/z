@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "f608297914a8849fdfb06d4eaa7905bc",
+    "hash": "afbe70b8ab15c4d51f3c5597a4d97e15",
     "packages": [
         {
             "name": "symfony/config",
@@ -13,12 +13,6 @@
                 "type": "git",
                 "url": "zichter@dev3:github/symfony/Config.git",
                 "reference": "v2.3.6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Config.git/v2.3.6.zip",
-                "reference": null,
-                "shasum": null
             },
             "require": {
                 "php": ">=5.3.3",
@@ -60,12 +54,6 @@
                 "type": "git",
                 "url": "zichter@dev3:github/symfony/Console.git",
                 "reference": "v2.3.6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Console.git/v2.3.6.zip",
-                "reference": null,
-                "shasum": null
             },
             "require": {
                 "php": ">=5.3.3"
@@ -113,12 +101,6 @@
                 "url": "zichter@dev3:github/symfony/Filesystem.git",
                 "reference": "v2.3.6"
             },
-            "dist": {
-                "type": "zip",
-                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Filesystem.git/v2.3.6.zip",
-                "reference": null,
-                "shasum": null
-            },
             "require": {
                 "php": ">=5.3.3"
             },
@@ -158,12 +140,6 @@
                 "type": "git",
                 "url": "zichter@dev3:github/symfony/Finder.git",
                 "reference": "v2.3.6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Finder.git/v2.3.6.zip",
-                "reference": null,
-                "shasum": null
             },
             "require": {
                 "php": ">=5.3.3"
@@ -205,12 +181,6 @@
                 "url": "zichter@dev3:github/symfony/Process.git",
                 "reference": "v2.3.6"
             },
-            "dist": {
-                "type": "zip",
-                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Process.git/v2.3.6.zip",
-                "reference": null,
-                "shasum": null
-            },
             "require": {
                 "php": ">=5.3.3"
             },
@@ -250,12 +220,6 @@
                 "type": "git",
                 "url": "zichter@dev3:github/symfony/PropertyAccess.git",
                 "reference": "v2.3.6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/PropertyAccess.git/v2.3.6.zip",
-                "reference": null,
-                "shasum": null
             },
             "require": {
                 "php": ">=5.3.3"
@@ -308,12 +272,6 @@
                 "url": "zichter@dev3:github/symfony/Yaml.git",
                 "reference": "v2.3.6"
             },
-            "dist": {
-                "type": "zip",
-                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Yaml.git/v2.3.6.zip",
-                "reference": null,
-                "shasum": null
-            },
             "require": {
                 "php": ">=5.3.3"
             },
@@ -344,29 +302,6 @@
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
             "time": "2013-09-22 18:04:39"
-        },
-        {
-            "name": "zicht/z-plugins",
-            "version": "dev-trunk",
-            "source": {
-                "type": "svn",
-                "url": "svn://zon/projecten/zicht-libraries/z-plugins",
-                "reference": "/trunk/@26838"
-            },
-            "require": {
-                "php": ">=5.3.3"
-            },
-            "type": "library",
-            "scripts": {
-                "post-install-cmd": [
-
-                ],
-                "post-update-cmd": [
-
-                ]
-            },
-            "description": "Plugins for Z",
-            "time": "2013-10-21 15:49:32"
         }
     ],
     "packages-dev": [
