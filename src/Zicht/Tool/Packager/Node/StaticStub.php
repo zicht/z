@@ -47,7 +47,12 @@ class StaticStub extends Stub
         $configurationLoader = new ConfigurationLoader(
             $this->staticConfig,
             new FileLocator(array(getcwd())),
-            new FileLocator($this->staticPluginPaths)
+            new \Zicht\Tool\Configuration\FileLoader(
+                new \Zicht\Tool\Configuration\PathDefaultFileLocator(
+                    'ZPLUGINPATH',
+                    $this->staticPluginPaths
+                )
+            )
         );
 
         $compiler = new ContainerCompiler($configurationLoader->processConfiguration());

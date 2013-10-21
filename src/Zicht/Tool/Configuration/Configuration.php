@@ -78,6 +78,8 @@ class Configuration implements ConfigurationInterface
                 ->ifTrue($hasLegacyEnv)->then($replaceLegacyEnv)
             ->end()
             ->children()
+                ->scalarNode('SHELL')->defaultValue('/bin/bash')->end()
+                ->scalarNode('TIMEOUT')->defaultValue(300)->end()
                 ->arrayNode('tasks')
                     ->prototype('array')
                         ->beforeNormalization()

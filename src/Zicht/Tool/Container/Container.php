@@ -25,12 +25,6 @@ use \UnexpectedValueException;
  */
 class Container
 {
-    /**
-     * The default shell used for scripts.
-     */
-    public static $SHELL = '/bin/bash';
-    public static $TIMEOUT = 300;
-
     protected $plugins = array();
     protected $subscribers = array();
     protected $commands = array();
@@ -485,10 +479,10 @@ class Container
     protected function createProcess($shell = null, $timeout = null)
     {
         if (null === $shell) {
-            $shell = self::$SHELL;
+            $shell = $this->values['SHELL'];
         }
         if (null === $timeout) {
-            $timeout = self::$TIMEOUT;
+            $timeout = $this->values['TIMEOUT'];
         }
 
         $process = new Process($shell);

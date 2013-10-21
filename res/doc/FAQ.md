@@ -1,6 +1,14 @@
 % FAQ
 
-# Why not Make, Pake, Ant, Phing, Rake, etc? #
+# How do you pronounce Z? #
+You pronounce it "Zee", and it rhymes with Bee, the one that goes buzzzzzzz.
+
+# Under what terms may I use and distribute Z? #
+Z is distributed under the MIT License. This means that you can do whatever you like with it, provided you include
+the license and copyright notices, and you don't come banging on our door if it didn't work the way you expected. There
+is no warranty, express or implied, and any documentation stating otherwise must be considered invalid.
+
+# Why not Make, Pake, Ant, Phing, Rake, Grunt, etc? #
 Let me first say this. In the end it really is a matter of taste, and what you feel comfortable with. So if
 you don't share my opinion, that is fine. I did not feel comfortable enough with any of these tools, though GNU Make
 has been my favorite for a long time.
@@ -12,8 +20,13 @@ because of it's ultimately simple YML-based configuration syntax. It depends on 
 components and a shell, and they are all at both our disposal. Furthermore, if you ever used bash, you can use Z, you
 don't need knowledge of much of the Z syntax or architecture to get started real quick.
 
+Z relies heavy on shell scripting. If you're not comfortable with bash, however, Z is not limited to bash as a
+primary interpreter. You can extend Z easily by utilizing any shell that is capable of processing stdin. Currently,
+it is not possible to do this on a per-task basis, but there are plans to do so.
+
 # Why not Capistrano, Capifony, Puppet, Chef, etc? #
-See above. Z does not aim to be a replacement of any of these tools. It aims to solve problems you might have.
+See above. Z does not aim to be a replacement of any of these tools. It aims to solve problems you might have. If you
+don't recognize the solution, Z is probably not for you.
 
 # Why is it called Z? #
 We use Z for build, release and integration management at the company where it was originally developed:
@@ -21,15 +34,8 @@ We use Z for build, release and integration management at the company where it w
 
 You might notice the similarity in logos.
 
-# How do you pronounce Z? #
-You pronounce it "Zee", and it rhymes with Bee, the one that goes buzzzzzzz.
-
-# Under what terms may I use and distribute Z? #
-Z is distributed under the MIT License. This means that you can do whatever you like with it, provided you include
-the license and copyright notices, and you don't come banging on our door if it didn't work the way you expected.
-
 # Where can I find recipes? #
-A substantial list of recipe examples is included in the source code. These recipes are provided as plugins, and can
+A substantial list of recipe examples is available as a separate package. These recipes are provided as plugins, and can
 be used in your configation simply by specifying them in your Zfile. See the documentation on Plugins how to enable,
 disable or extend these plugins.
 
@@ -53,12 +59,12 @@ plugins separately.
 A sane setup for z would be as follows:
 
 ```
-plugins: ['core', 'svn', 'rsync']
+plugins: ['deploy', 'svn', 'rsync']
 
 vcs:
     url: svn://my/project
 
-env:
+envs:
     production:
         ssh: myuser@remotehost
         root: ~/app/deploy-dir
@@ -75,6 +81,8 @@ To simulate a deploy. To see what exactly would be done, you can use the --expla
 
 ```shell
 $ z simulate production --explain
+$ #or explain the actual deploy
+$ z deploy production --explain
 ```
 
 Read the [tutorial](tutorial.html) for a more detailed walkthrough of how Z works.

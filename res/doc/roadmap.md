@@ -20,7 +20,7 @@ increment. If there are BC breaks planned for a next version, you will be warned
     do: echo $(envs[target_env].root)
     ```
 
-    Will be expanded to:
+    Will be equivalent to:
 
     ```
     do: echo $(envs.testing.root)
@@ -42,7 +42,8 @@ increment. If there are BC breaks planned for a next version, you will be warned
 
     Note that objects are not yet supported in 1.0, so that will be a side effect.
 
-    > *This is implemented using the PropertyPath component of Symfony 2.2. So Z will upgrade to run on the 2.2 branch*
+    > *This is implemented using the PropertyPath component of Symfony 2.2. Z will upgrade to run on the stable
+    2.3 branches for all symfony components*
 
  +  `$(env.root)` and such will be deprecated, so usage of `env.property` will be wrapped in a separate function as
     a convenience, which will resolve to `envs[target_env].root`, and it will trigger an E_USER_DEPRECATED message.
@@ -56,6 +57,9 @@ increment. If there are BC breaks planned for a next version, you will be warned
 # version 1.2 #
 
  +  Remove BC code for env variable usage.
+ +  Allowing to set a dynamic shell per task will be implemented
+ +  Plugins will be enabled to expose paths that should be interpreted as declarative expressions, so variables can
+    be used in configuration. How exactly this should be done is yet to be decided.
 
 # version 2.0 #
 

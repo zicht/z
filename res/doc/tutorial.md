@@ -114,7 +114,7 @@ Hello world!
 You can even add interactivity to your script, by including the ask() function to the declaration:
 
 ```
-plugins: ['core']
+plugins: ['interact']
 
 tasks:
     say:
@@ -606,9 +606,4 @@ tasks:
     rand20: echo $(all_time_random 20);
 ```
 
-This is just a convenience and syntactic sugar. For more than one parameter omitting the would cause a parser error.
-Even though you could nest these calls like this: `all_time_random all_time_random 20`, it would me much less readable
-and is therefore discouraged. You should use it only to improve readability.
-
-
-
+This is just a convenience and syntactic sugar. You should be the judge of whether you would want to use it or not ;)
