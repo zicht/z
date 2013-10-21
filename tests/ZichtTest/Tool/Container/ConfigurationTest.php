@@ -30,7 +30,6 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
             $file = realpath($file->getPathName());
             $php = dirname($file) . '/' . basename($file, '.yml') . '.php';
             $result = include $php;
-            $result += array('SHELL' => '/bin/bash', 'TIMEOUT' => 300);
             $ret[]= array(\Symfony\Component\Yaml\Yaml::parse($file), $result);
         }
         return $ret;

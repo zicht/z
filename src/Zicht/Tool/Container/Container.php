@@ -43,6 +43,8 @@ class Container
         $this->subscribe(array($this, 'prefixListener'));
 
         $this->values = array(
+            'SHELL'         => '/bin/bash',
+            'TIMEOUT'       => 300,
             'interactive'   => false,
         );
         // gather the options for nested z calls.
