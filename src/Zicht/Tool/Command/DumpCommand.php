@@ -15,22 +15,8 @@ use \Zicht\Tool\Script\Buffer;
 /**
  * Dumps the container
  */
-class DumpCommand extends Command
+class DumpCommand extends BaseCommand
 {
-    /**
-     * Constructor.
-     *
-     * @param null|string $containerNode
-     * @param array $configTree
-     */
-    public function __construct($containerNode, $configTree)
-    {
-        parent::__construct();
-        $this->containerNode = $containerNode;
-        $this->configTree = $configTree;
-    }
-
-
     /**
      * Configures the command
      *
@@ -42,8 +28,8 @@ class DumpCommand extends Command
 
         $this
             ->setName('z:dump')
-            ->setHelp('Dumps container and/or configuration information')
-            ->setDescription('Dumps container and/or configuration information')
+            ->setHelp('Dumps container values')
+            ->setDescription('Dumps container values')
         ;
     }
 
@@ -57,23 +43,6 @@ class DumpCommand extends Command
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln(Yaml::dump($this->configTree, 5, 4));
-        if ($output->getVerbosity() > 1) {
-            $buffer = new Buffer();
-            $this->containerNode->compile($buffer);
-            $result = $buffer->getResult();
-
-            $i = 1;
-            $output->writeln(
-                preg_replace_callback(
-                    '/^/m',
-                    function() use(&$i) {
-                        return sprintf("%3d. ", $i ++);
-                    },
-                    $result
-                ),
-                OutputInterface::OUTPUT_RAW
-            );
-        }
+        $output->writeln(Yaml::dump($this->container->getValues(), 5, 4));
     }
 }

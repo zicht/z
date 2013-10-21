@@ -13,11 +13,12 @@ use \Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use \Symfony\Component\PropertyAccess\PropertyAccess;
 use \Zicht\Tool\Script;
 use \Zicht\Tool\PluginInterface;
-use \UnexpectedValueException;
 use \Zicht\Tool\Script\Compiler as ScriptCompiler;
 use \Zicht\Tool\Util;
 use \Zicht\Tool\Script\Parser\Expression as ExpressionParser;
 use \Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
+
+use \UnexpectedValueException;
 
 /**
  * Service container
@@ -73,6 +74,7 @@ class Container
         $this->fn('is_dir');
         $this->fn('keys', 'array_keys');
         $this->fn('filemtime');
+        $this->fn('str', array($this, 'str'));
         $this->fn(
             'cat',
             function() {
@@ -126,7 +128,7 @@ class Container
 
             return $ret;
         } catch (UnexpectedTypeException $e) {
-            throw new \RuntimeException("Error resolving " . join(".", $path), 0, $e);
+            throw new \RuntimeException("Error resolving path '" . join(".", $path) . "'", 0, $e);
         } catch (OutOfBoundsException $e) {
             throw new \RuntimeException("Error resolving " . join(".", $path), 0, $e);
         }
@@ -203,6 +205,7 @@ class Container
      * This is useful for commands that need the shell regardless of the 'explain' value setting.
      *
      * @param string $cmd
+     * @return void
      */
     public function helperExec($cmd)
     {
@@ -316,13 +319,14 @@ class Container
      * @param string $expression
      * @return mixed
      */
-    public function evaluate($expression)
+    public function evaluate($expression, &$code = null)
     {
         $exprcompiler  = new ScriptCompiler(new ExpressionParser(), new ExpressionTokenizer());
 
         $z = $this;
         $_value = null;
-        eval('$_value = ' . $exprcompiler->compile($expression) . ';');
+        $code = '$_value = ' . $exprcompiler->compile($expression) . ';';
+        eval($code);
         return $_value;
     }
 
@@ -623,5 +627,10 @@ class Container
     public function getCommands()
     {
         return $this->commands;
+    }
+
+    public function getValues()
+    {
+        return $this->values;
     }
 }
