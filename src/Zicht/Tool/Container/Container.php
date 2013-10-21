@@ -69,7 +69,9 @@ class Container
         $this->fn('is_file');
         $this->fn('is_dir');
         $this->fn('keys', 'array_keys');
-        $this->fn('filemtime');
+        $this->fn('mtime', 'filemtime');
+        $this->fn('atime', 'fileatime');
+        $this->fn('ctime', 'filectime');
         $this->fn('str', array($this, 'str'));
         $this->fn(
             'cat',
