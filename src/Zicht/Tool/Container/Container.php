@@ -7,6 +7,7 @@
 namespace Zicht\Tool\Container;
 
 use \Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Output\NullOutput;
 use \Symfony\Component\Process\Process;
 use \Symfony\Component\PropertyAccess\Exception\OutOfBoundsException;
 use \Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
@@ -38,8 +39,12 @@ class Container
     /**
      * Construct the container with the specified values as services/values.
      */
-    public function __construct()
+    public function __construct(Executor $executor = null, $output = null)
     {
+        $this->executor = $executor ?: new Executor($this);
+        $this->output = $output ?: new NullOutput();
+
+
         $this->subscribe(array($this, 'prefixListener'));
 
         $this->values = array(
@@ -127,8 +132,6 @@ class Container
             return $ret;
         } catch (UnexpectedTypeException $e) {
             throw new \OutOfBoundsException("Error resolving path '" . join(".", $path) . "'", 0, $e);
-        } catch (OutOfBoundsException $e) {
-            throw new \OutOfBoundsException("Error resolving " . join(".", $path), 0, $e);
         }
     }
 
@@ -140,7 +143,7 @@ class Container
      * @return mixed
      *
      * @throws \RuntimeException
-     * @throws \UnexpectedValueException
+     * @throws CircularReferenceException
      */
     public function resolve($id, $required = false)
     {
@@ -156,18 +159,19 @@ class Container
         }
         try {
             if (in_array($id, $this->stack)) {
-                throw new \UnexpectedValueException(
+                $path = array_map(function($a) {
+                    return join('.', $a);
+                }, $this->stack);
+
+                throw new CircularReferenceException(
                     sprintf(
-                        "Circular reference detected: %s->%s",
-                        implode(' -> ', $this->stack),
-                        $id
+                        "Circular reference detected: %s -> %s",
+                        implode(' -> ', $path),
+                        join('.', $id)
                     )
                 );
             }
             array_push($this->stack, $id);
-            if (!is_array($id)) {
-                $id = array($id);
-            }
             $ret = $this->lookup($this->values, $id, $required);
 
             if ($ret instanceof \Closure) {
@@ -176,6 +180,9 @@ class Container
             array_pop($this->stack);
             return $ret;
         } catch (\Exception $e) {
+            if ($e instanceof CircularReferenceException) {
+                throw $e;
+            }
             throw new \RuntimeException("Exception while resolving value " . join(".", $id), 0, $e);
         }
     }
@@ -211,7 +218,7 @@ class Container
             $this->output->writeln("# Task needs the following helper command:");
             $this->output->writeln("# " . str_replace("\n", "\\n", $cmd));
         }
-        $this->doExec($cmd);
+        $this->executor->execute($cmd);
     }
 
     /**
@@ -446,74 +453,10 @@ class Container
             if ($this->resolve('explain')) {
                 $this->output->writeln('( ' . rtrim($cmd, "\n") . ' );');
             } else {
-                $this->doExec($cmd);
+                $this->executor->execute($cmd);
             }
         }
     }
-
-
-    /**
-     * Method to do an actual shell command. It uses 'passthru' if 'interactive' is set, otherwise uses a
-     * process wrapper.
-     *
-     * @param string $cmd
-     * @return int
-     *
-     * @throws \UnexpectedValueException
-     */
-    protected function doExec($cmd)
-    {
-        if ($this->resolve('interactive')) {
-            passthru($cmd, $ret);
-        } else {
-            $process = $this->createProcess();
-            $process->setStdin($cmd);
-            $process->run(array($this, 'processCallback'));
-            $ret = $process->getExitCode();
-        }
-        if ($ret != 0) {
-            throw new \UnexpectedValueException("Command '$cmd' failed with exit code {$ret}");
-        }
-        return $ret;
-    }
-
-
-    /**
-     * Creates a process for shell execution
-     *
-     * @param string $shell
-     * @param string $timeout
-     * @return \Symfony\Component\Process\Process
-     */
-    protected function createProcess($shell = null, $timeout = null)
-    {
-        if (null === $shell) {
-            $shell = $this->values['SHELL'];
-        }
-        if (null === $timeout) {
-            $timeout = $this->values['TIMEOUT'];
-        }
-
-        $process = new Process($shell);
-        $process->setTimeout($timeout);
-        return $process;
-    }
-
-
-    /**
-     * The callback used for the process executed by exec()
-     *
-     * @param mixed $mode
-     * @param string $data
-     * @return void
-     */
-    public function processCallback($mode, $data)
-    {
-        if (isset($this->output)) {
-            $this->output->write($data);
-        }
-    }
-
 
     /**
      * Execute a command. This is a wrapper for 'exec', so that a task prefixed with '@' can be passed as well.

@@ -21,6 +21,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->container = new Container();
+        $this->container->output = $this->getMock('Symfony\Console\Output\OutputInterface');
     }
 
     /**
@@ -148,6 +149,34 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('waa', $this->container->cmd('@foo'));
     }
 
+    public function testCmdForwardsToExecIfNotPrefixedWithAtSign()
+    {
+        $exec = $this->getMockBuilder('Zicht\Tool\Container\Executor')->setMethods(array('execute'))->disableOriginalConstructor()->getMock();
+        $container = new Container($exec);
+        $exec->expects($this->once())->method('execute')->with('hello');
+        $container->cmd('hello');
+    }
+
+    public function testExecutorDoesNotGetCalledIfExplainIsUsed()
+    {
+        $exec = $this->getMockBuilder('Zicht\Tool\Container\Executor')->setMethods(array('execute'))->disableOriginalConstructor()->getMock();
+        $container = new Container($exec);
+        $container->set(array('explain'), true);
+        $exec->expects($this->never())->method('execute');
+        $container->cmd('hello');
+    }
+
+    public function testHelperExecAlwaysCallsExecutor()
+    {
+        foreach (array(true, false) as $explain) {
+            $exec = $this->getMockBuilder('Zicht\Tool\Container\Executor')->setMethods(array('execute'))->disableOriginalConstructor()->getMock();
+            $container = new Container($exec);
+            $container->set(array('explain'), $explain);
+            $exec->expects($this->once())->method('execute');
+            $container->helperExec('hello');
+        }
+    }
+
 
     /**
      * @covers \Zicht\Tool\Container\Container::decl
@@ -211,11 +240,82 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers \Zicht\Tool\Container\Container::lookup
+     * @expectedException \OutOfBoundsException
+     */
+    public function testLookupWillFailIfRequiredButNotFound4()
+    {
+        $this->container->lookup(array('a' => array('b' => 'value')), array(1), true);
+    }
+
+    /**
+     * @covers \Zicht\Tool\Container\Container::lookup
+     * @expectedException \InvalidArgumentException
+     */
+    public function testLookupWillFailIfPathIsEmpty()
+    {
+        $this->container->lookup(array('a' => array('b' => 'value')), array(), true);
+    }
+
+    /**
      * @covers \Zicht\Tool\Container\Container::resolve
      */
     public function testResolve()
     {
         $this->container->set(array('a', 'b'), 'value');
         $this->assertEquals('value', $this->container->resolve(array('a', 'b')));
+    }
+
+
+    /**
+     * @covers \Zicht\Tool\Container\Container::resolve
+     * @covers \Zicht\Tool\Container\Container::path
+     */
+    public function testResolveCompat()
+    {
+        set_error_handler(function(){}, E_USER_DEPRECATED);
+        $this->container->set(array('a.b'), 'value');
+        $this->assertEquals($this->container->resolve(array('a', 'b')), $this->container->resolve('a.b'));
+        restore_error_handler();
+    }
+
+
+    /**
+     * @covers \Zicht\Tool\Container\Container::resolve
+     * @covers \Zicht\Tool\Container\Container::path
+     */
+    public function testLookupCompat()
+    {
+        set_error_handler(function(){}, E_USER_DEPRECATED);
+        $this->container->set(array('a.b'), 'value');
+        $this->assertEquals($this->container->lookup($this->container->getValues(), 'a.b'), $this->container->resolve('a.b'));
+        restore_error_handler();
+    }
+
+
+    /**
+     * @expectedException \Zicht\Tool\Container\CircularReferenceException
+     */
+    public function testCircularReferenceResolutionWillFail()
+    {
+        $this->container->set('a', function($c) {
+            return $c->resolve('b');
+        });
+        $this->container->set('b', function($c) {
+            return $c->resolve('a');
+        });
+
+        $this->container->resolve('a');
+    }
+
+    /**
+     * @expectedException \RuntimeException
+     */
+    public function testExceptionsAreConvertedToRuntimeExceptions()
+    {
+        $this->container->set('a', function() {
+            throw new \Exception("Any");
+        });
+        $this->container->resolve('a');
     }
 }
