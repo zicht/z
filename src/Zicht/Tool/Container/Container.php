@@ -119,16 +119,16 @@ class Container
             );
 
             if ($require && null === $ret) {
-                throw new \RuntimeException(
+                throw new \OutOfBoundsException(
                     "Error resolving " . join(".", $path) . ': the path could not be found in the specified context'
                 );
             }
 
             return $ret;
         } catch (UnexpectedTypeException $e) {
-            throw new \RuntimeException("Error resolving path '" . join(".", $path) . "'", 0, $e);
+            throw new \OutOfBoundsException("Error resolving path '" . join(".", $path) . "'", 0, $e);
         } catch (OutOfBoundsException $e) {
-            throw new \RuntimeException("Error resolving " . join(".", $path), 0, $e);
+            throw new \OutOfBoundsException("Error resolving " . join(".", $path), 0, $e);
         }
     }
 
@@ -392,6 +392,8 @@ class Container
     /**
      * The prefix listener makes sure the output gets the right prefix at the right time.
      *
+     * TODO this needs to be removed from the container and put somewhere else.
+     *
      * @param array $task
      * @param string $event
      * @return void
@@ -559,7 +561,7 @@ class Container
     {
         if (is_array($value)) {
             $allScalar = function ($a, $b) {
-                return is_scalar($a) && $b;
+                return $a && is_scalar($b);
             };
             if (! array_reduce($value, $allScalar, true)) {
                 throw new UnexpectedValueException("Unexpected complex type " . Util::toPhp($value));
