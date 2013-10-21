@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "97668f6e1805d5e3211d5fb7a50c9952",
+    "hash": "f608297914a8849fdfb06d4eaa7905bc",
     "packages": [
         {
             "name": "symfony/config",
@@ -344,6 +344,29 @@
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
             "time": "2013-09-22 18:04:39"
+        },
+        {
+            "name": "zicht/z-plugins",
+            "version": "dev-trunk",
+            "source": {
+                "type": "svn",
+                "url": "svn://zon/projecten/zicht-libraries/z-plugins",
+                "reference": "/trunk/@26838"
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "scripts": {
+                "post-install-cmd": [
+
+                ],
+                "post-update-cmd": [
+
+                ]
+            },
+            "description": "Plugins for Z",
+            "time": "2013-10-21 15:49:32"
         }
     ],
     "packages-dev": [

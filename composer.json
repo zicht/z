@@ -13,6 +13,9 @@
         "symfony/property-access": "2.3.*@stable",
         "symfony/finder": "2.3.*@stable"
     },
+    "suggest": {
+        "zicht/z-plugins": "A set of default plugins for Z"
+    },
     "scripts": {
         "post-install-cmd": [
         ],
