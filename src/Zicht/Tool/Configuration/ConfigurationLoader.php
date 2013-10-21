@@ -53,7 +53,12 @@ class ConfigurationLoader
         $this->plugins = array();
     }
 
-
+    /**
+     * Add a plugin on-the-fly
+     *
+     * @param string $name
+     * @return void
+     */
     public function addPlugin($name)
     {
         $this->loader->addPlugin($name, getcwd());
@@ -64,9 +69,10 @@ class ConfigurationLoader
      * Processes the configuration contents
      *
      * @return array
+     *
      * @throws \UnexpectedValueException
      */
-    public function processConfiguration($initialConfig = array())
+    public function processConfiguration()
     {
         try {
             $zfiles = $this->configLocator->locate($this->configFilename, null, false);
@@ -90,7 +96,7 @@ class ConfigurationLoader
         $processor = new Processor();
         return $processor->processConfiguration(
             new Configuration($this->plugins),
-            array_merge(array($initialConfig), $this->loader->getConfigs())
+            $this->loader->getConfigs()
         );
     }
 

@@ -9,8 +9,14 @@ use \Symfony\Component\Console\Input;
 use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Yaml\Yaml;
 
+/**
+ * Command to evaluate an expression
+ */
 class EvalCommand extends BaseCommand
 {
+    /**
+     * @{inheritDoc}
+     */
     protected function configure()
     {
         $this
@@ -22,7 +28,9 @@ class EvalCommand extends BaseCommand
         ;
     }
 
-
+    /**
+     * @{inheritDoc}
+     */
     protected function execute(Input\InputInterface $input, OutputInterface $output)
     {
         $expr   = $input->getArgument('expression');

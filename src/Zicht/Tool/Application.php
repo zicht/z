@@ -3,17 +3,16 @@
  * @author Gerard van Helden <gerard@zicht.nl>
  * @copyright Zicht Online <http://zicht.nl>
  */
-
 namespace Zicht\Tool;
 
+use \Symfony\Component\Config\FileLocator;
 use \Symfony\Component\Console\Application as BaseApplication;
 use \Symfony\Component\Console\Command\Command;
-use \Symfony\Component\Yaml\Yaml;
-use \Symfony\Component\Config\FileLocator;
 use \Symfony\Component\Console\Input\InputArgument;
 use \Symfony\Component\Console\Input\InputOption;
 use \Symfony\Component\Console\Input\InputInterface;
 use \Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\Yaml\Yaml;
 
 use \Zicht\Tool\Command as Cmd;
 use \Zicht\Tool\Configuration\ConfigurationLoader;
@@ -193,6 +192,9 @@ EOSTR;
     }
 
 
+    /**
+     * @{inheritDoc}
+     */
     public function add(Command $command)
     {
         parent::add($command);

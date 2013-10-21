@@ -79,7 +79,15 @@ class FileLoader extends BaseFileLoader
         }
     }
 
-
+    /**
+     * Adds a plugin to the config and load it.
+     *
+     * @param string $plugin
+     * @param string $dir
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
     public function addPlugin($plugin, $dir)
     {
         $hasPlugin = $hasZfile = false;

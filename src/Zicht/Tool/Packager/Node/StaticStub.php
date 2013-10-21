@@ -9,7 +9,7 @@
 namespace Zicht\Tool\Packager\Node;
 
 use \Symfony\Component\Config\FileLocator;
-use \Zicht\Tool\Configuration\ConfigurationLoader;
+use \Zicht\Tool\Configuration;
 use \Zicht\Tool\Container\ContainerCompiler;
 use \Zicht\Tool\Script\Buffer;
 
@@ -44,11 +44,11 @@ class StaticStub extends Stub
      */
     protected function compileInitialization(Buffer $buffer)
     {
-        $configurationLoader = new ConfigurationLoader(
+        $configurationLoader = new Configuration\ConfigurationLoader(
             $this->staticConfig,
             new FileLocator(array(getcwd())),
-            new \Zicht\Tool\Configuration\FileLoader(
-                new \Zicht\Tool\Configuration\PathDefaultFileLocator(
+            new Configuration\FileLoader(
+                new Configuration\PathDefaultFileLocator(
                     'ZPLUGINPATH',
                     $this->staticPluginPaths
                 )

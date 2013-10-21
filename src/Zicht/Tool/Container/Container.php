@@ -309,8 +309,11 @@ class Container
 
     /**
      * Does an on-the-fly evaluation of the specified expression.
+     * The compilation result will be stored in $code.
      *
      * @param string $expression
+     * @param string &$code
+     *
      * @return mixed
      */
     public function evaluate($expression, &$code = null)
@@ -623,6 +626,11 @@ class Container
         return $this->commands;
     }
 
+    sv/**
+     * Returns the values.
+     *
+     * @return array
+     */
     public function getValues()
     {
         return $this->values;
