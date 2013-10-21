@@ -7,6 +7,7 @@
 namespace Zicht\Tool;
 
 use \Symfony\Component\Console\Application as BaseApplication;
+use \Symfony\Component\Console\Command\Command;
 use \Symfony\Component\Yaml\Yaml;
 use \Symfony\Component\Config\FileLocator;
 use \Symfony\Component\Console\Input\InputArgument;
@@ -77,7 +78,7 @@ EOSTR;
                     return;
                 }
                 $repeating[]= $errstr;
-                $output->writeln("[DEPRECATED] $errstr\n");
+                $output->writeln("[DEPRECATED] $errstr");
             },
             E_USER_DEPRECATED
         );
@@ -181,13 +182,23 @@ EOSTR;
         $container->set('force',    $input->hasParameterOption(array('--force', '-f')));
         $container->set('explain',  $input->hasParameterOption(array('--explain')));
 
+        $this->add(new Cmd\EvalCommand());
+        $this->add(new Cmd\DumpCommand());
         foreach ($container->getCommands() as $task) {
             $this->add($task);
-            $task->setContainer($container);
         }
         $container->console_dialog_helper = $this->getHelperSet()->get('dialog');
 
         return parent::doRun($input, $output);
+    }
+
+
+    public function add(Command $command)
+    {
+        parent::add($command);
+        if ($command instanceof Cmd\BaseCommand) {
+            $command->setContainer($this->container);
+        }
     }
 
 
