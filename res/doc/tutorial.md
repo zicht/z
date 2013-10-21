@@ -53,7 +53,6 @@ tasks:
         do:
             - echo "$(what) world!"
 ```
-
 > *Note that the notation for the string "Hello" is a bit awkward, because YML would interpret the double quotes as
 a regular string, and Z would never know that you put quotes there. Fortunately, this use case isn't that common.*
 
@@ -75,7 +74,6 @@ tasks:
         do:
             - echo "$(what) world!"
 ```
-
 > *Note that you can skip the single quotes now, because the question mark is part of the value. Fortunately, this use
 case is much more common.*
 
@@ -89,7 +87,7 @@ $ z say Boogiewoogie
 Boogiewoogie world!
 ```
 
-By simply adding a question mark to the input declaration, you have made the input variable. If you omit the default
+By simply adding a question mark to the input declaration, you have made the input dynamic. If you omit the default
 value, the input will become required:
 
 ```
@@ -222,7 +220,7 @@ parameter:
     $ z say_hello --explain
     ( echo "Hello world!" );
 
-    $ z say_hello "Foo bar baz!"
+    $ z say_hello "Foo bar baz!" --explain
     ( echo "Foo bar baz world!" );
 ```
 

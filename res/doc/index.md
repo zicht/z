@@ -26,6 +26,9 @@ tasks:
 		# Prerequisites are called no matter the outcome of the expression
 		unless: expression
 
+		# If the expression does not evaluate to true, an exception is thrown.
+		assert: expression
+
 		# prerequisites
 		pre:
 			- @another.task
@@ -46,6 +49,6 @@ tasks:
 ```
 
 Tasks are defined by prerequisites, a body identified by the "do" section and task triggers, which trigger commands
-and/or other tasks when the task is executed.
+and/or other tasks right after the task is executed.
 
 Read the [tutorial](tutorial.html) for a more detailed introduction.
