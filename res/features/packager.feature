@@ -15,6 +15,6 @@ I need to be able to build a phar package from my zfile.
   Scenario: The packager reports the written file
     Then I should see text matching "/Built [^\n]+a.out in \d+(\.\d+)? seconds/"
 
-  Scenario: The value in the task resolves to the declaration of the plugin
+  Scenario: The packager is executable and accepts the task
     When I run "./a.out t"
     Then I should see text matching "/Hello world/m"
