@@ -7,7 +7,8 @@
 namespace Zicht\Tool\Container;
 
 use \Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Output\NullOutput;
+use \Symfony\Component\Console\Output\NullOutput;
+use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Process\Process;
 use \Symfony\Component\PropertyAccess\Exception\OutOfBoundsException;
 use \Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
@@ -38,6 +39,9 @@ class Container
 
     /**
      * Construct the container with the specified values as services/values.
+     *
+     * @param Executor $executor
+     * @param OutputInterface $output
      */
     public function __construct(Executor $executor = null, $output = null)
     {
@@ -159,9 +163,12 @@ class Container
         }
         try {
             if (in_array($id, $this->stack)) {
-                $path = array_map(function($a) {
-                    return join('.', $a);
-                }, $this->stack);
+                $path = array_map(
+                    function($a) {
+                        return join('.', $a);
+                    },
+                    $this->stack
+                );
 
                 throw new CircularReferenceException(
                     sprintf(

@@ -11,14 +11,29 @@ namespace Zicht\Tool\Container;
 
 use \Symfony\Component\Process\Process;
 
+/**
+ * Runs the commands in the shell.
+ */
 class Executor
 {
+    /**
+     * Constructor
+     *
+     * @param Container $container
+     */
     public function __construct(Container $container)
     {
         $this->container = $container;
     }
 
 
+    /**
+     * Executes the passed command line in the shell.
+     *
+     * @param string $cmd
+     * @return int
+     * @throws \UnexpectedValueException
+     */
     public function execute($cmd)
     {
         $ret = 0;
@@ -37,13 +52,17 @@ class Executor
     }
 
 
+    /**
+     * Create the process instance to use for non-interactive handling
+     *
+     * @return \Symfony\Component\Process\Process
+     */
     protected function createProcess()
     {
         $process = new Process($shell = $this->container->get('SHELL'));
         $process->setTimeout($this->container->get('TIMEOUT'));
         return $process;
     }
-
 
 
     /**
