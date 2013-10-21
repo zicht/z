@@ -5,6 +5,9 @@
  */
 namespace Zicht\Tool\Container;
 
+/**
+ * Thrown whenever a circular reference is detected.
+ */
 class CircularReferenceException extends \LogicException
 {
 }
