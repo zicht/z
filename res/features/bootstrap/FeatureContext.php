@@ -66,7 +66,7 @@ class FeatureContext extends BehatContext
      */
     public function iRunZ($cmd)
     {
-        $this->response = shell_exec('ZPATH= ZPLUGINPATH= ' . $this->zBinary . ' ' . $cmd . ' 2>&1');
+        $this->response = shell_exec('ZPATH=. ' . $this->zBinary . ' ' . $cmd . ' 2>&1');
     }
 
     /**
