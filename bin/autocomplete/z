@@ -24,14 +24,14 @@ _z()
     local cur prev opts envs
     COMPREPLY=()
     # Reset break words becausewe work with colon as in arguments
-    COMP_WORDBREAKS=${COMP_WORDBREAKS/://}
+    COMP_WORDBREAKS=${COMP_WORDBREAKS//:}
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     # Default options
-    OPTIONS=$(/usr/bin/php /opt/z/bin/z --options)
+    OPTIONS=$(printf "%b" "$(/opt/z/bin/z  --options )")
     case "${prev}" in
         simulate|deploy|env:*|content:*|patch|unpatch)
-            ENVIRONMENTS=$(/usr/bin/php /opt/z/bin/z --environments)
+            ENVIRONMENTS=$(printf "%b" "$(/opt/z/bin/z  --options )")
             # Add to COMPREPLY array
             COMPREPLY=( $(compgen -W "${ENVIRONMENTS}" -- "${cur}") )
             return 0
