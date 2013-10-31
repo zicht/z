@@ -28,10 +28,10 @@ _z()
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
     # Default options
-    OPTIONS=$(printf "%b" "$(/opt/z/bin/z  --options )")
+    OPTIONS=$( echo "" | /opt/z/bin/z  --options )
     case "${prev}" in
         simulate|deploy|env:*|content:*|patch|unpatch)
-            ENVIRONMENTS=$(printf "%b" "$(/opt/z/bin/z  --options )")
+            ENVIRONMENTS=$) echo "" | /opt/z/bin/z  --environments )
             # Add to COMPREPLY array
             COMPREPLY=( $(compgen -W "${ENVIRONMENTS}" -- "${cur}") )
             return 0
