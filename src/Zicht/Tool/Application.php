@@ -45,6 +45,7 @@ class Application extends BaseApplication
 
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
+
         if (null === $input) {
             $input = new ArgvInput();
         }
@@ -127,6 +128,51 @@ class Application extends BaseApplication
         return $z;
     }
 
+    /**
+     *  add some options from auto complete
+     *
+     * @param \Symfony\Component\Console\Input\InputInterface $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return int
+     */
+    public function doRun(InputInterface $input, OutputInterface $output)
+    {
+
+        if (true === $input->hasParameterOption(array('--options'))) {
+            $output->writeln($this->getList());
+            return 0;
+        }
+
+        if (true === $input->hasParameterOption(array('--environments'))) {
+            $output->writeln($this->getEnvironments());
+            return 0;
+        }
+
+        return parent::doRun($input,$output);
+    }
+
+    /**
+     * get Environments defined in z.yml
+     *
+     * @return array
+     */
+    public function getEnvironments()
+    {
+
+        list($plugins, $config) = $this->getConfig();
+
+        $environment = array_keys($config['env']);
+
+        array_walk($environment, function(&$val){
+            $val = escapeshellarg($val);
+        });
+
+        return $environment;
+
+    }
+
+
+
     public function getConfig()
     {
         $zFileLocator  = new FileLocator(array(getcwd(), getenv('HOME') . '/.config/z/'));
@@ -163,4 +209,39 @@ class Application extends BaseApplication
 
         return array($plugins, $config);
     }
+
+    /**
+     * generate list of options and commands
+     *
+     * @return array
+     */
+    private function getList(){
+
+        $return = array();
+
+        /** @var $option InputOption */
+        foreach ($this->getDefinition()->getOptions() as $option) {
+
+            $return[] = sprintf('--%s',$option->getName());
+
+            if( $option->getShortcut() ){
+                $return[] = sprintf('-%s', $option->getShortcut());
+            }
+        }
+
+        $allCommands = array_keys($this->all());
+
+        foreach($allCommands as $command){
+            $return[] = $command;
+        }
+
+        array_walk($return, function(&$var){
+            $var = escapeshellarg($var);
+        });
+
+        return $return;
+
+    }
+
+
 }
