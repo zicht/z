@@ -5,6 +5,8 @@ tasks:
 
     publish:
         pre: @docs
+        flags:
+            vendors: false
         do: rsync -rv res/doc/html/ zichter@dev3:/var/www/dev/z/default/public/
 
     build: php bin/package.php --force build z

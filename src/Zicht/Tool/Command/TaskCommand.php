@@ -48,6 +48,10 @@ class TaskCommand extends BaseCommand
         $this->setDescription(preg_replace('/^([^\n]*).*/s', '$1', $help));
     }
 
+
+    /**
+     * @{inheritDoc}
+     */
     public function getSynopsis()
     {
         $ret = parent::getSynopsis();
@@ -109,10 +113,11 @@ class TaskCommand extends BaseCommand
             }
             if ($input->getOption('no-' . $name)) {
                 $this->container->set(explode('.', $name), false);
-            } elseif($input->getOption('no-' . $name)) {
+            } elseif($input->getOption('with-' . $name)) {
                 $this->container->set(explode('.', $name), true);
             }
         }
+
         $this->preflightCheck($output);
 
         return $this->container->resolve(array_merge(array('tasks'), explode(':', $this->getName())));

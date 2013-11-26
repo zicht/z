@@ -146,7 +146,7 @@ EOSTR;
             $compiler = new ContainerCompiler($config);
             $this->container = $compiler->getContainer();
             foreach ($this->loader->getPlugins() as $plugin) {
-                $plugin->setContainer($this->container);
+                $this->container->addPlugin($plugin);
             }
         }
         return $this->container;
@@ -181,12 +181,13 @@ EOSTR;
         $container->set('force',    $input->hasParameterOption(array('--force', '-f')));
         $container->set('explain',  $input->hasParameterOption(array('--explain')));
 
-        $this->add(new Cmd\EvalCommand());
-        $this->add(new Cmd\DumpCommand());
         foreach ($container->getCommands() as $task) {
             $this->add($task);
         }
         $container->console_dialog_helper = $this->getHelperSet()->get('dialog');
+
+        $this->add(new Cmd\EvalCommand());
+        $this->add(new Cmd\DumpCommand());
 
         return parent::doRun($input, $output);
     }

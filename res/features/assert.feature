@@ -17,10 +17,10 @@ I need to be able to define a reason to fail a task
             post:   echo "post was executed"
     """
 
-  Scenario: Running the task with the assert evaluating to true should run prerequisites, but not the body and post
+  Scenario: Running the task with the assert evaluating to true should not run script entirely
     When I run "z t"
     Then I should see text matching "/Assertion failed/"
-    And I should see text matching "/pre was executed/"
+    And I should not see text matching "/pre was executed/"
     But I should not see text matching "/do was executed/"
     And I should not see text matching "/post was executed/"
 

@@ -538,6 +538,13 @@ class Container
     }
 
 
+    public function addPlugin(PluginInterface $plugin)
+    {
+        $this->plugins[]= $plugin;
+        $plugin->setContainer($this);
+    }
+
+
     /**
      * Notifies registered subscribers of an event
      *
@@ -595,5 +602,18 @@ class Container
     public function getValues()
     {
         return $this->values;
+    }
+
+
+    /**
+     * Clones all plugins and resets them to their initial state
+     */
+    public function __clone()
+    {
+        $plugins = $this->plugins;
+        $this->plugins = array();
+        foreach ($plugins as $p) {
+            $this->addPlugin(clone $p);
+        }
     }
 }

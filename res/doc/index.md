@@ -22,11 +22,17 @@ tasks:
 			bar: ? "default-value" 	# A string value that is overridable and defaults to "default-value"
 			baz: ? 					# A variable that is required by the task
 
+        flags:
+            foo: false              # The value of 'foo' will be false, unless --with-foo is passed to the script
+            bar: true               # The value of 'bar' will be true, unless --no-bar is passed to the script
+
 		# if the expression evaluates to true, the task´s body and triggers are skipped.
 		# Prerequisites are called no matter the outcome of the expression
 		unless: expression
 
 		# If the expression does not evaluate to true, an exception is thrown.
+		# This will be caught in "preflight" stage, in which the entire script is evaluated without executing actual
+		# commands
 		assert: expression
 
 		# prerequisites
