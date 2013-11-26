@@ -1,10 +1,7 @@
 <?php
 /**
- * Created by JetBrains PhpStorm.
- * User: gerard
- * Date: 10/21/13
- * Time: 10:47 PM
- * To change this template use File | Settings | File Templates.
+ * @author Gerard van Helden <gerard@zicht.nl>
+ * @copyright Zicht online <http://zicht.nl>
  */
 
 namespace Zicht\Tool\Container;

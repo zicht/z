@@ -9,14 +9,6 @@
 namespace Zicht\Tool\Packager;
 
 use \Symfony\Component\Console\Application as BaseApplication;
-use \Symfony\Component\Yaml\Yaml;
-use \Symfony\Component\Config\FileLocator;
-use \Symfony\Component\Config\Definition\Processor;
-use \Symfony\Component\Console\Input\InputArgument;
-use \Symfony\Component\Console\Input\InputOption;
-use \Symfony\Component\Console\Input\InputInterface;
-use \Symfony\Component\Console\Output\OutputInterface;
-
 
 /**
  * Z Packager application

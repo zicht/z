@@ -30,7 +30,7 @@ class ContainerBuilder
         $this->config = $config;
 
         $this->exprcompiler  = new Compiler(new ExpressionParser(), new ExpressionTokenizer());
-        $this->scriptcompiler = new Compiler(new Parser());
+        $this->scriptcompiler = new Compiler();
     }
 
 
@@ -85,7 +85,7 @@ class ContainerBuilder
 
 
     /**
-     * Creates the traverser that gathers all nodes that are specified in the tree.
+     * Creates the traverser that gathers all nodes (i.e. Node instances) that are specified in the tree.
      *
      * @param array $result
      * @param \Zicht\Tool\Script\Node\Branch $containerNode
