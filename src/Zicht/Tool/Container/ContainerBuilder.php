@@ -150,7 +150,7 @@ class ContainerBuilder
      * Creates a node for the 'set' definition of the task.
      *
      * @param array $path
-     * @param array $node
+     * @param string $node
      * @return \Zicht\Tool\Script\Node\Task\SetNode
      */
     public function createSetNode($path, $node)

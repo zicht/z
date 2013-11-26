@@ -24,9 +24,11 @@ class TaskCommand extends BaseCommand
      * @param array $arguments
      * @param string $help
      */
-    public function __construct($name, $arguments, $help)
+    public function __construct($name, $arguments, $flags, $help)
     {
         parent::__construct($name);
+
+        $this->flags = $flags;
 
         foreach ($arguments as $name => $required) {
             $this->addArgument(
@@ -36,8 +38,35 @@ class TaskCommand extends BaseCommand
                     : InputArgument::OPTIONAL
             );
         }
+        foreach ($flags as $name => $value) {
+            $this
+                ->addOption('no-' . $name, '', InputOption::VALUE_NONE, 'Toggle ' . $name . ' flag off')
+                ->addOption('with-' . $name, '', InputOption::VALUE_NONE, 'Toggle ' . $name . ' flag on')
+            ;
+        }
         $this->setHelp($help ? $help : '(no help available for this task)');
         $this->setDescription(preg_replace('/^([^\n]*).*/s', '$1', $help));
+    }
+
+    public function getSynopsis()
+    {
+        $ret = parent::getSynopsis();
+
+        foreach ($this->flags as $name => $value) {
+            $i = 0;
+            $ret = preg_replace_callback(
+                '/\[--(no|with)-' . $name . '\]/',
+                function() use(&$i, $name) {
+                    if ($i ++ == 0) {
+                        return '[--[no|with]-' . $name .']';
+                    }
+                    return '';
+                },
+                $ret
+            );
+        }
+
+        return $ret;
     }
 
 
@@ -73,7 +102,17 @@ class TaskCommand extends BaseCommand
                 $this->container->set(explode('.', $arg->getName()), $input->getArgument($arg->getName()));
             }
         }
-
+        foreach ($this->flags as $name => $value) {
+            $this->container->set(explode('.', $name), $value);
+            if ($input->getOption('no-' . $name) && $input->getOption('with-' . $name)) {
+                throw new \InvalidArgumentException("Cannot pass both --no-{$name} and --with-{$name} options, they are mutually exclusive");
+            }
+            if ($input->getOption('no-' . $name)) {
+                $this->container->set(explode('.', $name), false);
+            } elseif($input->getOption('no-' . $name)) {
+                $this->container->set(explode('.', $name), true);
+            }
+        }
         $this->preflightCheck($output);
 
         return $this->container->resolve(array_merge(array('tasks'), explode(':', $this->getName())));

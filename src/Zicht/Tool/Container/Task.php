@@ -72,6 +72,8 @@ class Task extends Declaration
                 ->raw(',')
                 ->asPhp($this->getArguments(true))
                 ->raw(',')
+                ->asPhp($this->taskDef['flags'])
+                ->raw(',')
                 ->asPhp($this->getHelp() ? $this->getHelp() : "(no help available for this task)")
                 ->raw(')')->eol()
                 ->indent(-1)->writeln(');')
