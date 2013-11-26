@@ -6,7 +6,7 @@ You pronounce it "Zee", and it rhymes with Bee, the one that goes buzzzzzzz.
 # Under what terms may I use and distribute Z? #
 Z is distributed under the MIT License. This means that you can do whatever you like with it, provided you include
 the license and copyright notices, and you don't come banging on our door if it didn't work the way you expected. There
-is no warranty, express or implied, and any documentation stating otherwise must be considered invalid.
+is no warranty, express or implied, and any documentation or source file stating otherwise must be considered invalid.
 
 # Why not Make, Pake, Ant, Phing, Rake, Grunt, etc? #
 Let me first say this. In the end it really is a matter of taste, and what you feel comfortable with. So if
