@@ -36,6 +36,7 @@ class Container
     private $stack = array();
 
     public $output;
+    public $executor;
 
     /**
      * Construct the container with the specified values as services/values.
@@ -81,6 +82,7 @@ class Container
         $this->fn('mtime', 'filemtime');
         $this->fn('atime', 'fileatime');
         $this->fn('ctime', 'filectime');
+        $this->fn('sh', array($this, 'helperExec'));
         $this->fn('str', array($this, 'str'));
         $this->fn(
             'cat',
@@ -225,7 +227,9 @@ class Container
             $this->output->writeln("# Task needs the following helper command:");
             $this->output->writeln("# " . str_replace("\n", "\\n", $cmd));
         }
-        $this->executor->execute($cmd);
+        $ret = '';
+        $this->executor->execute($cmd, $ret);
+        return $ret;
     }
 
     /**
@@ -338,11 +342,12 @@ class Container
     {
         $exprcompiler  = new ScriptCompiler(new ExpressionParser(), new ExpressionTokenizer());
 
-        $z = $this;
+        $z = clone $this;
         $_value = null;
-        $code = '$_value = ' . $exprcompiler->compile($expression) . ';';
+        $code = '$z->set(\'_\', ' . $exprcompiler->compile($expression) . ');';
         eval($code);
-        return $_value;
+
+        return $z->resolve('_');
     }
 
 

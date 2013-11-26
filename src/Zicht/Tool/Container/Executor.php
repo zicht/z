@@ -31,7 +31,7 @@ class Executor
      * @return int
      * @throws \UnexpectedValueException
      */
-    public function execute($cmd)
+    public function execute($cmd, &$captureOutput = null)
     {
         $ret = 0;
         if ($this->container->resolve('interactive')) {
@@ -39,7 +39,13 @@ class Executor
         } else {
             $process = $this->createProcess();
             $process->setStdin($cmd);
-            $process->run(array($this, 'processCallback'));
+            if (null !== $captureOutput) {
+                $process->run(function($type, $data) use(&$captureOutput) {
+                    $captureOutput .= $data;
+                });
+            } else {
+                $process->run(array($this, 'processCallback'));
+            }
             $ret = $process->getExitCode();
         }
         if ($ret != 0) {

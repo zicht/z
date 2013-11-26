@@ -22,7 +22,7 @@ class EvalCommand extends BaseCommand
         $this
             ->setName('z:eval')
             ->addArgument('expression', Input\InputArgument::REQUIRED, 'The expression to evaluate')
-            ->addOption('format', '', Input\InputOption::VALUE_REQUIRED, 'Format to output', 'json')
+            ->addOption('format', '', Input\InputOption::VALUE_REQUIRED, 'Format to output', 'yml')
             ->setHelp('Available output formats are \'json\', \'yml\' or \'php\'')
             ->setDescription('Evaluates an expression within the scope of the container.')
         ;

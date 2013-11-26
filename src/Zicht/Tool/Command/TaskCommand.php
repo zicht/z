@@ -9,7 +9,7 @@ namespace Zicht\Tool\Command;
 use \Symfony\Component\Console\Command\Command;
 use \Symfony\Component\Console\Input\InputOption;
 use \Symfony\Component\Console\Input\InputInterface;
-use \Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\Console\Output;
 use \Symfony\Component\Console\Input\InputArgument;
 
 /**
@@ -63,7 +63,7 @@ class TaskCommand extends BaseCommand
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @return mixed
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, Output\OutputInterface $output)
     {
         foreach ($this->getDefinition()->getArguments() as $arg) {
             if ($arg->getName() === 'command') {
@@ -74,6 +74,22 @@ class TaskCommand extends BaseCommand
             }
         }
 
+        $this->preflightCheck($output);
+
         return $this->container->resolve(array_merge(array('tasks'), explode(':', $this->getName())));
+    }
+
+
+    protected function preflightCheck($output)
+    {
+        try {
+            $dry = clone $this->container;
+            $dry->set('explain', true);
+            $dry->output = new Output\NullOutput();
+            $dry->resolve(array_merge(array('tasks'), explode(':', $this->getName())));
+        } catch (\Exception $e) {
+            $output->writeln("<fg=red>Error: </fg=red> preflight check failed with exception <comment>\"" . $e->getMessage() . '\"</comment>' . "\n");
+            throw $e;
+        }
     }
 }
