@@ -126,13 +126,21 @@ class TaskCommand extends BaseCommand
 
     protected function preflightCheck($output)
     {
+        $stream = fopen('php://temp', 'r+');
+        $dry = clone $this->container;
         try {
-            $dry = clone $this->container;
             $dry->set('explain', true);
-            $dry->output = new Output\NullOutput();
+            $dry->set('interactive', false);
+            $dry->fn('confirm', function() { return false; }); // TODO figure out what to do with cases like this
+            $dry->output = new Output\StreamOutput($stream);
             $dry->resolve(array_merge(array('tasks'), explode(':', $this->getName())));
         } catch (\Exception $e) {
-            $output->writeln("<fg=red>Error: </fg=red> preflight check failed with exception <comment>\"{$e->getMessage()}\"</comment>\n");
+            rewind($stream);
+            $buffer = stream_get_contents($stream);
+            $output->writeln("<fg=red>[ERROR]</fg=red> preflight check failed with exception <comment>\"{$e->getMessage()}\"</comment>\n");
+            if ($buffer && $output->getVerbosity() > 1) {
+                $output->writeln($buffer);
+            }
             throw $e;
         }
     }

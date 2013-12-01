@@ -40,11 +40,11 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
             ),
             array(
                 array('tasks' => array('a' => array('set' => array('foo' => '"bar"')))),
-                array(new Task(array('tasks', 'a'), array('set' => array('foo' => new Node\Task\SetNode('foo', new Node\Expr\Str("bar"), false)))))
+                array(new Task(array('tasks', 'a'), array('set' => array('foo' => new Node\Task\ArgNode('foo', new Node\Expr\Str("bar"), false)))))
             ),
             array(
                 array('tasks' => array('a' => array('set' => array('foo' => '? bar')))),
-                array(new Task(array('tasks', 'a'), array('set' => array('foo' => new Node\Task\SetNode('foo', new Node\Expr\Variable("bar"), true)))))
+                array(new Task(array('tasks', 'a'), array('set' => array('foo' => new Node\Task\ArgNode('foo', new Node\Expr\Variable("bar"), true)))))
             ),
             array(
                 array('tasks' => array('a' => array('unless' => 'foo'))),

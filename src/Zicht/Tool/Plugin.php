@@ -21,6 +21,12 @@ abstract class Plugin implements PluginInterface
     {
     }
 
+    /**
+     * @{inheritDoc}
+     */
+    public function setContainerBuilder(Container\ContainerBuilder $builder)
+    {
+    }
 
     /**
      * @{inheritDoc}
@@ -28,5 +34,7 @@ abstract class Plugin implements PluginInterface
     public function setContainer(Container\Container $container)
     {
     }
+
+
     // @codeCoverageIgnoreEnd
 }

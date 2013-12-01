@@ -49,7 +49,11 @@ class Executor
             $ret = $process->getExitCode();
         }
         if ($ret != 0) {
-            throw new \UnexpectedValueException("Command '$cmd' failed with exit code {$ret}");
+            if ($ret == Container::ABORT_EXIT_CODE) {
+                throw new ExecutionAbortedException("Command '$cmd' was aborted");
+            } else {
+                throw new \UnexpectedValueException("Command '$cmd' failed with exit code {$ret}");
+            }
         }
         return $ret;
     }

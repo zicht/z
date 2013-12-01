@@ -12,7 +12,7 @@ use \Zicht\Tool\Script\Compiler;
 use \Zicht\Tool\Script\Parser;
 use \Zicht\Tool\Script\Parser\Expression as ExpressionParser;
 use \Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
-use \Zicht\Tool\Script\Node\Task\SetNode;
+use \Zicht\Tool\Script\Node\Task\ArgNode;
 
 /**
  * The container builder converts a config tree into a compilable ContainerNode
@@ -147,13 +147,13 @@ class ContainerBuilder
 
 
     /**
-     * Creates a node for the 'set' definition of the task.
+     * Creates a node for the 'args' definition of the task.
      *
      * @param array $path
      * @param string $node
-     * @return \Zicht\Tool\Script\Node\Task\SetNode
+     * @return \Zicht\Tool\Script\Node\Task\ArgNode
      */
-    public function createSetNode($path, $node)
+    public function createArgNode($path, $node)
     {
         $v = trim($node);
         if (substr($v, 0, 1) == '?') {
@@ -162,7 +162,7 @@ class ContainerBuilder
         } else {
             $conditional = false;
         }
-        return new SetNode(end($path), $this->exprcompiler->parse($v), $conditional);
+        return new ArgNode(end($path), $this->exprcompiler->parse($v), $conditional);
     }
 
 
@@ -203,9 +203,9 @@ class ContainerBuilder
         $traverser = new Traverser($config);
 
         $traverser->addVisitor(
-            array($this, 'createSetNode'),
+            array($this, 'createArgNode'),
             function($path) {
-                return (count($path) == 4 && $path[0] == 'tasks' && $path[2] == 'set');
+                return (count($path) == 4 && $path[0] == 'tasks' && $path[2] == 'args');
             },
             Traverser::BEFORE
         );

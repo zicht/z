@@ -61,7 +61,7 @@ class Configuration implements ConfigurationInterface
         // to be removed in 1.2
         $replaceEnvWithTargetEnv = function ($set) {
             trigger_error(
-                "As of version 1.1, Using 'env' as a set variable is deprecated. "
+                "As of version 1.1, Using 'env' as an input variable is deprecated. "
                     . "Please use 'target_env' in stead",
                 E_USER_DEPRECATED
             );
@@ -72,6 +72,14 @@ class Configuration implements ConfigurationInterface
             }
 
             return $repl;
+        };
+        $hasLegacySet = function($in) {
+            return isset($in['set']);
+        };
+        $replaceSetWithArgs = function($data) {
+            $data['args'] = $data['set'];
+            unset($data['set']);
+            return $data;
         };
         $zConfig
             ->beforeNormalization()
@@ -98,6 +106,10 @@ class Configuration implements ConfigurationInterface
                                 }
                             )
                         ->end()
+                        ->beforeNormalization()
+                            ->ifTrue($hasLegacySet)
+                            ->then($replaceSetWithArgs)
+                        ->end()
                         ->children()
                             ->scalarNode('name')->end()
                             ->scalarNode('help')->defaultValue(null)->end()
@@ -105,7 +117,7 @@ class Configuration implements ConfigurationInterface
                                 ->prototype('boolean')->end()
                                 ->defaultValue(array())
                             ->end()
-                            ->arrayNode('set')
+                            ->arrayNode('args')
                                 ->prototype('scalar')->end()
                                 ->beforeNormalization()
                                     ->ifTrue($hasLegacyEnv)
@@ -143,6 +155,7 @@ class Configuration implements ConfigurationInterface
                     ->end()
                     ->useAttributeAsKey('name')
                 ->end()
+                ->scalarNode('local_env')->end()
                 ->arrayNode('envs')
                     ->prototype('array')
                         ->children()

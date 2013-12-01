@@ -29,4 +29,11 @@ interface PluginInterface
      * @return mixed
      */
     public function setContainer(Container\Container $container);
+
+
+    /**
+     * Set the containerbuilder class, so building logic can be added.
+     */
+    public function setContainerBuilder(Container\ContainerBuilder $builder);
 }
+

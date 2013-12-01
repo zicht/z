@@ -92,7 +92,7 @@ class Task extends Declaration
     {
         $taskName = Util::toPhp($this->path);
 
-        foreach ($this->taskDef['set'] as $node) {
+        foreach ($this->taskDef['args'] as $node) {
             $node->compile($buffer);
         }
         $buffer->writeln(sprintf('$z->notify(%s, "start");', $taskName));
@@ -119,7 +119,9 @@ class Task extends Declaration
                 }
             }
             foreach ($this->taskDef[$scope] as $cmd) {
-                $cmd->compile($buffer);
+                if ($cmd) {
+                    $cmd->compile($buffer);
+                }
             }
             if ($hasUnless && $scope == 'post') {
                 $buffer->indent(-1)->writeln('}');
@@ -149,8 +151,8 @@ class Task extends Declaration
     public function getArguments($onlyPublic = true)
     {
         $ret = array();
-        if (isset($this->taskDef['set'])) {
-            foreach ($this->taskDef['set'] as $name => $expr) {
+        if (isset($this->taskDef['args'])) {
+            foreach ($this->taskDef['args'] as $name => $expr) {
                 if ($onlyPublic && $name{0} === '_') {
                     // Variables prefixed with an underscore are considered non public
                     continue;

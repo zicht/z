@@ -19,6 +19,9 @@ I need to be able to add tasks, functions and declarations in a Plugin
         """
     And there is a file "myplugin/z.yml"
         """
+        foo:
+            bar: "'This is fubar'"
+
         tasks:
             t3:
                 pre: echo "Pre from plugin!"
@@ -30,12 +33,14 @@ I need to be able to add tasks, functions and declarations in a Plugin
         <?php
         namespace Zicht\Tool\Plugin\Myplugin;
 
-        use Zicht\Tool\Container\Container;
-        use Zicht\Tool\Plugin as BasePlugin;
+        use \Zicht\Tool\Container\Container;
+        use \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
+        use \Zicht\Tool\Plugin as BasePlugin;
 
         class Plugin extends BasePlugin
         {
-            function setContainer(Container $container) {
+            function setContainer(Container $container)
+            {
                 $container->decl('hello', function() {
                     return 'Foo bar!';
                 });
@@ -46,6 +51,19 @@ I need to be able to add tasks, functions and declarations in a Plugin
                     static $i = 0;
                     return (string) $i;
                 });
+            }
+
+            public function appendConfiguration(ArrayNodeDefinition $rootNode)
+            {
+                $rootNode
+                    ->children()
+                        ->arrayNode('foo')
+                            ->children()
+                                ->scalarNode('bar')->end()
+                            ->end()
+                        ->end()
+                    ->end()
+                ;
             }
         }
 
@@ -80,3 +98,12 @@ I need to be able to add tasks, functions and declarations in a Plugin
         """
     When I run "z t --plugin=myplugin"
     Then I should see text matching "/Foo bar!/"
+
+  Scenario: Evaluating values from the plugin
+    When I run "z z:eval foo.bar"
+    Then I should see text matching "/This is fubar/"
+
+  Scenario: Evaluating values from the plugin
+    When I run "z z:eval foo.bar"
+    Then I should see text matching "/This is fubar/"
+

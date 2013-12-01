@@ -27,6 +27,8 @@ use \UnexpectedValueException;
  */
 class Container
 {
+    const ABORT_EXIT_CODE = 42;
+
     protected $plugins = array();
     protected $subscribers = array();
     protected $commands = array();
@@ -78,12 +80,18 @@ class Container
         $this->fn('sprintf');
         $this->fn('is_file');
         $this->fn('is_dir');
+        $this->fn('confirm', function() {
+            return false;
+        });
         $this->fn('keys', 'array_keys');
         $this->fn('mtime', 'filemtime');
         $this->fn('atime', 'fileatime');
         $this->fn('ctime', 'filectime');
         $this->fn('sh', array($this, 'helperExec'));
         $this->fn('str', array($this, 'str'));
+        $this->decl('abort', function() {
+            return 'exit ' . self::ABORT_EXIT_CODE;
+        });
         $this->fn(
             'cat',
             function() {
@@ -122,6 +130,9 @@ class Container
     {
         if (empty($path)) {
             throw new \InvalidArgumentException("Passed lookup path is empty.");
+        }
+        if (empty($context)) {
+            throw new \InvalidArgumentException("Context is empty");
         }
         try {
             $ret = PropertyAccess::createPropertyAccessor()->getValue(
@@ -219,7 +230,7 @@ class Container
      * This is useful for commands that need the shell regardless of the 'explain' value setting.
      *
      * @param string $cmd
-     * @return void
+     * @return mixed
      */
     public function helperExec($cmd)
     {
@@ -397,7 +408,7 @@ class Container
         $args = func_get_args();
         $service = array_shift($args);
         if (!is_callable($service[0])) {
-            throw new \InvalidArgumentException("Can not use service '$service' as a function, it is not callable");
+            throw new \InvalidArgumentException("Can not use service '{$service[0]}' as a function, it is not callable");
         }
 
         // if the service needs the container, it is specified in the decl() call as the second param:
@@ -438,9 +449,9 @@ class Container
         }
 
         if ($reset) {
-            if ($this->output->getVerbosity() > 1) {
+            if ($this->output->getVerbosity() > 2) {
                 $this->output->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
-            } elseif (count($this->prefix) > 1) {
+            } elseif ($this->output->getVerbosity() > 1 && count($this->prefix) > 1) {
                 $prefix = $this->prefix[count($this->prefix) -1];
                 if (strlen($prefix) > 21) {
                     $prefix = substr($prefix, 0, 9) . '...' . substr($prefix, -9);

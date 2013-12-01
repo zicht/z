@@ -6,6 +6,7 @@
 namespace Zicht\Tool;
 
 use \Symfony\Component\Config\FileLocator;
+use Symfony\Component\Console\Input\ArgvInput;
 use \Symfony\Component\Console\Application as BaseApplication;
 use \Symfony\Component\Console\Command\Command;
 use \Symfony\Component\Console\Input\InputArgument;
@@ -64,13 +65,13 @@ EOSTR;
     {
         $output = (null !== $output ? $output : new Output\ConsoleOutput());
 
-        /**
-         * Emits deprecation warnings to stderr.
-         *
-         * @param int $err
-         * @param string $errstr
-         */
         set_error_handler(
+            /**
+             * Emits deprecation warnings to stderr.
+             *
+             * @param int $err
+             * @param string $errstr
+             */
             function($err, $errstr) use($output) {
                 static $repeating = array();
                 if (in_array($errstr, $repeating)) {
@@ -95,29 +96,34 @@ EOSTR;
      */
     public function renderException($e, $output)
     {
-        if ($output->getVerbosity() == OutputInterface::VERBOSITY_NORMAL) {
+        if ($output->getVerbosity() > OutputInterface::VERBOSITY_VERBOSE) {
+            parent::renderException($e, $output);
+        } else {
             /** @var $ancestry \Exception[] */
             $ancestry = array();
             $maxLength = 0;
             do {
                 $ancestry[] = $e;
                 $maxLength = max($maxLength, strlen(get_class($e)));
+                $last = $e;
             } while ($e = $e->getPrevious());
 
-            $depth = 0;
-            foreach ($ancestry as $e) {
-                $output->writeln(
-                    sprintf(
-                        '%s%-40s %s',
-                        ($depth > 0 ? str_repeat('   ', $depth - 1) . '-> ' : ''),
-                        '<fg=red>' . $e->getMessage() . '</fg=red>',
-                        $depth == count($ancestry) -1 ? str_pad('[' . get_class($e) . ']', $maxLength + 15, ' ') : ''
-                    )
-                );
-                $depth ++;
+            if ($last instanceof \Zicht\Tool\Container\VerboseException) {
+                $last->output($output);
+            } else {
+                $depth = 0;
+                foreach ($ancestry as $e) {
+                    $output->writeln(
+                        sprintf(
+                            '%s%-40s %s',
+                            ($depth > 0 ? str_repeat('   ', $depth - 1) . '-> ' : ''),
+                            '<fg=red>' . $e->getMessage() . '</fg=red>',
+                            $depth == count($ancestry) -1 ? str_pad('[' . get_class($e) . ']', $maxLength + 15, ' ') : ''
+                        )
+                    );
+                    $depth ++;
+                }
             }
-        } else {
-            parent::renderException($e, $output);
         }
     }
 
@@ -143,11 +149,8 @@ EOSTR;
     {
         if (null === $this->container) {
             $config = $this->loader->processConfiguration();
-            $compiler = new ContainerCompiler($config);
+            $compiler = new ContainerCompiler($config, $this->loader->getPlugins());
             $this->container = $compiler->getContainer();
-            foreach ($this->loader->getPlugins() as $plugin) {
-                $this->container->addPlugin($plugin);
-            }
         }
         return $this->container;
     }

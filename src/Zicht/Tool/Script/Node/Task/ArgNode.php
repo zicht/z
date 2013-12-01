@@ -13,9 +13,9 @@ use \Zicht\Tool\Script\Node\Branch;
 use \Zicht\Tool\Util;
 
 /**
- * A node for the "set" section of a task
+ * A node for the "args" section of a task
  */
-class SetNode extends Branch
+class ArgNode extends Branch
 {
     /**
      * Constructor.
@@ -34,7 +34,7 @@ class SetNode extends Branch
 
 
     /**
-     * Compiles the set node.
+     * Compiles the arg node.
      *
      * @param \Zicht\Tool\Script\Buffer $buffer
      * @return void

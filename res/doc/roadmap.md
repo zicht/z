@@ -53,13 +53,10 @@ increment. If there are BC breaks planned for a next version, you will be warned
  +  An additional "assert" will be added to tasks, which will cause a RuntimeException to be thrown if the assertion
     fails. The assertion is called after 'unless' evaluation, which is right after the execution of the "pre" section,
     and right before the "do".
+ +  Plugins can now expose paths that should be interpreted as declarative expressions rather than values
 
 # version 1.2 #
-
- +  Remove BC code for env variable usage.
- +  Allowing to set a dynamic shell per task will be implemented
- +  Plugins will be enabled to expose paths that should be interpreted as declarative expressions, so variables can
-    be used in configuration. How exactly this should be done is yet to be decided.
+ +  Remove all 1.0 BC code
 
 # version 2.0 #
 
