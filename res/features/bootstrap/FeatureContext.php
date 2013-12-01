@@ -35,14 +35,19 @@ class FeatureContext extends BehatContext
 
 
     /**
-     * @Given /^I am in a test directory$/
+     * @Given /^I am in (?P<type>a|the) test directory$/
      */
-    public function iAmInATestDirectory()
+    public function iAmInATestDirectory($type)
     {
-        if (!is_dir($this->testDir)) {
-            mkdir($this->testDir);
+        if ($type == "a") {
+            if (!is_dir($this->testDir)) {
+                mkdir($this->testDir);
+            }
+            chdir($this->testDir);
+            shell_exec('rm -r *');
+        } else {
+            chdir($this->testDir);
         }
-        chdir($this->testDir);
     }
 
 

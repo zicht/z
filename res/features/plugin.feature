@@ -85,7 +85,7 @@ I need to be able to add tasks, functions and declarations in a Plugin
     But I should not see text matching "/Do from plugin/s"
 
   Scenario: When the plugin is loaded by option, it works as well
-    Given I am in a test directory
+    Given I am in the test directory
     And there is file "z.yml"
         """
         tasks:

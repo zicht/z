@@ -40,8 +40,7 @@ Feature: Using standard functions
     Given there is a file "z.yml"
     """
     tasks:
-        t:
-          - echo $(cat("a", "b", "c"))
+        t: echo $(cat("a", "b", "c"))
     """
     When I run "z t"
     Then I should see text matching "/abc/"
@@ -50,8 +49,7 @@ Feature: Using standard functions
     Given there is a file "z.yml"
     """
     tasks:
-        t:
-          - echo $(sprintf("a%sc", "b"))
+        t: echo $(sprintf("a%sc", "b"))
     """
     When I run "z t"
     Then I should see text matching "/abc/"
