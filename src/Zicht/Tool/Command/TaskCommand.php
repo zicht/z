@@ -132,7 +132,7 @@ class TaskCommand extends BaseCommand
             $dry->output = new Output\NullOutput();
             $dry->resolve(array_merge(array('tasks'), explode(':', $this->getName())));
         } catch (\Exception $e) {
-            $output->writeln("<fg=red>Error: </fg=red> preflight check failed with exception <comment>\"" . $e->getMessage() . '\"</comment>' . "\n");
+            $output->writeln("<fg=red>Error: </fg=red> preflight check failed with exception <comment>\"{$e->getMessage()}\"</comment>\n");
             throw $e;
         }
     }
