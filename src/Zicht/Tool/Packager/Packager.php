@@ -41,7 +41,7 @@ class Packager
      *
      * @param string $targetFile
      * @param bool $force
-     * @return void
+     * @return string
      *
      * @throws \RuntimeException
      */
