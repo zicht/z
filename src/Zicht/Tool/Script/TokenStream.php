@@ -54,7 +54,7 @@ class TokenStream
 
 
     /**
-     * Checks if there is a current tkoen
+     * Checks if there is a current token
      *
      * @return bool
      */
