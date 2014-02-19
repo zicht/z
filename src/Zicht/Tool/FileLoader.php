@@ -6,9 +6,6 @@
 
 namespace Zicht\Tool;
 
-use Symfony\Component\Config\Definition\Exception\Exception;
-use Symfony\Component\Config\Exception\FileLoaderImportCircularReferenceException;
-use Symfony\Component\Config\Exception\FileLoaderLoadException;
 use \Symfony\Component\Config\Loader\FileLoader as BaseFileLoader;
 use \Symfony\Component\Yaml\Yaml;
 
