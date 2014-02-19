@@ -206,6 +206,7 @@ class Application extends BaseApplication
             new Configuration($plugins),
             $loader->getConfigs()
         );
+        $config['z']['plugin_paths']= $loader->getPluginPaths();
 
         return array($plugins, $config);
     }
@@ -242,6 +243,4 @@ class Application extends BaseApplication
         return $return;
 
     }
-
-
 }

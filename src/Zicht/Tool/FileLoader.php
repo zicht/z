@@ -6,6 +6,9 @@
 
 namespace Zicht\Tool;
 
+use Symfony\Component\Config\Definition\Exception\Exception;
+use Symfony\Component\Config\Exception\FileLoaderImportCircularReferenceException;
+use Symfony\Component\Config\Exception\FileLoaderLoadException;
 use \Symfony\Component\Config\Loader\FileLoader as BaseFileLoader;
 use \Symfony\Component\Yaml\Yaml;
 
@@ -19,8 +22,9 @@ class FileLoader extends BaseFileLoader
      */
     const PLUGIN = 'plugin';
 
-    protected $configs = array();
-    protected $plugins = array();
+    protected $configs      = array();
+    protected $plugins      = array();
+    protected $pluginPaths  = array();
 
 
     /**
@@ -66,12 +70,22 @@ class FileLoader extends BaseFileLoader
             $hasPlugin = $hasZfile = false;
             try {
                 $this->plugins[$plugin] = $this->getLocator()->locate($plugin . '/Plugin.php', $dir, true);
+                $this->pluginPaths[$plugin] = dirname($this->plugins[$plugin]);
                 $hasPlugin = true;
             } catch (\InvalidArgumentException $e) {
             }
 
             try {
-                $this->import($this->getLocator()->locate($plugin . '/z.yml', $dir), self::PLUGIN);
+                $zFileLocation = $this->getLocator()->locate($plugin . '/z.yml', $dir);
+                $this->import($zFileLocation, self::PLUGIN);
+                if (!isset($this->pluginPaths[$plugin])) {
+                    $this->pluginPaths[$plugin] = dirname($zFileLocation);
+                } else if ($this->pluginPaths[$plugin] != dirname($zFileLocation)) {
+                    throw new \UnexpectedValueException(
+                        "Ambiguous plugin configuration:\n"
+                        . "There was a Plugin.php found in {$this->pluginPaths[$plugin]}, but also a z.yml at $zFileLocation"
+                    );
+                }
                 $hasZfile = true;
             } catch (\InvalidArgumentException $e) {
             }
@@ -94,7 +108,7 @@ class FileLoader extends BaseFileLoader
     {
         foreach ($imports as $import) {
             $this->setCurrentDir($dir);
-            $this->configs[]= $this->import($import);
+            $this->import($import);
         }
     }
 
@@ -118,5 +132,16 @@ class FileLoader extends BaseFileLoader
     public function getPlugins()
     {
         return $this->plugins;
+    }
+
+
+    /**
+     * Returns all loaded paths
+     *
+     * @return array
+     */
+    public function getPluginPaths()
+    {
+        return $this->pluginPaths;
     }
 }

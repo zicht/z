@@ -20,7 +20,6 @@ class Container
 {
     const SHELL = '/bin/bash';
 
-    protected $plugins = array();
     protected $subscribers = array();
 
     public $output;
@@ -135,7 +134,7 @@ class Container
     }
 
 
-    public function evaluate($script)
+    public function evaluate($expression)
     {
         $exprcompiler  = new ScriptCompiler(
             new \Zicht\Tool\Script\Parser\Expression(),
@@ -144,7 +143,7 @@ class Container
 
         $z = $this;
         $_value = null;
-        eval('$_value = ' . $exprcompiler->compile($script) . ';');
+        eval('$_value = ' . $exprcompiler->compile($expression) . ';');
         return $_value;
     }
 
@@ -332,17 +331,6 @@ class Container
             return join(' ', $value);
         }
         return (string)$value;
-    }
-
-
-    /**
-     * Returns all registered plugins
-     *
-     * @return PluginInterface[]
-     */
-    public function getPlugins()
-    {
-        return $this->plugins;
     }
 
 
