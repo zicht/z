@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "f6941070419239f1e8ebbcda0d35adf8",
+    "hash": "0268d27d4367061bb649719e5599bddd",
     "packages": [
         {
             "name": "symfony/config",
@@ -190,12 +190,35 @@
             "time": "2012-10-29 04:15:41"
         },
         {
+            "name": "zicht/z-plugin-env",
+            "version": "1.0.0",
+            "source": {
+                "type": "svn",
+                "url": "svn://zon/projecten/zicht-libraries/z-plugin-env",
+                "reference": "/tags/1.0.0/@32747"
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "type": "library",
+            "scripts": {
+                "post-install-cmd": [
+
+                ],
+                "post-update-cmd": [
+
+                ]
+            },
+            "description": "'env' plugin for Z",
+            "time": "2014-02-24 14:11:50"
+        },
+        {
             "name": "zicht/z-plugins",
-            "version": "1.0.x-dev",
+            "version": "dev-1.0-without-env",
             "source": {
                 "type": "svn",
                 "url": "svn://zon/projecten/zicht-libraries/z-plugins",
-                "reference": "/branches/1.0/@32434"
+                "reference": "/branches/1.0-without-env/@32748"
             },
             "require": {
                 "php": ">=5.3.3"
@@ -210,7 +233,7 @@
                 ]
             },
             "description": "Plugins for Z",
-            "time": "2014-02-17 09:14:14"
+            "time": "2014-02-24 14:17:42"
         }
     ],
     "packages-dev": [
@@ -221,7 +244,8 @@
     ],
     "minimum-stability": "dev",
     "stability-flags": {
-        "zicht/z-plugins": 20
+        "zicht/z-plugins": 20,
+        "zicht/z-plugin-env": 0
     },
     "platform": {
         "php": ">=5.3.3"
