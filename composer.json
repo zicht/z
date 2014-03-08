@@ -10,7 +10,6 @@
         "symfony/process": "2.3.*@stable",
         "symfony/config": "2.3.*@stable",
         "symfony/console": "2.3.*@stable",
-        "symfony/property-access": "2.3.*@stable",
         "symfony/finder": "2.3.*@stable"
     },
     "suggest": {
