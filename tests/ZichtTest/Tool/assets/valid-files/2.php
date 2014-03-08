@@ -4,7 +4,8 @@ return array(
     'tasks' => array(
         'a' => array(
             'help' => null,
-            'set' => array(),
+            'flags' => array(),
+            'args' => array(),
             'yield' => null,
             'assert' => null,
             'unless' => null,

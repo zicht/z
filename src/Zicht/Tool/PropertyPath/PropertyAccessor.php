@@ -32,7 +32,7 @@ class PropertyAccessor
                 $ptr =& $ptr[$key];
             } else {
                 if ($notFoundIsError === true) {
-                    throw new \InvalidArgumentException("Path not found: " . implode('.', $path) . ", key {$key} did not resolve");
+                    throw new \OutOfBoundsException("Path not found: " . implode('.', $path) . ", key {$key} did not resolve");
                 }
                 return null;
             }

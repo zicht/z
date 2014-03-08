@@ -39,12 +39,12 @@ class ContainerBuilderTest extends \PHPUnit_Framework_TestCase
                 array(new Task(array('tasks', 'a'), array()))
             ),
             array(
-                array('tasks' => array('a' => array('set' => array('foo' => '"bar"')))),
-                array(new Task(array('tasks', 'a'), array('set' => array('foo' => new Node\Task\ArgNode('foo', new Node\Expr\Str("bar"), false)))))
+                array('tasks' => array('a' => array('args' => array('foo' => array('name' => 'foo', 'default' => '"bar"'))))),
+                array(new Task(array('tasks', 'a'), array('args' => array('foo' => new Node\Task\ArgNode('foo', new Node\Expr\Str("bar"), false)))))
             ),
             array(
-                array('tasks' => array('a' => array('set' => array('foo' => '? bar')))),
-                array(new Task(array('tasks', 'a'), array('set' => array('foo' => new Node\Task\ArgNode('foo', new Node\Expr\Variable("bar"), true)))))
+                array('tasks' => array('a' => array('args' => array('foo' => array('name' => 'foo', 'default' => '? bar'))))),
+                array(new Task(array('tasks', 'a'), array('args' => array('foo' => new Node\Task\ArgNode('foo', new Node\Expr\Variable("bar"), true)))))
             ),
             array(
                 array('tasks' => array('a' => array('unless' => 'foo'))),

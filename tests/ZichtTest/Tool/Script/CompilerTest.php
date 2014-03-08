@@ -35,10 +35,10 @@ class CompilerTest extends \PHPUnit_Framework_TestCase
     {
         return array(
             array('', ''),
-            array('$(w00t)', '$z->cmd($z->str($z->value($z->resolve(\'w00t\'))));'),
-            array('a $(w00t) b', "\$z->cmd(\$z->str('a ') . \$z->str(\$z->value(\$z->resolve('w00t'))) . \$z->str(' b'));"),
-            array('a $(w00t()) b', "\$z->cmd(\$z->str('a ') . \$z->str(\$z->value(\$z->call(\$z->resolve('w00t')))) . \$z->str(' b'));"),
-            array('a $(w00t(b)) b', "\$z->cmd(\$z->str('a ') . \$z->str(\$z->value(\$z->call(\$z->resolve('w00t'), \$z->value(\$z->resolve('b'))))) . \$z->str(' b'));"),
+            array('$(w00t)', '$z->cmd($z->str($z->value($z->resolve(\'w00t\', true))));'),
+            array('a $(w00t) b', "\$z->cmd(\$z->str('a ') . \$z->str(\$z->value(\$z->resolve('w00t', true))) . \$z->str(' b'));"),
+            array('a $(w00t()) b', "\$z->cmd(\$z->str('a ') . \$z->str(\$z->value(\$z->call(\$z->resolve('w00t', true)))) . \$z->str(' b'));"),
+            array('a $(w00t(b)) b', "\$z->cmd(\$z->str('a ') . \$z->str(\$z->value(\$z->call(\$z->resolve('w00t', true), \$z->value(\$z->resolve('b', true))))) . \$z->str(' b'));"),
         );
     }
 }

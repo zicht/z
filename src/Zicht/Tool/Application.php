@@ -79,7 +79,7 @@ EOSTR;
                     return;
                 }
                 $repeating[]= $errstr;
-                if ($output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
+                if ((error_reporting() & E_USER_DEPRECATED) && $output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
                     $output->writeln("[DEPRECATED] $errstr");
                 }
             },
