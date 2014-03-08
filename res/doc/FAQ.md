@@ -28,6 +28,18 @@ it is not possible to do this on a per-task basis, but there are plans to do so.
 See above. Z does not aim to be a replacement of any of these tools. It aims to solve problems you might have. If you
 don't recognize the solution, Z is probably not for you.
 
+# Why is it actually different than any of the aforementioned tools? #
+Z is a set of building blocks for generating executable code by your shell. In short, this means that Z does not
+run anything, it generates shell commands which do the actual work. For example, if you need to transfer
+files from one system of another, many utilities are available for that already. If you are used to using FTP for this,
+you can use Z, if you're used to using rsync over SSH, you can use Z. If you need to mount remote filesystems first and
+then use rsync, you can use Z. You don't need to know Z for it, you will just need a shell command. This makes Z closer
+to the UNIX principle than any other tool out there.
+
+The idea is that all you need is a tool to orchestrate these shell commands and help you in structuring your 
+dependencies. In that respect, it is closest to `make` than any other tool. The main difference with make is that
+make targets building one set of files from another, while Z targets the execution of tasks.
+
 # Why is it called Z? #
 We use Z for build, release and integration management at the company where it was originally developed:
 [Zicht online](http://zicht.nl). Z was developed by [Gerard van Helden](http://melp.nl), lead developer at Zicht online.

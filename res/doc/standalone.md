@@ -1,5 +1,22 @@
-% The Z app builder
+% Running Z-files stand alone
 
+# Using a Shebang #
+As of version 1.1, there is support for running a Z file using a shebang and making it executable. You need to point
+the shebang to the location of Z and add a - (dash) parameter, so Z knows you're running the file on it's own.
+
+Assume the following file called "foo", with the executable flag set:
+
+    #!/path/to/z -
+
+    tasks:
+        bar: echo ":)"
+
+You can now run the file:
+
+    ./foo bar
+    :)
+
+# The App builder #
 As of version 1.1, Z comes with an application builder that you can use to distribute your own command line helper
 applications as a single archive without further configuration. You can use this to automate simple tasks for your
 colleagues, without having them to tamper in the configuration files of the source distribution.
@@ -12,7 +29,7 @@ we do not want. ;)
 
 Please let us know if you have built something cool with Z!
 
-# Usage #
+## Usage ##
 
 package.php comes with a variety of options to control the build output:
 
@@ -25,7 +42,7 @@ package.php comes with a variety of options to control the build output:
     the build as well. When using such build, it is no longer possible to modify your z config afterwards, so the
     application of this is entirely separated from using Z files in your projects for example.
 
-# When you would use a static build #
+## When you would use a static build ##
 
 If you want to have a tool that is not called Z, does some common tasks, but you want to write the code in Z, for
 example, starting a simple project based on composer:

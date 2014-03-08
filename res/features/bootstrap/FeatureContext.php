@@ -30,6 +30,7 @@ class FeatureContext extends BehatContext
     {
         $this->testDir = __DIR__ . '/../tmp';
         $this->zBinary = escapeshellarg(__DIR__ . '/../../../bin/z');
+        $this->zBinaryPath = realpath(__DIR__ . '/../../../bin/z');
         $this->packageBinary = escapeshellarg(__DIR__ . '/../../../bin/package.php');
     }
 
@@ -64,6 +65,16 @@ class FeatureContext extends BehatContext
         file_put_contents($file, join("\n", $string->getLines()));
     }
 
+
+    /**
+     * @Given /^there is an executable file "([^"]*)" with a shebang pointing to Z$/
+     */
+    public function thereIsAFileWithAShebangPointingToZ($file, PyStringNode $string)
+    {
+        $this->thereIsFile($file, $string);
+        file_put_contents($file, '#!' . $this->zBinaryPath . " -\n\n" . file_get_contents($file));
+        chmod($file, 0755);
+    }
 
 
     /**
