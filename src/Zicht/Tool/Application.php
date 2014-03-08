@@ -6,7 +6,8 @@
 namespace Zicht\Tool;
 
 use \Symfony\Component\Config\FileLocator;
-use Symfony\Component\Console\Input\ArgvInput;
+use \Zicht\Tool\Container\VerboseException;
+use \Symfony\Component\Console\Input\ArgvInput;
 use \Symfony\Component\Console\Application as BaseApplication;
 use \Symfony\Component\Console\Command\Command;
 use \Symfony\Component\Console\Input\InputArgument;
@@ -72,13 +73,15 @@ EOSTR;
              * @param int $err
              * @param string $errstr
              */
-            function($err, $errstr) use($output) {
+            function($err, $errstr) use($output, $input) {
                 static $repeating = array();
                 if (in_array($errstr, $repeating)) {
                     return;
                 }
                 $repeating[]= $errstr;
-                $output->writeln("[DEPRECATED] $errstr");
+                if ($output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
+                    $output->writeln("[DEPRECATED] $errstr");
+                }
             },
             E_USER_DEPRECATED
         );
@@ -108,7 +111,7 @@ EOSTR;
                 $last = $e;
             } while ($e = $e->getPrevious());
 
-            if ($last instanceof \Zicht\Tool\Container\VerboseException) {
+            if ($last instanceof VerboseException) {
                 $last->output($output);
             } else {
                 $depth = 0;

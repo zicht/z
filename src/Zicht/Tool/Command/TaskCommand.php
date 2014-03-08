@@ -22,6 +22,7 @@ class TaskCommand extends BaseCommand
      *
      * @param null|string $name
      * @param array $arguments
+     * @param array $flags
      * @param string $help
      */
     public function __construct($name, $arguments, $flags, $help)
@@ -40,6 +41,7 @@ class TaskCommand extends BaseCommand
         }
         foreach ($flags as $name => $value) {
             $this
+                ->addOption($name, '', InputOption::VALUE_NONE, 'Toggle ' . $name . ' flag on')
                 ->addOption('no-' . $name, '', InputOption::VALUE_NONE, 'Toggle ' . $name . ' flag off')
                 ->addOption('with-' . $name, '', InputOption::VALUE_NONE, 'Toggle ' . $name . ' flag on')
             ;
@@ -59,7 +61,7 @@ class TaskCommand extends BaseCommand
         foreach ($this->flags as $name => $value) {
             $i = 0;
             $ret = preg_replace_callback(
-                '/\[--(no|with)-' . $name . '\]/',
+                '/\[--((no|with)-)?' . $name . '\]/',
                 function() use(&$i, $name) {
                     if ($i ++ == 0) {
                         return '[--[no|with]-' . $name .']';
@@ -108,12 +110,12 @@ class TaskCommand extends BaseCommand
         }
         foreach ($this->flags as $name => $value) {
             $this->container->set(explode('.', $name), $value);
-            if ($input->getOption('no-' . $name) && $input->getOption('with-' . $name)) {
+            if ($input->getOption('no-' . $name) && ($input->getOption('with-' . $name) || $input->getOption($name))) {
                 throw new \InvalidArgumentException("Cannot pass both --no-{$name} and --with-{$name} options, they are mutually exclusive");
             }
             if ($input->getOption('no-' . $name)) {
                 $this->container->set(explode('.', $name), false);
-            } elseif($input->getOption('with-' . $name)) {
+            } elseif ($input->getOption('with-' . $name) || $input->getOption($name)) {
                 $this->container->set(explode('.', $name), true);
             }
         }
@@ -124,6 +126,15 @@ class TaskCommand extends BaseCommand
     }
 
 
+    /**
+     * Does a preflight check of the command that is to be executed, i.e. compiles into the script without actually
+     * running it.
+     *
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return void
+     *
+     * @throws \Exception
+     */
     protected function preflightCheck($output)
     {
         $stream = fopen('php://temp', 'r+');
@@ -131,7 +142,12 @@ class TaskCommand extends BaseCommand
         try {
             $dry->set('explain', true);
             $dry->set('interactive', false);
-            $dry->fn('confirm', function() { return false; }); // TODO figure out what to do with cases like this
+            $dry->fn(
+                'confirm',
+                function() {
+                    return false;
+                }
+            ); // TODO figure out what to do with cases like this
             $dry->output = new Output\StreamOutput($stream);
             $dry->resolve(array_merge(array('tasks'), explode(':', $this->getName())));
         } catch (\Exception $e) {

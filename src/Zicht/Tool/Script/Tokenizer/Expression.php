@@ -36,7 +36,7 @@ class Expression implements TokenizerInterface
                 );
                 $ret[]= new Token(Token::LEGACY_ENV);
                 $needle += strlen($m[0]);
-            } elseif (preg_match('/^(==|<=?|>=?|!=?|\?|:|\|\||&&|xor|or|and|\.|\[|\]|\(|\))/', $substr, $m)) {
+            } elseif (preg_match('/^(==|<=?|>=?|!=?|\?|:|\|\||&&|xor|or|and|\.|\[|\]|\(|\)|\+|-|\/|\*)/', $substr, $m)) {
                 if ($m[0] == '.' && end($ret)->type == Token::WHITESPACE) {
                     trigger_error(
                         "As of version 1.1, using the dot-operator for concatenation is deprecated. "
@@ -59,6 +59,9 @@ class Expression implements TokenizerInterface
                     $depth ++;
                 }
                 $ret[]= new Token(Token::OPERATOR, $m[0]);
+                $needle += strlen($m[0]);
+            } elseif (preg_match('/^(true|false)/', $substr, $m)) {
+                $ret[] = new Token(Token::KEYWORD, $m[0]);
                 $needle += strlen($m[0]);
             } elseif (preg_match('/^[a-z_][\w]*/i', $substr, $m)) {
                 $ret[] = new Token(Token::IDENTIFIER, $m[0]);

@@ -155,7 +155,7 @@ class ContainerBuilder
      */
     public function createArgNode($path, $node)
     {
-        $v = trim($node);
+        $v = trim($node['default']);
         if (substr($v, 0, 1) == '?') {
             $conditional = true;
             $v = ltrim(substr($v, 1));

@@ -118,7 +118,24 @@ class Configuration implements ConfigurationInterface
                                 ->defaultValue(array())
                             ->end()
                             ->arrayNode('args')
-                                ->prototype('scalar')->end()
+                                ->prototype('array')
+                                    ->beforeNormalization()
+                                        ->ifTrue(function($v) {
+                                            return is_scalar($v);
+                                        })
+                                        ->then(function($v) {
+                                            return array(
+                                                'type' => 'argument',
+                                                'default' => $v
+                                            );
+                                        })
+                                    ->end()
+                                    ->children()
+                                        ->scalarNode('name')->end()
+                                        ->scalarNode('type')->end()
+                                        ->scalarNode('default')->end()
+                                    ->end()
+                                ->end()
                                 ->beforeNormalization()
                                     ->ifTrue($hasLegacyEnv)
                                     ->then($replaceEnvWithTargetEnv)

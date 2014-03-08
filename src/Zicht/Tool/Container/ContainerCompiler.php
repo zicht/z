@@ -9,7 +9,7 @@
 namespace Zicht\Tool\Container;
 
 use \Zicht\Tool\Script\Buffer;
-use Zicht\Tool\PluginInterface;
+use \Zicht\Tool\PluginInterface;
 
 /**
  * Compiler to compile the entire container into PHP code.
@@ -59,6 +59,12 @@ class ContainerCompiler
     }
 
 
+    /**
+     * Add a plugin
+     *
+     * @param \Zicht\Tool\PluginInterface $p
+     * @return void
+     */
     public function addPlugin(PluginInterface $p)
     {
         $this->plugins[]= $p;

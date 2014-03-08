@@ -7,12 +7,10 @@
 namespace Zicht\Tool\Container;
 
 use \Symfony\Component\Console\Command\Command;
+use \Zicht\Tool\PropertyPath\PropertyAccessor;
 use \Symfony\Component\Console\Output\NullOutput;
 use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Process\Process;
-use \Symfony\Component\PropertyAccess\Exception\OutOfBoundsException;
-use \Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
-use \Symfony\Component\PropertyAccess\PropertyAccess;
 use \Zicht\Tool\Script;
 use \Zicht\Tool\PluginInterface;
 use \Zicht\Tool\Script\Compiler as ScriptCompiler;
@@ -27,6 +25,9 @@ use \UnexpectedValueException;
  */
 class Container
 {
+    /**
+     * Exit code used by commands to identify that they should abort the entire script
+     */
     const ABORT_EXIT_CODE = 42;
 
     protected $plugins = array();
@@ -89,6 +90,12 @@ class Container
         $this->fn('ctime', 'filectime');
         $this->fn('sh', array($this, 'helperExec'));
         $this->fn('str', array($this, 'str'));
+        $this->fn(
+            array('url', 'host'),
+            function($url) {
+                return parse_url($url, PHP_URL_HOST);
+            }
+        );
         $this->decl('abort', function() {
             return 'exit ' . self::ABORT_EXIT_CODE;
         });
@@ -134,22 +141,7 @@ class Container
         if (empty($context)) {
             throw new \InvalidArgumentException("Context is empty");
         }
-        try {
-            $ret = PropertyAccess::createPropertyAccessor()->getValue(
-                $context,
-                new Context\ArrayPropertyPath($this->path($path))
-            );
-
-            if ($require && null === $ret) {
-                throw new \OutOfBoundsException(
-                    "Error resolving " . join(".", $path) . ': the path could not be found in the specified context'
-                );
-            }
-
-            return $ret;
-        } catch (UnexpectedTypeException $e) {
-            throw new \OutOfBoundsException("Error resolving path '" . join(".", $path) . "'", 0, $e);
-        }
+        return PropertyAccessor::getByPath($context, $this->path($path), $require);
     }
 
     /**
@@ -193,7 +185,6 @@ class Container
             }
             array_push($this->stack, $id);
             $ret = $this->lookup($this->values, $id, $required);
-
             if ($ret instanceof \Closure) {
                 $this->set($id, $ret = call_user_func($ret, $this));
             }
@@ -219,11 +210,7 @@ class Container
      */
     public function set($path, $value)
     {
-        PropertyAccess::createPropertyAccessor()->setValue(
-            $this->values,
-            new Context\ArrayPropertyPath($this->path($path)),
-            $value
-        );
+        PropertyAccessor::setByPath($this->values, $this->path($path), $value);
     }
 
     /**
@@ -548,7 +535,12 @@ class Container
         return $this->plugins;
     }
 
-
+    /**
+     * Register a plugin
+     *
+     * @param \Zicht\Tool\PluginInterface $plugin
+     * @return void
+     */
     public function addPlugin(PluginInterface $plugin)
     {
         $this->plugins[]= $plugin;
@@ -618,6 +610,8 @@ class Container
 
     /**
      * Clones all plugins and resets them to their initial state
+     *
+     * @return void
      */
     public function __clone()
     {

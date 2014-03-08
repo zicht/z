@@ -43,6 +43,6 @@ class Variable implements Node
      */
     public function compile(Buffer $buffer)
     {
-        $buffer->raw('$z->resolve(' . Util::toPhp($this->name) . ')');
+        $buffer->raw('$z->resolve(' . Util::toPhp($this->name) . ', true)');
     }
 }

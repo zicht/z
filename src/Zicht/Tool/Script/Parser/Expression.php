@@ -32,7 +32,8 @@ class Expression extends AbstractParser
      */
     public static $INFIX_BINARY = array(
         '==', '!=', '<=', '>=', '<', '>', '&&', '||',
-        'cat' // 'cat' is a hack for BC supporting the dot operator for concatenation
+        'cat', // 'cat' is a hack for BC supporting the dot operator for concatenation,
+        '+', '*', '/',  '-'
     );
 
 
@@ -58,6 +59,9 @@ class Expression extends AbstractParser
             $value = $stream->current()->value;
             $stream->next();
             $ret = new Op\Unary($value, $this->parse($stream));
+        } elseif ($stream->match(Token::KEYWORD, array('true', 'false'))) {
+            $ret = new Node\Expr\Literal($stream->current()->value === 'true');
+            $stream->next();
         } elseif ($stream->match(Token::IDENTIFIER)) {
             $name = $stream->current()->value;
             $stream->next();

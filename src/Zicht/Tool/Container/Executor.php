@@ -28,7 +28,10 @@ class Executor
      * Executes the passed command line in the shell.
      *
      * @param string $cmd
+     * @param null &$captureOutput
      * @return int
+     *
+     * @throws ExecutionAbortedException
      * @throws \UnexpectedValueException
      */
     public function execute($cmd, &$captureOutput = null)

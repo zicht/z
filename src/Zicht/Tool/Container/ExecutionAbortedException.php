@@ -6,10 +6,16 @@
 
 namespace Zicht\Tool\Container;
 
-use Symfony\Component\Console\Output\OutputInterface;
+use \Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Thrown whenever a command exits with an 'abort' exit code.
+ */
 class ExecutionAbortedException extends \RuntimeException implements VerboseException
 {
+    /**
+     * @{inheritDoc}
+     */
     public function output(OutputInterface $output)
     {
         $output->writeln('<comment>Aborted</comment>');

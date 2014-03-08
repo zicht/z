@@ -53,11 +53,15 @@ final class Token
      */
     const STRING = 'string';
 
-
     /**
      * Operator token type
      */
     const OPERATOR = 'operator';
+
+    /**
+     * Value token type
+     */
+    const KEYWORD = 'keyword';
 
     /**
      * @var string

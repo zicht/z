@@ -17,7 +17,7 @@ interface PluginInterface
      * Appends the configuration to the node
      *
      * @param \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition $rootNode
-     * @return mixed
+     * @return void
      */
     public function appendConfiguration(ArrayNodeDefinition $rootNode);
 
@@ -26,14 +26,16 @@ interface PluginInterface
      * Set the container instance
      *
      * @param Container\Container $container
-     * @return mixed
+     * @return void
      */
     public function setContainer(Container\Container $container);
 
 
     /**
      * Set the containerbuilder class, so building logic can be added.
+     *
+     * @param Container\ContainerBuilder $builder
+     * @return void
      */
     public function setContainerBuilder(Container\ContainerBuilder $builder);
 }
-
