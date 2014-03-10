@@ -27,8 +27,9 @@ class TaskCommand extends BaseCommand
      */
     public function __construct($name, $arguments, $flags, $help)
     {
-        parent::__construct($name);
+        parent::__construct(str_replace('_', '-', $name));
 
+        $this->taskName = $name;
         $this->flags = $flags;
 
         foreach ($arguments as $name => $required) {
@@ -122,7 +123,12 @@ class TaskCommand extends BaseCommand
 
         $this->preflightCheck($output);
 
-        return $this->container->resolve(array_merge(array('tasks'), explode(':', $this->getName())));
+        return $this->container->resolve($this->getTaskReference(), true);
+    }
+
+    protected function getTaskReference()
+    {
+        return array_merge(array('tasks'), explode(':', $this->taskName));
     }
 
 
@@ -149,11 +155,11 @@ class TaskCommand extends BaseCommand
                 }
             ); // TODO figure out what to do with cases like this
             $dry->output = new Output\StreamOutput($stream);
-            $dry->resolve(array_merge(array('tasks'), explode(':', $this->getName())));
+            $dry->resolve($this->getTaskReference(), true);
         } catch (\Exception $e) {
             rewind($stream);
             $buffer = stream_get_contents($stream);
-            $output->writeln("<fg=red>[ERROR]</fg=red> preflight check failed with exception <comment>\"{$e->getMessage()}\"</comment>\n");
+            $output->writeln("<error>[ERROR]</error> preflight check failed with exception <comment>\"{$e->getMessage()}\"</comment>\n");
             if ($buffer && $output->getVerbosity() > 1) {
                 $output->writeln($buffer);
             }
