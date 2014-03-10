@@ -40,7 +40,7 @@ class Task extends Declaration
      */
     public function getName()
     {
-        return join(':', array_slice($this->path, 1));
+        return join('.', array_slice($this->path, 1));
     }
 
 
@@ -92,6 +92,15 @@ class Task extends Declaration
     {
         $taskName = Util::toPhp($this->path);
 
+        foreach ($this->taskDef['flags'] as $flag => $value) {
+            $buffer
+                ->write('if (null === $z->resolve(')->asPhp($flag)->raw(', false)) {')->eol()
+                ->indent(1)
+                ->write('$z->set(')->asPhp($flag)->raw(', ')->asPhp($value)->raw(');')->eol()
+                ->indent(-1)
+                ->writeln('}')
+            ;
+        }
         foreach ($this->taskDef['args'] as $node) {
             $node->compile($buffer);
         }
