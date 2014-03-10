@@ -80,7 +80,7 @@ EOSTR;
                 }
                 $repeating[]= $errstr;
                 if ((error_reporting() & E_USER_DEPRECATED) && $output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
-                    $output->writeln("[DEPRECATED] $errstr");
+                    fprintf(STDERR, "[DEPRECATED] $errstr\n");
                 }
             },
             E_USER_DEPRECATED
@@ -120,7 +120,7 @@ EOSTR;
                         sprintf(
                             '%s%-40s %s',
                             ($depth > 0 ? str_repeat('   ', $depth - 1) . '-> ' : ''),
-                            '<fg=red>' . $e->getMessage() . '</fg=red>',
+                            '<error>' . $e->getMessage() . '</error>',
                             $depth == count($ancestry) -1 ? str_pad('[' . get_class($e) . ']', $maxLength + 15, ' ') : ''
                         )
                     );
