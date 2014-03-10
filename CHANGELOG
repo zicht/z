@@ -8,7 +8,11 @@
 * Moved the plugins to a separate repository.
 * Added a PHAR builder
 * The --plugin option was added
-* The
+* The ability to add (boolean) flags to a task was added (--with-... or --no-...)
+* Shebang support was introduced.
+* Tasks containing underscores are now translated to dashes by default (i.e. 'do_something_cool' will be run by
+  'z do-something-cool'
+
 
 1.0.10
 -----
