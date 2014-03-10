@@ -96,6 +96,12 @@ class Container
                 return parse_url($url, PHP_URL_HOST);
             }
         );
+        $this->decl(array('now'), function() {
+            return date('YmdHis');
+        });
+        $this->fn(array('safename'), function($fn) {
+            return preg_replace('/[^a-z0-9]+/', '-', $fn);
+        });
         $this->decl('abort', function() {
             return 'exit ' . self::ABORT_EXIT_CODE;
         });
