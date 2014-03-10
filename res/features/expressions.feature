@@ -41,18 +41,18 @@ Feature: Expressions
     Then I should see text matching "/-1\n/"
 
   Scenario: Precedence
-    When I run "z precede_mul1"
+    When I run "z precede-mul1"
     Then I should see text matching "/13\n/"
 
   Scenario: Precedence
-    When I run "z precede_mul2"
+    When I run "z precede-mul2"
     Then I should see text matching "/14\n/"
 
   Scenario: Precedence
-    When I run "z precede_paren"
+    When I run "z precede-paren"
     Then I should see text matching "/24\n/"
 
   Scenario: Precedence
-    When I run "z precede_paren2"
+    When I run "z precede-paren2"
     Then I should see text matching "/-21\n/"
 
