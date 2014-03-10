@@ -23,19 +23,18 @@ class Script extends Branch
      */
     public function compile(Buffer $buffer)
     {
-        if (count($this->nodes)) {
-            $depth = 0;
-            if ($this->nodes[0] instanceof Expr\Conditional) {
-                $nodes = $this->nodes;
-                $buffer->write('if (');
-                $this->nodes[0]->compile($buffer);
-                $buffer->raw(') {')->eol()->indent(1);
-                array_shift($nodes);
-                $depth ++;
-            } else {
-                $nodes = $this->nodes;
-            }
+        /** @var Script\Annotation[] $annotations */
+        $annotations = array();
+        $nodes = $this->nodes;
+        while (current($nodes) instanceof Script\Annotation) {
+            $annotations[]= array_shift($nodes);
+        }
 
+        foreach ($annotations as $annotation) {
+            $annotation->beforeScript($buffer);
+        }
+
+        if (count($this->nodes)) {
             $buffer->write('$z->cmd(');
             foreach ($nodes as $i => $node) {
                 if ($i > 0) {
@@ -46,10 +45,10 @@ class Script extends Branch
                 $buffer->write(')');
             }
             $buffer->raw(');')->eol();
+        }
 
-            while ($depth--) {
-                $buffer->indent(-1)->writeln('}');
-            }
+        foreach ($annotations as $annotation) {
+            $annotation->afterScript($buffer);
         }
     }
 }

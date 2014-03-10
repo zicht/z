@@ -25,11 +25,21 @@ class Parser extends AbstractParser
         $exprParser = new Parser\Expression($this);
         $ret = new Node\Script();
         if ($input->valid()) {
-            if ($input->match(Token::EXPR_START, '?(')) {
-                $input->next();
-                $ret->append(new Node\Expr\Conditional($exprParser->parse($input)));
-                $input->expect(Token::EXPR_END);
-            }
+            do {
+                $hasMatch = false;
+                if ($input->match(Token::EXPR_START, '?(')) {
+                    $input->next();
+                    $ret->append(new Node\Script\Conditional($exprParser->parse($input)));
+                    $input->expect(Token::EXPR_END);
+                    $hasMatch = true;
+                } elseif ($input->match(Token::EXPR_START, '@(')) {
+                    $input->next();
+                    $identifier = $input->expect(Token::IDENTIFIER);
+                    $ret->append(new Node\Script\Decorator($identifier, $exprParser->parse($input)));
+                    $input->expect(Token::EXPR_END);
+                    $hasMatch = true;
+                }
+            } while($hasMatch && $input->valid());
         }
         while ($input->valid()) {
             $cur = $input->current();
