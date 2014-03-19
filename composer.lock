@@ -204,10 +204,10 @@
             "scripts": {
                 "post-install-cmd": [
 
-                ],
+    ],
                 "post-update-cmd": [
 
-                ]
+    ]
             },
             "description": "'env' plugin for Z",
             "time": "2014-02-24 14:11:50"
@@ -218,22 +218,14 @@
             "source": {
                 "type": "svn",
                 "url": "svn://zon/projecten/zicht-libraries/z-plugins",
-                "reference": "/branches/1.0-without-env/@32748"
+                "reference": "/branches/1.0-without-env/@33938"
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "type": "library",
-            "scripts": {
-                "post-install-cmd": [
-
-                ],
-                "post-update-cmd": [
-
-                ]
-            },
             "description": "Plugins for Z",
-            "time": "2014-02-24 14:17:42"
+            "time": "2014-03-19 10:22:36"
         }
     ],
     "packages-dev": [
