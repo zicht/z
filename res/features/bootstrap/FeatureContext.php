@@ -32,6 +32,9 @@ class FeatureContext extends BehatContext
         $this->zBinary = escapeshellarg(__DIR__ . '/../../../bin/z');
         $this->zBinaryPath = realpath(__DIR__ . '/../../../bin/z');
         $this->packageBinary = escapeshellarg(__DIR__ . '/../../../bin/package.php');
+
+        putenv('ZPATH=.');
+        putenv('ZFILE=z.yml');
     }
 
 
@@ -82,7 +85,7 @@ class FeatureContext extends BehatContext
      */
     public function iRunZ($cmd)
     {
-        $this->response = shell_exec('ZPATH=. ' . $this->zBinary . ' ' . $cmd . ' 2>&1');
+        $this->response = shell_exec($this->zBinary . ' ' . $cmd . ' 2>&1');
     }
 
     /**
