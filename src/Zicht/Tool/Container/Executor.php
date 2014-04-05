@@ -69,7 +69,7 @@ class Executor
      */
     protected function createProcess()
     {
-        $process = new Process($shell = $this->container->get('SHELL'));
+        $process = new Process($this->container->get('SHELL'));
         $process->setTimeout($this->container->get('TIMEOUT'));
         return $process;
     }
