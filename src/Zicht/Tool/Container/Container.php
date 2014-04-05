@@ -467,7 +467,7 @@ class Container
     {
         if (trim($cmd)) {
             if ($this->resolve('explain')) {
-                $this->output->writeln('( ' . rtrim($cmd, "\n") . ' );');
+                $this->output->writeln('echo ' . escapeshellarg(trim($cmd)) . ' | ' . $this->resolve(array('SHELL')));
             } else {
                 $this->executor->execute($cmd);
             }
