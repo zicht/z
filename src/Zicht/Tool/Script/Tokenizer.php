@@ -42,7 +42,7 @@ class Tokenizer implements TokenizerInterface
             $before = $needle;
             $substr = substr($string, $needle);
             if ($depth === 0) {
-                if (preg_match('/^(\$|\?)\(/', $substr, $m)) {
+                if (preg_match('/^(\$|\?|@)\(/', $substr, $m)) {
                     $needle += strlen($m[0]);
                     $ret[]= new Token(Token::EXPR_START, $m[0]);
                     $depth ++;

@@ -17,21 +17,27 @@ use \Zicht\Tool\Script\Node\Node;
  */
 class Decorator extends Branch implements Annotation
 {
-    public function __construct($name, array $nodes = array())
+    public function __construct($expr)
     {
-        parent::__construct($nodes);
-
-        $this->name = $name;
+        parent::__construct(array($expr));
     }
 
     public function beforeScript(Buffer $buffer)
     {
-
+        $buffer
+            ->writeln('if (!isset($GLOBALS[\'_shell_stack\'])) {')->indent(1)
+            ->writeln('$GLOBALS[\'_shell_stack\'] = array();')->indent(-1)
+            ->writeln('}')
+            ->writeln('array_push($GLOBALS[\'_shell_stack\'], $z->get(\'SHELL\'));')
+            ->writeln('$z->set("SHELL", ')
+        ;
+        $this->nodes[0]->compile($buffer);
+        $buffer->writeln(');');
     }
 
     public function afterScript(Buffer $buffer)
     {
-        // TODO: Implement afterScript() method.
+        $buffer->writeln('$z->set("SHELL", array_pop($GLOBALS[\'_shell_stack\']));');
     }
 
     /**

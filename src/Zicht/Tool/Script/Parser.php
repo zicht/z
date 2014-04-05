@@ -27,15 +27,23 @@ class Parser extends AbstractParser
         if ($input->valid()) {
             do {
                 $hasMatch = false;
-                if ($input->match(Token::EXPR_START, '?(')) {
+                if (
+                    $input->match(Token::EXPR_START, '?(')
+                 || $input->match(Token::EXPR_START, '@(')
+                ) {
+                    $type = $input->current()->value;
                     $input->next();
-                    $ret->append(new Node\Script\Conditional($exprParser->parse($input)));
-                    $input->expect(Token::EXPR_END);
-                    $hasMatch = true;
-                } elseif ($input->match(Token::EXPR_START, '@(')) {
-                    $input->next();
-                    $identifier = $input->expect(Token::IDENTIFIER);
-                    $ret->append(new Node\Script\Decorator($identifier, $exprParser->parse($input)));
+
+                    switch ($type) {
+                        case '@(':
+                            $ret->append(new Node\Script\Decorator($exprParser->parse($input)));
+                            break;
+                        case '?(':
+                            $ret->append(new Node\Script\Conditional($exprParser->parse($input)));
+                            break;
+                        default:
+                            throw new \UnexpectedValueException("Unknown EXPR_START token at this point: {$type}");
+                    }
                     $input->expect(Token::EXPR_END);
                     $hasMatch = true;
                 }
