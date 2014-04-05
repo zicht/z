@@ -18,6 +18,12 @@ Feature: Expressions
             precede_mul2:   echo $(3 * 3 + 5)
             precede_paren:  echo $(3 * (3 + 5))
             precede_paren2:  echo $(3 * -(2 + 5))
+
+            bool:
+              set:
+                something: ? false
+              unless: !something
+              do: echo "anyway"
         """
 
   Scenario: Addition
@@ -55,4 +61,12 @@ Feature: Expressions
   Scenario: Precedence
     When I run "z precede-paren2"
     Then I should see text matching "/-21\n/"
+
+  Scenario: Precedence
+    When I run "z bool"
+    Then I should not see text matching "/anyway\n/"
+
+  Scenario: Precedence
+    When I run "z bool 1"
+    Then I should see text matching "/anyway\n/"
 
