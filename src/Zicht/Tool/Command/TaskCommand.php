@@ -27,9 +27,10 @@ class TaskCommand extends BaseCommand
      */
     public function __construct($name, $arguments, $flags, $help)
     {
-        parent::__construct(str_replace('_', '-', $name));
+        $this->taskReference = array_merge(array('tasks'), explode('.', $name));
+        $this->taskName = str_replace(array('.', '_'), array(':', '-'), $name);
+        parent::__construct($this->taskName);
 
-        $this->taskName = $name;
         $this->flags = $flags;
 
         foreach ($arguments as $name => $required) {
@@ -78,16 +79,17 @@ class TaskCommand extends BaseCommand
 
 
     /**
-     * Adds the default '--explain' and '--force' options
+     * Adds the default '--explain', '--force', '--plugin' and '--debug' options
      *
      * @return void
      */
     protected function configure()
     {
         $this
-            ->addOption('explain', '', InputOption::VALUE_NONE, 'Explains the commands that would be executed.')
-            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force execution of otherwise skipped tasks.')
-            ->addOption('plugin', '', InputOption::VALUE_REQUIRED, 'Load additional plugins on-the-fly')
+            ->addOption('explain',  '',     InputOption::VALUE_NONE,        'Explains the commands that would be executed.')
+            ->addOption('force',    'f',    InputOption::VALUE_NONE,        'Force execution of otherwise skipped tasks.')
+            ->addOption('plugin',   '',     InputOption::VALUE_REQUIRED,    'Load additional plugins on-the-fly')
+            ->addOption('debug',    '',     InputOption::VALUE_NONE,        "Set the debug flag")
         ;
     }
 
@@ -121,14 +123,14 @@ class TaskCommand extends BaseCommand
             }
         }
 
-        $this->preflightCheck($output);
+//        $this->preflightCheck($output);
 
         return $this->container->resolve($this->getTaskReference(), true);
     }
 
     protected function getTaskReference()
     {
-        return array_merge(array('tasks'), explode(':', $this->taskName));
+        return $this->taskReference;
     }
 
 

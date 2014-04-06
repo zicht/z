@@ -145,6 +145,8 @@ class Container
             throw new \InvalidArgumentException("Passed lookup path is empty.");
         }
         if (empty($context)) {
+            var_dump($context);
+            xdebug_print_function_stack();
             throw new \InvalidArgumentException("Context is empty");
         }
         return PropertyAccessor::getByPath($context, $this->path($path), $require);
@@ -626,5 +628,16 @@ class Container
         foreach ($plugins as $p) {
             $this->addPlugin(clone $p);
         }
+    }
+
+
+    /**
+     * Check whether we're in debug mode or not.
+     *
+     * @return bool
+     */
+    public function isDebug()
+    {
+        return $this->resolve('debug') === true;
     }
 }

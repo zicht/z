@@ -120,7 +120,7 @@ EOSTR;
                         sprintf(
                             '%s%-40s %s',
                             ($depth > 0 ? str_repeat('   ', $depth - 1) . '-> ' : ''),
-                            '<error>' . $e->getMessage() . '</error>',
+                            '<fg=red;options=bold>' . $e->getMessage() . '</fg=red;options=bold>',
                             $depth == count($ancestry) -1 ? str_pad('[' . get_class($e) . ']', $maxLength + 15, ' ') : ''
                         )
                     );
@@ -183,9 +183,11 @@ EOSTR;
         $container = $this->getContainer();
         $container->output = $output;
 
+        // TODO uppercase all global settings
         $container->set('verbose',  $input->hasParameterOption(array('--verbose', '-v')));
         $container->set('force',    $input->hasParameterOption(array('--force', '-f')));
         $container->set('explain',  $input->hasParameterOption(array('--explain')));
+        $container->set('debug',    $input->hasParameterOption(array('--debug')));
 
         foreach ($container->getCommands() as $task) {
             $this->add($task);
