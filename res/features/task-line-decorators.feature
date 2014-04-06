@@ -12,7 +12,6 @@ Background:
     t:
       - @("mysql -N") SELECT 4 * 4;
       - @("perl") if("The quick brown fox" =~ /ox/) { print ":)" };
-
   """
 
   Scenario:
