@@ -1,8 +1,7 @@
-Feature: Using conditional task lines
+Feature: Using decorators
   In order to be able to wrap task lines
   As a user
   I need to be able to use decorators to wrap the task lines in whatever I want
-
 
 Background:
   Given I am in a test directory
