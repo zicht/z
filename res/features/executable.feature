@@ -5,6 +5,16 @@ Feature: Making an executable script
 
   Scenario:
     Given I am in a test directory
+    And there is an executable file "z.yml" with a shebang pointing to Z
+    """
+    tasks:
+      foo: echo "bar!"
+    """
+    When I run "./z.yml foo"
+    Then I should see text matching "/bar!\n/"
+
+  Scenario:
+    Given I am in a test directory
     And there is an executable file "foo" with a shebang pointing to Z
     """
     tasks:
