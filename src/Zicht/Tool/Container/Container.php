@@ -36,7 +36,8 @@ class Container
     protected $values = array();
     protected $prefix = array();
 
-    private $stack = array();
+    private $resolutionStack = array();
+    private $varStack = array();
 
     public $output;
     public $executor;
@@ -175,12 +176,12 @@ class Container
             $id = explode('.', $id);
         }
         try {
-            if (in_array($id, $this->stack)) {
+            if (in_array($id, $this->resolutionStack)) {
                 $path = array_map(
                     function($a) {
                         return join('.', $a);
                     },
-                    $this->stack
+                    $this->resolutionStack
                 );
 
                 throw new CircularReferenceException(
@@ -191,12 +192,12 @@ class Container
                     )
                 );
             }
-            array_push($this->stack, $id);
+            array_push($this->resolutionStack, $id);
             $ret = $this->lookup($this->values, $id, $required);
             if ($ret instanceof \Closure) {
                 $this->set($id, $ret = call_user_func($ret, $this));
             }
-            array_pop($this->stack);
+            array_pop($this->resolutionStack);
             return $ret;
         } catch (\Exception $e) {
             if ($e instanceof CircularReferenceException) {
@@ -639,5 +640,33 @@ class Container
     public function isDebug()
     {
         return $this->resolve('debug') === true;
+    }
+
+
+    /**
+     * Push a var on a local stack by it's name.
+     *
+     * @param string $varName
+     * @return void
+     */
+    public function push($varName, $tail)
+    {
+        if (!isset($this->varStack[$varName])) {
+            $this->varStack[$varName] = array();
+        }
+        array_push($this->varStack[$varName], $this->get($varName));
+        $this->set($varName, $tail);
+    }
+
+
+    /**
+     * Pop a var from a local var stack.
+     *
+     * @param string $varName
+     * @return void
+     */
+    public function pop($varName)
+    {
+        $this->set($varName, array_pop($this->varStack[$varName]));
     }
 }
