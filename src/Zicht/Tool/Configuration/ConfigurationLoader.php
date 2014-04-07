@@ -23,10 +23,14 @@ class ConfigurationLoader
      * @return ConfigurationLoader
      * @codeCoverageIgnore
      */
-    public static function fromEnv($configFilename = 'z.yml')
+    public static function fromEnv($configFilename = null)
     {
+        if (null === $configFilename) {
+            $configFilename = getenv('ZFILE') ? getenv('ZFILE') : 'z.yml';
+        }
+
         return new self(
-            getenv('ZFILE') ? getenv('ZFILE') : $configFilename,
+            $configFilename,
             new PathDefaultFileLocator('ZPATH', array(getcwd(), getenv('HOME') . '/.config/z')),
             new FileLoader(
                 new PathDefaultFileLocator(
