@@ -36,6 +36,10 @@ class Conditional extends Branch implements Annotation
         $this->nodes[0]->compile($buffer);
     }
 
+
+    /**
+     * @{inheritDoc}
+     */
     public function beforeScript(Buffer $buffer)
     {
         $buffer->write('if (');
@@ -43,6 +47,10 @@ class Conditional extends Branch implements Annotation
         $buffer->raw(') {')->eol()->indent(1);
     }
 
+
+    /**
+     * @{inheritDoc}
+     */
     public function afterScript(Buffer $buffer)
     {
         $buffer->indent(-1)->writeln('}');
