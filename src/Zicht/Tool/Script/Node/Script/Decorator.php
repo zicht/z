@@ -17,6 +17,11 @@ use \Zicht\Tool\Script\Node\Node;
  */
 class Decorator extends Branch implements Annotation
 {
+    /**
+     * Construct the decorator with the specified expression as the first and only child node.
+     *
+     * @param \Zicht\Tool\Script\Node\Node $expr
+     */
     public function __construct($expr)
     {
         parent::__construct(array($expr));
@@ -24,20 +29,14 @@ class Decorator extends Branch implements Annotation
 
     public function beforeScript(Buffer $buffer)
     {
-        $buffer
-            ->writeln('if (!isset($GLOBALS[\'_shell_stack\'])) {')->indent(1)
-            ->writeln('$GLOBALS[\'_shell_stack\'] = array();')->indent(-1)
-            ->writeln('}')
-            ->writeln('array_push($GLOBALS[\'_shell_stack\'], $z->get(\'SHELL\'));')
-            ->writeln('$z->set("SHELL", ')
-        ;
+        $buffer->writeln('$z->push("SHELL", ')->indent(1);
         $this->nodes[0]->compile($buffer);
-        $buffer->writeln(');');
+        $buffer->indent(-1)->writeln(');');
     }
 
     public function afterScript(Buffer $buffer)
     {
-        $buffer->writeln('$z->set("SHELL", array_pop($GLOBALS[\'_shell_stack\']));');
+        $buffer->writeln('$z->pop("SHELL");');
     }
 
     /**
