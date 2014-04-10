@@ -7,6 +7,7 @@
  */
 
 namespace Zicht\Tool\Script;
+use Symfony\Component\Process\Exception\InvalidArgumentException;
 
 
 /**
@@ -47,6 +48,10 @@ class Parser extends AbstractParser
                     $input->expect(Token::EXPR_END);
                     $hasMatch = true;
                 }
+                while ($input->match(Token::DATA) && preg_match('/^\s+$/', $input->current()->value)) {
+                    $input->next();
+                }
+
             } while($hasMatch && $input->valid());
         }
         while ($input->valid()) {
@@ -55,9 +60,11 @@ class Parser extends AbstractParser
                 $input->next();
                 $ret->append(new Node\Expr\Expr($exprParser->parse($input)));
                 $input->expect(Token::EXPR_END);
-            } elseif ($cur->match(token::DATA)) {
+            } elseif ($cur->match(Token::DATA)) {
                 $ret->append(new Node\Expr\Data($cur->value));
                 $input->next();
+            } else {
+                throw new InvalidArgumentException("Unxpected token: " . $input->current()->type);
             }
         }
 
