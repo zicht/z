@@ -148,6 +148,8 @@ class Traverser
                     if ($path) {
                         $path = join('.', $path);
                     }
+                    $path = json_encode($path);
+                    $value = json_encode($value);
                     throw new \RuntimeException("Exception while visiting value '{$value}' at path {$path}", 0, $e);
                 }
             }
