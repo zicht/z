@@ -79,11 +79,27 @@ EOSTR;
                     return;
                 }
                 $repeating[]= $errstr;
-                if ((error_reporting() & E_USER_DEPRECATED) && $output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
-                    fprintf(STDERR, "[DEPRECATED] $errstr\n");
+                if (
+                    (error_reporting() & E_USER_DEPRECATED
+                        || error_reporting() & E_USER_NOTICE
+                        || error_reporting() & E_USER_WARNING
+                    )
+                    && $output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL
+                ) {
+                    switch ($err) {
+                        case E_USER_WARNING:
+                            fprintf(STDERR, "[WARNING] $errstr\n");
+                            break;
+                        case E_USER_NOTICE:
+                            fprintf(STDERR, "[NOTICE] $errstr\n");
+                            break;
+                        case E_USER_DEPRECATED:
+                            fprintf(STDERR, "[DEPRECATED] $errstr\n");
+                            break;
+                    }
                 }
             },
-            E_USER_DEPRECATED
+            E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED
         );
 
         return parent::run($input, $output);
