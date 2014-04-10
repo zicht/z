@@ -20,7 +20,4 @@
     a.b:    echo "a.b :)"
 
   In 1.0, this would work, but in 1.1 an internal tree representation of all names is used, which causes the node at
-  'a' to be replaced by a node containing 'b'. The above example is considered bad practice anyway and was merely an
-  unsupported feature.
-
-
+  'a' to be replaced by a node containing 'b'. The above example is considered a bug that wasn't detected by the parser.
