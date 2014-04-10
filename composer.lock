@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "65cb79c7e03fe911ab65ee01397b51a1",
+    "hash": "603071e2b76d206e2c5305b702fc4c31",
     "packages": [
         {
             "name": "symfony/config",
@@ -287,6 +287,32 @@
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
             "time": "2014-01-06 22:25:20"
+        },
+        {
+            "name": "zicht/version",
+            "version": "1.0.0-alpha.1",
+            "source": {
+                "type": "svn",
+                "url": "svn://zon/projecten/zicht-libraries/ZichtVersion",
+                "reference": "/tags/1.0.0-alpha.1/@35130"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Zicht\\": "src/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Gerard van Helden",
+                    "email": "gerard@zicht.nl"
+                }
+            ],
+            "description": "Versioning logic following SemVer.org",
+            "time": "2014-04-10 19:33:46"
         }
     ],
     "packages-dev": [
@@ -301,7 +327,8 @@
         "symfony/process": 0,
         "symfony/config": 0,
         "symfony/console": 0,
-        "symfony/finder": 0
+        "symfony/finder": 0,
+        "zicht/version": 15
     },
     "platform": {
         "php": ">=5.3.3"
