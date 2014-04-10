@@ -68,7 +68,7 @@ EOSTR;
 
         set_error_handler(
             /**
-             * Emits deprecation warnings to stderr.
+             * Emits user warnings, notices and deprecation messages to stderr.
              *
              * @param int $err
              * @param string $errstr
@@ -88,10 +88,10 @@ EOSTR;
                 ) {
                     switch ($err) {
                         case E_USER_WARNING:
-                            fprintf(STDERR, "[WARNING] $errstr\n");
+                            fprintf(STDERR, "!WARNING!    $errstr\n");
                             break;
                         case E_USER_NOTICE:
-                            fprintf(STDERR, "[NOTICE] $errstr\n");
+                            fprintf(STDERR, "[Notice]     $errstr\n");
                             break;
                         case E_USER_DEPRECATED:
                             fprintf(STDERR, "[DEPRECATED] $errstr\n");
