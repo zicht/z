@@ -1,7 +1,7 @@
 1.1-dev
 
 * Deprecated the dot concatenation operator
-* Deprecated declaration and resolution by string (all references should now be an array representing a property path)
+* Deprecated declaration and resolution by string (all references should now be an array representing a path)
 * Added the ZFILE and ZPLUGINPATH environment variables
 * Reworked the compiler logic to be able to generate a standalone Container instantation. This makes it possible
   to cache the generated code in any near version.
@@ -11,8 +11,8 @@
 * The ability to add (boolean) flags to a task was added (--with-... or --no-...)
 * Shebang support was introduced.
 * Tasks containing underscores are now translated to dashes by default (i.e. 'do_something_cool' will be run by
-  'z do-something-cool'
-
+  'z do-something-cool'.
+* Task line decorators were introduced
 
 1.0.10
 -----
