@@ -123,7 +123,7 @@ class TaskCommand extends BaseCommand
             }
         }
 
-        $this->preflightCheck($output);
+//        $this->preflightCheck($output);
 
         return $this->container->resolve($this->getTaskReference(), true);
     }
