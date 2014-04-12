@@ -75,7 +75,11 @@ class FeatureContext extends BehatContext
     public function thereIsAFileWithAShebangPointingToZ($file, PyStringNode $string)
     {
         $this->thereIsFile($file, $string);
-        file_put_contents($file, '#!' . $this->zBinaryPath . " -\n\n" . file_get_contents($file));
+        // this is necessary when the binary is inside a path that contains spaces.
+        // A shebang path cannot contain spaces... whoa.
+        @unlink("/tmp/z-interpreter");
+        symlink($this->zBinaryPath, "/tmp/z-interpreter");
+        file_put_contents($file, "#!/tmp/z-interpreter -\n\n" . file_get_contents($file));
         chmod($file, 0755);
     }
 
