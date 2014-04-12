@@ -128,6 +128,11 @@ class TaskCommand extends BaseCommand
         return $this->container->resolve($this->getTaskReference(), true);
     }
 
+    /**
+     * Returns the reference path that points to the task declaration in the container.
+     *
+     * @return string
+     */
     protected function getTaskReference()
     {
         return $this->taskReference;

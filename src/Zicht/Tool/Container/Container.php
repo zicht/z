@@ -645,8 +645,9 @@ class Container
 
     /**
      * Push a var on a local stack by it's name.
-     *
+     * 
      * @param string $varName
+     * @param string $tail
      * @return void
      */
     public function push($varName, $tail)

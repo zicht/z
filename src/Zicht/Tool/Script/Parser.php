@@ -7,7 +7,8 @@
  */
 
 namespace Zicht\Tool\Script;
-use Symfony\Component\Process\Exception\InvalidArgumentException;
+
+use \Symfony\Component\Process\Exception\InvalidArgumentException;
 
 
 /**
@@ -51,8 +52,7 @@ class Parser extends AbstractParser
                 while ($input->match(Token::DATA) && preg_match('/^\s+$/', $input->current()->value)) {
                     $input->next();
                 }
-
-            } while($hasMatch && $input->valid());
+            } while ($hasMatch && $input->valid());
         }
         while ($input->valid()) {
             $cur = $input->current();

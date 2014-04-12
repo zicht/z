@@ -27,6 +27,9 @@ class Decorator extends Branch implements Annotation
         parent::__construct(array($expr));
     }
 
+    /**
+     * @{inheritDoc}
+     */
     public function beforeScript(Buffer $buffer)
     {
         $buffer->writeln('$z->push("SHELL", ')->indent(1);
@@ -34,6 +37,9 @@ class Decorator extends Branch implements Annotation
         $buffer->indent(-1)->writeln(');');
     }
 
+    /**
+     * @{inheritDoc}
+     */
     public function afterScript(Buffer $buffer)
     {
         $buffer->writeln('$z->pop("SHELL");');
