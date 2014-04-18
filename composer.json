@@ -22,6 +22,7 @@
         "post-update-cmd": [
         ]
     },
+    "bin": ["bin/z", "bin/z.php", "bin/package.php"],
     "minimum-stability": "stable",
     "extra": {
     }
