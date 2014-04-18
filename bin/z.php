@@ -4,7 +4,7 @@
  * @copyright Zicht Online <http://zicht.nl>
  */
 
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/bootstrap.php';
 /**
  * Points to the root of the Z installation
  */
