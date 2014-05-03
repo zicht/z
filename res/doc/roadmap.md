@@ -17,7 +17,7 @@ verbosity.
     to expand variables in the scope:
 
     ```
-    set:
+    args:
         target_env: 'testing'
     do: echo $(envs[target_env].root)
     ```
@@ -31,7 +31,7 @@ verbosity.
     This way, other names can be used to identify configured environment:
 
     ```
-    set:
+    args:
         local: development
         target_env: ?
     do: echo $(envs[target_env].root) => $(envs[local].root)

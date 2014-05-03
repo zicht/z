@@ -48,7 +48,7 @@ If you add a 'set' section to the task, you will define variables or task input:
 ```
 tasks:
     say:
-        set:
+        args:
             what: '"Hello"'
         do:
             - echo "$(what) world!"
@@ -69,7 +69,7 @@ It would be cool if we could pass in the variable to the command, right? Ok, let
 ```
 tasks:
     say:
-        set:
+        args:
             what: ? "Hello"
         do:
             - echo "$(what) world!"
@@ -93,7 +93,7 @@ value, the input will become required:
 ```
 tasks:
     say:
-        set:
+        args:
             what: ?
         do:
             - echo "$(what) world!"
@@ -118,7 +118,7 @@ plugins: ['interact']
 
 tasks:
     say:
-        set:
+        args:
             what: ? ask("You did not specify what! Please tell me!", "Hello anyway")
         do:
             - echo "$(what) world!"
@@ -142,13 +142,13 @@ pass input to the task, but other tasks can define the input for it:
 ```
 tasks:
     say_hello:
-        set:
+        args:
             _what: "Hello"
         do:
             - @say
 
     say:
-        set:
+        args:
             _what: ?
         do:
             - echo "$(_what) world!"
@@ -178,14 +178,14 @@ Of course, the say_hello task can by itself publish the variable:
 ```
 tasks:
     say_hello:
-        set:
+        args:
             what: ? "Hello"
             _what: what
         do:
             - @say
 
     say:
-        set:
+        args:
             _what: ?
         do:
             - echo "$(_what) world!"
@@ -292,7 +292,7 @@ These conditionals are identified by the 'unless' section:
 ```
 tasks:
     say:
-        set:
+        args:
             times: ? 2
         # avoid over-exaggerated hello-saying
         unless: times > 5
@@ -333,7 +333,7 @@ any valid Z expression.
 ```
 tasks:
     say:
-        set:
+        args:
             times: ? 2
         do:
             - for i in $$(seq 1 $(times)); do echo "Hello!"; done;
@@ -429,7 +429,7 @@ plugins.
 ```
 tasks:
     talk:
-        set:
+        args:
             what: ?
         do:
             - |

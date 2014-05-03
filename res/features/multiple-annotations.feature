@@ -9,7 +9,7 @@ Feature: Implied parser features
     """
     tasks:
        t:
-          set:
+          args:
               a: ? "b"
               c: ? "d"
           do:

@@ -18,7 +18,7 @@ It utilizes a simple declarative DSL, based on YML, to define tasks and configur
 ```
 tasks:
     namespace.taskname:
-        set:
+        args:
             foo: "value"            # A string value variable that is injected into the execution scope
             bar: ? "default-value"     # A string value that is overridable and defaults to "default-value"
             baz: ?                     # A variable that is required by the task

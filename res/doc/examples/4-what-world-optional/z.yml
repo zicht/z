@@ -1,6 +1,6 @@
 tasks:
     say:
-        set:
+        args:
             what: ? "Hello"
         do:
             - echo "$(what) world!"

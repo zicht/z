@@ -1,12 +1,12 @@
 tasks:
     say_hello:
-        set:
+        args:
             _what: '"Hello"'
         do:
             - @say
 
     say:
-        set:
+        args:
             _what: ?
         do:
             - echo "$(_what) world!"

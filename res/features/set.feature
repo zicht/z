@@ -9,16 +9,16 @@ I need to be able to define required and non-required parameters
     """
     tasks:
         t:
-            set:
+            args:
                 param1: ?
                 param2: ? "default"
             do: echo "the parameters contain '$(param1)' and '$(param2)'"
         t2:
-            set:
+            args:
                 param: ? ""
             do: echo "X$(param)X"
         t3:
-            set:
+            args:
                 param1: ? ""
                 param2: param1 ? param1 : "foo"
             do: echo "X$(param1)X, Y$(param2)Y"

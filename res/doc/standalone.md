@@ -4,7 +4,7 @@
 As of version 1.1, there is support for running a Z file using a shebang and making it executable. You need to point
 the shebang to the location of Z and add a - (dash) parameter, so Z knows you're running the file on it's own.
 
-Assume the following file called "foo", with the executable flag set:
+Assume the following file called "foo", with the executable flag args:
 
     #!/path/to/z -
 
@@ -50,7 +50,7 @@ example, starting a simple project based on composer:
     tasks:
         create:
             help: "Create a project based on a local project template"
-            set:
+            args:
                 dir: ?
             do:
                 composer create \

@@ -1,6 +1,6 @@
 tasks:
     say:
-        set:
+        args:
             times: ? 2
         # avoid over-exaggerated hello-saying
         unless: times > 5

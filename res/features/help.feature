@@ -9,7 +9,7 @@ I need to see what tasks are available and print their help
     """
     tasks:
         t:
-            set:
+            args:
                 required_param: ?
                 unrequired_param: ? "foo"
             help: |

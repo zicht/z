@@ -2,7 +2,7 @@ plugins: ['core']
 
 tasks:
     say:
-        set:
+        args:
             what: ? ask("You did not specify what! Please tell me!", "Hello anyway")
         do:
             - echo "$(what) world!"

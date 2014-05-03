@@ -1,6 +1,6 @@
 tasks:
     talk:
-        set:
+        args:
             what: ?
         do:
             - |

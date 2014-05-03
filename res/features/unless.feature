@@ -9,7 +9,7 @@ I need to be able to define a reason to skip a task
     """
     tasks:
         t:
-            set:
+            args:
                 unless_value: ? "yes"
             unless: unless_value == "yes"
             pre:    echo "pre was executed"

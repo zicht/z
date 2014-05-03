@@ -9,7 +9,7 @@ I need to be able to define a reason to fail a task
     """
     tasks:
         t:
-            set:
+            args:
                 assert_value: ? "yes"
             assert: assert_value != "yes"
             pre:    echo "pre was executed"

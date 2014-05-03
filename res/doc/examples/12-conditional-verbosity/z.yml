@@ -1,6 +1,6 @@
 tasks:
     say:
-        set:
+        args:
             times: ? 2
         do:
             - for i in {1..$(times)}; do echo "Hello!"; done;

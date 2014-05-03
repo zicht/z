@@ -9,6 +9,6 @@ tasks:
         )"
 
     talk:
-        set: { what: ? }
+        args: { what: ? }
         do: @_talk
 

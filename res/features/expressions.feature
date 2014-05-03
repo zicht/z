@@ -20,7 +20,7 @@ Feature: Expressions
             precede_paren2:  echo $(3 * -(2 + 5))
 
             bool:
-              set:
+              args:
                 something: ? false
               unless: !something
               do: echo "anyway"
