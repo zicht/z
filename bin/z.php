@@ -4,6 +4,8 @@
  * @copyright Zicht Online <http://zicht.nl>
  */
 
+$VERSION = '2.0-dev';
+
 require_once __DIR__ . '/bootstrap.php';
 /**
  * Points to the root of the Z installation
@@ -17,5 +19,5 @@ if ($_SERVER['argc'] > 2 && $_SERVER['argv'][1] === '-') {
 } else {
     $config = Zicht\Tool\Configuration\ConfigurationLoader::fromEnv();
 }
-$app = new Zicht\Tool\Application('The Zicht Tool', '1.1-dev', $config);
+$app = new Zicht\Tool\Application('The Zicht Tool', $VERSION, $config);
 $app->run();

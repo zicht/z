@@ -45,17 +45,7 @@ class Expression extends AbstractParser
      */
     public function parse(TokenStream $stream)
     {
-        // BC feature: if a legacy env token is matched, replace it with envs[target_env]
-        if ($stream->match(Token::LEGACY_ENV)) {
-            $stream->next();
-
-            if ($stream->match(Token::OPERATOR, '.')) {
-                $ret = new Node\Expr\Subscript(new Node\Expr\Variable('envs'));
-                $ret->append(new Node\Expr\Variable('target_env'));
-            } else {
-                $ret = new Node\Expr\Variable('target_env');
-            }
-        } elseif ($stream->match(Token::OPERATOR, array('!', '-'))) {
+        if ($stream->match(Token::OPERATOR, array('!', '-'))) {
             $value = $stream->current()->value;
             $stream->next();
             $ret = new Op\Unary($value, $this->parse($stream));
@@ -156,7 +146,7 @@ class Expression extends AbstractParser
         }
 
         // little syntactic sugar for function calls without parentheses:
-        $allowInlineCallTokens = array(Token::IDENTIFIER, Token::STRING, Token::NUMBER, Token::LEGACY_ENV);
+        $allowInlineCallTokens = array(Token::IDENTIFIER, Token::STRING, Token::NUMBER);
         if ($stream->valid() && ($stream->match($allowInlineCallTokens))) {
             $ret = new Node\Expr\Call($ret);
             $ret->append($this->parse($stream));

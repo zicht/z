@@ -28,26 +28,7 @@ class Expression implements TokenizerInterface
             $substr = substr($string, $needle);
             $before = $needle;
 
-            if (preg_match('/^env(?=(?:\.(root|web|url|db|ssh))|[^.\w])/', $substr, $m)) {
-                trigger_error(
-                    "As of version 1.1, using 'env' for referencing environments configuration is deprecated. "
-                    . "Use envs[target_env] instead",
-                    E_USER_DEPRECATED
-                );
-                $ret[]= new Token(Token::LEGACY_ENV);
-                $needle += strlen($m[0]);
-            } elseif (preg_match('/^(==|<=?|>=?|!=?|\?|:|\|\||&&|xor|or|and|\.|\[|\]|\(|\)|\+|-|\/|\*)/', $substr, $m)) {
-                if ($m[0] == '.' && end($ret)->type == Token::WHITESPACE) {
-                    trigger_error(
-                        "As of version 1.1, using the dot-operator for concatenation is deprecated. "
-                        . "Please use cat() or sprintf() in stead",
-                        E_USER_DEPRECATED
-                    );
-                    $ret[]= new Token(Token::OPERATOR, 'cat');
-                    $needle += strlen($m[0]);
-                    continue;
-                }
-
+            if (preg_match('/^(==|<=?|>=?|!=?|\?|:|\|\||&&|xor|or|and|\.|\[|\]|\(|\)|\+|-|\/|\*)/', $substr, $m)) {
                 if ($m[0] == ')') {
                     $depth --;
                     if ($depth == 0) {

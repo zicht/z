@@ -165,16 +165,8 @@ class Container
      */
     public function resolve($id, $required = false)
     {
-        if (is_string($id)) {
-            if (strpos($id, '.') !== false) {
-                trigger_error(
-                    "As of version 1.1, Resolving variables by strings containing dots is deprecated ($id). "
-                    . "Please use arrays in stead",
-                    E_USER_DEPRECATED
-                );
-            }
-            $id = explode('.', $id);
-        }
+        $id = $this->path($id);
+
         try {
             if (in_array($id, $this->resolutionStack)) {
                 $path = array_map(
@@ -249,19 +241,8 @@ class Container
      */
     private function path($path)
     {
-        if (!is_array($path)) {
-            if (null === $path) {
-                throw new \InvalidArgumentException("Invalid path");
-            } elseif (strpos($path, '.') !== false) {
-                trigger_error(
-                    "As of version 1.1, setting variable paths by string is deprecated ($path)."
-                        . "Please use arrays instead",
-                    E_USER_DEPRECATED
-                );
-                $path = explode('.', $path);
-            } else {
-                $path = array($path);
-            }
+        if (is_string($path)) {
+            $path = explode('.', $path);
         }
         return $path;
     }
@@ -500,7 +481,6 @@ class Container
      * @param string $value
      * @return string
      *
-     * @deprecated
      * @throws \UnexpectedValueException
      */
     public function value($value)

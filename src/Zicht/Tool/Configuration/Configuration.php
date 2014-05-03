@@ -43,51 +43,13 @@ class Configuration implements ConfigurationInterface
             return array($s);
         };
 
-        // to be removed in 1.2
-        $replaceLegacyEnv = function ($config) {
-            trigger_error(
-                'As of version 1.1, the "env" configuration is deprecated and must be replaced by "envs".',
-                E_USER_DEPRECATED
-            );
-            $config['envs'] = $config['env'];
-            unset($config['env']);
-            return $config;
-        };
-        // to be removed in 1.2
-        $hasLegacyEnv = function ($config) {
-            return isset($config['env']);
-        };
-
-        // to be removed in 1.2
-        $replaceEnvWithTargetEnv = function ($set) {
-            trigger_error(
-                "As of version 1.1, Using 'env' as an input variable is deprecated. "
-                    . "Please use 'target_env' in stead",
-                E_USER_DEPRECATED
-            );
-            $repl = array();
-            // this foreach is needed to maintain the internal sorting
-            foreach ($set as $k => $v) {
-                $repl[$k == 'env' ? 'target_env' : $k] = $v;
-            }
-
-            return $repl;
-        };
-        $hasLegacySet = function($in) {
-            return isset($in['set']);
-        };
-        $replaceSetWithArgs = function($data) {
-            $data['args'] = $data['set'];
-            unset($data['set']);
-            return $data;
-        };
         $zConfig
-            ->beforeNormalization()
-                ->ifTrue($hasLegacyEnv)->then($replaceLegacyEnv)
-            ->end()
             ->children()
                 ->scalarNode('SHELL')->end()
                 ->scalarNode('TIMEOUT')->end()
+                ->arrayNode('vars')
+                    ->prototype('variable')->end()
+                ->end()
                 ->arrayNode('tasks')
                     ->prototype('array')
                         ->beforeNormalization()
@@ -105,10 +67,6 @@ class Configuration implements ConfigurationInterface
                                     return array('do' => $v);
                                 }
                             )
-                        ->end()
-                        ->beforeNormalization()
-                            ->ifTrue($hasLegacySet)
-                            ->then($replaceSetWithArgs)
                         ->end()
                         ->children()
                             ->scalarNode('name')->end()
@@ -135,10 +93,6 @@ class Configuration implements ConfigurationInterface
                                         ->scalarNode('type')->end()
                                         ->scalarNode('default')->end()
                                     ->end()
-                                ->end()
-                                ->beforeNormalization()
-                                    ->ifTrue($hasLegacyEnv)
-                                    ->then($replaceEnvWithTargetEnv)
                                 ->end()
                                 ->useAttributeAsKey('name')
                                 ->defaultValue(array())
@@ -168,32 +122,6 @@ class Configuration implements ConfigurationInterface
                                 ->defaultValue(array())
                             ->end()
                             ->scalarNode('yield')->defaultValue(null)->end()
-                        ->end()
-                    ->end()
-                    ->useAttributeAsKey('name')
-                ->end()
-                ->scalarNode('local_env')->end()
-                ->arrayNode('envs')
-                    ->prototype('array')
-                        ->children()
-                            ->scalarNode('ssh')->end()
-                            ->scalarNode('root')
-                                ->validate()
-                                    ->ifTrue(
-                                        function($v) {
-                                            return preg_match('~[^/]$~', $v);
-                                        }
-                                    )
-                                    ->then(
-                                        function($v) {
-                                            return $v . '/';
-                                        }
-                                    )
-                                ->end()
-                            ->end()
-                            ->scalarNode('web')->end()
-                            ->scalarNode('url')->end()
-                            ->scalarNode('db')->end()
                         ->end()
                     ->end()
                     ->useAttributeAsKey('name')
