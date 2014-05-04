@@ -195,7 +195,7 @@ class Container
             if ($e instanceof CircularReferenceException) {
                 throw $e;
             }
-            throw new \RuntimeException("Exception while resolving value " . join(".", $id), 0, $e);
+            throw new \RuntimeException("While resolving value " . join(".", $id), 0, $e);
         }
     }
 
