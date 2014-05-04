@@ -29,8 +29,8 @@ I need to be able to define flags for my task
     Then I should see text matching "/foo is false/"
     And  I should see text matching "/bar is false/"
 
-  Scenario: Passing --with-* as flags will set to true
-    When I run "z t --with-foo --with-bar"
+  Scenario: Passing flags will set to true
+    When I run "z t --foo --bar"
     Then I should see text matching "/foo is true/"
     And  I should see text matching "/bar is true/"
 
