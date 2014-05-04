@@ -5,6 +5,8 @@
  */
 namespace Zicht\Tool\Configuration;
 
+use \Zicht\Version;
+use \Zicht\Tool\Version as V;
 use \Symfony\Component\Config\Definition\ConfigurationInterface;
 use \Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
@@ -45,8 +47,6 @@ class Configuration implements ConfigurationInterface
 
         $zConfig
             ->children()
-                ->scalarNode('SHELL')->end()
-                ->scalarNode('TIMEOUT')->end()
                 ->arrayNode('vars')
                     ->prototype('variable')->end()
                 ->end()

@@ -7,7 +7,11 @@
 namespace Zicht\Tool\Configuration;
 
 use \Symfony\Component\Config\Loader\FileLoader as BaseFileLoader;
+use \Zicht\Version\Constraint;
+use \Zicht\Version\Version;
 use \Symfony\Component\Yaml\Yaml;
+use \Zicht\Tool;
+
 
 /**
  * The Z file loader
@@ -39,7 +43,20 @@ class FileLoader extends BaseFileLoader
      */
     public function load($resource, $type = null)
     {
-        $config = Yaml::parse($resource);
+        $fileContents = file_get_contents($resource);
+        $annotations = $this->parseAnnotations($fileContents);
+
+        if (empty($annotations['version'])) {
+            trigger_error("$resource does not contain a version annotation.", E_USER_NOTICE);
+        } else {
+            $failures = array();
+            $coreVersion = Version::fromString(Tool\Version::CORE_VERSION, $failures);
+            if (!Constraint::isMatch($annotations['version'], $coreVersion)) {
+                trigger_error("$resource does not contain a version annotation: " . join("; ", $failures), E_USER_WARNING);
+            }
+        }
+
+        $config = Yaml::parse($fileContents);
 
         if (isset($config['plugins'])) {
             $this->processPlugins($config['plugins'], dirname($resource));
@@ -53,6 +70,16 @@ class FileLoader extends BaseFileLoader
         $this->configs[]= $config;
 
         return $config;
+    }
+
+
+    public function parseAnnotations($fileContents)
+    {
+        $ret = array();
+        if (preg_match('/^#\s*@(\w+)[:=]?\s+([\'"])?(.*)\2\s*$/m', $fileContents, $m)) {
+            $ret[$m[1]] = $m[3];
+        }
+        return $ret;
     }
 
 
