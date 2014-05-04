@@ -47,6 +47,8 @@ class Configuration implements ConfigurationInterface
 
         $zConfig
             ->children()
+                ->scalarNode('SHELL')->end()
+                ->scalarNode('TIMEOUT')->end()
                 ->arrayNode('vars')
                     ->prototype('variable')->end()
                 ->end()

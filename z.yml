@@ -1,4 +1,6 @@
-plugins: ['core', 'deploy', 'svn', 'env', 'ci']
+# @version ">=2.0"
+
+plugins: ['deploy', 'svn', 'env', 'ci']
 
 tasks:
     docs: cd res/doc && z docs $(z.opts)
@@ -7,7 +9,6 @@ tasks:
         pre: @docs
         do: rsync -rv res/doc/html/ zichter@dev3:/var/www/dev/z/default/public/
 
-    build: php bin/package.php --force build z
 
     ci.build:
         post: cd res && behat

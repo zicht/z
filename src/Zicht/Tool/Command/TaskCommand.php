@@ -32,6 +32,7 @@ class TaskCommand extends BaseCommand
         parent::__construct($this->taskName);
 
         $this->flags = $flags;
+        $this->opts = $options;
 
         foreach ($arguments as $name => $required) {
             $this->addArgument(
@@ -115,14 +116,19 @@ class TaskCommand extends BaseCommand
                 $this->container->set(explode('.', $arg->getName()), $input->getArgument($arg->getName()));
             }
         }
+        foreach ($this->opts as $opt) {
+            if ($input->getOption($opt)) {
+                $this->container->set(explode('.', $opt), $input->getOption($opt));
+            }
+        }
         foreach ($this->flags as $name => $value) {
             $this->container->set(explode('.', $name), $value);
-            if ($input->getOption('no-' . $name) && ($input->getOption('with-' . $name) || $input->getOption($name))) {
-                throw new \InvalidArgumentException("Cannot pass both --no-{$name} and --with-{$name} options, they are mutually exclusive");
+            if ($input->getOption('no-' . $name) && $input->getOption($name)) {
+                throw new \InvalidArgumentException("Cannot pass both --no-{$name} and --{$name} options, they are mutually exclusive");
             }
             if ($input->getOption('no-' . $name)) {
                 $this->container->set(explode('.', $name), false);
-            } elseif ($input->getOption('with-' . $name) || $input->getOption($name)) {
+            } elseif ($input->getOption($name)) {
                 $this->container->set(explode('.', $name), true);
             }
         }

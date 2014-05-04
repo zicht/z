@@ -22,10 +22,12 @@ class OptNode extends ArgNode
      *
      * @param string $name
      * @param \Zicht\Tool\Script\Node\Node $expr
-     * @param bool $conditional
      */
     public function __construct($name, $expr)
     {
+        if (!$expr) {
+            $expr = new \Zicht\Tool\Script\Node\Expr\Literal("");
+        }
         parent::__construct($name, $expr, true);
     }
 }

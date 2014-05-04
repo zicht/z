@@ -106,6 +106,9 @@ class Task extends Declaration
         foreach ($this->taskDef['args'] as $node) {
             $node->compile($buffer);
         }
+        foreach ($this->taskDef['opts'] as $node) {
+            $node->compile($buffer);
+        }
         $buffer->writeln(sprintf('$z->notify(%s, "start");', $taskName));
         $buffer->writeln('try {')->indent(1);
         $hasUnless = false;
