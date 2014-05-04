@@ -8,6 +8,7 @@
 namespace Zicht\Tool\Container;
 
 use \Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\Task\OptNode;
 use \Zicht\Tool\Script\Compiler;
 use \Zicht\Tool\Script\Parser;
 use \Zicht\Tool\Script\Parser\Expression as ExpressionParser;
@@ -155,7 +156,7 @@ class ContainerBuilder
      */
     public function createArgNode($path, $node)
     {
-        $v = trim($node['default']);
+        $v = trim($node);
         if (substr($v, 0, 1) == '?') {
             $conditional = true;
             $v = ltrim(substr($v, 1));
@@ -163,6 +164,18 @@ class ContainerBuilder
             $conditional = false;
         }
         return new ArgNode(end($path), $this->exprcompiler->parse($v), $conditional);
+    }
+
+    /**
+     * Creates a node for the 'opts' definition of the task.
+     *
+     * @param array $path
+     * @param string $node
+     * @return \Zicht\Tool\Script\Node\Task\OptNode
+     */
+    public function createOptNode($path, $node)
+    {
+        return new OptNode(end($path), $this->exprcompiler->parse($node));
     }
 
 
@@ -206,6 +219,13 @@ class ContainerBuilder
             array($this, 'createArgNode'),
             function($path) {
                 return (count($path) == 4 && $path[0] == 'tasks' && $path[2] == 'args');
+            },
+            Traverser::BEFORE
+        );
+        $traverser->addVisitor(
+            array($this, 'createOptNode'),
+            function($path) {
+                return (count($path) == 4 && $path[0] == 'tasks' && $path[2] == 'opts');
             },
             Traverser::BEFORE
         );

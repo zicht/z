@@ -75,26 +75,11 @@ class Configuration implements ConfigurationInterface
                                 ->prototype('boolean')->end()
                                 ->defaultValue(array())
                             ->end()
+                            ->arrayNode('opts')
+                                ->prototype('scalar')->end()
+                            ->end()
                             ->arrayNode('args')
-                                ->prototype('array')
-                                    ->beforeNormalization()
-                                        ->ifTrue(function($v) {
-                                            return is_scalar($v);
-                                        })
-                                        ->then(function($v) {
-                                            return array(
-                                                'type' => 'argument',
-                                                'default' => $v
-                                            );
-                                        })
-                                    ->end()
-                                    ->children()
-                                        ->scalarNode('name')->end()
-                                        ->scalarNode('type')->end()
-                                        ->scalarNode('default')->end()
-                                    ->end()
-                                ->end()
-                                ->useAttributeAsKey('name')
+                                ->prototype('scalar')->end()
                                 ->defaultValue(array())
                             ->end()
                             ->scalarNode('unless')->defaultValue(null)->end()

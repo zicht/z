@@ -25,7 +25,7 @@ class TaskCommand extends BaseCommand
      * @param array $flags
      * @param string $help
      */
-    public function __construct($name, $arguments, $flags, $help)
+    public function __construct($name, $arguments, $options, $flags, $help)
     {
         $this->taskReference = array_merge(array('tasks'), explode('.', $name));
         $this->taskName = str_replace(array('.', '_'), array(':', '-'), $name);
@@ -41,11 +41,15 @@ class TaskCommand extends BaseCommand
                     : InputArgument::OPTIONAL
             );
         }
+        foreach ($options as $name) {
+            $this
+                ->addOption($name, '', InputOption::VALUE_REQUIRED, '')
+            ;
+        }
         foreach ($flags as $name => $value) {
             $this
                 ->addOption($name, '', InputOption::VALUE_NONE, 'Toggle ' . $name . ' flag on')
                 ->addOption('no-' . $name, '', InputOption::VALUE_NONE, 'Toggle ' . $name . ' flag off')
-                ->addOption('with-' . $name, '', InputOption::VALUE_NONE, 'Toggle ' . $name . ' flag on')
             ;
         }
         $this->setHelp($help ? $help : '(no help available for this task)');
@@ -63,10 +67,10 @@ class TaskCommand extends BaseCommand
         foreach ($this->flags as $name => $value) {
             $i = 0;
             $ret = preg_replace_callback(
-                '/\[--((no|with)-)?' . $name . '\]/',
+                '/\[--(no-)?' . $name . '\]/',
                 function() use(&$i, $name) {
                     if ($i ++ == 0) {
-                        return '[--[no|with]-' . $name .']';
+                        return '[--[no|]-' . $name .']';
                     }
                     return '';
                 },

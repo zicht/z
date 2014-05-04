@@ -72,6 +72,8 @@ class Task extends Declaration
                 ->raw(',')
                 ->asPhp($this->getArguments(true))
                 ->raw(',')
+                ->asPhp($this->getOptions())
+                ->raw(',')
                 ->asPhp($this->taskDef['flags'])
                 ->raw(',')
                 ->asPhp($this->getHelp() ? $this->getHelp() : "(no help available for this task)")
@@ -171,6 +173,23 @@ class Task extends Declaration
                     // for execution of the task
                     $ret[$name] = ($expr->nodes[0] === null);
                 }
+            }
+        }
+        return $ret;
+    }
+
+    /**
+     * Returns all variables that can be injected into the task.
+     *
+     * @param bool $onlyPublic
+     * @return array
+     */
+    public function getOptions()
+    {
+        $ret = array();
+        if (!empty($this->taskDef['opts'])) {
+            foreach ($this->taskDef['opts'] as $opt) {
+                $ret[]= $opt->name;
             }
         }
         return $ret;
