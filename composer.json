@@ -6,12 +6,12 @@
     },
     "require": {
         "php": ">=5.3.3",
-        "symfony/yaml": "2.3.*@stable",
-        "symfony/process": "2.3.*@stable",
-        "symfony/config": "2.3.*@stable",
-        "symfony/console": "2.3.*@stable",
-        "symfony/finder": "2.3.*@stable",
-        "zicht/version": "*@alpha"
+        "symfony/yaml": "2.4.*@stable",
+        "symfony/process": "2.4.*@stable",
+        "symfony/config": "2.4.*@stable",
+        "symfony/console": "2.4.*@stable",
+        "symfony/finder": "2.4.*@stable",
+        "zicht/version": "1.1.*@rc"
     },
     "suggest": {
         "zicht/z-plugins": "A set of default plugins for Z"

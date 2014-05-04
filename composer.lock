@@ -3,20 +3,20 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "603071e2b76d206e2c5305b702fc4c31",
+    "hash": "ce71afb7add16102849dc8ffec10dc1b",
     "packages": [
         {
             "name": "symfony/config",
-            "version": "v2.3.10",
+            "version": "v2.4.3",
             "target-dir": "Symfony/Component/Config",
             "source": {
                 "type": "git",
                 "url": "zichter@dev3:github/symfony/Config.git",
-                "reference": "v2.3.10"
+                "reference": "v2.4.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Config.git/v2.3.10.zip",
+                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Config.git/v2.4.3.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -27,7 +27,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -50,20 +50,20 @@
             ],
             "description": "Symfony Config Component",
             "homepage": "http://symfony.com",
-            "time": "2014-01-06 22:25:20"
+            "time": "2014-03-26 11:35:33"
         },
         {
             "name": "symfony/console",
-            "version": "v2.3.10",
+            "version": "v2.4.3",
             "target-dir": "Symfony/Component/Console",
             "source": {
                 "type": "git",
                 "url": "zichter@dev3:github/symfony/Console.git",
-                "reference": "v2.3.10"
+                "reference": "v2.4.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Console.git/v2.3.10.zip",
+                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Console.git/v2.4.3.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -79,7 +79,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -102,20 +102,20 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "http://symfony.com",
-            "time": "2014-02-12 08:04:19"
+            "time": "2014-03-01 17:35:04"
         },
         {
             "name": "symfony/filesystem",
-            "version": "v2.4.2",
+            "version": "v2.4.3",
             "target-dir": "Symfony/Component/Filesystem",
             "source": {
                 "type": "git",
                 "url": "zichter@dev3:github/symfony/Filesystem.git",
-                "reference": "v2.4.2"
+                "reference": "v2.4.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Filesystem.git/v2.4.2.zip",
+                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Filesystem.git/v2.4.3.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -148,20 +148,20 @@
             ],
             "description": "Symfony Filesystem Component",
             "homepage": "http://symfony.com",
-            "time": "2014-01-07 13:28:54"
+            "time": "2014-03-26 11:55:03"
         },
         {
             "name": "symfony/finder",
-            "version": "v2.3.10",
+            "version": "v2.4.3",
             "target-dir": "Symfony/Component/Finder",
             "source": {
                 "type": "git",
                 "url": "zichter@dev3:github/symfony/Finder.git",
-                "reference": "v2.3.10"
+                "reference": "v2.4.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Finder.git/v2.3.10.zip",
+                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Finder.git/v2.4.3.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -171,7 +171,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -194,20 +194,20 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "http://symfony.com",
-            "time": "2014-01-06 22:25:20"
+            "time": "2014-03-01 17:35:04"
         },
         {
             "name": "symfony/process",
-            "version": "v2.3.10",
+            "version": "v2.4.3",
             "target-dir": "Symfony/Component/Process",
             "source": {
                 "type": "git",
                 "url": "zichter@dev3:github/symfony/Process.git",
-                "reference": "v2.3.10"
+                "reference": "v2.4.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Process.git/v2.3.10.zip",
+                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Process.git/v2.4.3.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -217,7 +217,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -240,20 +240,20 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "http://symfony.com",
-            "time": "2014-02-11 07:51:18"
+            "time": "2014-03-26 11:35:33"
         },
         {
             "name": "symfony/yaml",
-            "version": "v2.3.10",
+            "version": "v2.4.3",
             "target-dir": "Symfony/Component/Yaml",
             "source": {
                 "type": "git",
                 "url": "zichter@dev3:github/symfony/Yaml.git",
-                "reference": "v2.3.10"
+                "reference": "v2.4.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Yaml.git/v2.3.10.zip",
+                "url": "http://remote.satis.dev3.zicht.intern/packages/symfony/Yaml.git/v2.4.3.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -263,7 +263,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.3-dev"
+                    "dev-master": "2.4-dev"
                 }
             },
             "autoload": {
@@ -286,15 +286,15 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "http://symfony.com",
-            "time": "2014-01-06 22:25:20"
+            "time": "2014-03-12 18:29:58"
         },
         {
             "name": "zicht/version",
-            "version": "1.0.0-alpha.1",
+            "version": "1.1.0-rc.1",
             "source": {
                 "type": "svn",
                 "url": "svn://zon/projecten/zicht-libraries/ZichtVersion",
-                "reference": "/tags/1.0.0-alpha.1/@35130"
+                "reference": "/tags/1.1.0-rc.1/@36548"
             },
             "type": "library",
             "autoload": {
@@ -312,7 +312,7 @@
                 }
             ],
             "description": "Versioning logic following SemVer.org",
-            "time": "2014-04-10 19:33:46"
+            "time": "2014-05-03 16:06:16"
         }
     ],
     "packages-dev": [
@@ -328,7 +328,7 @@
         "symfony/config": 0,
         "symfony/console": 0,
         "symfony/finder": 0,
-        "zicht/version": 15
+        "zicht/version": 5
     },
     "platform": {
         "php": ">=5.3.3"
