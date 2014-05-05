@@ -2,5 +2,5 @@
 
 return array(
     'tasks' => array(),
-    'envs' => array()
+    'vars' => array()
 );

@@ -1,2 +1,2 @@
-envs:
-    a: ~
+vars:
+    foo: bar

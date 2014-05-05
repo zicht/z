@@ -1,4 +1,0 @@
-envs:
-    a:
-        ssh: 'user@example.org'
-        root: ~/public

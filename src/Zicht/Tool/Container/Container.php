@@ -89,6 +89,8 @@ class Container
         $this->fn('mtime', 'filemtime');
         $this->fn('atime', 'fileatime');
         $this->fn('ctime', 'filectime');
+        $this->fn('escape', 'escapeshellarg');
+        $this->fn('join', 'implode');
         $this->fn('sh', array($this, 'helperExec'));
         $this->fn('str', array($this, 'str'));
         $this->fn(

@@ -84,17 +84,20 @@ EOSTR;
                         || error_reporting() & E_USER_NOTICE
                         || error_reporting() & E_USER_WARNING
                     )
-                    && $output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL
                 ) {
                     switch ($err) {
                         case E_USER_WARNING:
-                            fprintf(STDERR, "!WARNING!    $errstr\n");
+                            fprintf(STDERR, $output->getFormatter()->format("<comment>[WARNING]</comment>   $errstr\n"));
                             break;
                         case E_USER_NOTICE:
-                            fprintf(STDERR, "[Notice]     $errstr\n");
+                            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
+                                fprintf(STDERR, $output->getFormatter()->format("<comment>[NOTICE]</comment>   $errstr\n"));
+                            }
                             break;
                         case E_USER_DEPRECATED:
-                            fprintf(STDERR, "[DEPRECATED] $errstr\n");
+                            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
+                                fprintf(STDERR, $output->getFormatter()->format("<comment>[DEPRECATED]</comment>   $errstr\n"));
+                            }
                             break;
                     }
                 }

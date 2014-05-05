@@ -5,6 +5,7 @@ return array(
         'a' => array(
             'help' => null,
             'flags' => array(),
+            'opts' => array(),
             'args' => array(),
             'yield' => null,
             'assert' => null,
@@ -16,5 +17,5 @@ return array(
             )
         )
     ),
-    'envs' => array()
+    'vars' => array()
 );

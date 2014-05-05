@@ -1,8 +1,6 @@
 <?php
 
 return array(
-    'envs' => array(
-        'a' => array()
-    ),
+    'vars' => array('foo' => 'bar'),
     'tasks' => array()
 );

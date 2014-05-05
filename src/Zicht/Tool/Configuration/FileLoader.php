@@ -50,9 +50,13 @@ class FileLoader extends BaseFileLoader
             trigger_error("$resource does not contain a version annotation.", E_USER_NOTICE);
         } else {
             $failures = array();
-            $coreVersion = Version::fromString(Tool\Version::CORE_VERSION, $failures);
-            if (!Constraint::isMatch($annotations['version'], $coreVersion)) {
-                trigger_error("$resource does not contain a version annotation: " . join("; ", $failures), E_USER_WARNING);
+            $coreVersion = Version::fromString(Tool\Version::CORE_VERSION);
+            if (!Constraint::isMatch($annotations['version'], $coreVersion, $failures)) {
+                trigger_error(
+                    "Core version '{$coreVersion}' does not match version annotation '{$annotations['version']}'\n"
+                    . "(specified in $resource; " . join("; ", $failures) . ")",
+                    E_USER_WARNING
+                );
             }
         }
 
