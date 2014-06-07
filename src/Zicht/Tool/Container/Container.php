@@ -386,6 +386,9 @@ class Container
     {
         $args = func_get_args();
         $service = array_shift($args);
+        if (!is_array($service)) {
+            throw new \RuntimeException("Expected an array");
+        }
         if (!is_callable($service[0])) {
             throw new \InvalidArgumentException("Can not use service '{$service[0]}' as a function, it is not callable");
         }
