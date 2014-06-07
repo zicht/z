@@ -24,7 +24,7 @@ echo "Replacing 'env:' global setting with 'envs:'"
 sed 's/^env:/envs:/g'                                                       -i $file;
 
 echo "Replacing 'env:' parameters with 'target_env:'"
-sed 's/\senv:/target_env:/g'                                                -i $file;
+sed 's/(\s)env:/\1target_env:/g'                                            -i $file;
 
 echo "Replacing 'env.*' expressions with 'envs[target_env].*'"
 sed 's/env\.\(ssh\|web\|root\|db\)/envs[target_env]\.\1/g'                  -i $file;
@@ -35,6 +35,8 @@ sed 's/\$(env)/$(target_env)/g'                                             -i $
 echo "Removing reference to core plugin"
 sed 's/\(plugins:.*\)\('"'"'core'"'"', \?\|, \?'"'"'core'"'"'\)/\1/g'       -i $file;
 
-echo "Done"
+echo "Replacing 'verbose' with 'VERBOSE'"
+sed 's/\?\(verbose\)/?(VERBOSE)/g'                                           -i $file;
 
-echo "Don't forget to add a version annotation at the top of the file, once you're satisfied"
+echo "Done"
+echo "WARNING: Don't forget to add a version annotation at the top of the file, once you're satisfied"
