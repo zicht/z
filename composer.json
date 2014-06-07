@@ -11,7 +11,8 @@
         "symfony/config": "2.4.*@stable",
         "symfony/console": "2.4.*@stable",
         "symfony/finder": "2.4.*@stable",
-        "zicht/version": "1.1.*@rc"
+        "zicht/version": "1.1.*@rc",
+        "zicht/util": "1.1.*@rc"
     },
     "suggest": {
         "zicht/z-plugins": "A set of default plugins for Z"

@@ -1,9 +1,18 @@
 file=$1
 
+if [ "$file" == "" ]; then
+    echo "Usage: 1to2.sh FILE"
+    exit 1;
+fi
+if ! [ -e "$file" ]; then
+    echo "File does not exist: $file"
+    exit 2;
+fi
+
 echo "Backing up $file to $file.1"
 if [ -e "$file.1" ]; then
     echo "File exists! aborting";
-    exit 1
+    exit 3
 fi
 
 cp $file $file.1
@@ -11,8 +20,11 @@ cp $file $file.1
 echo "Replacing 'set:' directives with 'args:'"
 sed 's/set:/args:/g'                                                        -i $file;
 
+echo "Replacing 'env:' global setting with 'envs:'"
+sed 's/^env:/envs:/g'                                                       -i $file;
+
 echo "Replacing 'env:' parameters with 'target_env:'"
-sed 's/\benv:/target_env:/g'                                                -i $file;
+sed 's/\senv:/target_env:/g'                                                -i $file;
 
 echo "Replacing 'env.*' expressions with 'envs[target_env].*'"
 sed 's/env\.\(ssh\|web\|root\|db\)/envs[target_env]\.\1/g'                  -i $file;

@@ -7,11 +7,10 @@
 namespace Zicht\Tool\Configuration;
 
 use \Symfony\Component\Config\Loader\FileLoader as BaseFileLoader;
-use \Zicht\Version\Constraint;
-use \Zicht\Version\Version;
-use \Symfony\Component\Yaml\Yaml;
-use \Zicht\Tool;
-
+use Zicht\Version\Version;
+use Zicht\Tool;
+use Zicht\Version\Constraint;
+use \Symfony\Component\Yaml;
 
 /**
  * The Z file loader
@@ -36,6 +35,7 @@ class FileLoader extends BaseFileLoader
      * @var array
      */
     protected $plugins = array();
+    protected $pluginPaths  = array();
 
 
     /**
@@ -47,7 +47,7 @@ class FileLoader extends BaseFileLoader
         $annotations = $this->parseAnnotations($fileContents);
 
         if (empty($annotations['version'])) {
-            trigger_error("$resource does not contain a version annotation.", E_USER_NOTICE);
+            trigger_error("$resource does not contain a version annotation.", E_USER_WARNING);
         } else {
             $failures = array();
             $coreVersion = Version::fromString(Tool\Version::CORE_VERSION);
@@ -60,7 +60,11 @@ class FileLoader extends BaseFileLoader
             }
         }
 
-        $config = Yaml::parse($fileContents);
+        try {
+            $config = Yaml\Yaml::parse($fileContents);
+        } catch (Yaml\Exception\ExceptionInterface $e) {
+            throw new \RuntimeException("YAML error in {$resource}", 0, $e);
+        }
 
         if (isset($config['plugins'])) {
             $this->processPlugins($config['plugins'], dirname($resource));
@@ -105,39 +109,33 @@ class FileLoader extends BaseFileLoader
      */
     protected function processPlugins($plugins, $dir)
     {
-        foreach ($plugins as $name) {
-            $this->addPlugin($name, $dir);
-        }
-    }
+        foreach ($plugins as $plugin) {
+            $hasPlugin = $hasZfile = false;
+            try {
+                $this->plugins[$plugin] = $this->getLocator()->locate($plugin . '/Plugin.php', $dir, true);
+                $this->pluginPaths[$plugin] = dirname($this->plugins[$plugin]);
+                $hasPlugin = true;
+            } catch (\InvalidArgumentException $e) {
+            }
 
-    /**
-     * Adds a plugin to the config and load it.
-     *
-     * @param string $plugin
-     * @param string $dir
-     * @return void
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function addPlugin($plugin, $dir)
-    {
-        $hasPlugin = $hasZfile = false;
-        try {
-            $this->plugins[$plugin] = $this->getLocator()->locate($plugin . '/Plugin.php', $dir, true);
-            $hasPlugin = true;
-        } catch (\InvalidArgumentException $e) {
-        }
+            try {
+                $zFileLocation = $this->getLocator()->locate($plugin . '/z.yml', $dir);
+                $this->import($zFileLocation, self::PLUGIN);
+                if (!isset($this->pluginPaths[$plugin])) {
+                    $this->pluginPaths[$plugin] = dirname($zFileLocation);
+                } else if ($this->pluginPaths[$plugin] != dirname($zFileLocation)) {
+                    throw new \UnexpectedValueException(
+                        "Ambiguous plugin configuration:\n"
+                        . "There was a Plugin.php found in {$this->pluginPaths[$plugin]}, but also a z.yml at $zFileLocation"
+                    );
+                }
+                $hasZfile = true;
+            } catch (\InvalidArgumentException $e) {
+            }
 
-        try {
-            $this->import($this->getLocator()->locate($plugin . '/z.yml', $dir), self::PLUGIN);
-            $hasZfile = true;
-        } catch (\InvalidArgumentException $e) {
-        }
-
-        if (!$hasPlugin && !$hasZfile) {
-            throw new \InvalidArgumentException(
-                "Error loading plugin '{$plugin}'. Did you configure ZPLUGINPATH?"
-            );
+            if (!$hasPlugin && !$hasZfile) {
+                throw new \InvalidArgumentException("You need at least either a z.yml or a Plugin.php in the plugin path for {$plugin}");
+            }
         }
     }
 
@@ -153,7 +151,7 @@ class FileLoader extends BaseFileLoader
     {
         foreach ($imports as $import) {
             $this->setCurrentDir($dir);
-            $this->configs[]= $this->import($import);
+            $this->import($import);
         }
     }
 
@@ -177,5 +175,16 @@ class FileLoader extends BaseFileLoader
     public function getPlugins()
     {
         return $this->plugins;
+    }
+
+
+    /**
+     * Returns all loaded paths
+     *
+     * @return array
+     */
+    public function getPluginPaths()
+    {
+        return $this->pluginPaths;
     }
 }

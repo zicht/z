@@ -30,7 +30,6 @@ class Container
      */
     const ABORT_EXIT_CODE = 42;
 
-    protected $plugins = array();
     protected $subscribers = array();
     protected $commands = array();
     protected $values = array();
@@ -66,9 +65,9 @@ class Container
             array('z', 'opts'),
             function($z) {
                 $opts = array();
-                foreach (array('force', 'verbose', 'explain') as $opt) {
+                foreach (array('FORCE', 'VERBOSE', 'EXPLAIN') as $opt) {
                     if ($z->has($opt) && $z->get($opt)) {
-                        $opts[]= '--' . $opt;
+                        $opts[]= '--' . strtolower($opt);
                     }
                 }
                 return join(' ', $opts);
@@ -224,7 +223,7 @@ class Container
      */
     public function helperExec($cmd)
     {
-        if ($this->resolve('explain')) {
+        if ($this->resolve('EXPLAIN')) {
             $this->output->writeln("# Task needs the following helper command:");
             $this->output->writeln("# " . str_replace("\n", "\\n", $cmd));
         }
@@ -409,7 +408,7 @@ class Container
      */
     public function prefixListener($task, $event)
     {
-        if ($this->resolve(array('explain')) && !$this->resolve(array('verbose'))) {
+        if ($this->resolve(array('EXPLAIN')) && !$this->resolve(array('VERBOSE'))) {
             // don't do prefixing if the "explain" option is given, unless the "verbose" option is given too
             // in the latter case we do want the prefixes (because then we would want to know why certain
             // pieces are executed
@@ -452,7 +451,7 @@ class Container
     public function exec($cmd)
     {
         if (trim($cmd)) {
-            if ($this->resolve('explain')) {
+            if ($this->resolve('EXPLAIN')) {
                 $this->output->writeln('echo ' . escapeshellarg(trim($cmd)) . ' | ' . $this->resolve(array('SHELL')));
             } else {
                 $this->executor->execute($cmd);
@@ -515,16 +514,6 @@ class Container
         return (string)$value;
     }
 
-
-    /**
-     * Returns all registered plugins
-     *
-     * @return PluginInterface[]
-     */
-    public function getPlugins()
-    {
-        return $this->plugins;
-    }
 
     /**
      * Register a plugin
@@ -606,11 +595,8 @@ class Container
      */
     public function __clone()
     {
+        die('__TODO__!!!');
         $plugins = $this->plugins;
-        $this->plugins = array();
-        foreach ($plugins as $p) {
-            $this->addPlugin(clone $p);
-        }
     }
 
 

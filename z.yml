@@ -1,6 +1,6 @@
 # @version ">=2.0"
 
-plugins: ['deploy', 'svn', 'env', 'ci']
+plugins: ['deploy', 'svn', 'env', 'ci', 'version']
 
 tasks:
     docs: cd res/doc && z docs $(z.opts)
@@ -8,7 +8,6 @@ tasks:
     publish:
         pre: @docs
         do: rsync -rv res/doc/html/ zichter@dev3:/var/www/dev/z/default/public/
-
 
     ci.build:
         post: cd res && behat

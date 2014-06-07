@@ -6,7 +6,7 @@
 namespace Zicht\Tool;
 
 use \Symfony\Component\Config\FileLocator;
-use \Zicht\Tool\Container\VerboseException;
+use \Symfony\Component\Console\Helper\DialogHelper;
 use \Symfony\Component\Console\Input\ArgvInput;
 use \Symfony\Component\Console\Application as BaseApplication;
 use \Symfony\Component\Console\Command\Command;
@@ -20,6 +20,8 @@ use \Zicht\Tool\Command as Cmd;
 use \Zicht\Tool\Configuration\ConfigurationLoader;
 use \Zicht\Tool\Container\Container;
 use \Zicht\Tool\Container\ContainerCompiler;
+use \Zicht\Tool\Container\ExecutionAbortedException;
+use \Zicht\Tool\Container\VerboseException;
 
 /**
  * Z CLI Application
@@ -66,44 +68,7 @@ EOSTR;
     {
         $output = (null !== $output ? $output : new Output\ConsoleOutput());
 
-        set_error_handler(
-            /**
-             * Emits user warnings, notices and deprecation messages to stderr.
-             *
-             * @param int $err
-             * @param string $errstr
-             */
-            function($err, $errstr) use($output, $input) {
-                static $repeating = array();
-                if (in_array($errstr, $repeating)) {
-                    return;
-                }
-                $repeating[]= $errstr;
-                if (
-                    (error_reporting() & E_USER_DEPRECATED
-                        || error_reporting() & E_USER_NOTICE
-                        || error_reporting() & E_USER_WARNING
-                    )
-                ) {
-                    switch ($err) {
-                        case E_USER_WARNING:
-                            fprintf(STDERR, $output->getFormatter()->format("<comment>[WARNING]</comment>   $errstr\n"));
-                            break;
-                        case E_USER_NOTICE:
-                            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
-                                fprintf(STDERR, $output->getFormatter()->format("<comment>[NOTICE]</comment>   $errstr\n"));
-                            }
-                            break;
-                        case E_USER_DEPRECATED:
-                            if ($output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
-                                fprintf(STDERR, $output->getFormatter()->format("<comment>[DEPRECATED]</comment>   $errstr\n"));
-                            }
-                            break;
-                    }
-                }
-            },
-            E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED
-        );
+        set_error_handler(new ErrorHandler($input, $output), E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED);
 
         return parent::run($input, $output);
     }
@@ -202,16 +167,14 @@ EOSTR;
         $container = $this->getContainer();
         $container->output = $output;
 
-        // TODO uppercase all global settings
-        $container->set('verbose',  $input->hasParameterOption(array('--verbose', '-v')));
-        $container->set('force',    $input->hasParameterOption(array('--force', '-f')));
-        $container->set('explain',  $input->hasParameterOption(array('--explain')));
-        $container->set('debug',    $input->hasParameterOption(array('--debug')));
+        $container->set('VERBOSE',  $input->hasParameterOption(array('--verbose', '-v')));
+        $container->set('FORCE',    $input->hasParameterOption(array('--force', '-f')));
+        $container->set('EXPLAIN',  $input->hasParameterOption(array('--explain')));
+        $container->set('DEBUG',    $input->hasParameterOption(array('--debug')));
 
         foreach ($container->getCommands() as $task) {
             $this->add($task);
         }
-        $container->console_dialog_helper = $this->getHelperSet()->get('dialog');
 
         $this->add(new Cmd\EvalCommand());
         $this->add(new Cmd\DumpCommand());

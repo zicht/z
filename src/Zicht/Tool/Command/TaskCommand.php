@@ -29,6 +29,7 @@ class TaskCommand extends BaseCommand
     {
         $this->taskReference = array_merge(array('tasks'), explode('.', $name));
         $this->taskName = str_replace(array('.', '_'), array(':', '-'), $name);
+
         parent::__construct($this->taskName);
 
         $this->flags = $flags;
@@ -43,6 +44,7 @@ class TaskCommand extends BaseCommand
             );
         }
         foreach ($options as $name) {
+            var_dump($name);
             $this
                 ->addOption($name, '', InputOption::VALUE_REQUIRED, '')
             ;
@@ -163,8 +165,8 @@ class TaskCommand extends BaseCommand
         $stream = fopen('php://temp', 'r+');
         $dry = clone $this->container;
         try {
-            $dry->set('explain', true);
-            $dry->set('interactive', false);
+            $dry->set('EXPLAIN', true);
+            $dry->set('INTERACTIVE', false);
             $dry->fn(
                 'confirm',
                 function() {

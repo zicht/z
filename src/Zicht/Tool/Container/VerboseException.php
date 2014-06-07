@@ -8,11 +8,12 @@
 namespace Zicht\Tool\Container;
 
 use \Symfony\Component\Console\Output\OutputInterface;
+use \Zicht\Tool\ExceptionInterface;
 
 /**
  * Verbose exceptions can explain themselves more verbose to an output.
  */
-interface VerboseException
+interface VerboseException extends ExceptionInterface
 {
     /**
      * Write verbose explanation of the exception to the output

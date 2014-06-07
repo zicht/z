@@ -65,20 +65,32 @@ class Task extends Declaration
     {
         parent::compile($buffer);
         if (substr($this->getName(), 0, 1) !== '_') {
+            ob_start();
+            var_dump($this->taskDef);
+            $dbg = ob_get_clean();
+
             $buffer
+                ->writeln('try {')->indent(1)
+
                 ->writeln('$z->addCommand(')->indent(1)
                 ->write('new \Zicht\Tool\Command\TaskCommand(')
-                ->asPhp($this->getName())
-                ->raw(',')
-                ->asPhp($this->getArguments(true))
-                ->raw(',')
-                ->asPhp($this->getOptions())
-                ->raw(',')
-                ->asPhp($this->taskDef['flags'])
-                ->raw(',')
-                ->asPhp($this->getHelp() ? $this->getHelp() : "(no help available for this task)")
-                ->raw(')')->eol()
+                    ->asPhp($this->getName())
+                    ->raw(',')
+                    ->asPhp($this->getArguments(true))
+                    ->raw(',')
+                    ->asPhp($this->getOptions())
+                    ->raw(',')
+                    ->asPhp($this->taskDef['flags'])
+                    ->raw(',')
+                    ->asPhp($this->getHelp() ? $this->getHelp() : "(no help available for this task)")
+                    ->raw(')')->eol()
                 ->indent(-1)->writeln(');')
+
+                ->indent(-1)->writeln('} catch (\Exception $e) {')
+                ->indent(1)->writeln('throw new \Zicht\Tool\Container\ConfigurationException("Error while initializing task \'' . $this->getName() . '\'", 0, $e, ')
+                    ->asPhp($dbg)->write(');')->eol()
+                ->indent(-1)
+                ->writeln('}')
             ;
         }
     }
@@ -194,6 +206,7 @@ class Task extends Declaration
             foreach ($this->taskDef['opts'] as $opt) {
                 $ret[]= $opt->name;
             }
+            var_dump($ret);
         }
         return $ret;
     }

@@ -3,7 +3,7 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "ce71afb7add16102849dc8ffec10dc1b",
+    "hash": "c80e1957528ed0386d8a2e2de6485329",
     "packages": [
         {
             "name": "symfony/config",
@@ -289,6 +289,35 @@
             "time": "2014-03-12 18:29:58"
         },
         {
+            "name": "zicht/util",
+            "version": "1.1.0",
+            "source": {
+                "type": "svn",
+                "url": "svn://zon/projecten/zicht-libraries/ZichtUtil",
+                "reference": "/tags/1.1.0/@35886"
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "": [
+                        "src/",
+                        "tests/"
+                    ]
+                }
+            },
+            "authors": [
+                {
+                    "name": "Gerard van Helden",
+                    "email": "gerard@zicht.nl"
+                }
+            ],
+            "description": "Low level utility classes",
+            "time": "2014-04-23 15:54:34"
+        },
+        {
             "name": "zicht/version",
             "version": "1.1.0-rc.1",
             "source": {
@@ -328,7 +357,8 @@
         "symfony/config": 0,
         "symfony/console": 0,
         "symfony/finder": 0,
-        "zicht/version": 5
+        "zicht/version": 5,
+        "zicht/util": 5
     },
     "platform": {
         "php": ">=5.3.3"
