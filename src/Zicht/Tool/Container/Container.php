@@ -104,8 +104,9 @@ class Container
         $this->fn(array('safename'), function($fn) {
             return preg_replace('/[^a-z0-9]+/', '-', $fn);
         });
-        $this->decl('abort', function() {
-            return 'exit ' . self::ABORT_EXIT_CODE;
+        $exitCode = self::ABORT_EXIT_CODE;
+        $this->decl('abort', function() use($exitCode) {
+            return 'exit ' . $exitCode;
         });
         $this->fn(
             'cat',
