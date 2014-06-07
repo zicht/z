@@ -18,7 +18,6 @@ class ErrorHandler
         $this->output = $output;
         $this->repeating = array();
         $this->dialog = new DialogHelper();
-        $this->dialog ->setInputStream($this->input);
         $this->continueAlways = false;
     }
 
@@ -28,6 +27,8 @@ class ErrorHandler
      * @param int $err
      * @param string $errstr
      * @return void
+     *
+     * @throws Container\ExecutionAbortedException
      */
     public function __invoke($err, $errstr)
     {
@@ -36,10 +37,9 @@ class ErrorHandler
         }
         $this->repeating[]= $errstr;
         if (
-            (error_reporting() & E_USER_DEPRECATED
-                || error_reporting() & E_USER_NOTICE
-                || error_reporting() & E_USER_WARNING
-            )
+            error_reporting() & E_USER_DEPRECATED
+            || error_reporting() & E_USER_NOTICE
+            || error_reporting() & E_USER_WARNING
         ) {
             switch ($err) {
                 case E_USER_WARNING:
@@ -47,7 +47,7 @@ class ErrorHandler
 
                     if (!$this->continueAlways) {
                         do {
-                            if ($this->input && $this->input->isInteractive()) {
+                            if ($this->input->isInteractive()) {
                                 $answer = $this->dialog->ask($this->output, "Continue anyway? (y)es, (n)o, (a)lways ", false);
                             } else {
                                 $answer = 'n';

@@ -6,7 +6,6 @@
 namespace Zicht\Tool;
 
 use \Symfony\Component\Config\FileLocator;
-use \Symfony\Component\Console\Helper\DialogHelper;
 use \Symfony\Component\Console\Input\ArgvInput;
 use \Symfony\Component\Console\Application as BaseApplication;
 use \Symfony\Component\Console\Command\Command;
@@ -67,9 +66,6 @@ EOSTR;
     public function run(InputInterface $input = null, OutputInterface $output = null)
     {
         $output = (null !== $output ? $output : new Output\ConsoleOutput());
-
-        set_error_handler(new ErrorHandler($input, $output), E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED);
-
         return parent::run($input, $output);
     }
 
@@ -148,6 +144,8 @@ EOSTR;
      */
     public function doRun(InputInterface $input, OutputInterface $output)
     {
+        set_error_handler(new ErrorHandler($input, $output), E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED);
+
         if (true === $input->hasParameterOption(array('--quiet', '-q'))) {
             $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
         } elseif (true === $input->hasParameterOption(array('--verbose', '-v'))) {
