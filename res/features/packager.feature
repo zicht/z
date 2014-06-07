@@ -7,6 +7,8 @@ I need to be able to build a phar package from my zfile.
     Given I am in a test directory
     And there is file "z.yml"
         """
+        # @version ">=1.0"
+
         tasks:
             t: echo "Hello world from package!"
         """

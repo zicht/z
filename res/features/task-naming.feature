@@ -8,6 +8,8 @@ Feature: Using complex task names
     Given I am in a test directory
     Given there is a file "z.yml"
     """
+    # @version ">=1.0"
+
     tasks:
      some_namespace.a: echo ":)"
      some_namespace.b: @some_namespace.a

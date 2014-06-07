@@ -7,6 +7,8 @@ I need to be able to define three different sections of execution
     Given I am in a test directory
     And there is file "z.yml"
     """
+    # @version ">=1.0"
+
     tasks:
         t:
             pre:

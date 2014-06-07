@@ -7,6 +7,8 @@ Feature: Expressions
     Given I am in a test directory
     And there is file "z.yml"
         """
+        # @version ">=1.0"
+
         tasks:
             add:        echo $(1 + 2)
             subtract:   echo $(3 - 2)

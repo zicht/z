@@ -7,6 +7,8 @@ I need to be able to add tasks, functions and declarations in a Plugin
     Given I am in a test directory
     And there is file "z.yml"
         """
+        # @version ">=1.0"
+
         plugins: ["myplugin"]
 
         tasks:
@@ -19,6 +21,8 @@ I need to be able to add tasks, functions and declarations in a Plugin
         """
     And there is a file "myplugin/z.yml"
         """
+        # @version ">=1.0"
+
         foo:
             bar: "'This is fubar'"
 
@@ -88,6 +92,8 @@ I need to be able to add tasks, functions and declarations in a Plugin
     Given I am in the test directory
     And there is file "z.yml"
         """
+        # @version ">=1.0"
+
         tasks:
             t: echo "$(hello)"
             t2: echo "$(hello2())"

@@ -39,6 +39,8 @@ Feature: Complex variable resolution
     """
     And there is file "z.yml"
     """
+    # @version ">=1.0"
+
     plugins: ['unstrict']
     vars:
         a:

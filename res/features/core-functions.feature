@@ -9,6 +9,8 @@ Feature: Using standard functions
   Scenario: mtime()
     Given there is a file "z.yml"
     """
+    # @version ">=1.0"
+
     tasks:
         t: echo $(mtime("z.yml"))
     """
@@ -18,6 +20,8 @@ Feature: Using standard functions
   Scenario: ctime()
     Given there is a file "z.yml"
     """
+    # @version ">=1.0"
+
     tasks:
         t: echo $(ctime("z.yml"))
     """
@@ -27,6 +31,8 @@ Feature: Using standard functions
   Scenario: is_file()
     Given there is a file "z.yml"
     """
+    # @version ">=1.0"
+
     tasks:
         t:
           - ?(is_file("z.yml")) echo "yup"
@@ -39,6 +45,8 @@ Feature: Using standard functions
   Scenario: cat
     Given there is a file "z.yml"
     """
+    # @version ">=1.0"
+
     tasks:
         t: echo $(cat("a", "b", "c"))
     """
@@ -48,6 +56,8 @@ Feature: Using standard functions
   Scenario: sprintf
     Given there is a file "z.yml"
     """
+    # @version ">=1.0"
+
     tasks:
         t: echo $(sprintf("a%sc", "b"))
     """

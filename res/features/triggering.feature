@@ -7,6 +7,8 @@ I need to be able to trigger tasks with an @ prefix
     Given I am in a test directory
     And there is file "z.yml"
     """
+    # @version ">=1.0"
+
     tasks:
         t1:
             do: echo "2"

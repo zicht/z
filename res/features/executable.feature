@@ -7,6 +7,8 @@ Feature: Making an executable script
     Given I am in a test directory
     And there is an executable file "z.yml" with a shebang pointing to Z
     """
+    # @version ">=1.0"
+
     tasks:
       foo: echo "bar!"
     """
@@ -17,6 +19,8 @@ Feature: Making an executable script
     Given I am in a test directory
     And there is an executable file "foo" with a shebang pointing to Z
     """
+    # @version ">=1.0"
+
     tasks:
       foo: echo "bar!"
     """

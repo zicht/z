@@ -7,6 +7,8 @@ I need to be able to define declarations that resolve only once
     Given I am in a test directory
     And there is file "z.yml"
         """
+        # @version ">=1.0"
+
         plugins: ["declaration"]
 
         tasks:

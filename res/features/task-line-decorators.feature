@@ -7,6 +7,8 @@ Background:
   Given I am in a test directory
   Given there is a file "z.yml"
   """
+  # @version ">=2.0"
+
   tasks:
     t:
       - @("mysql -N") SELECT 4 * 4;

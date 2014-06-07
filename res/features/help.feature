@@ -7,6 +7,8 @@ I need to see what tasks are available and print their help
     Given I am in a test directory
     And there is file "z.yml"
     """
+    # @version ">=1.0"
+
     tasks:
         t:
             args:

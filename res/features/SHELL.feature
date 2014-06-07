@@ -9,6 +9,8 @@ I need to be able to set the SHELL to another interpreter than the default
   Scenario: Using a Python shell
     Given there is file "z.yml"
     """
+    # @version ">=1.1"
+
     SHELL: "/usr/bin/python"
 
     tasks:
@@ -24,6 +26,8 @@ I need to be able to set the SHELL to another interpreter than the default
   Scenario: Using a PHP shell
     Given there is file "z.yml"
     """
+    # @version ">=1.1"
+
     SHELL: "/usr/bin/env php"
 
     tasks:

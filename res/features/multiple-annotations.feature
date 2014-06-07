@@ -7,6 +7,8 @@ Feature: Implied parser features
     Given I am in a test directory
     And there is file "z.yml"
     """
+    # @version ">=2.0"
+
     tasks:
        t:
           args:

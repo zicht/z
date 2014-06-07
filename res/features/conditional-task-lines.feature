@@ -8,6 +8,8 @@ Background:
   Given I am in a test directory
   Given there is a file "z.yml"
   """
+  # @version ">=1.0"
+
   tasks:
       t:
         args:
