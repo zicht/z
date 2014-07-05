@@ -236,7 +236,7 @@ class ContainerBuilder
                 return
                     count($path) === 3
                     && $path[0] == 'tasks'
-                    && in_array($path[2], array('unless', 'assert', 'yield'))
+                    && in_array($path[2], array('unless', 'assert', 'yield', 'if'))
                     ;
             },
             Traverser::BEFORE

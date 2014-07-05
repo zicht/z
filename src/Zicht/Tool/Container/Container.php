@@ -30,7 +30,6 @@ class Container
      */
     const ABORT_EXIT_CODE = 42;
 
-    protected $subscribers = array();
     protected $commands = array();
     protected $values = array();
     protected $prefix = array();
@@ -52,8 +51,6 @@ class Container
         $this->executor = $executor ?: new Executor($this);
         $this->output = $output ?: new NullOutput();
 
-
-        $this->subscribe(array($this, 'prefixListener'));
 
         $this->values = array(
             'SHELL'         => '/bin/bash',
@@ -402,51 +399,6 @@ class Container
 
 
     /**
-     * The prefix listener makes sure the output gets the right prefix at the right time.
-     *
-     * TODO this needs to be removed from the container and put somewhere else.
-     *
-     * @param array $task
-     * @param string $event
-     * @return void
-     */
-    public function prefixListener($task, $event)
-    {
-        if ($this->resolve(array('EXPLAIN')) && !$this->resolve(array('VERBOSE'))) {
-            // don't do prefixing if the "explain" option is given, unless the "verbose" option is given too
-            // in the latter case we do want the prefixes (because then we would want to know why certain
-            // pieces are executed
-            return;
-        }
-        $reset = false;
-        switch ($event) {
-            case 'start':
-                $this->prefix[]= join(':', $task);
-                $reset = true;
-                break;
-            case 'end':
-                $this->prefix = array_slice($this->prefix, 0, -1);
-                $reset = true;
-                break;
-        }
-
-        if ($reset) {
-            if ($this->output->getVerbosity() > 2) {
-                $this->output->setPrefix('<info>[' . join('][', $this->prefix) . ']</info> ');
-            } elseif ($this->output->getVerbosity() > 1 && count($this->prefix) > 1) {
-                $prefix = $this->prefix[count($this->prefix) -1];
-                if (strlen($prefix) > 21) {
-                    $prefix = substr($prefix, 0, 9) . '...' . substr($prefix, -9);
-                }
-                $prefix = str_pad($prefix, 21, ' ', STR_PAD_LEFT);
-                $this->output->setPrefix('<info>[' . $prefix . ']</info> ');
-            } else {
-                $this->output->setPrefix('');
-            }
-        }
-    }
-
-    /**
      * Executes a script snippet using the 'executor' service.
      *
      * @param string $cmd
@@ -529,33 +481,6 @@ class Container
     {
         $this->plugins[]= $plugin;
         $plugin->setContainer($this);
-    }
-
-
-    /**
-     * Notifies registered subscribers of an event
-     *
-     * @param string $task
-     * @param string $event
-     * @return void
-     */
-    public function notify($task, $event)
-    {
-        foreach ($this->subscribers as $subscriber) {
-            call_user_func($subscriber, $task, $event, $this);
-        }
-    }
-
-
-    /**
-     * Subscribe to the events dispatched by notify()
-     *
-     * @param callable $callback
-     * @return void
-     */
-    public function subscribe($callback)
-    {
-        $this->subscribers[]= $callback;
     }
 
 

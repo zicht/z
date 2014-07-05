@@ -119,20 +119,35 @@ class Task extends Declaration
         foreach ($this->taskDef['opts'] as $node) {
             $node->compile($buffer);
         }
-        $buffer->writeln(sprintf('$z->notify(%s, "start");', $taskName));
         $buffer->writeln('try {')->indent(1);
-        $hasUnless = false;
+        $conditions = array();
         foreach (array('pre', 'do', 'post') as $scope) {
             if ($scope === 'do') {
                 if (!empty($this->taskDef['unless'])) {
-                    $buffer->write('if (!$z->resolve(array(\'force\')) && (');
-                    $this->taskDef['unless']->compile($buffer);
-                    $buffer->raw(')) {')->eol()->indent(1);
+                    $conditions[] = function($buffer) {
+                        $buffer->write('(');
+                        $this->taskDef['unless']->compile($buffer);
+                        $buffer->write(')');
+                    };
+                }
+                if (!empty($this->taskDef['if'])) {
+                    $conditions[] = function($buffer) {
+                        $buffer->write('(!(');
+                        $this->taskDef['if']->compile($buffer);
+                        $buffer->write('))');
+                    };
+                }
 
+                if (count($conditions)) {
+                    $buffer->write('if ( !$z->resolve(\'FORCE\') && ( true ');
+                    foreach ($conditions as $cb) {
+                        $buffer->write(' and ');
+                        $cb($buffer);
+                    }
+                    $buffer->write(')) {')->indent(1);
                     $echoStr = sprintf('echo "%s skipped"', join('.', $this->path));
                     $buffer->writeln(sprintf('$z->cmd(%s);', Util::toPhp($echoStr)));
-                    $buffer->indent(-1)->writeln('} else {')->indent(1);
-                    $hasUnless = true;
+                    $buffer->write('} else {');
                 }
                 if (!empty($this->taskDef['assert'])) {
                     $buffer->write('if (!(');
@@ -147,7 +162,7 @@ class Task extends Declaration
                     $cmd->compile($buffer);
                 }
             }
-            if ($hasUnless && $scope == 'post') {
+            if (count($conditions) && $scope == 'post') {
                 $buffer->indent(-1)->writeln('}');
             }
         }
@@ -161,7 +176,6 @@ class Task extends Declaration
         $buffer->indent(-1)->writeln('} catch (\Exception $e) {')->indent(1);
         $buffer->writeln(sprintf('throw new \RuntimeException("While executing task %s", 0, $e);', $taskName));
         $buffer->indent(-1)->writeln('}');
-        $buffer->writeln(sprintf('$z->notify(%s, "end");', $taskName));
         $buffer->writeln('return $ret;');
     }
 
