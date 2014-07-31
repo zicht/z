@@ -11,13 +11,22 @@ Background:
 
   tasks:
     t:
-      - @("mysql -N") SELECT 4 * 4;
-      - @("perl") if("The quick brown fox" =~ /ox/) { print ":)" };
+      args: { var: ? 4 }
+      do:
+        - @("mysql -N") SELECT $(var) * $(var);
+        - @("perl") print "." x 5 if $(var) % 2 == 0;
   """
 
   Scenario:
     When I run "z t"
     Then I should see text matching "/16/"
     And I should not see text matching "/SELECT/"
-    And I should see text matching "/:\)/"
+    And I should see text matching "/\.{5}/"
+    And I should not see text matching "/print/"
+
+  Scenario:
+    When I run "z t 3"
+    Then I should see text matching "/9/"
+    And I should not see text matching "/SELECT/"
+    And I should not see text matching "/\.{5}/"
     And I should not see text matching "/print/"
