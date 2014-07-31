@@ -36,7 +36,8 @@ echo "Removing reference to core plugin"
 sed 's/\(plugins:.*\)\('"'"'core'"'"', \?\|, \?'"'"'core'"'"'\)/\1/g'       -i $file;
 
 echo "Replacing 'verbose' with 'VERBOSE'"
-sed 's/\?\(verbose\)/?(VERBOSE)/g'                                           -i $file;
+sed 's/\?\(verbose\)/?(VERBOSE)/g'                                          -i $file;
 
 echo "Done"
-echo "WARNING: Don't forget to add a version annotation at the top of the file, once you're satisfied"
+echo ""
+echo "NOTE: Don't forget to add a version annotation at the top of the file, once you're satisfied"
