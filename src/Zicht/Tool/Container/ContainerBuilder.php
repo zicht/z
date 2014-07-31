@@ -8,7 +8,7 @@
 namespace Zicht\Tool\Container;
 
 use \Zicht\Tool\Script\Node\Node;
-use Zicht\Tool\Script\Node\Task\OptNode;
+use \Zicht\Tool\Script\Node\Task\OptNode;
 use \Zicht\Tool\Script\Compiler;
 use \Zicht\Tool\Script\Parser;
 use \Zicht\Tool\Script\Parser\Expression as ExpressionParser;

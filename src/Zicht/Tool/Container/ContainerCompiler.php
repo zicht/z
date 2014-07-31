@@ -38,13 +38,14 @@ class ContainerCompiler
      * Writes the code to a temporary file and returns the resulting Container object.
      *
      * @return mixed
+     *
+     * @throws \LogicException
      */
     public function getContainer()
     {
         $code = $this->getContainerCode();
 
         file_put_contents($this->file, $code);
-
         $ret = include $this->file;
         unlink($this->file);
 

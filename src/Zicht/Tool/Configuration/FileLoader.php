@@ -7,9 +7,9 @@
 namespace Zicht\Tool\Configuration;
 
 use \Symfony\Component\Config\Loader\FileLoader as BaseFileLoader;
-use Zicht\Version\Version;
-use Zicht\Tool;
-use Zicht\Version\Constraint;
+use \Zicht\Version\Version;
+use \Zicht\Tool;
+use \Zicht\Version\Constraint;
 use \Symfony\Component\Yaml;
 
 /**
@@ -81,6 +81,16 @@ class FileLoader extends BaseFileLoader
     }
 
 
+    /**
+     * Parse the annotations contained in commented lines, starting with #
+     *
+     * Annotation format is '@' followed by a word, followed by an optional ':' or '=', followed by a quoted value,
+     * e.g.
+     * <code>@foo="bar"</code>
+     *
+     * @param string $fileContents
+     * @return array
+     */
     public function parseAnnotations($fileContents)
     {
         $ret = array();

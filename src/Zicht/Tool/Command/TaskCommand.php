@@ -22,6 +22,7 @@ class TaskCommand extends BaseCommand
      *
      * @param null|string $name
      * @param array $arguments
+     * @param array $options
      * @param array $flags
      * @param string $help
      */

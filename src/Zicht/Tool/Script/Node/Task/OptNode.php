@@ -8,9 +8,8 @@
 
 namespace Zicht\Tool\Script\Node\Task;
 
-use \Zicht\Tool\Script\Buffer;
-use \Zicht\Tool\Script\Node\Branch;
 use \Zicht\Tool\Util;
+use \Zicht\Tool\Script\Node\Expr\Literal;
 
 /**
  * A node for the "args" section of a task
@@ -26,7 +25,7 @@ class OptNode extends ArgNode
     public function __construct($name, $expr)
     {
         if (!$expr) {
-            $expr = new \Zicht\Tool\Script\Node\Expr\Literal("");
+            $expr = new Literal("");
         }
         parent::__construct($name, $expr, true);
     }

@@ -16,13 +16,36 @@ Feature: Skipping tasks
                 unless_value: ? "yes"
             if:     if_value == "yes"
             unless: unless_value != "yes"
+            do: echo t executed
     """
 
   Scenario:
     When I run "z t"
     Then I should not see text matching "/t skipped/"
+    And  I should see text matching "/t executed/"
+
+  Scenario:
+    When I run "z t yes"
+    Then I should not see text matching "/t skipped/"
+    And  I should see text matching "/t executed/"
 
   Scenario:
     When I run "z t no"
     Then I should see text matching "/t skipped/"
+    And  I should not see text matching "/t executed/"
+
+  Scenario:
+    When I run "z t yes no"
+    Then I should see text matching "/t skipped/"
+    And  I should not see text matching "/t executed/"
+
+  Scenario:
+    When I run "z t yes yes"
+    Then I should not see text matching "/t skipped/"
+    And  I should see text matching "/t executed/"
+
+  Scenario:
+    When I run "z t no no"
+    Then I should see text matching "/t skipped/"
+    And  I should not see text matching "/t executed/"
 

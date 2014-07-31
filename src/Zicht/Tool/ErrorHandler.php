@@ -1,14 +1,24 @@
 <?php
+/**
+ * @author Gerard van Helden <gerard@zicht.nl>
+ * @copyright Zicht Online <http://zicht.nl>
+ */
+
 namespace Zicht\Tool;
 
 use \Symfony\Component\Console\Helper\DialogHelper;
-use Zicht\Tool\Container\ExecutionAbortedException;
+use \Zicht\Tool\Container\ExecutionAbortedException;
 use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Console\Input\InputInterface;
 
+/**
+ * Wrapper class for handling errors
+ */
 class ErrorHandler
 {
     /**
+     * Constructor
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
      */

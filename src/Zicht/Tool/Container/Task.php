@@ -120,35 +120,29 @@ class Task extends Declaration
             $node->compile($buffer);
         }
         $buffer->writeln('try {')->indent(1);
-        $conditions = array();
         foreach (array('pre', 'do', 'post') as $scope) {
             if ($scope === 'do') {
                 if (!empty($this->taskDef['unless'])) {
-                    $conditions[] = function($buffer) {
-                        $buffer->write('(');
-                        $this->taskDef['unless']->compile($buffer);
-                        $buffer->write(')');
-                    };
+                    $buffer->write('if (!$z->resolve(\'FORCE\') &&');
+                    $this->taskDef['unless']->compile($buffer);
+                    $buffer->raw(') {')->eol()->indent(1);
+                    $echoStr = sprintf('echo "%s skipped", because \'unless\' evaluated to true.', join('.', $this->path));
+                    $buffer->writeln(sprintf('$z->cmd(%s);', Util::toPhp($echoStr)));
+                    $buffer->writeln('return;');
+                    $buffer->indent(-1);
+                    $buffer->writeln('}');
                 }
                 if (!empty($this->taskDef['if'])) {
-                    $conditions[] = function($buffer) {
-                        $buffer->write('(!(');
-                        $this->taskDef['if']->compile($buffer);
-                        $buffer->write('))');
-                    };
+                    $buffer->write('if (!$z->resolve(\'FORCE\') && !(');
+                    $this->taskDef['if']->compile($buffer);
+                    $buffer->raw(') ) {')->eol()->indent(1);
+                    $echoStr = sprintf('echo "%s skipped", because \'if\' evaluated to false.', join('.', $this->path));
+                    $buffer->writeln(sprintf('$z->cmd(%s);', Util::toPhp($echoStr)));
+                    $buffer->writeln('return;');
+                    $buffer->indent(-1);
+                    $buffer->writeln('}');
                 }
 
-                if (count($conditions)) {
-                    $buffer->write('if ( !$z->resolve(\'FORCE\') && ( true ');
-                    foreach ($conditions as $cb) {
-                        $buffer->write(' and ');
-                        $cb($buffer);
-                    }
-                    $buffer->write(')) {')->indent(1);
-                    $echoStr = sprintf('echo "%s skipped"', join('.', $this->path));
-                    $buffer->writeln(sprintf('$z->cmd(%s);', Util::toPhp($echoStr)));
-                    $buffer->write('} else {');
-                }
                 if (!empty($this->taskDef['assert'])) {
                     $buffer->write('if (!(');
                     $this->taskDef['assert']->compile($buffer);
@@ -161,9 +155,6 @@ class Task extends Declaration
                 if ($cmd) {
                     $cmd->compile($buffer);
                 }
-            }
-            if (count($conditions) && $scope == 'post') {
-                $buffer->indent(-1)->writeln('}');
             }
         }
         if (!empty($this->taskDef['yield'])) {
@@ -208,7 +199,6 @@ class Task extends Declaration
     /**
      * Returns all variables that can be injected into the task.
      *
-     * @param bool $onlyPublic
      * @return array
      */
     public function getOptions()
@@ -218,7 +208,6 @@ class Task extends Declaration
             foreach ($this->taskDef['opts'] as $opt) {
                 $ret[]= $opt->name;
             }
-            var_dump($ret);
         }
         return $ret;
     }
