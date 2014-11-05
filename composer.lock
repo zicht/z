@@ -1,7 +1,8 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
     ],
     "hash": "0268d27d4367061bb649719e5599bddd",
     "packages": [
@@ -204,10 +205,10 @@
             "scripts": {
                 "post-install-cmd": [
 
-    ],
+                ],
                 "post-update-cmd": [
 
-    ]
+                ]
             },
             "description": "'env' plugin for Z",
             "time": "2014-02-24 14:11:50"
@@ -218,14 +219,14 @@
             "source": {
                 "type": "svn",
                 "url": "svn://zon/projecten/zicht-libraries/z-plugins",
-                "reference": "/branches/1.0-without-env/@36316"
+                "reference": "/branches/1.0-without-env/@49434"
             },
             "require": {
                 "php": ">=5.3.3"
             },
             "type": "library",
             "description": "Plugins for Z",
-            "time": "2014-04-30 11:47:20"
+            "time": "2014-11-05 16:32:00"
         }
     ],
     "packages-dev": [
@@ -239,6 +240,7 @@
         "zicht/z-plugins": 20,
         "zicht/z-plugin-env": 0
     },
+    "prefer-stable": false,
     "platform": {
         "php": ">=5.3.3"
     },
