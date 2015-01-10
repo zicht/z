@@ -88,13 +88,7 @@ class ConfigurationLoader
         }
 
         foreach ($this->loader->getPlugins() as $name => $file) {
-            require_once $file;
-            $className = sprintf('Zicht\Tool\Plugin\%s\Plugin', ucfirst(basename($name)));
-            $class     = new \ReflectionClass($className);
-            if (!$class->implementsInterface('Zicht\Tool\PluginInterface')) {
-                throw new \UnexpectedValueException("The class $className is not a 'Zicht\\Tool\\PluginInterface'");
-            }
-            $this->plugins[$name] = $class->newInstance();
+            $this->loadPlugin($name, $file);
         }
 
         $processor = new Processor();
@@ -102,6 +96,18 @@ class ConfigurationLoader
             new Configuration($this->plugins),
             $this->loader->getConfigs()
         );
+    }
+
+
+    protected function loadPlugin($name, $file)
+    {
+        require_once $file;
+        $className = sprintf('Zicht\Tool\Plugin\%s\Plugin', ucfirst(basename($name)));
+        $class     = new \ReflectionClass($className);
+        if (!$class->implementsInterface('Zicht\Tool\PluginInterface')) {
+            throw new \UnexpectedValueException("The class $className is not a 'Zicht\\Tool\\PluginInterface'");
+        }
+        $this->plugins[$name] = $class->newInstance();
     }
 
 

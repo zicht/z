@@ -49,6 +49,7 @@ class Configuration implements ConfigurationInterface
             ->children()
                 ->scalarNode('SHELL')->end()
                 ->scalarNode('TIMEOUT')->end()
+                ->arrayNode('globals')->defaultValue(array())->prototype('variable')->end()->end()
                 ->arrayNode('tasks')
                     ->prototype('array')
                         ->beforeNormalization()

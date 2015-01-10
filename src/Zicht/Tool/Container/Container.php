@@ -329,7 +329,7 @@ class Container
     {
         $exprcompiler  = new ScriptCompiler(new ExpressionParser(), new ExpressionTokenizer());
 
-        $z = clone $this;
+        $z = $this;
         $_value = null;
         $code = '$z->set(\'_\', ' . $exprcompiler->compile($expression) . ');';
         eval($code);

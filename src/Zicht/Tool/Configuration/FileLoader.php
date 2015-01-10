@@ -43,12 +43,14 @@ class FileLoader extends BaseFileLoader
      */
     public function load($resource, $type = null)
     {
-        $fileContents = file_get_contents($resource);
+        if (!is_file($resource)) {
+            $fileContents = $resource;
+        } else {
+            $fileContents = file_get_contents($resource);
+        }
         $annotations = $this->parseAnnotations($fileContents);
 
-        if (empty($annotations['version'])) {
-            trigger_error("$resource does not contain a version annotation.", E_USER_WARNING);
-        } else {
+        if (!empty($annotations['version'])) {
             $failures = array();
             $coreVersion = Version::fromString(Tool\Version::CORE_VERSION);
             if (!Constraint::isMatch($annotations['version'], $coreVersion, $failures)) {
@@ -120,32 +122,38 @@ class FileLoader extends BaseFileLoader
     protected function processPlugins($plugins, $dir)
     {
         foreach ($plugins as $plugin) {
-            $hasPlugin = $hasZfile = false;
-            try {
-                $this->plugins[$plugin] = $this->getLocator()->locate($plugin . '/Plugin.php', $dir, true);
-                $this->pluginPaths[$plugin] = dirname($this->plugins[$plugin]);
-                $hasPlugin = true;
-            } catch (\InvalidArgumentException $e) {
-            }
+            $this->addPlugin($plugin, $dir);
+        }
+    }
 
-            try {
-                $zFileLocation = $this->getLocator()->locate($plugin . '/z.yml', $dir);
-                $this->import($zFileLocation, self::PLUGIN);
-                if (!isset($this->pluginPaths[$plugin])) {
-                    $this->pluginPaths[$plugin] = dirname($zFileLocation);
-                } else if ($this->pluginPaths[$plugin] != dirname($zFileLocation)) {
-                    throw new \UnexpectedValueException(
-                        "Ambiguous plugin configuration:\n"
-                        . "There was a Plugin.php found in {$this->pluginPaths[$plugin]}, but also a z.yml at $zFileLocation"
-                    );
-                }
-                $hasZfile = true;
-            } catch (\InvalidArgumentException $e) {
-            }
+    public function addPlugin($plugin, $dir)
+    {
+        $hasPlugin = $hasZfile = false;
 
-            if (!$hasPlugin && !$hasZfile) {
-                throw new \InvalidArgumentException("You need at least either a z.yml or a Plugin.php in the plugin path for {$plugin}");
+        try {
+            $this->plugins[$plugin] = $this->getLocator()->locate($plugin . '/Plugin.php', $dir, true);
+            $this->pluginPaths[$plugin] = dirname($this->plugins[$plugin]);
+            $hasPlugin = true;
+        } catch (\InvalidArgumentException $e) {
+        }
+
+        try {
+            $zFileLocation = $this->getLocator()->locate($plugin . '/z.yml', $dir);
+            $this->import($zFileLocation, self::PLUGIN);
+            if (!isset($this->pluginPaths[$plugin])) {
+                $this->pluginPaths[$plugin] = dirname($zFileLocation);
+            } else if ($this->pluginPaths[$plugin] != dirname($zFileLocation)) {
+                throw new \UnexpectedValueException(
+                    "Ambiguous plugin configuration:\n"
+                    . "There was a Plugin.php found in {$this->pluginPaths[$plugin]}, but also a z.yml at $zFileLocation"
+                );
             }
+            $hasZfile = true;
+        } catch (\InvalidArgumentException $e) {
+        }
+
+        if (!$hasPlugin && !$hasZfile) {
+            throw new \InvalidArgumentException("You need at least either a z.yml or a Plugin.php in the plugin path for {$plugin}");
         }
     }
 
