@@ -10,6 +10,7 @@ return array(
             'yield' => null,
             'assert' => null,
             'unless' => null,
+            'if' => null,
             'pre' => array(),
             'post' => array(),
             'do' => array(
@@ -17,5 +18,5 @@ return array(
             )
         )
     ),
-    'vars' => array()
+    'globals' => array()
 );

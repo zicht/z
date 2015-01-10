@@ -1,6 +1,5 @@
 <?php
-
 return array(
     'tasks' => array(),
-    'vars' => array()
+    'globals' => array()
 );

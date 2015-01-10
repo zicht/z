@@ -10,16 +10,6 @@ namespace ZichtTest\Tool\Container;
 
 class FileLoaderTest extends \PHPUnit_Framework_TestCase
 {
-    function testLoad()
-    {
-        $locator = $this->getMock('Symfony\Component\Config\FileLocator');
-        $loader = new \Zicht\Tool\Configuration\FileLoader($locator);
-        $yml = '';
-        $config = $loader->load($yml);
-        $this->assertEquals(null, $config);
-    }
-
-
     function testLoadWithPlugins()
     {
         $locator = $this->getMock('Symfony\Component\Config\FileLocator');

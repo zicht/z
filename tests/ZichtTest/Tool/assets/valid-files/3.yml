@@ -1,2 +1,2 @@
-vars:
+globals:
     foo: bar

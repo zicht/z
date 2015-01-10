@@ -64,9 +64,9 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
      */
     public function testZOpts()
     {
-        $this->container->set('verbose', true);
-        $this->container->set('force', true);
-        $this->container->set('explain', true);
+        $this->container->set('VERBOSE', true);
+        $this->container->set('FORCE', true);
+        $this->container->set('EXPLAIN', true);
         $this->assertEquals('--force --verbose --explain', $this->container->resolve(array('z', 'opts')));
     }
 
@@ -127,20 +127,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     }
 
 
-    public function testListener()
-    {
-        $params = array();
-        $this->container->subscribe(function () use(&$params) {
-            $params = func_get_args();
-        });
-        $this->container->notify('foo', 'bar');
-
-        $this->assertEquals('foo', $params[0]);
-        $this->assertEquals('bar', $params[1]);
-        $this->assertEquals($this->container, $params[2]);
-    }
-
-
     public function testCmdForwardsToTaskIfPrefixedWithAtSign()
     {
         $this->container->set(array('tasks', 'foo'), function() {
@@ -161,7 +147,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     {
         $exec = $this->getMockBuilder('Zicht\Tool\Container\Executor')->setMethods(array('execute'))->disableOriginalConstructor()->getMock();
         $container = new Container($exec);
-        $container->set(array('explain'), true);
+        $container->set(array('EXPLAIN'), true);
         $exec->expects($this->never())->method('execute');
         $container->cmd('hello');
     }
@@ -171,7 +157,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         foreach (array(true, false) as $explain) {
             $exec = $this->getMockBuilder('Zicht\Tool\Container\Executor')->setMethods(array('execute'))->disableOriginalConstructor()->getMock();
             $container = new Container($exec);
-            $container->set(array('explain'), $explain);
+            $container->set(array('EXPLAIN'), $explain);
             $exec->expects($this->once())->method('execute');
             $container->helperExec('hello');
         }
