@@ -14,7 +14,7 @@ Background:
       args: { var: ? 4 }
       do:
         - @("mysql -N") SELECT $(var) * $(var);
-        - @("perl") print "." x 5 if $(var) % 2 == 0;
+        - @("perl")     print "." x 5 if $(var) % 2 == 0;
   """
 
   Scenario:
