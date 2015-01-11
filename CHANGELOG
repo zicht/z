@@ -3,7 +3,8 @@
 * Task options were added
 * The 'with-' in flags was dropped. A flag with name "foo" will render flags "--foo" and "--no-foo".
 * Annotations were added, replacing ?(...) conditionals with @(if ...), and adding @(sh ...) and @(each ...)
-
+* Multivalued arguments were added
+* Globals were added
 
 1.1-dev
 * Deprecated the dot concatenation operator

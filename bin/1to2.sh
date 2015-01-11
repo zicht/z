@@ -1,3 +1,5 @@
+set -e
+
 file=$1
 
 if [ "$file" == "" ]; then
@@ -24,10 +26,10 @@ echo "Replacing 'env:' global setting with 'envs:'"
 sed 's/^env:/envs:/g'                                                       -i $file;
 
 echo "Replacing 'env:' parameters with 'target_env:'"
-sed 's/(\s)env:/\1target_env:/g'                                            -i $file;
+sed 's/\(\s\)env:/\1target_env:/g'                                            -i $file;
 
-echo "Replacing 'env.*' expressions with 'envs[target_env].*'"
-sed 's/env\.\(ssh\|web\|root\|db\)/envs[target_env]\.\1/g'                  -i $file;
+echo "Replacing 'env.\*' expressions with 'envs[target_env].\*'"
+sed 's/env\./envs[target_env]\./g'                  -i $file;
 
 echo "Replacing 'env' expressions with 'target_env'"
 sed 's/\$(env)/$(target_env)/g'                                             -i $file;
@@ -36,7 +38,10 @@ echo "Removing reference to core plugin"
 sed 's/\(plugins:.*\)\('"'"'core'"'"', \?\|, \?'"'"'core'"'"'\)/\1/g'       -i $file;
 
 echo "Replacing 'verbose' with 'VERBOSE'"
-sed 's/\?\(verbose\)/?(VERBOSE)/g'                                          -i $file;
+sed 's/\?(verbose)/?(VERBOSE)/g'                                          -i $file;
+
+echo "Replacing ?(...) with @(if ...)"
+sed 's/\?(/@(if /g'                                          -i $file;
 
 echo "Done"
 echo ""

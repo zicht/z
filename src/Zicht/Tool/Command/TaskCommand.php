@@ -37,11 +37,15 @@ class TaskCommand extends BaseCommand
         $this->opts = $options;
 
         foreach ($arguments as $name => $required) {
+            if ($multiple = ('[]' === substr($name, -2))) {
+                $name = substr($name, 0, -2);
+            }
             $this->addArgument(
                 $name,
                 $required
                     ? InputArgument::REQUIRED
                     : InputArgument::OPTIONAL
+                | ($multiple ? InputArgument::IS_ARRAY : 0)
             );
         }
         foreach ($options as $name) {
@@ -135,8 +139,6 @@ class TaskCommand extends BaseCommand
                 $this->container->set(explode('.', $name), true);
             }
         }
-
-//        $this->preflightCheck($output);
 
         return $this->container->resolve($this->getTaskReference(), true);
     }

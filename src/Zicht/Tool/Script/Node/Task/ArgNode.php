@@ -17,6 +17,9 @@ use \Zicht\Tool\Util;
  */
 class ArgNode extends Branch
 {
+    public $multiple = false;
+    public $conditional = false;
+
     /**
      * Constructor.
      *
@@ -29,6 +32,10 @@ class ArgNode extends Branch
         parent::__construct();
         $this->nodes[0]= $expr;
         $this->name = $name;
+        if (substr($this->name, -2) === '[]') {
+            $this->multiple = true;
+            $this->name = substr($this->name, 0, -2);
+        }
         $this->conditional = $conditional;
     }
 
@@ -45,7 +52,11 @@ class ArgNode extends Branch
         $phpName = Util::toPhp($name);
 
         if ($this->conditional) {
-            $buffer->writeln(sprintf('if ($z->isEmpty(%s)) {', $phpName))->indent(1);
+            if ($this->multiple) {
+                $buffer->writeln(sprintf('if ($z->isEmpty(%1$s) || array() === $z->get(%1$s)) {', $phpName))->indent(1);
+            } else {
+                $buffer->writeln(sprintf('if ($z->isEmpty(%s)) {', $phpName))->indent(1);
+            }
             if (!$this->nodes[0]) {
                 $buffer->writeln(
                     sprintf(
@@ -57,7 +68,13 @@ class ArgNode extends Branch
         }
         if ($this->nodes[0]) {
             $buffer->write('$z->set(')->raw($phpName)->raw(', ');
+            if ($this->multiple) {
+                $buffer->write('(array)(');
+            }
             $this->nodes[0]->compile($buffer);
+            if ($this->multiple) {
+                $buffer->write(')');
+            }
             $buffer->raw(');')->eol();
         }
         if ($this->conditional) {
