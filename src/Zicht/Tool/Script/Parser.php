@@ -56,7 +56,6 @@ class Parser extends AbstractParser
                             break;
                         case 'with':
                             $expr = $exprParser->parse($input);
-                            var_dump($expr);
                             $input->expect(Token::KEYWORD, 'as');
                             $name = $input->expect(Token::IDENTIFIER)->value;
                             $ret->append(new Node\Script\With($expr, $name));
