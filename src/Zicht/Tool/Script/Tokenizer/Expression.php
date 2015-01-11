@@ -41,7 +41,7 @@ class Expression implements TokenizerInterface
                 }
                 $ret[]= new Token(Token::OPERATOR, $m[0]);
                 $needle += strlen($m[0]);
-            } elseif (preg_match('/^(true|false)/', $substr, $m)) {
+            } elseif (preg_match('/^(true|false|in|as|null)\b/', $substr, $m)) {
                 $ret[] = new Token(Token::KEYWORD, $m[0]);
                 $needle += strlen($m[0]);
             } elseif (preg_match('/^[a-z_][\w]*/i', $substr, $m)) {

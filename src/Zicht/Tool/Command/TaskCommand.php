@@ -49,7 +49,6 @@ class TaskCommand extends BaseCommand
             );
         }
         foreach ($options as $name) {
-            var_dump($name);
             $this
                 ->addOption($name, '', InputOption::VALUE_REQUIRED, '')
             ;
@@ -140,7 +139,8 @@ class TaskCommand extends BaseCommand
             }
         }
 
-        return $this->container->resolve($this->getTaskReference(), true);
+        $callable = $this->container->get($this->getTaskReference(), true);
+        call_user_func($callable, $this->container);
     }
 
     /**

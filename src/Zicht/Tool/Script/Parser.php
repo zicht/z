@@ -40,8 +40,26 @@ class Parser extends AbstractParser
                         case 'sh':
                             $ret->append(new Node\Script\Decorator($exprParser->parse($input)));
                             break;
+                        case 'for':
+                            $key = null;
+
+                            $name = $input->expect(Token::IDENTIFIER)->value;
+                            if ($input->match(Token::OPERATOR, ',')) {
+                                $key = $name;
+                                $name = $input->expect(Token::IDENTIFIER)->value;
+                            }
+                            $input->expect(Token::KEYWORD, 'in');
+                            $ret->append(new Node\Script\ForIn($exprParser->parse($input), $key, $name));
+                            break;
                         case 'each':
-                            $ret->append(new Node\Script\Each($exprParser->parse($input)));
+                            $ret->append(new Node\Script\ForIn($exprParser->parse($input), null, null));
+                            break;
+                        case 'with':
+                            $expr = $exprParser->parse($input);
+                            var_dump($expr);
+                            $input->expect(Token::KEYWORD, 'as');
+                            $name = $input->expect(Token::IDENTIFIER)->value;
+                            $ret->append(new Node\Script\With($expr, $name));
                             break;
                         case 'if':
                             $ret->append(new Node\Script\Conditional($exprParser->parse($input)));

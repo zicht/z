@@ -299,7 +299,7 @@ class Container
         }
         $this->set($id, function(Container $c) use($callable, $id) {
             $value = call_user_func($callable, $c);
-            $c->set($id, $value);
+//            $c->set($id, $value);
             return $value;
         });
     }
@@ -426,7 +426,11 @@ class Container
     {
         $cmd = ltrim($cmd);
         if (substr($cmd, 0, 1) === '@') {
-            return $this->resolve(array_merge(array('tasks'), explode('.', substr($cmd, 1))), true);
+            $task = $this->get(array_merge(array('tasks'), explode('.', substr($cmd, 1))), true);
+            if (!$task) {
+                throw new \InvalidArgumentException($cmd . ' is not a valid task reference');
+            }
+            return call_user_func($task, $this);
         }
         return $this->exec($cmd);
     }

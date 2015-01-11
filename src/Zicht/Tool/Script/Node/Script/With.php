@@ -12,16 +12,17 @@ use \Zicht\Tool\Script\Buffer;
 use \Zicht\Tool\Script\Node\Branch;
 use \Zicht\Tool\Script\Node\Node;
 
-class Each extends Branch implements Annotation
+class With extends Branch implements Annotation
 {
     /**
      * Construct the decorator with the specified expression as the first and only child node.
      *
      * @param \Zicht\Tool\Script\Node\Node $expr
      */
-    public function __construct($expr)
+    public function __construct($expr, $name)
     {
         parent::__construct(array($expr));
+        $this->name = $name;
     }
     /**
      * Allows the annotation to modify the buffer before the script is compiled.
@@ -31,13 +32,9 @@ class Each extends Branch implements Annotation
      */
     public function beforeScript(Buffer $buffer)
     {
-        $buffer->writeln('foreach ((array)');
+        $buffer->write(sprintf('$z->push(\'%s\', ', $this->name));
         $this->nodes[0]->compile($buffer);
-        $buffer
-            ->write(' as $_key => $_value) {')
-            ->write('$z->push(\'_key\', $_key);')
-            ->write('$z->push(\'_value\', $_value);')
-        ;
+        $buffer->write(');');
     }
 
     /**
@@ -48,9 +45,7 @@ class Each extends Branch implements Annotation
      */
     public function afterScript(Buffer $buffer)
     {
-        $buffer->write('$z->pop(\'_key\');');
-        $buffer->write('$z->pop(\'_value\');');
-        $buffer->writeln('}');
+        $buffer->write(sprintf('$z->pop(\'%s\');', $this->name));
     }
 
     /**

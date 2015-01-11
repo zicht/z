@@ -1,8 +1,5 @@
 # Upgrading to 2.0 #
 
-## Upgrade script ##
-There is a very simple (and therefore error prone) substition script available which replaces some common 1.0 features with their 2.0 equivalent.
-
 ## Core ##
 * All 1.0 backwards compatibility was removed:
     * 'env' is no longer a global setting. The 'env' plugin provides an "envs" setting, which can be used to store
@@ -21,3 +18,17 @@ There is a very simple (and therefore error prone) substition script available w
 ## Plugins ##
 * The `core` plugin no longer exists. It used to contain the `deploy` and `simulate` tasks, which are now moved to a
   separate `deploy` plugin
+
+## Upgrade script ##
+There is a very simple (and therefore error prone) substition script available (`bin/1to2.sh`) which replaces some
+common 1.0 features with their 2.0 equivalent. The following things are (currently) automated in this script:
+
+* Replacing 'set:' directives with 'args:'
+* Replacing 'env:' global setting with 'envs:'
+* Replacing 'env:' parameters with 'target_env:'
+* Replacing 'env.\*' expressions with 'envs[target_env].\*'
+* Replacing 'env' expressions with 'target_env'
+* Removing reference to core plugin
+* Replacing 'verbose' with 'VERBOSE'
+* Replacing ?(...) with @(if ...)
+
