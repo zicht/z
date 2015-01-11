@@ -17,12 +17,12 @@ The power of Z is it's simple implementation and it's expressive syntax. By util
 Config, Yaml and Console components, combining it with a very simple yet powerful plugin mechanism, it is much
 easier to adapt and implement than many of the other tools out there. It is also easy to share your own recipes,
 because of it's ultimately simple YML-based configuration syntax. It depends on practically nothing but the mentioned
-components and a shell, and they are all at both our disposal. Furthermore, if you ever used bash, you can use Z, you
-don't need knowledge of much of the Z syntax or architecture to get started real quick.
+components and a shell, and they are all at both our disposal. Furthermore, if you ever used any shell, you can use Z,
+you don't need knowledge of much of the Z syntax or architecture to get started real quick.
 
-Z relies heavy on shell scripting. If you're not comfortable with bash, however, Z is not limited to bash as a
-primary interpreter. You can extend Z easily by utilizing any shell that is capable of processing stdin. Currently,
-it is not possible to do this on a per-task basis, but there are plans to do so.
+Z relies heavily on shell scripting. If you're not comfortable with bash, however, Z is not limited to bash as a
+primary interpreter. You can extend Z easily by utilizing any shell that is capable of processing stdin. You can even
+alternate between shells in different parts of your recipe.
 
 # Why not Capistrano, Capifony, Puppet, Chef, etc? #
 See above. Z does not aim to be a replacement of any of these tools. It aims to solve problems you might have. If you
@@ -38,7 +38,8 @@ to the UNIX principle than any other tool out there.
 
 The idea is that all you need is a tool to orchestrate these shell commands and help you in structuring your 
 dependencies. In that respect, it is closest to `make` than any other tool. The main difference with make is that
-make targets building one set of files from another, while Z targets the execution of tasks.
+make targets building one set of files from another, while Z targets the execution of tasks. I have, however, on a
+number of occasions used make together with Z.
 
 # Why is it called Z? #
 We use Z for build, release and integration management at the company where it was originally developed:
@@ -68,7 +69,7 @@ The output will show you what available tasks and commands you have at your disp
 no tasks or configuration is done. This is all done through the usage of plugins. You can find documentation on the
 plugins separately.
 
-A sane setup for z would be as follows:
+A sane deployment setup for z would be as follows:
 
 ```
 plugins: ['deploy', 'svn', 'rsync']

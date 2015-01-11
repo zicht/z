@@ -43,7 +43,7 @@ class Tokenizer implements TokenizerInterface
             $substr = substr($string, $needle);
             if ($depth === 0) {
                 // match either '$(' or '?(' and mark that as an EXPR_START token.
-                if (preg_match('/^(\$|\?|@)\(/', $substr, $m)) {
+                if (preg_match('/^([$?@#%&])\(/', $substr, $m)) {
                     $needle += strlen($m[0]);
                     $ret[]= new Token(Token::EXPR_START, $m[0]);
 

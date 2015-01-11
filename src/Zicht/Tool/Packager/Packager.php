@@ -9,6 +9,7 @@
 namespace Zicht\Tool\Packager;
 
 use \Zicht\Tool\Script\Buffer;
+use Zicht\Version\Version;
 use \Symfony\Component\Finder\Finder;
 
 /**

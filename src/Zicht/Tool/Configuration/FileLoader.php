@@ -7,6 +7,7 @@
 namespace Zicht\Tool\Configuration;
 
 use \Symfony\Component\Config\Loader\FileLoader as BaseFileLoader;
+use \Symfony\Component\Config\FileLocatorInterface;
 use \Zicht\Version\Version;
 use \Zicht\Tool;
 use \Zicht\Version\Constraint;
@@ -37,6 +38,19 @@ class FileLoader extends BaseFileLoader
     protected $plugins = array();
     protected $pluginPaths  = array();
 
+    /**
+     * Constructor.
+     *
+     * @param \Zicht\Version\Version $version
+     * @param FileLocatorInterface $locator
+     */
+    public function __construct(FileLocatorInterface $locator, Version $version = null)
+    {
+        parent::__construct($locator);
+
+        $this->version = $version;
+    }
+
 
     /**
      * @{inheritDoc}
@@ -50,12 +64,11 @@ class FileLoader extends BaseFileLoader
         }
         $annotations = $this->parseAnnotations($fileContents);
 
-        if (!empty($annotations['version'])) {
+        if ($this->version && !empty($annotations['version'])) {
             $failures = array();
-            $coreVersion = Version::fromString(Tool\Version::CORE_VERSION);
-            if (!Constraint::isMatch($annotations['version'], $coreVersion, $failures)) {
+            if (!Constraint::isMatch($annotations['version'], $this->version, $failures)) {
                 trigger_error(
-                    "Core version '{$coreVersion}' does not match version annotation '{$annotations['version']}'\n"
+                    "Core version '{$this->version}' does not match version annotation '{$annotations['version']}'\n"
                     . "(specified in $resource; " . join("; ", $failures) . ")",
                     E_USER_WARNING
                 );
@@ -126,26 +139,36 @@ class FileLoader extends BaseFileLoader
         }
     }
 
-    public function addPlugin($plugin, $dir)
+    /**
+     * Add a plugin at the passed location
+     *
+     * @param string $name
+     * @param string $dir
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     * @throws \UnexpectedValueException
+     */
+    public function addPlugin($name, $dir)
     {
         $hasPlugin = $hasZfile = false;
 
         try {
-            $this->plugins[$plugin] = $this->getLocator()->locate($plugin . '/Plugin.php', $dir, true);
-            $this->pluginPaths[$plugin] = dirname($this->plugins[$plugin]);
+            $this->plugins[$name] = $this->getLocator()->locate($name . '/Plugin.php', $dir, true);
+            $this->pluginPaths[$name] = dirname($this->plugins[$name]);
             $hasPlugin = true;
         } catch (\InvalidArgumentException $e) {
         }
 
         try {
-            $zFileLocation = $this->getLocator()->locate($plugin . '/z.yml', $dir);
+            $zFileLocation = $this->getLocator()->locate($name . '/z.yml', $dir);
             $this->import($zFileLocation, self::PLUGIN);
-            if (!isset($this->pluginPaths[$plugin])) {
-                $this->pluginPaths[$plugin] = dirname($zFileLocation);
-            } else if ($this->pluginPaths[$plugin] != dirname($zFileLocation)) {
+            if (!isset($this->pluginPaths[$name])) {
+                $this->pluginPaths[$name] = dirname($zFileLocation);
+            } else if ($this->pluginPaths[$name] != dirname($zFileLocation)) {
                 throw new \UnexpectedValueException(
                     "Ambiguous plugin configuration:\n"
-                    . "There was a Plugin.php found in {$this->pluginPaths[$plugin]}, but also a z.yml at $zFileLocation"
+                    . "There was a Plugin.php found in {$this->pluginPaths[$name]}, but also a z.yml at $zFileLocation"
                 );
             }
             $hasZfile = true;
@@ -153,7 +176,7 @@ class FileLoader extends BaseFileLoader
         }
 
         if (!$hasPlugin && !$hasZfile) {
-            throw new \InvalidArgumentException("You need at least either a z.yml or a Plugin.php in the plugin path for {$plugin}");
+            throw new \InvalidArgumentException("You need at least either a z.yml or a Plugin.php in the plugin path for {$name}");
         }
     }
 

@@ -29,18 +29,18 @@ class Parser extends AbstractParser
         if ($input->valid()) {
             do {
                 $hasMatch = false;
-                if (
-                    $input->match(Token::EXPR_START, '?(')
-                 || $input->match(Token::EXPR_START, '@(')
-                ) {
-                    $type = $input->current()->value;
+                if ($input->match(Token::EXPR_START, '@(')) {
                     $input->next();
+                    $type = $input->expect(Token::IDENTIFIER)->value;
 
                     switch ($type) {
-                        case '@(':
+                        case 'sh':
                             $ret->append(new Node\Script\Decorator($exprParser->parse($input)));
                             break;
-                        case '?(':
+                        case 'each':
+                            $ret->append(new Node\Script\Each($exprParser->parse($input)));
+                            break;
+                        case 'if':
                             $ret->append(new Node\Script\Conditional($exprParser->parse($input)));
                             break;
                         default:

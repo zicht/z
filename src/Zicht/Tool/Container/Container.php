@@ -53,7 +53,7 @@ class Container
 
 
         $this->values = array(
-            'SHELL'         => '/bin/bash',
+            'SHELL'         => '/bin/bash -e',
             'TIMEOUT'       => 300,
             'interactive'   => false,
         );

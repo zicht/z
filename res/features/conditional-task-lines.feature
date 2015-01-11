@@ -15,8 +15,8 @@ Background:
         args:
           a: ? "no"
         do:
-          - ?(a == "yes") echo Yep
-          - ?(a == "no")  echo Nope
+          - @(if a == "yes") echo Yep
+          - @(if a == "no")  echo Nope
   """
 
   Scenario:

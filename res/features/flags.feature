@@ -15,10 +15,10 @@ I need to be able to define flags for my task
                 foo: true
                 bar: false
             do:
-              - ?(foo) echo "foo is true"
-              - ?(!foo) echo "foo is false"
-              - ?(bar) echo "bar is true"
-              - ?(!bar) echo "bar is false"
+              - @(if foo)   echo "foo is true"
+              - @(if !foo)  echo "foo is false"
+              - @(if bar)   echo "bar is true"
+              - @(if !bar)  echo "bar is false"
     """
 
   Scenario: Omitting the flags will use defaults

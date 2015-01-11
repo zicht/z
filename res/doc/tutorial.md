@@ -43,7 +43,7 @@ For clarity's sake, we stick to the first version in our examples, but you will 
 the first and second form will come in handy as your tasks become more and more atomic.
 
 ### Task input ###
-If you add a 'set' section to the task, you will define variables or task input:
+If you add an 'args' section to the task, you will define variables or task input:
 
 ```
 tasks:

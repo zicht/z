@@ -53,6 +53,5 @@ class Decorator extends Branch implements Annotation
      */
     public function compile(Buffer $buffer)
     {
-//        $this->
     }
 }

@@ -10,12 +10,14 @@ require_once __DIR__ . '/../vendor/autoload.php';
  */
 define('ZPREFIX', __DIR__ . '/../');
 
+$version = include ZPREFIX . '/version.php';
+
 // This part handles the case where the first argument is '-', which indicates shebang usage of Z.
 if ($_SERVER['argc'] > 2 && $_SERVER['argv'][1] === '-') {
-    $config = Zicht\Tool\Configuration\ConfigurationLoader::fromEnv($_SERVER['argv'][2]);
+    $config = Zicht\Tool\Configuration\ConfigurationLoader::fromEnv($_SERVER['argv'][2], $version);
     array_splice($_SERVER['argv'], 1, 2);
 } else {
-    $config = Zicht\Tool\Configuration\ConfigurationLoader::fromEnv();
+    $config = Zicht\Tool\Configuration\ConfigurationLoader::fromEnv(null, $version);
 }
-$app = new Zicht\Tool\Application('The Zicht Tool', (string) include ZPREFIX . '/version.php', $config);
+$app = new Zicht\Tool\Application('The Zicht Tool', $version, $config);
 $app->run();

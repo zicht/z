@@ -39,9 +39,9 @@ class DynamicStub extends Stub
     {
         $buffer->write('$app = new Zicht\Tool\Application(')
             ->asPhp($this->appName)
-            ->raw(', ')
+            ->raw(', Zicht\Version\Version::fromString(')
             ->asPhp($this->appVersion)
-            ->raw(', Zicht\Tool\Configuration\ConfigurationLoader::fromEnv(')->asPhp($this->configFilename)->raw(')')
+            ->raw(') ?: new Zicht\Version\Version(), Zicht\Tool\Configuration\ConfigurationLoader::fromEnv(')->asPhp($this->configFilename)->raw(')')
             ->raw(');')
             ->eol();
     }

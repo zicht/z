@@ -5,8 +5,6 @@
  */
 namespace Zicht\Tool;
 
-use \Symfony\Component\Config\FileLocator;
-use \Symfony\Component\Console\Input\ArgvInput;
 use \Symfony\Component\Console\Application as BaseApplication;
 use \Symfony\Component\Console\Command\Command;
 use \Symfony\Component\Console\Input\InputArgument;
@@ -14,12 +12,12 @@ use \Symfony\Component\Console\Input\InputOption;
 use \Symfony\Component\Console\Input\InputInterface;
 use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Yaml\Yaml;
+use \Zicht\Version\Version;
 
 use \Zicht\Tool\Command as Cmd;
 use \Zicht\Tool\Configuration\ConfigurationLoader;
 use \Zicht\Tool\Container\Container;
 use \Zicht\Tool\Container\ContainerCompiler;
-use \Zicht\Tool\Container\ExecutionAbortedException;
 use \Zicht\Tool\Container\VerboseException;
 
 /**
@@ -48,9 +46,9 @@ EOSTR;
      * @param string $version
      * @param Configuration\ConfigurationLoader $loader
      */
-    public function __construct($name, $version, ConfigurationLoader $loader = null)
+    public function __construct($name, Version $version, ConfigurationLoader $loader = null)
     {
-        parent::__construct($name, $version);
+        parent::__construct($name, (string)$version);
         $this->loader = $loader;
         $this->plugins = array();
     }
@@ -176,6 +174,7 @@ EOSTR;
 
         $this->add(new Cmd\EvalCommand());
         $this->add(new Cmd\DumpCommand());
+        $this->add(new Cmd\InfoCommand());
 
         return parent::doRun($input, $output);
     }

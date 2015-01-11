@@ -15,7 +15,7 @@ Feature: Implied parser features
               a: ? "b"
               c: ? "d"
           do:
-            - ?(a == "b") ?(c == "d") echo "mjup!"
+            - @(if a == "b") @(if c == "d") echo "mjup!"
     """
 
   Scenario: Conditionals are aggregate

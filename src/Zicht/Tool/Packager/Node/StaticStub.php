@@ -9,6 +9,7 @@
 namespace Zicht\Tool\Packager\Node;
 
 use \Symfony\Component\Config\FileLocator;
+use Zicht\Version\Version;
 use \Zicht\Tool\Configuration;
 use \Zicht\Tool\Container\ContainerCompiler;
 use \Zicht\Tool\Script\Buffer;
@@ -55,7 +56,7 @@ class StaticStub extends Stub
             )
         );
 
-        $compiler = new ContainerCompiler($configurationLoader->processConfiguration());
+        $compiler = new ContainerCompiler($configurationLoader->processConfiguration(), array());
         $this->phar['container.php'] = $compiler->getContainerCode();
         $buffer->writeln('$container = require_once \'phar://z.phar/container.php\';');
 
@@ -74,9 +75,9 @@ class StaticStub extends Stub
             ->writeln('Zicht\Tool\Application::$HEADER = \'\';')
             ->write('$app = new Zicht\Tool\Application(')
             ->asPhp($this->appName)
-            ->raw(', ')
+            ->raw(', Zicht\Version\Version::fromString(')
             ->asPhp($this->appVersion)
-            ->raw(');')
+            ->raw(') ?: new Zicht\Version\Version());')
             ->eol()
         ;
         $buffer->writeln('$app->setContainer($container);');

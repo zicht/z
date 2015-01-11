@@ -8,6 +8,7 @@
 namespace Zicht\Tool\Configuration;
 
 use \Symfony\Component\Config\FileLocatorInterface;
+use Zicht\Version\Version;
 use \Symfony\Component\Config\Definition\Processor;
 
 
@@ -23,7 +24,7 @@ class ConfigurationLoader
      * @return ConfigurationLoader
      * @codeCoverageIgnore
      */
-    public static function fromEnv($configFilename = null)
+    public static function fromEnv($configFilename = null, Version $version)
     {
         if (null === $configFilename) {
             $configFilename = getenv('ZFILE') ? getenv('ZFILE') : 'z.yml';
@@ -36,7 +37,8 @@ class ConfigurationLoader
                 new PathDefaultFileLocator(
                     'ZPLUGINPATH',
                     array(ZPREFIX . '/vendor/zicht/z-plugins/', getcwd())
-                )
+                ),
+                $version
             )
         );
     }
@@ -99,6 +101,15 @@ class ConfigurationLoader
     }
 
 
+    /**
+     * Load the specified plugin instance.
+     *
+     * @param string $name
+     * @param string $file
+     * @return void
+     *
+     * @throws \UnexpectedValueException
+     */
     protected function loadPlugin($name, $file)
     {
         require_once $file;
