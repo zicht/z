@@ -35,8 +35,8 @@ Feature: Using standard functions
 
     tasks:
         t:
-          - ?(is_file("z.yml")) echo "yup"
-          - ?(is_file("foo.txt")) echo "nope"
+          - @(if is_file("z.yml")) echo "yup"
+          - @(if is_file("foo.txt")) echo "nope"
     """
     When I run "z t"
     Then I should see text matching "/yup/"

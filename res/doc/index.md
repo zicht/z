@@ -40,19 +40,19 @@ tasks:
         pre:
             - @another.task
             - Some shell script make use of variable $(foo)
-            - ?(condition) Some conditional shell script
+            - @(if condition) Some conditional shell script
 
         # task body
         do:
             - @another.task
             - Some shell script with a $(variable)
-            - ?(condition) Some conditional shell script
+            - @(if condition) Some conditional shell script
 
         # task triggers
         post:
             - @another.task
             - Some shell script
-            - ?(condition) Some conditional shell script
+            - @(if condition) Some conditional shell script
 ```
 
 Tasks are defined by prerequisites, a body identified by the "do" section and task triggers, which trigger commands

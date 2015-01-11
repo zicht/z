@@ -2,6 +2,8 @@
 * Removed deprecated / 1.0 backward compatibility features
 * Task options were added
 * The 'with-' in flags was dropped. A flag with name "foo" will render flags "--foo" and "--no-foo".
+* Annotations were added, replacing ?(...) conditionals with @(if ...), and adding @(sh ...) and @(each ...)
+
 
 1.1-dev
 * Deprecated the dot concatenation operator

@@ -337,7 +337,7 @@ tasks:
             times: ? 2
         do:
             - for i in $$(seq 1 $(times)); do echo "Hello!"; done;
-            - ?(verbose) echo "I just said Hello $(times) times"
+            - @(if verbose) echo "I just said Hello $(times) times"
 ```
 
 ```shell
@@ -357,7 +357,7 @@ To have the line executed only when forced (just as the `unless` section), you c
 tasks:
     try:
         do:
-            - ?(force) echo "Try not. Do or do not. There is no try."
+            - @(if force) echo "Try not. Do or do not. There is no try."
 ```
 
 ```shell
@@ -384,11 +384,11 @@ tasks:
         # Don't actually do this. It's weird. But.... you could. If you were just a weird man.
         unless: explain
         do:
-            - ?(!(force || verbose) ) echo "Please pass either --force or --verbose or both, just for kicks!"
-            - ?(force) echo "May it be with you"
-            - ?(verbose) echo "Now printing 42...."
-            - ?(force && verbose) echo "You just gone option-crazy dude!"
-            - ?(42) echo "42"
+            - @(if !(force || verbose) ) echo "Please pass either --force or --verbose or both, just for kicks!"
+            - @(if force) echo "May it be with you"
+            - @(if verbose) echo "Now printing 42...."
+            - @(if force && verbose) echo "You just gone option-crazy dude!"
+            - @(if 42) echo "42"
 ```
 
 ```shell

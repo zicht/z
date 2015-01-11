@@ -21,6 +21,9 @@ class Parser extends AbstractParser
      *
      * @param TokenStream $input
      * @return Node\Script
+     *
+     * @throws \Symfony\Component\Process\Exception\InvalidArgumentException
+     * @throws \UnexpectedValueException
      */
     public function parse(TokenStream $input)
     {

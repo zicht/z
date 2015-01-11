@@ -4,5 +4,5 @@ tasks:
             times: ? 2
         do:
             - for i in {1..$(times)}; do echo "Hello!"; done;
-            - ?(verbose) echo "I just said Hello $(times) times"
+            - @(if verbose) echo "I just said Hello $(times) times"
 
