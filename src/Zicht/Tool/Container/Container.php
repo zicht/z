@@ -368,7 +368,7 @@ class Container
         } catch (\OutOfBoundsException $e) {
             return false;
         }
-        return empty($value);
+        return '' === $value || null === $value;
     }
 
 
