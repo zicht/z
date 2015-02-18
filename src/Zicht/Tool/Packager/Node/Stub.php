@@ -8,7 +8,6 @@
 namespace Zicht\Tool\Packager\Node;
 
 use \Zicht\Tool\Script\Buffer;
-use Zicht\Version\Version;
 use \Zicht\Tool\Script\Node\Node;
 
 /**

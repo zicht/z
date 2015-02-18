@@ -41,8 +41,8 @@ class FileLoader extends BaseFileLoader
     /**
      * Constructor.
      *
-     * @param \Zicht\Version\Version $version
      * @param FileLocatorInterface $locator
+     * @param \Zicht\Version\Version $version
      */
     public function __construct(FileLocatorInterface $locator, Version $version = null)
     {

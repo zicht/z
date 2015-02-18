@@ -8,13 +8,15 @@ namespace Zicht\Tool\Command;
 use \Symfony\Component\Console\Input;
 use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Console\Input\InputInterface;
-use \Symfony\Component\Yaml\Yaml;
 
 /**
  * Command to show some info about the Z container
  */
 class InfoCommand extends BaseCommand
 {
+    /**
+     * @{inheritDoc}
+     */
     protected function configure()
     {
         $this
@@ -23,6 +25,9 @@ class InfoCommand extends BaseCommand
         ;
     }
 
+    /**
+     * @{inheritDoc}
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
     }

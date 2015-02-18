@@ -9,7 +9,6 @@
 namespace Zicht\Tool\Packager\Node;
 
 use \Symfony\Component\Config\FileLocator;
-use Zicht\Version\Version;
 use \Zicht\Tool\Configuration;
 use \Zicht\Tool\Container\ContainerCompiler;
 use \Zicht\Tool\Script\Buffer;

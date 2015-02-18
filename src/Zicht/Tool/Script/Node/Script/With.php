@@ -10,20 +10,26 @@ namespace Zicht\Tool\Script\Node\Script;
 
 use \Zicht\Tool\Script\Buffer;
 use \Zicht\Tool\Script\Node\Branch;
-use \Zicht\Tool\Script\Node\Node;
 
+/**
+ * Class With
+ *
+ * @package Zicht\Tool\Script\Node\Script
+ */
 class With extends Branch implements Annotation
 {
     /**
      * Construct the decorator with the specified expression as the first and only child node.
      *
      * @param \Zicht\Tool\Script\Node\Node $expr
+     * @param string $name
      */
     public function __construct($expr, $name)
     {
         parent::__construct(array($expr));
         $this->name = $name;
     }
+
     /**
      * Allows the annotation to modify the buffer before the script is compiled.
      *

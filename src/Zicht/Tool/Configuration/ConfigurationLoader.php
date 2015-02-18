@@ -8,8 +8,8 @@
 namespace Zicht\Tool\Configuration;
 
 use \Symfony\Component\Config\FileLocatorInterface;
-use Zicht\Version\Version;
 use \Symfony\Component\Config\Definition\Processor;
+use \Zicht\Version\Version;
 
 
 /**
@@ -21,10 +21,11 @@ class ConfigurationLoader
      * Create the configuration loader based the current shell environment variables.
      *
      * @param string $configFilename
+     * @param Version $version
      * @return ConfigurationLoader
      * @codeCoverageIgnore
      */
-    public static function fromEnv($configFilename = null, Version $version)
+    public static function fromEnv($configFilename, Version $version)
     {
         if (null === $configFilename) {
             $configFilename = getenv('ZFILE') ? getenv('ZFILE') : 'z.yml';

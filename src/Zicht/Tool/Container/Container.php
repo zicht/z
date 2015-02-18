@@ -10,7 +10,6 @@ use \Symfony\Component\Console\Command\Command;
 use \Zicht\Tool\PropertyPath\PropertyAccessor;
 use \Symfony\Component\Console\Output\NullOutput;
 use \Symfony\Component\Console\Output\OutputInterface;
-use \Symfony\Component\Process\Process;
 use \Zicht\Tool\Script;
 use \Zicht\Tool\PluginInterface;
 use \Zicht\Tool\Script\Compiler as ScriptCompiler;
