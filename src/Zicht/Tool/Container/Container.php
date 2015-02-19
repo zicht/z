@@ -38,6 +38,7 @@ class Container
 
     public $output;
     public $executor;
+    public $plugins = array();
 
     /**
      * Construct the container with the specified values as services/values.

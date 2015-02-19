@@ -30,5 +30,11 @@ class InfoCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->writeln("Plugins loaded:");
+
+        foreach ($this->container->plugins as $plugin) {
+            $o = new \ReflectionObject($plugin);
+            $output->writeln(" - " . $o->getFileName());
+        }
     }
 }
