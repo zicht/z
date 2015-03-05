@@ -143,6 +143,9 @@ EOSTR;
     public function doRun(InputInterface $input, OutputInterface $output)
     {
         set_error_handler(new ErrorHandler($input, $output), E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED);
+        set_error_handler(function($err, $msg) {
+            throw new \ErrorException($msg);
+        }, E_RECOVERABLE_ERROR);
 
         if (true === $input->hasParameterOption(array('--quiet', '-q'))) {
             $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
