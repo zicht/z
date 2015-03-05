@@ -20,6 +20,10 @@ I need to be able to define declarations that resolve only once
                 - echo "$(resolve_me_once)"
                 - echo "$(resolve_me_once)"
                 - echo "$(resolve_me_once)"
+            nsdecl:
+                - echo "$(namespaced.resolve_me_once)"
+                - echo "$(namespaced.resolve_me_once)"
+                - echo "$(namespaced.resolve_me_once)"
             decl_error:
                 - echo "$(resolve_me_once())"
         """
@@ -42,6 +46,10 @@ I need to be able to define declarations that resolve only once
                     static $i = 0;
                     return (string) $i ++;
                 });
+                $container->decl(array('namespaced', 'resolve_me_once'), function() {
+                    static $i = 0;
+                    return (string) $i ++;
+                });
             }
         }
 
@@ -53,4 +61,8 @@ I need to be able to define declarations that resolve only once
 
   Scenario: The declaration resolves only once
     When I run "z decl"
+    Then I should see text matching "/0\n0/"
+
+  Scenario: The declaration resolves only once
+    When I run "z nsdecl"
     Then I should see text matching "/0\n0/"
