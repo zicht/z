@@ -1,18 +1,19 @@
 {
     "name": "zicht/z",
+    "license": "MIT",
     "description": "Z - The Zicht build tool",
     "autoload": {
         "psr-0": { "": "src/" }
     },
     "require": {
         "php": ">=5.3.3",
-        "symfony/yaml": "2.4.*@stable",
-        "symfony/process": "2.4.*@stable",
-        "symfony/config": "2.4.*@stable",
-        "symfony/console": "2.4.*@stable",
-        "symfony/finder": "2.4.*@stable",
-        "zicht/version": "1.1.*@rc",
-        "zicht/util": "1.1.*@rc"
+        "symfony/yaml": "2.*@stable",
+        "symfony/process": "2.*@stable",
+        "symfony/config": "2.*@stable",
+        "symfony/console": "2.*@stable",
+        "symfony/finder": "2.*@stable",
+        "zicht/version": "1.*@stable",
+        "zicht/util": "1.*@stable"
     },
     "suggest": {
         "zicht/z-plugins": "A set of default plugins for Z"
