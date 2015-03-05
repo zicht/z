@@ -56,7 +56,7 @@ class Container
         $this->values = array(
             'SHELL'         => '/bin/bash -e',
             'TIMEOUT'       => 300,
-            'interactive'   => false,
+            'INTERACTIVE'   => false,
         );
         // gather the options for nested z calls.
         $this->set(
@@ -88,6 +88,20 @@ class Container
         $this->fn('ctime', 'filectime');
         $this->fn('escape', 'escapeshellarg');
         $this->fn('join', 'implode');
+        $this->fn(
+            'path',
+            function() {
+                return join(
+                    "/",
+                    array_map(
+                        function($el) {
+                            return rtrim($el, "/");
+                        },
+                        func_get_args()
+                    )
+                );
+            }
+        );
         $this->fn('sh', array($this, 'helperExec'));
         $this->fn('str', array($this, 'str'));
         $this->fn(
@@ -102,6 +116,7 @@ class Container
         $this->fn(array('safename'), function($fn) {
             return preg_replace('/[^a-z0-9]+/', '-', $fn);
         });
+
         $exitCode = self::ABORT_EXIT_CODE;
         $this->decl('abort', function() use($exitCode) {
             return 'exit ' . $exitCode;
@@ -409,7 +424,12 @@ class Container
     {
         if (trim($cmd)) {
             if ($this->resolve('EXPLAIN')) {
-                $this->output->writeln('echo ' . escapeshellarg(trim($cmd)) . ' | ' . $this->resolve(array('SHELL')));
+                if ($this->resolve('INTERACTIVE')) {
+                    $this->output->writeln('# interactive shell:');
+                    $this->output->writeln('( '  . trim($cmd) . ' )');
+                } else {
+                    $this->output->writeln('echo ' . escapeshellarg(trim($cmd)) . ' | ' . $this->resolve(array('SHELL')));
+                }
             } else {
                 $this->executor->execute($cmd);
             }

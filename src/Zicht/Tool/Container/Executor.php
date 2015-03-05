@@ -37,7 +37,7 @@ class Executor
     public function execute($cmd, &$captureOutput = null)
     {
         $ret = 0;
-        if ($this->container->resolve('interactive')) {
+        if ($this->container->resolve('INTERACTIVE')) {
             passthru($cmd, $ret);
         } else {
             $process = $this->createProcess();
