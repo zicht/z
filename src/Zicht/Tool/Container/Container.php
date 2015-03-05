@@ -421,10 +421,12 @@ class Container
             if ($this->resolve('EXPLAIN')) {
                 if ($this->resolve('INTERACTIVE')) {
                     $this->notice('interactive shell:');
-                    $this->output->writeln('( '  . trim($cmd) . ' )');
+                    $line = '( ' . trim($cmd) . ' )';
                 } else {
-                    $this->output->writeln('echo ' . escapeshellarg(trim($cmd)) . ' | ' . $this->resolve(array('SHELL')));
+                    $line = 'echo ' . escapeshellarg(trim($cmd)) . ' | ' . $this->resolve(array('SHELL'));
                 }
+
+                $this->output->writeln($line);
             } else {
                 $this->executor->execute($cmd);
             }
