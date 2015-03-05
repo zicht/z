@@ -53,7 +53,7 @@ class ContainerCompiler
 
         file_put_contents($this->file, $this->code);
         $ret = include $this->file;
-//        unlink($this->file);
+        unlink($this->file);
 
         if (! ($ret instanceof Container)) {
             throw new \LogicException("The container must be returned by the compiler");
