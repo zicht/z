@@ -161,9 +161,7 @@ class Container
             throw new \InvalidArgumentException("Passed lookup path is empty.");
         }
         if (empty($context)) {
-            var_dump($context);
-            xdebug_print_function_stack();
-            throw new \InvalidArgumentException("Context is empty");
+            throw new \InvalidArgumentException("Specified context is empty while resolving path " . json_encode($path));
         }
         return PropertyAccessor::getByPath($context, $this->path($path), $require);
     }
@@ -201,9 +199,6 @@ class Container
             }
             array_push($this->resolutionStack, $id);
             $ret = $this->lookup($this->values, $id, $required);
-            if ($ret instanceof \Closure) {
-                $this->set($id, $ret = call_user_func($ret, $this));
-            }
             array_pop($this->resolutionStack);
             return $ret;
         } catch (\Exception $e) {
@@ -315,7 +310,7 @@ class Container
         }
         $this->set($id, function(Container $c) use($callable, $id) {
             $value = call_user_func($callable, $c);
-//            $c->set($id, $value);
+            $c->set($id, $value);
             return $value;
         });
     }
@@ -425,7 +420,7 @@ class Container
         if (trim($cmd)) {
             if ($this->resolve('EXPLAIN')) {
                 if ($this->resolve('INTERACTIVE')) {
-                    $this->output->writeln('# interactive shell:');
+                    $this->notice('interactive shell:');
                     $this->output->writeln('( '  . trim($cmd) . ' )');
                 } else {
                     $this->output->writeln('echo ' . escapeshellarg(trim($cmd)) . ' | ' . $this->resolve(array('SHELL')));
@@ -441,19 +436,15 @@ class Container
      *
      * @param string $cmd
      * @return int
-     * @return int
      */
     public function cmd($cmd)
     {
         $cmd = ltrim($cmd);
         if (substr($cmd, 0, 1) === '@') {
-            $task = $this->get(array_merge(array('tasks'), explode('.', substr($cmd, 1))), true);
-            if (!$task) {
-                throw new \InvalidArgumentException($cmd . ' is not a valid task reference');
-            }
-            return call_user_func($task, $this);
+            $this->value($this->resolve(array_merge(array('tasks'), explode('.', substr($cmd, 1)))));
+        } else {
+            $this->exec($cmd);
         }
-        return $this->exec($cmd);
     }
 
 
@@ -543,14 +534,12 @@ class Container
 
 
     /**
-     * Clones all plugins and resets them to their initial state
+     * Can not be cloned
      *
      * @return void
      */
-    public function __clone()
+    private function __clone()
     {
-        die('__TODO__!!!');
-        $plugins = $this->plugins;
     }
 
 
@@ -561,7 +550,7 @@ class Container
      */
     public function isDebug()
     {
-        return $this->resolve('debug') === true;
+        return $this->resolve('DEBUG') === true;
     }
 
 
@@ -574,10 +563,10 @@ class Container
      */
     public function push($varName, $tail)
     {
-        if (!isset($this->varStack[$varName])) {
-            $this->varStack[$varName] = array();
+        if (!isset($this->varStack[json_encode($varName)])) {
+            $this->varStack[json_encode($varName)] = array();
         }
-        array_push($this->varStack[$varName], $this->get($varName));
+        array_push($this->varStack[json_encode($varName)], $this->get($varName));
         $this->set($varName, $tail);
     }
 
@@ -590,6 +579,6 @@ class Container
      */
     public function pop($varName)
     {
-        $this->set($varName, array_pop($this->varStack[$varName]));
+        $this->set($varName, array_pop($this->varStack[json_encode($varName)]));
     }
 }
