@@ -56,7 +56,7 @@ class StaticStub extends Stub
         );
 
         $compiler = new ContainerCompiler($configurationLoader->processConfiguration(), array());
-        $this->phar['container.php'] = $compiler->getContainerCode();
+        $this->phar['container.php'] = $compiler->compileContainerCode();
         $buffer->writeln('$container = require_once \'phar://z.phar/container.php\';');
 
         foreach ($configurationLoader->getPlugins() as $name => $plugin) {
