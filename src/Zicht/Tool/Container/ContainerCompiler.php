@@ -16,6 +16,12 @@ use \Zicht\Tool\PluginInterface;
  */
 class ContainerCompiler
 {
+    private $configTree;
+    private $plugins;
+    private $file;
+    private $code;
+
+
     /**
      * Construct the compiler
      *
@@ -43,9 +49,9 @@ class ContainerCompiler
      */
     public function getContainer()
     {
-        $code = $this->getContainerCode();
+        $this->code = $this->compileContainerCode();
 
-        file_put_contents($this->file, $code);
+        file_put_contents($this->file, $this->code);
         $ret = include $this->file;
         unlink($this->file);
 
@@ -77,7 +83,7 @@ class ContainerCompiler
      *
      * @return string
      */
-    public function getContainerCode()
+    public function compileContainerCode()
     {
         $builder = new ContainerBuilder($this->configTree);
         foreach ($this->plugins as $name => $plugin) {
