@@ -40,9 +40,9 @@ class Script extends Branch
                 if ($i > 0) {
                     $buffer->raw(' . ');
                 }
-                $buffer->write('$z->str(');
+                $buffer->raw('$z->str(');
                 $node->compile($buffer);
-                $buffer->write(')');
+                $buffer->raw(')');
             }
             $buffer->raw(');')->eol();
         }

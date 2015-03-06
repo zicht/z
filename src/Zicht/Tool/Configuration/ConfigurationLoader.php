@@ -17,6 +17,8 @@ use \Zicht\Version\Version;
  */
 class ConfigurationLoader
 {
+    protected $sourceFiles = array();
+
     /**
      * Create the configuration loader based the current shell environment variables.
      *
@@ -87,10 +89,13 @@ class ConfigurationLoader
             $zfiles = array();
         }
         foreach ($zfiles as $file) {
+            $this->sourceFiles[]= $file;
             $this->loader->load($file);
         }
 
+
         foreach ($this->loader->getPlugins() as $name => $file) {
+            $this->sourceFiles[]= $file;
             $this->loadPlugin($name, $file);
         }
 
@@ -131,5 +136,13 @@ class ConfigurationLoader
     public function getPlugins()
     {
         return $this->plugins;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSourceFiles()
+    {
+        return $this->sourceFiles;
     }
 }

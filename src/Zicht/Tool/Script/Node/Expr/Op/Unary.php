@@ -36,7 +36,7 @@ class Unary extends Branch
      */
     public function compile(Buffer $buffer)
     {
-        $buffer->write($this->operator);
+        $buffer->raw($this->operator);
         $this->nodes[0]->compile($buffer);
     }
 }

@@ -30,11 +30,16 @@ class InfoCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln("Plugins loaded:");
+        $sourceFiles = $this->container->resolve(array('z', 'sources'));
 
-        foreach ($this->container->plugins as $plugin) {
-            $o = new \ReflectionObject($plugin);
-            $output->writeln(" - " . $o->getFileName());
+        if (count($sourceFiles)) {
+            $output->writeln('Loaded source files');
+            foreach ($sourceFiles as $file) {
+                $output->writeln(" - " . $file);
+            }
+        } else {
+            $output->writeln('No source files loaded');
         }
+        $output->writeln('Compiled file: ' . $this->container->resolve(array('z', 'cache_file')));
     }
 }

@@ -41,15 +41,15 @@ class Ternary extends Branch
     public function compile(Buffer $buffer)
     {
         $this->nodes[0]->compile($buffer);
-        $buffer->write('?');
+        $buffer->raw('?');
         if ($this->nodes[1]) {
             $this->nodes[1]->compile($buffer);
         }
-        $buffer->write(':');
+        $buffer->raw(':');
         if ($this->nodes[2]) {
             $this->nodes[2]->compile($buffer);
         } else {
-            $buffer->write('null');
+            $buffer->raw('null');
         }
     }
 }

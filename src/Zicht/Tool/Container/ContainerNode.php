@@ -10,6 +10,7 @@ namespace Zicht\Tool\Container;
 
 use \Zicht\Tool\Script\Buffer;
 use \Zicht\Tool\Script\Node\Branch;
+use Zicht\Tool\Script\Node\Node;
 
 /**
  * The root node of a container definition
@@ -21,6 +22,8 @@ class ContainerNode extends Branch
      */
     public function compile(Buffer $buffer)
     {
+        $date = new \DateTime();
+        $buffer->writeln('/** Container compiled by ' . getenv('USER') . ' at: ' . $date->format('r') . ' */');
         $buffer->writeln('$z = new \Zicht\Tool\Container\Container();');
 
         foreach ($this->nodes as $node) {

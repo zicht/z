@@ -52,7 +52,6 @@ class Container
         $this->executor = $executor ?: new Executor($this);
         $this->output = $output ?: new NullOutput();
 
-
         $this->values = array(
             'SHELL'         => '/bin/bash -e',
             'TIMEOUT'       => 300,
@@ -71,10 +70,7 @@ class Container
                 return join(' ', $opts);
             }
         );
-        $this->set(
-            array('z', 'cmd'),
-            $_SERVER['argv'][0]
-        );
+        $this->set(array('z', 'cmd'), $_SERVER['argv'][0]);
 
         $this->fn('sprintf');
         $this->fn('is_file');

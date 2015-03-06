@@ -29,13 +29,10 @@ class ContainerCompiler
      * @param PluginInterface[] $plugins
      * @param null $file
      */
-    public function __construct($configTree, $plugins, $file = null)
+    public function __construct($configTree, $plugins, $file)
     {
         $this->configTree = $configTree;
         $this->plugins = $plugins;
-        if (null === $file) {
-            $file = tempnam(sys_get_temp_dir(), 'z');
-        }
         $this->file = $file;
     }
 
@@ -49,16 +46,15 @@ class ContainerCompiler
      */
     public function getContainer()
     {
-        $this->code = $this->compileContainerCode();
+        if ($this->needsRecompile()) {
+            $this->code = $this->compileContainerCode();
+            file_put_contents($this->file, $this->code);
+        }
 
-        file_put_contents($this->file, $this->code);
         $ret = include $this->file;
-        unlink($this->file);
-
         if (! ($ret instanceof Container)) {
             throw new \LogicException("The container must be returned by the compiler");
         }
-
         foreach ($this->plugins as $plugin) {
             $ret->addPlugin($plugin);
         }
@@ -79,6 +75,20 @@ class ContainerCompiler
 
 
     /**
+     * Crude check for whether a recompile is needed.
+     *
+     * @return bool
+     */
+    protected function needsRecompile()
+    {
+        return !is_file($this->file) || (
+            !empty($this->configTree['z']['sources']) > 0
+            && max(array_map('filemtime', $this->configTree['z']['sources'])) > filemtime($this->file)
+        );
+    }
+
+
+    /**
      * Returns the code for initializing the container.
      *
      * @return string
@@ -91,7 +101,6 @@ class ContainerCompiler
         }
         $containerNode = $builder->build();
         $buffer = new Buffer();
-
         $buffer->write('<?php')->eol();
         $containerNode->compile($buffer);
         $buffer->writeln('return $z;');
