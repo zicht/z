@@ -38,12 +38,22 @@ class Binary extends Branch
      */
     public function compile(Buffer $buffer)
     {
-        //@deprecated, to be removed in 1.2
-        if ($this->operator === 'cat') {
-            $this->operator = '.';
+        if ($this->operator === '=~') {
+            $buffer->raw('(bool)preg_match((string)');
+            $this->nodes[1]->compile($buffer);
+            $buffer->raw(', (string)');
+            $this->nodes[0]->compile($buffer);
+            $buffer->raw(')');
+        } elseif ($this->operator === 'in') {
+            $buffer->raw('in_array(');
+            $this->nodes[0]->compile($buffer);
+            $buffer->raw(', (array)');
+            $this->nodes[1]->compile($buffer);
+            $buffer->raw(')');
+        } else {
+            $this->nodes[0]->compile($buffer);
+            $buffer->raw($this->operator);
+            $this->nodes[1]->compile($buffer);
         }
-        $this->nodes[0]->compile($buffer);
-        $buffer->raw($this->operator);
-        $this->nodes[1]->compile($buffer);
     }
 }

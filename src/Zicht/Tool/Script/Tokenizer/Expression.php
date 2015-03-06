@@ -28,7 +28,7 @@ class Expression implements TokenizerInterface
             $substr = substr($string, $needle);
             $before = $needle;
 
-            if (preg_match('/^(==|<=?|>=?|!=?|\?|:|\|\||&&|xor|or|and|\.|\[|\]|\(|\)|\+|-|\/|\*)/', $substr, $m)) {
+            if (preg_match('/^(==|=~|<=?|>=?|!=?|\?|:|\|\||&&|xor|or|and|\.|\[|\]|\(|\)|\+|-|\/|\*)/', $substr, $m)) {
                 if ($m[0] == ')') {
                     $depth --;
                     if ($depth == 0) {

@@ -31,8 +31,7 @@ class Expression extends AbstractParser
      * @var array
      */
     public static $INFIX_BINARY = array(
-        '==', '!=', '<=', '>=', '<', '>', '&&', '||',
-        'cat', // 'cat' is a hack for BC supporting the dot operator for concatenation,
+        '==', '!=', '<=', '>=', '<', '>', '&&', '||', '=~',
         '+', '*', '/',  '-'
     );
 
@@ -123,7 +122,7 @@ class Expression extends AbstractParser
         }
 
         if ($stream->valid()) {
-            if ($stream->match(Token::OPERATOR, self::$INFIX_BINARY)) {
+            if ($stream->match(Token::OPERATOR, self::$INFIX_BINARY) || $stream->match(Token::KEYWORD, 'in')) {
                 $value = $stream->current()->value;
                 $stream->next();
                 $ret = new Op\Binary($value, $ret, $this->parse($stream));
