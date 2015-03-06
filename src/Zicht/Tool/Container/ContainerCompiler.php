@@ -29,7 +29,8 @@ class ContainerCompiler
      * @param PluginInterface[] $plugins
      * @param null $file
      */
-    public function __construct($configTree, $plugins, $file)
+    public function
+    __construct($configTree, $plugins, $file)
     {
         $this->configTree = $configTree;
         $this->plugins = $plugins;
@@ -81,9 +82,10 @@ class ContainerCompiler
      */
     protected function needsRecompile()
     {
+        clearstatcache();
         return !is_file($this->file) || (
-            !empty($this->configTree['z']['sources']) > 0
-            && max(array_map('filemtime', $this->configTree['z']['sources'])) > filemtime($this->file)
+            (!empty($this->configTree['z']['sources'])
+            && max(array_map('filemtime', $this->configTree['z']['sources'])) >= filemtime($this->file))
         );
     }
 

@@ -131,7 +131,7 @@ EOSTR;
         if (null === $this->container) {
             $config = $this->loader->processConfiguration();
             $config['z']['sources'] = $this->loader->getSourceFiles();
-            $config['z']['cache_file'] = sys_get_temp_dir() . '/' . sha1(json_encode($this->loader->getSourceFiles())) . '.php';
+            $config['z']['cache_file'] = sys_get_temp_dir() . '/z_' . sha1(json_encode($this->loader->getSourceFiles())) . '.php';
             $compiler = new ContainerCompiler(
                 $config,
                 $this->loader->getPlugins(),
