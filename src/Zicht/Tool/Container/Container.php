@@ -97,7 +97,7 @@ class Container
                         function($el) {
                             return rtrim($el, "/");
                         },
-                        func_get_args()
+                        array_filter(func_get_args())
                     )
                 );
             }
@@ -425,6 +425,8 @@ class Container
                 } else {
                     $line = 'echo ' . escapeshellarg(trim($cmd)) . ' | ' . $this->resolve(array('SHELL'));
                 }
+
+
 
                 $this->output->writeln($line);
             } else {
