@@ -69,11 +69,11 @@ class ArgNode extends Branch
         if ($this->nodes[0]) {
             $buffer->write('$z->set(')->raw($phpName)->raw(', ');
             if ($this->multiple) {
-                $buffer->write('(array)(');
+                $buffer->raw('(array)(');
             }
             $this->nodes[0]->compile($buffer);
             if ($this->multiple) {
-                $buffer->write(')');
+                $buffer->raw(')');
             }
             $buffer->raw(');')->eol();
         }

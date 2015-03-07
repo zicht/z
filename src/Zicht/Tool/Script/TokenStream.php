@@ -108,7 +108,7 @@ class TokenStream
      *
      * @param string $type
      * @param string $value
-     * @return bool
+     * @return Token
      *
      * @throws \UnexpectedValueException
      */

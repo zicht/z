@@ -40,12 +40,12 @@ class ForIn extends Branch implements Annotation
      */
     public function beforeScript(Buffer $buffer)
     {
-        $buffer->writeln('foreach ((array)');
+        $buffer->write('foreach ((array)');
         $this->nodes[0]->compile($buffer);
         $buffer
-            ->write(' as $_key => $_value) {')
-            ->write(sprintf('$z->push(\'%s\', $_key);', $this->key))
-            ->write(sprintf('$z->push(\'%s\', $_value);', $this->value))
+            ->raw(' as $_key => $_value) {')->eol()->indent()
+            ->writeln(sprintf('$z->push(\'%s\', $_key);', $this->key))
+            ->writeln(sprintf('$z->push(\'%s\', $_value);', $this->value))
         ;
     }
 
@@ -59,6 +59,7 @@ class ForIn extends Branch implements Annotation
     {
         $buffer->write(sprintf('$z->pop(\'%s\');', $this->key));
         $buffer->write(sprintf('$z->pop(\'%s\');', $this->value));
+        $buffer->indent(-1);
         $buffer->writeln('}');
     }
 

@@ -30,7 +30,7 @@ class InfoCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $sourceFiles = $this->container->resolve(array('z', 'sources'));
+        $sourceFiles = $this->container->get(array('z', 'sources'));
 
         if (count($sourceFiles)) {
             $output->writeln('Loaded source files');
@@ -40,6 +40,6 @@ class InfoCommand extends BaseCommand
         } else {
             $output->writeln('No source files loaded');
         }
-        $output->writeln('Compiled file: ' . $this->container->resolve(array('z', 'cache_file')));
+        $output->writeln('Compiled file: ' . $this->container->get(array('z', 'cache_file')));
     }
 }

@@ -26,7 +26,7 @@ I need to be able to define a reason to fail a task
     But I should not see text matching "/do was executed/"
     And I should not see text matching "/post was executed/"
 
-  Scenario: Running the task with the unless parameter evaluating to false
+  Scenario: Running the task with the assert parameter evaluating to false
     When I run "z t no"
     Then I should not see text matching "/Assertion failed/"
     And I should see text matching "/pre was executed/"

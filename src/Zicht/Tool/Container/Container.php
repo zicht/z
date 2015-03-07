@@ -136,7 +136,7 @@ class Container
      */
     public function get($path)
     {
-        return $this->lookup($this->values, $path);
+        return $this->lookup($this->values, $path, true);
     }
 
 
@@ -163,7 +163,8 @@ class Container
     }
 
     /**
-     * Resolve the specified path. If the resulting value is a Closure, it's assumed a declaration.
+     * Resolve the specified path. If the resulting value is a Closure, it's assumed a declaration and therefore
+     * executed
      *
      * @param array $id
      * @param bool $required
@@ -193,8 +194,9 @@ class Container
                     )
                 );
             }
+
             array_push($this->resolutionStack, $id);
-            $ret = $this->lookup($this->values, $id, $required);
+            $ret = $this->value($this->lookup($this->values, $id, $required));
             array_pop($this->resolutionStack);
             return $ret;
         } catch (\Exception $e) {
@@ -373,7 +375,7 @@ class Container
         try {
             $value = $this->get($path);
         } catch (\OutOfBoundsException $e) {
-            return false;
+            return true;
         }
         return '' === $value || null === $value;
     }
@@ -421,9 +423,6 @@ class Container
                 } else {
                     $line = 'echo ' . escapeshellarg(trim($cmd)) . ' | ' . $this->resolve(array('SHELL'));
                 }
-
-
-
                 $this->output->writeln($line);
             } else {
                 $this->executor->execute($cmd);
@@ -441,9 +440,10 @@ class Container
     {
         $cmd = ltrim($cmd);
         if (substr($cmd, 0, 1) === '@') {
-            $this->value($this->resolve(array_merge(array('tasks'), explode('.', substr($cmd, 1)))));
+            return $this->resolve(array_merge(array('tasks'), explode('.', substr($cmd, 1))));
         } else {
             $this->exec($cmd);
+            return null;
         }
     }
 
@@ -563,6 +563,9 @@ class Container
      */
     public function push($varName, $tail)
     {
+        if (!$this->has($varName)) {
+            $this->set($varName, null);
+        }
         if (!isset($this->varStack[json_encode($varName)])) {
             $this->varStack[json_encode($varName)] = array();
         }
