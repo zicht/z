@@ -62,7 +62,7 @@ class Container
             array('z', 'opts'),
             function($z) {
                 $opts = array();
-                foreach (array('FORCE', 'VERBOSE', 'EXPLAIN') as $opt) {
+                foreach (array('FORCE', 'VERBOSE', 'EXPLAIN', 'DEBUG') as $opt) {
                     if ($z->has($opt) && $z->get($opt)) {
                         $opts[]= '--' . strtolower($opt);
                     }
@@ -550,7 +550,7 @@ class Container
      */
     public function isDebug()
     {
-        return $this->resolve('DEBUG') === true;
+        return $this->get('DEBUG') === true;
     }
 
 

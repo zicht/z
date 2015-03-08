@@ -60,7 +60,12 @@ class Expression extends AbstractParser
             $ret = new Node\Expr\Str($stream->current()->value);
             $stream->next();
         } elseif ($stream->match(Token::NUMBER)) {
-            $ret = new Node\Expr\Number($stream->current()->value);
+            $value = $stream->current()->value;
+            if (strpos('.', $value) !== false) {
+                $ret = new Node\Expr\Number((float)$value);
+            } else {
+                $ret = new Node\Expr\Number((int)$value);
+            }
             $stream->next();
         } elseif ($stream->match(Token::OPERATOR, '(')) {
             $stream->next();

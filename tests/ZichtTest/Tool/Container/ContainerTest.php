@@ -33,11 +33,10 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
 
         foreach (array('sprintf', 'mtime', 'ctime', 'atime', 'cat', 'keys', 'str', 'is_file', 'is_dir') as $function) {
             $functionSpec = $this->container->get($function);
-            $this->assertTrue(is_callable($functionSpec[0]));
+            $this->assertTrue(is_callable($functionSpec[0]), "Checking for {$function}");
         }
 
-        $this->assertTrue(false !== $this->container->has('cwd'));
-        $this->assertTrue(false !== $this->container->has('users'));
+        $this->assertTrue(false !== $this->container->has('cwd'), 'Checking for cwd');
     }
 
 
@@ -67,7 +66,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->set('VERBOSE', true);
         $this->container->set('FORCE', true);
         $this->container->set('EXPLAIN', true);
-        $this->assertEquals('--force --verbose --explain', $this->container->resolve(array('z', 'opts')));
+        $this->assertEquals('--force --verbose --explain', $this->container->value($this->container->resolve(array('z', 'opts'))));
     }
 
     /**
@@ -174,8 +173,8 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->decl('foo', function() use(&$i) {
             return ++$i;
         });
-        $this->assertEquals('1', $this->container->resolve('foo'));
-        $this->assertEquals('1', $this->container->resolve('foo'));
+        $this->assertEquals('1', $this->container->value($this->container->resolve('foo')));
+        $this->assertEquals('1', $this->container->value($this->container->resolve('foo')));
     }
 
     /**
@@ -186,7 +185,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->decl('foo', function($c) {
             return get_class($c);
         });
-        $this->assertEquals('Zicht\Tool\Container\Container', $this->container->resolve('foo'));
+        $this->assertEquals('Zicht\Tool\Container\Container', $this->container->value($this->container->resolve('foo')));
     }
 
 
@@ -290,7 +289,6 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
         $this->container->set('b', function($c) {
             return $c->resolve('a');
         });
-
         $this->container->resolve('a');
     }
 
