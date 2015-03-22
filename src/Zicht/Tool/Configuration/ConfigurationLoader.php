@@ -9,6 +9,7 @@ namespace Zicht\Tool\Configuration;
 
 use \Symfony\Component\Config\FileLocatorInterface;
 use \Symfony\Component\Config\Definition\Processor;
+use \Zicht\Tool\Debug;
 use \Zicht\Version\Version;
 
 
@@ -83,27 +84,36 @@ class ConfigurationLoader
      */
     public function processConfiguration()
     {
+        Debug::enterScope('config');
+        Debug::enterScope('load');
         try {
             $zfiles = $this->configLocator->locate($this->configFilename, null, false);
         } catch (\InvalidArgumentException $e) {
             $zfiles = array();
         }
         foreach ($zfiles as $file) {
+            Debug::enterScope($file);
             $this->sourceFiles[]= $file;
             $this->loader->load($file);
+            Debug::exitScope($file);
         }
-
-
         foreach ($this->loader->getPlugins() as $name => $file) {
+            Debug::enterScope($file);
             $this->sourceFiles[]= $file;
             $this->loadPlugin($name, $file);
+            Debug::exitScope($file);
         }
+        Debug::exitScope('load');
 
+        Debug::enterScope('process');
         $processor = new Processor();
-        return $processor->processConfiguration(
+        $ret = $processor->processConfiguration(
             new Configuration($this->plugins),
             $this->loader->getConfigs()
         );
+        Debug::exitScope('process');
+        Debug::exitScope('config');
+        return $ret;
     }
 
 

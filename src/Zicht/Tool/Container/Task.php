@@ -102,9 +102,7 @@ class Task extends Declaration
      */
     public function compileBody(Buffer $buffer)
     {
-        $taskName = Util::toPhp($this->path);
-
-        $buffer->write('$z->enterScope(')->asPhp($this->getName())->raw(');')->eol();
+        $buffer->write('Debug::enterScope(')->asPhp($this->getName())->raw(');')->eol();
         foreach ($this->taskDef['flags'] as $flag => $value) {
             $buffer
                 ->write('if (null === $z->resolve(')->asPhp($flag)->raw(', false)) {')->eol()
@@ -120,7 +118,7 @@ class Task extends Declaration
         foreach ($this->taskDef['opts'] as $node) {
             $node->compile($buffer);
         }
-        $buffer->writeln('try {')->indent(1);
+        $buffer->writeln('$skip = false;');
         foreach (array('pre', 'do', 'post') as $scope) {
             if ($scope === 'do') {
                 if (!empty($this->taskDef['unless'])) {
@@ -129,7 +127,7 @@ class Task extends Declaration
                     $buffer->raw(') {')->eol()->indent(1);
                     $echoStr = sprintf('echo "%s skipped", because \'unless\' evaluated to true.', join('.', $this->path));
                     $buffer->writeln(sprintf('$z->cmd(%s);', Util::toPhp($echoStr)));
-                    $buffer->writeln('return;');
+                    $buffer->writeln('$skip = true;');
                     $buffer->indent(-1);
                     $buffer->writeln('}');
                 }
@@ -139,7 +137,7 @@ class Task extends Declaration
                     $buffer->raw(') ) {')->eol()->indent(1);
                     $echoStr = sprintf('echo "%s skipped", because \'if\' evaluated to false.', join('.', $this->path));
                     $buffer->writeln(sprintf('$z->cmd(%s);', Util::toPhp($echoStr)));
-                    $buffer->writeln('return;');
+                    $buffer->writeln('$skip = true;');
                     $buffer->indent(-1);
                     $buffer->writeln('}');
                 }
@@ -151,16 +149,22 @@ class Task extends Declaration
                     $buffer->writeln('throw new \RuntimeException("Assertion failed");');
                     $buffer->indent(-1)->writeln('}');
                 }
+
+                $buffer->writeln('if (!$skip) {');
+                $buffer->indent(1);
             }
-            $buffer->write('$z->enterScope(')->asPhp($scope)->raw(');')->eol();
             foreach ($this->taskDef[$scope] as $i => $cmd) {
-                $buffer->write('$z->enterScope(')->asPhp($i)->raw(');')->eol();
+                $buffer->write('Debug::enterScope(')->asPhp($scope . '[' . $i . ']')->raw(');')->eol();
                 if ($cmd) {
                     $cmd->compile($buffer);
                 }
-                $buffer->write('$z->exitScope(')->asPhp($i)->raw(');')->eol();
+                $buffer->write('Debug::exitScope(')->asPhp($scope . '[' . $i . ']')->raw(');')->eol();
             }
-            $buffer->write('$z->exitScope(')->asPhp($scope)->raw(');')->eol();
+
+            if ($scope === 'post') {
+                $buffer->indent(-1);
+                $buffer->writeln('}');
+            }
         }
         if (!empty($this->taskDef['yield'])) {
             $buffer->writeln('$ret = ');
@@ -169,10 +173,7 @@ class Task extends Declaration
         } else {
             $buffer->writeln('$ret = true;');
         }
-        $buffer->indent(-1)->writeln('} catch (\Exception $e) {')->indent(1);
-        $buffer->writeln(sprintf('throw new \RuntimeException("While executing task %s", 0, $e);', $taskName));
-        $buffer->indent(-1)->writeln('}');
-        $buffer->write('$z->exitScope(')->asPhp($this->getName())->raw(');')->eol();
+        $buffer->write('Debug::exitScope(')->asPhp($this->getName())->raw(');')->eol();
         $buffer->writeln('return $ret;');
     }
 

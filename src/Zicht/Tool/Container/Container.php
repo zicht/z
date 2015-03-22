@@ -10,6 +10,7 @@ use \Symfony\Component\Console\Command\Command;
 use \Symfony\Component\Console\Output\NullOutput;
 use \Symfony\Component\Console\Output\OutputInterface;
 
+use \Zicht\Tool\Debug;
 use \Zicht\Tool\PropertyPath\PropertyAccessor;
 use \Zicht\Tool\PluginInterface;
 use \Zicht\Tool\Script\Compiler as ScriptCompiler;
@@ -32,7 +33,6 @@ class Container
 
     protected $commands = array();
     protected $values = array();
-    protected $prefix = array();
 
     private $resolutionStack = array();
     private $varStack = array();
@@ -126,31 +126,6 @@ class Container
         );
         $this->set('cwd',  getcwd());
         $this->set('user', getenv('USER'));
-    }
-
-
-    public function getScope()
-    {
-        return $this->scope[count($this->scope) -1];
-    }
-
-    /**
-     * Keeps track of scope, for debugging purposes
-     *
-     * @param $scope
-     */
-    public function enterScope($scope)
-    {
-        array_push($this->scope, $scope);
-    }
-
-
-    public function exitScope($scope)
-    {
-        $current = array_pop($this->scope);
-        if ($scope !== $current) {
-            throw new ScopeException("The current scope {$scope} was not closed properly");
-        }
     }
 
 
@@ -444,7 +419,7 @@ class Container
         if (trim($cmd)) {
             $this->output->getFormatter()->prefix = '';
             if ($this->resolve('DEBUG')) {
-                $this->output->getFormatter()->prefix = '[' . join('::', $this->scope) . '] ';
+                $this->output->getFormatter()->prefix = '[' . join('::', Debug::$scope) . '] ';
             }
 
             if ($this->resolve('EXPLAIN')) {

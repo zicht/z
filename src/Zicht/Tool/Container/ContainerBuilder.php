@@ -11,6 +11,7 @@ use \Zicht\Tool\Script\Node\Node;
 use \Zicht\Tool\Script\Node\Task\OptNode;
 use \Zicht\Tool\Script\Compiler;
 use \Zicht\Tool\Script\Parser;
+use \Zicht\Tool\Debug;
 use \Zicht\Tool\Script\Parser\Expression as ExpressionParser;
 use \Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
 use \Zicht\Tool\Script\Node\Task\ArgNode;
@@ -74,12 +75,14 @@ class ContainerBuilder
      */
     public function build()
     {
+        Debug::enterScope('build');
         $traverser = $this->createNodeCreatorTraverser($this->config);
         $result = $traverser->traverse();
 
         $node = new ContainerNode();
         $gatherer = $this->createNodeGathererTraverser($result, $node);
         $gatherer->traverse();
+        Debug::exitScope('build');
 
         return $node;
     }

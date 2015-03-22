@@ -10,6 +10,7 @@ use \Symfony\Component\Config\Loader\FileLoader as BaseFileLoader;
 use \Symfony\Component\Config\FileLocatorInterface;
 use \Zicht\Version\Version;
 use \Zicht\Tool;
+use \Zicht\Tool\Debug;
 use \Zicht\Version\Constraint;
 use \Symfony\Component\Yaml;
 
@@ -62,6 +63,7 @@ class FileLoader extends BaseFileLoader
         } else {
             $fileContents = file_get_contents($resource);
         }
+        Debug::enterScope('annotations');
         $annotations = $this->parseAnnotations($fileContents);
 
         if ($this->version && !empty($annotations['version'])) {
@@ -74,6 +76,7 @@ class FileLoader extends BaseFileLoader
                 );
             }
         }
+        Debug::exitScope('annotations');
 
         try {
             $config = Yaml\Yaml::parse($fileContents);
@@ -82,11 +85,15 @@ class FileLoader extends BaseFileLoader
         }
 
         if (isset($config['plugins'])) {
+            Debug::enterScope('plugins');
             $this->processPlugins($config['plugins'], dirname($resource));
+            Debug::exitScope('plugins');
             unset($config['plugins']);
         }
         if (isset($config['imports'])) {
+            Debug::enterScope('imports');
             $this->processImports($config['imports'], dirname($resource));
+            Debug::exitScope('imports');
             unset($config['imports']);
         }
 
@@ -151,6 +158,7 @@ class FileLoader extends BaseFileLoader
      */
     public function addPlugin($name, $dir)
     {
+        Debug::enterScope($name);
         $hasPlugin = $hasZfile = false;
 
         try {
@@ -176,8 +184,9 @@ class FileLoader extends BaseFileLoader
         }
 
         if (!$hasPlugin && !$hasZfile) {
-            throw new \InvalidArgumentException("You need at least either a z.yml or a Plugin.php in the plugin path for {$name}");
+            throw new \InvalidArgumentException("You need at least either a z.yml or a Plugin.php in the plugin path for '{$name}'");
         }
+        Debug::exitScope($name);
     }
 
 

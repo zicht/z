@@ -158,7 +158,9 @@ EOSTR;
             }
         }
 
+        Debug::enterScope('init');
         $container = $this->getContainer();
+
         $container->output = $output;
 
         $container->set('VERBOSE',  $input->hasParameterOption(array('--verbose', '-v')));
@@ -173,8 +175,13 @@ EOSTR;
         $this->add(new Cmd\EvalCommand());
         $this->add(new Cmd\DumpCommand());
         $this->add(new Cmd\InfoCommand());
+        Debug::exitScope('init');
 
-        return parent::doRun($input, $output);
+        Debug::enterScope('run');
+        $ret = parent::doRun($input, $output);
+        Debug::exitScope('run');
+
+        return $ret;
     }
 
 
