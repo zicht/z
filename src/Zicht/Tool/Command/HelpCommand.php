@@ -13,6 +13,8 @@ class HelpCommand extends Command
 
     protected function configure()
     {
+        $this->ignoreValidationErrors();
+
         $this
             ->setName('help')
             ->setDefinition(
@@ -37,10 +39,6 @@ class HelpCommand extends Command
 
     protected function execute(Input\InputInterface $input, OutputInterface $output)
     {
-        if (null === $this->command) {
-            $this->command = $this->getApplication()->find($input->getArgument('command_name'));
-        }
-
         $descriptor = new Descriptor\TextDescriptor();
         $descriptor->describe($output, $this->command);
     }

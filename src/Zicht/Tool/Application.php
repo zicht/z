@@ -94,6 +94,7 @@ EOSTR;
                 }
             }
         }
+        $output->writeln('[' . join('::', Debug::$scope) . ']');
     }
 
 

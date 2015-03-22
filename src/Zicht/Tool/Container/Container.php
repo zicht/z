@@ -305,11 +305,13 @@ class Container
     public function decl($id, $callable)
     {
         if (!is_callable($callable)) {
-            throw new \InvalidArgumentException("Not callable");
+            throw new \InvalidArgumentException("Passed declaration is not callable");
         }
         $this->set($id, function(Container $c) use($callable, $id) {
+            Debug::enterScope(join('.', $id));
             $value = call_user_func($callable, $c);
             $c->set($id, $value);
+            Debug::exitScope(join('.', $id));
             return $value;
         });
     }

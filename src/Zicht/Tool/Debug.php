@@ -30,6 +30,9 @@ final class Debug
      */
     public static function enterScope($scope)
     {
+        if (!is_scalar($scope)) {
+            throw new \InvalidArgumentException("Only scalars allowed as scope identifiers");
+        }
         array_push(self::$scope, $scope);
         list($call)= debug_backtrace(0, 2);
         array_push(self::$scopeChange, $call);

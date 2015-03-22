@@ -102,7 +102,6 @@ class Task extends Declaration
      */
     public function compileBody(Buffer $buffer)
     {
-        $buffer->write('Debug::enterScope(')->asPhp($this->getName())->raw(');')->eol();
         foreach ($this->taskDef['flags'] as $flag => $value) {
             $buffer
                 ->write('if (null === $z->resolve(')->asPhp($flag)->raw(', false)) {')->eol()
@@ -173,7 +172,6 @@ class Task extends Declaration
         } else {
             $buffer->writeln('$ret = true;');
         }
-        $buffer->write('Debug::exitScope(')->asPhp($this->getName())->raw(');')->eol();
         $buffer->writeln('return $ret;');
     }
 
