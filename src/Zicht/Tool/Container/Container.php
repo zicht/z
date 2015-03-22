@@ -36,6 +36,7 @@ class Container
 
     private $resolutionStack = array();
     private $varStack = array();
+    private $scope = array();
 
     public $output;
     public $executor;
@@ -125,6 +126,31 @@ class Container
         );
         $this->set('cwd',  getcwd());
         $this->set('user', getenv('USER'));
+    }
+
+
+    public function getScope()
+    {
+        return $this->scope[count($this->scope) -1];
+    }
+
+    /**
+     * Keeps track of scope, for debugging purposes
+     *
+     * @param $scope
+     */
+    public function enterScope($scope)
+    {
+        array_push($this->scope, $scope);
+    }
+
+
+    public function exitScope($scope)
+    {
+        $current = array_pop($this->scope);
+        if ($scope !== $current) {
+            throw new ScopeException("The current scope {$scope} was not closed properly");
+        }
     }
 
 
@@ -321,7 +347,7 @@ class Container
      */
     public function notice($message)
     {
-        $this->output->writeln("# <comment>NOTICE: $message</comment>");
+        $this->output->writeln("<comment>NOTICE: $message</comment>");
     }
 
 
@@ -416,6 +442,11 @@ class Container
     public function exec($cmd)
     {
         if (trim($cmd)) {
+            $this->output->getFormatter()->prefix = '';
+            if ($this->resolve('DEBUG')) {
+                $this->output->getFormatter()->prefix = '[' . join('::', $this->scope) . '] ';
+            }
+
             if ($this->resolve('EXPLAIN')) {
                 if ($this->resolve('INTERACTIVE')) {
                     $this->notice('interactive shell:');

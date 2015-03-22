@@ -152,40 +152,4 @@ class TaskCommand extends BaseCommand
     {
         return $this->taskReference;
     }
-
-
-    /**
-     * Does a preflight check of the command that is to be executed, i.e. compiles into the script without actually
-     * running it.
-     *
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return void
-     *
-     * @throws \Exception
-     */
-    protected function preflightCheck($output)
-    {
-        $stream = fopen('php://temp', 'r+');
-        $dry = clone $this->container;
-        try {
-            $dry->set('EXPLAIN', true);
-            $dry->set('INTERACTIVE', false);
-            $dry->fn(
-                'confirm',
-                function() {
-                    return false;
-                }
-            ); // TODO figure out what to do with cases like this
-            $dry->output = new Output\StreamOutput($stream);
-            $dry->resolve($this->getTaskReference(), true);
-        } catch (\Exception $e) {
-            rewind($stream);
-            $buffer = stream_get_contents($stream);
-            $output->writeln("<error>[ERROR]</error> preflight check failed with exception <comment>\"{$e->getMessage()}\"</comment>\n");
-            if ($buffer && $output->getVerbosity() > 1) {
-                $output->writeln($buffer);
-            }
-            throw $e;
-        }
-    }
 }

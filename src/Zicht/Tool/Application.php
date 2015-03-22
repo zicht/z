@@ -55,19 +55,6 @@ EOSTR;
 
 
     /**
-     * Replaces the default Output class with one specifically for this application
-     *
-     * @param InputInterface $input
-     * @param OutputInterface $output
-     * @return int
-     */
-    public function run(InputInterface $input = null, OutputInterface $output = null)
-    {
-        $output = (null !== $output ? $output : new Output\ConsoleOutput());
-        return parent::run($input, $output);
-    }
-
-    /**
      * Custom exception rendering, renders only the exception types and messages, hierarchically, but with regular
      * formatting if verbosity is higher.
      *
@@ -152,6 +139,8 @@ EOSTR;
         set_error_handler(function($err, $msg) {
             throw new \ErrorException($msg);
         }, E_RECOVERABLE_ERROR);
+
+        $output->setFormatter(new Output\PrefixFormatter($output->getFormatter()));
 
         if (true === $input->hasParameterOption(array('--quiet', '-q'))) {
             $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);

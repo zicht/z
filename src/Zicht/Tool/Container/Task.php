@@ -104,6 +104,7 @@ class Task extends Declaration
     {
         $taskName = Util::toPhp($this->path);
 
+        $buffer->write('$z->enterScope(')->asPhp($this->getName())->raw(');')->eol();
         foreach ($this->taskDef['flags'] as $flag => $value) {
             $buffer
                 ->write('if (null === $z->resolve(')->asPhp($flag)->raw(', false)) {')->eol()
@@ -151,11 +152,15 @@ class Task extends Declaration
                     $buffer->indent(-1)->writeln('}');
                 }
             }
-            foreach ($this->taskDef[$scope] as $cmd) {
+            $buffer->write('$z->enterScope(')->asPhp($scope)->raw(');')->eol();
+            foreach ($this->taskDef[$scope] as $i => $cmd) {
+                $buffer->write('$z->enterScope(')->asPhp($i)->raw(');')->eol();
                 if ($cmd) {
                     $cmd->compile($buffer);
                 }
+                $buffer->write('$z->exitScope(')->asPhp($i)->raw(');')->eol();
             }
+            $buffer->write('$z->exitScope(')->asPhp($scope)->raw(');')->eol();
         }
         if (!empty($this->taskDef['yield'])) {
             $buffer->writeln('$ret = ');
@@ -167,6 +172,7 @@ class Task extends Declaration
         $buffer->indent(-1)->writeln('} catch (\Exception $e) {')->indent(1);
         $buffer->writeln(sprintf('throw new \RuntimeException("While executing task %s", 0, $e);', $taskName));
         $buffer->indent(-1)->writeln('}');
+        $buffer->write('$z->exitScope(')->asPhp($this->getName())->raw(');')->eol();
         $buffer->writeln('return $ret;');
     }
 
