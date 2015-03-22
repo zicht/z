@@ -22,8 +22,6 @@ class DumpCommand extends BaseCommand
      */
     protected function configure()
     {
-        parent::configure();
-
         $this
             ->setName('z:dump')
             ->setHelp('Dumps container values')
@@ -41,6 +39,6 @@ class DumpCommand extends BaseCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln(Yaml::dump($this->container->getValues(), 5, 4));
+        $output->writeln(Yaml::dump($this->getContainer()->getValues(), 5, 4));
     }
 }

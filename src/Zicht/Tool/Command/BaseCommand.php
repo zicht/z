@@ -15,19 +15,8 @@ use \Zicht\Tool\Container\Container;
  */
 class BaseCommand extends Command
 {
-    /**
-     * @var Container
-     */
-    protected $container;
-
-    /**
-     * Set the container instance
-     *
-     * @param \Zicht\Tool\Container\Container $container
-     * @return void
-     */
-    public function setContainer(Container $container)
+    protected function getContainer()
     {
-        $this->container = $container;
+        return $this->getApplication()->getContainer();
     }
 }

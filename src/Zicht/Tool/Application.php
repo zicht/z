@@ -10,6 +10,7 @@ use \Symfony\Component\Console\Command\Command;
 use \Symfony\Component\Console\Input\InputArgument;
 use \Symfony\Component\Console\Input\InputOption;
 use \Symfony\Component\Console\Input\InputInterface;
+use \Symfony\Component\Console\Input\InputDefinition;
 use \Symfony\Component\Console\Output\OutputInterface;
 use \Symfony\Component\Yaml\Yaml;
 use \Zicht\Version\Version;
@@ -130,6 +131,31 @@ EOSTR;
     }
 
 
+    protected function getDefaultCommands()
+    {
+        return array(
+            new Cmd\ListCommand(),
+            new Cmd\HelpCommand(),
+            new Cmd\EvalCommand(),
+            new Cmd\DumpCommand(),
+            new Cmd\InfoCommand()
+        );
+    }
+
+    protected function getDefaultInputDefinition()
+    {
+        return new InputDefinition(
+            array(
+                new InputArgument('command', InputArgument::REQUIRED, 'The command to execute'),
+
+                new InputOption('--help',           '-h', InputOption::VALUE_NONE, 'Display this help message.'),
+                new InputOption('--verbose',        '-v|vv|vvv', InputOption::VALUE_NONE, 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug'),
+                new InputOption('--version',        '-V', InputOption::VALUE_NONE, 'Display this application version.'),
+            )
+        );
+    }
+
+
     /**
      * @{inheritDoc}
      */
@@ -172,9 +198,6 @@ EOSTR;
             $this->add($task);
         }
 
-        $this->add(new Cmd\EvalCommand());
-        $this->add(new Cmd\DumpCommand());
-        $this->add(new Cmd\InfoCommand());
         Debug::exitScope('init');
 
         Debug::enterScope('run');
@@ -183,19 +206,6 @@ EOSTR;
 
         return $ret;
     }
-
-
-    /**
-     * @{inheritDoc}
-     */
-    public function add(Command $command)
-    {
-        parent::add($command);
-        if ($command instanceof Cmd\BaseCommand) {
-            $command->setContainer($this->container);
-        }
-    }
-
 
     /**
      * @{inheritDoc}

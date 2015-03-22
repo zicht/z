@@ -138,7 +138,7 @@ class ContainerBuilder
 
 
     /**
-     * Creates a definition node for the specified path
+     * Creates a declaration node for the specified path
      *
      * @param array $path
      * @param array $node

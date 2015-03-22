@@ -105,6 +105,9 @@ class TaskCommand extends BaseCommand
     }
 
 
+
+
+
     /**
      * Executes the specified task
      *
@@ -119,28 +122,28 @@ class TaskCommand extends BaseCommand
                 continue;
             }
             if ($input->getArgument($arg->getName())) {
-                $this->container->set(explode('.', $arg->getName()), $input->getArgument($arg->getName()));
+                $this->getContainer()->set(explode('.', $arg->getName()), $input->getArgument($arg->getName()));
             }
         }
         foreach ($this->opts as $opt) {
             if ($input->getOption($opt)) {
-                $this->container->set(explode('.', $opt), $input->getOption($opt));
+                $this->getContainer()->set(explode('.', $opt), $input->getOption($opt));
             }
         }
         foreach ($this->flags as $name => $value) {
-            $this->container->set(explode('.', $name), $value);
+            $this->getContainer()->set(explode('.', $name), $value);
             if ($input->getOption('no-' . $name) && $input->getOption($name)) {
                 throw new \InvalidArgumentException("Cannot pass both --no-{$name} and --{$name} options, they are mutually exclusive");
             }
             if ($input->getOption('no-' . $name)) {
-                $this->container->set(explode('.', $name), false);
+                $this->getContainer()->set(explode('.', $name), false);
             } elseif ($input->getOption($name)) {
-                $this->container->set(explode('.', $name), true);
+                $this->getContainer()->set(explode('.', $name), true);
             }
         }
 
-        $callable = $this->container->get($this->getTaskReference(), true);
-        call_user_func($callable, $this->container);
+        $callable = $this->getContainer()->get($this->getTaskReference(), true);
+        call_user_func($callable, $this->getContainer());
     }
 
     /**

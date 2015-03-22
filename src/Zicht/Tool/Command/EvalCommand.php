@@ -34,7 +34,7 @@ class EvalCommand extends BaseCommand
     protected function execute(Input\InputInterface $input, OutputInterface $output)
     {
         $expr   = $input->getArgument('expression');
-        $result = $this->container->evaluate($expr, $code);
+        $result = $this->getContainer()->evaluate($expr, $code);
 
         if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
             $output->writeln($code);
