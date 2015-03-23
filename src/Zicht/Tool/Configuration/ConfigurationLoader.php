@@ -58,8 +58,8 @@ class ConfigurationLoader
     public function __construct($configFilename, FileLocatorInterface $configLocator, FileLoader $loader)
     {
         $this->configFilename = $configFilename;
-        $this->loader = $loader;
         $this->configLocator = $configLocator;
+        $this->loader = $loader;
         $this->plugins = array();
     }
 
@@ -153,6 +153,6 @@ class ConfigurationLoader
      */
     public function getSourceFiles()
     {
-        return $this->sourceFiles;
+        return $this->loader->getSourceFiles();
     }
 }

@@ -38,6 +38,7 @@ class FileLoader extends BaseFileLoader
      */
     protected $plugins = array();
     protected $pluginPaths  = array();
+    protected $sourceFiles = array();
 
     /**
      * Constructor.
@@ -52,6 +53,21 @@ class FileLoader extends BaseFileLoader
         $this->version = $version;
     }
 
+    /**
+     * @param array $sourceFiles
+     */
+    public function setSourceFiles($sourceFiles)
+    {
+        $this->sourceFiles = $sourceFiles;
+    }
+
+    /**
+     * @return array
+     */
+    public function getSourceFiles()
+    {
+        return array_unique($this->sourceFiles);
+    }
 
     /**
      * @{inheritDoc}
@@ -61,6 +77,7 @@ class FileLoader extends BaseFileLoader
         if (!is_file($resource)) {
             $fileContents = $resource;
         } else {
+            $this->sourceFiles[]= $resource;
             $fileContents = file_get_contents($resource);
         }
         Debug::enterScope('annotations');
@@ -164,7 +181,9 @@ class FileLoader extends BaseFileLoader
         try {
             $this->plugins[$name] = $this->getLocator()->locate($name . '/Plugin.php', $dir, true);
             $this->pluginPaths[$name] = dirname($this->plugins[$name]);
+
             $hasPlugin = true;
+            $this->sourceFiles[]= $this->plugins[$name];
         } catch (\InvalidArgumentException $e) {
         }
 
@@ -179,7 +198,9 @@ class FileLoader extends BaseFileLoader
                     . "There was a Plugin.php found in {$this->pluginPaths[$name]}, but also a z.yml at $zFileLocation"
                 );
             }
+
             $hasZfile = true;
+            $this->sourceFiles[]= $zFileLocation;
         } catch (\InvalidArgumentException $e) {
         }
 
