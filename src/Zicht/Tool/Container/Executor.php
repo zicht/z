@@ -7,6 +7,7 @@
 namespace Zicht\Tool\Container;
 
 use \Symfony\Component\Process\Process;
+use Symfony\Component\Process\ProcessBuilder;
 
 /**
  * Runs the commands in the shell.
@@ -36,21 +37,25 @@ class Executor
      */
     public function execute($cmd, &$captureOutput = null)
     {
-        $ret = 0;
-        if ($this->container->get('INTERACTIVE')) {
-            passthru($cmd, $ret);
+        $isInteractive = $this->container->get('INTERACTIVE');
+        $process = $this->createProcess($isInteractive);
+
+        if ($isInteractive) {
+            $process->setCommandLine(sprintf('/bin/bash -c \'%s\'', $cmd));
         } else {
-            $process = $this->createProcess();
-            $process->setStdin($cmd);
-            if (null !== $captureOutput) {
-                $process->run(function($type, $data) use(&$captureOutput) {
-                    $captureOutput .= $data;
-                });
-            } else {
-                $process->run(array($this, 'processCallback'));
-            }
-            $ret = $process->getExitCode();
+            $process->setInput($cmd);
         }
+
+        if (null !== $captureOutput && false === $isInteractive) {
+            $process->run(function($type, $data) use(&$captureOutput) {
+                $captureOutput .= $data;
+            });
+        } else {
+            $process->run(array($this, 'processCallback'));
+        }
+
+        $ret = $process->getExitCode();
+
         if ($ret != 0) {
             if ((int)$ret == Container::ABORT_EXIT_CODE) {
                 throw new ExecutionAbortedException("Command '$cmd' was aborted");
@@ -65,12 +70,19 @@ class Executor
     /**
      * Create the process instance to use for non-interactive handling
      *
+     * @var     bool $interactive
      * @return \Symfony\Component\Process\Process
      */
-    protected function createProcess()
+    protected function createProcess($interactive = false)
     {
         $process = new Process($this->container->get('SHELL'));
-        $process->setTimeout($this->container->get('TIMEOUT'));
+
+        if ($interactive) {
+            $process->setTty(true);
+        } else {
+            $process->setTimeout($this->container->get('TIMEOUT'));
+        }
+
         return $process;
     }
 

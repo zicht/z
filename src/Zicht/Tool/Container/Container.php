@@ -427,7 +427,7 @@ class Container
             if ($this->resolve('EXPLAIN')) {
                 if ($this->resolve('INTERACTIVE')) {
                     $this->notice('interactive shell:');
-                    $line = '( ' . trim($cmd) . ' )';
+                    $line = '( /bin/bash -c \'' . trim($cmd) . '\' )';
                 } else {
                     $line = 'echo ' . escapeshellarg(trim($cmd)) . ' | ' . $this->resolve(array('SHELL'));
                 }
