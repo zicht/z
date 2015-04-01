@@ -8,7 +8,10 @@ Z is distributed under the MIT License. This means that you can do whatever you 
 the license and copyright notices, and you don't come banging on our door if it didn't work the way you expected. There
 is no warranty, express or implied, and any documentation or source file stating otherwise must be considered invalid.
 
-# Why not Make, Pake, Ant, Phing, Rake, Grunt, etc? #
+# Why not Grunt, Make, Pake, Ant, Phing, Rake, Gulp, etc? #
+
+Or: "Why not Capistrano, Capifony, Puppet, Chef, Ansible, etc?"
+
 Let me first say this. In the end it really is a matter of taste, and what you feel comfortable with. So if
 you don't share my opinion, that is fine. I did not feel comfortable enough with any of these tools, though GNU Make
 has been my favorite for a long time.
@@ -20,13 +23,9 @@ because of it's ultimately simple YML-based configuration syntax. It depends on 
 components and a shell, and they are all at both our disposal. Furthermore, if you ever used any shell, you can use Z,
 you don't need knowledge of much of the Z syntax or architecture to get started real quick.
 
-Z relies heavily on shell scripting. If you're not comfortable with bash, however, Z is not limited to bash as a
-primary interpreter. You can extend Z easily by utilizing any shell that is capable of processing stdin. You can even
-alternate between shells in different parts of your recipe.
-
-# Why not Capistrano, Capifony, Puppet, Chef, etc? #
-See above. Z does not aim to be a replacement of any of these tools. It aims to solve problems you might have. If you
-don't recognize the solution, Z is probably not for you.
+Z relies heavily on a shell to do the heavy lifting. If you're not comfortable with bash, however, Z is not limited to
+bash as a primary interpreter. You can extend Z easily by utilizing any shell that is capable of processing stdin. You
+can even alternate between shells in different parts of your recipe.
 
 # Why is it actually different than any of the aforementioned tools? #
 Z is a set of building blocks for generating executable code by your shell. In short, this means that Z does not

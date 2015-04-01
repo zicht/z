@@ -40,6 +40,6 @@ class InfoCommand extends BaseCommand
         } else {
             $output->writeln('No source files loaded');
         }
-        $output->writeln('Compiled file: ' . $this->container->get(array('z', 'cache_file')));
+        $output->writeln('Compiled file: ' . $this->getContainer()->get(array('z', 'cache_file')));
     }
 }

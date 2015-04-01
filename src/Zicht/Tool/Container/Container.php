@@ -85,6 +85,12 @@ class Container
         $this->fn('ctime', 'filectime');
         $this->fn('escape', 'escapeshellarg');
         $this->fn('join', 'implode');
+        $this->fn('range', function() {
+            if (func_num_args() > 1) {
+                return range(func_get_arg(1), func_get_arg(0));
+            }
+            return range(1, func_get_arg(0));
+        });
         $this->fn(
             'path',
             function() {

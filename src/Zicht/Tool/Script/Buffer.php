@@ -90,6 +90,9 @@ class Buffer
     {
         if (null !== $increment) {
             $this->indent += $increment;
+            if ($this->indent < 0) {
+                throw new \InvalidArgumentException("Indent can not reach below zero!");
+            }
         } else {
             $this->raw(str_repeat('    ', $this->indent));
         }

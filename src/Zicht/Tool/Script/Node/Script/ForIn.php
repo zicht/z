@@ -43,7 +43,7 @@ class ForIn extends Branch implements Annotation
         $buffer->write('foreach ((array)');
         $this->nodes[0]->compile($buffer);
         $buffer
-            ->raw(' as $_key => $_value) {')->eol()->indent()
+            ->raw(' as $_key => $_value) {')->eol()->indent(1)
             ->writeln(sprintf('$z->push(\'%s\', $_key);', $this->key))
             ->writeln(sprintf('$z->push(\'%s\', $_value);', $this->value))
         ;
