@@ -175,7 +175,7 @@ class Application extends BaseApplication
 
     public function getConfig()
     {
-        $zFileLocator  = new FileLocator(array(getcwd(), getenv('HOME') . '/.config/z/'));
+        $zFileLocator  = new FileLocator(array(getenv('HOME') . '/.config/z/', getcwd()));
         $pluginLocator = new FileLocator(glob(__DIR__ . '/../../../vendor/*/z-plugin*'));
 
         $loader = new FileLoader($pluginLocator);
