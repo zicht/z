@@ -11,7 +11,8 @@ class ListCommand extends Command
     protected function configure()
     {
         $this
-            ->setName('list')
+            ->setName('z:list')
+            ->setDescription('Lists available commands')
         ;
     }
 

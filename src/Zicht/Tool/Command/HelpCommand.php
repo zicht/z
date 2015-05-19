@@ -16,7 +16,8 @@ class HelpCommand extends Command
         $this->ignoreValidationErrors();
 
         $this
-            ->setName('help')
+            ->setName('z:help')
+            ->setDescription('Shows help')
             ->setDefinition(
                 array(
                     new Input\InputArgument('command_name', Input\InputArgument::OPTIONAL, 'The command name', 'help'),

@@ -19,5 +19,6 @@
     a:      echo "a :)"
     a.b:    echo "a.b :)"
 
-  In 1.0, this would work, but in 1.1 an internal tree representation of all names is used, which causes the node at
-  'a' to be replaced by a node containing 'b'. The above example is considered a bug that wasn't detected by the parser.
+In 1.0, this would work, but in 1.1 an internal tree representation of all names is used, which causes the node at
+'a' to be replaced by a node containing 'b'. The above example is considered an error that wasn't detected by the
+parser.

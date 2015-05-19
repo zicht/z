@@ -50,6 +50,7 @@ EOSTR;
     public function __construct($name, Version $version, ConfigurationLoader $loader = null)
     {
         parent::__construct($name, (string)$version);
+        $this->setDefaultCommand('z:list');
         $this->loader = $loader;
         $this->plugins = array();
     }

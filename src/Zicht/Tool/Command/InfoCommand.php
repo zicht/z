@@ -31,7 +31,7 @@ class InfoCommand extends BaseCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $sourceFiles = $this->getContainer()->get(array('z', 'sources'));
-
+        $output->writeln('Z executable used: ' . ZBIN);
         if (count($sourceFiles)) {
             $output->writeln('Loaded source files');
             foreach ($sourceFiles as $file) {

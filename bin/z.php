@@ -3,6 +3,8 @@
  * @author Gerard van Helden <gerard@zicht.nl>
  * @copyright Zicht Online <http://zicht.nl>
  */
+
+
 if (is_file(__DIR__ . '/../vendor/autoload.php')) {
     require_once __DIR__ . '/../vendor/autoload.php';
 } else {
@@ -12,6 +14,10 @@ if (is_file(__DIR__ . '/../vendor/autoload.php')) {
  * Points to the root of the Z installation
  */
 define('ZPREFIX', __DIR__ . '/../');
+/**
+ * Refers to the "binary"
+ */
+define('ZBIN', __FILE__);
 
 $version = include ZPREFIX . '/version.php';
 
