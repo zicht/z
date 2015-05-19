@@ -1,4 +1,5 @@
 2.0-dev
+-----
 * Removed deprecated / 1.0 backward compatibility features
 * Task options were added
 * The 'with-' in flags was dropped. A flag with name "foo" will render flags "--foo" and "--no-foo".
@@ -7,6 +8,7 @@
 * Globals were added
 
 1.1-dev
+-----
 * Deprecated the dot concatenation operator
 * Deprecated declaration and resolution by string (all references should now be an array representing a path)
 * Added the ZFILE and ZPLUGINPATH environment variables

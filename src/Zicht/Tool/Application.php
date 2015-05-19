@@ -7,6 +7,7 @@ namespace Zicht\Tool;
 
 use \Symfony\Component\Console\Application as BaseApplication;
 use \Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use \Symfony\Component\Console\Input\InputArgument;
 use \Symfony\Component\Console\Input\InputOption;
 use \Symfony\Component\Console\Input\InputInterface;
@@ -203,6 +204,12 @@ EOSTR;
         Debug::exitScope('init');
 
         Debug::enterScope('run');
+        if (true === $input->hasParameterOption(array('--help', '-h'))) {
+            if (!$this->getCommandName($input)) {
+                $input = new ArrayInput(array('command' => 'z:list'));
+            }
+        }
+
         $ret = parent::doRun($input, $output);
         Debug::exitScope('run');
 
@@ -220,4 +227,17 @@ EOSTR;
         }
         return $ret;
     }
+
+    public function get($name)
+    {
+        // The 'help' name can not be overridden as it's hard coded in the base class.
+        if ('help' === $name) {
+            $name = 'z:help';
+        }
+
+        return parent::get($name);
+    }
+
+
+
 }
