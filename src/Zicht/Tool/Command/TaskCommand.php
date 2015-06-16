@@ -59,7 +59,7 @@ class TaskCommand extends BaseCommand
                 ->addOption('no-' . $name, '', InputOption::VALUE_NONE, 'Toggle ' . $name . ' flag off')
             ;
         }
-        $this->setHelp($help ? $help : '(no help available for this task)');
+        $this->setHelp($help);
         $this->setDescription(preg_replace('/^([^\n]*).*/s', '$1', $help));
     }
 

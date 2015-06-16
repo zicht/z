@@ -85,6 +85,7 @@ class Container
         $this->fn('ctime', 'filectime');
         $this->fn('escape', 'escapeshellarg');
         $this->fn('join', 'implode');
+        $this->fn('str_replace', 'str_replace');
         $this->fn('range', function() {
             if (func_num_args() > 1) {
                 return range(func_get_arg(1), func_get_arg(0));
@@ -121,7 +122,7 @@ class Container
         });
 
         $exitCode = self::ABORT_EXIT_CODE;
-        $this->decl('abort', function() use($exitCode) {
+        $this->decl(array('abort'), function() use($exitCode) {
             return 'exit ' . $exitCode;
         });
         $this->fn(
@@ -349,10 +350,10 @@ class Container
 
         $z = $this;
         $_value = null;
-        $code = '$z->set(\'_\', ' . $exprcompiler->compile($expression) . ');';
+        $code = '$z->set(array(\'_\'), ' . $exprcompiler->compile($expression) . ');';
         eval($code);
 
-        return $z->resolve('_');
+        return $z->resolve(array('_'));
     }
 
 

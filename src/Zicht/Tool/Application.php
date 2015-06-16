@@ -117,12 +117,16 @@ EOSTR;
      *
      * @return Container
      */
-    public function getContainer()
+    public function getContainer($forceRecompile = false)
     {
         if (null === $this->container) {
             $config = $this->loader->processConfiguration();
             $config['z']['sources'] = $this->loader->getSourceFiles();
             $config['z']['cache_file'] = sys_get_temp_dir() . '/z_' . sha1(json_encode($this->loader->getSourceFiles())) . '.php';
+            if ($forceRecompile && is_file($config['z']['cache_file'])) {
+                unlink($config['z']['cache_file']);
+                clearstatcache();
+            }
             $compiler = new ContainerCompiler(
                 $config,
                 $this->loader->getPlugins(),
@@ -153,6 +157,7 @@ EOSTR;
 
                 new InputOption('--help',           '-h', InputOption::VALUE_NONE, 'Display this help message.'),
                 new InputOption('--verbose',        '-v|vv|vvv', InputOption::VALUE_NONE, 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug'),
+                new InputOption('--no-cache',       '-c', InputOption::VALUE_NONE, 'Force recompilation of csontainer code'),
                 new InputOption('--version',        '-V', InputOption::VALUE_NONE, 'Display this application version.'),
             )
         );
@@ -188,7 +193,7 @@ EOSTR;
         }
 
         Debug::enterScope('init');
-        $container = $this->getContainer();
+        $container = $this->getContainer($input->hasParameterOption(array('--no-cache', '-c')));
 
         $container->output = $output;
 
