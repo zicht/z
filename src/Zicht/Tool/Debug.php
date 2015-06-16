@@ -34,7 +34,7 @@ final class Debug
             throw new \InvalidArgumentException("Only scalars allowed as scope identifiers");
         }
         array_push(self::$scope, $scope);
-        list($call)= debug_backtrace(0, 2);
+        list($call)= debug_backtrace(0);
         array_push(self::$scopeChange, $call);
     }
 
