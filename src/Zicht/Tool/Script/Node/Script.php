@@ -47,7 +47,7 @@ class Script extends Branch
             $buffer->raw(');')->eol();
         }
 
-        foreach ($annotations as $annotation) {
+        foreach (array_reverse($annotations) as $annotation) {
             $annotation->afterScript($buffer);
         }
     }
