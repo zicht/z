@@ -67,9 +67,9 @@ class TaskCommand extends BaseCommand
     /**
      * @{inheritDoc}
      */
-    public function getSynopsis()
+    public function getSynopsis($short = false)
     {
-        $ret = parent::getSynopsis();
+        $ret = parent::getSynopsis($short);
 
         foreach ($this->flags as $name => $value) {
             $i = 0;
