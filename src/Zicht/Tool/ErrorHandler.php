@@ -68,7 +68,7 @@ class ErrorHandler
                         if ($answer === 'n') {
                             throw new ExecutionAbortedException("Aborted by user request");
                         } elseif ($answer === 'a') {
-                            $continueAlways = true;
+                            $this->continueAlways = true;
                         }
                     }
 
