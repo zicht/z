@@ -169,10 +169,7 @@ EOSTR;
      */
     public function doRun(InputInterface $input, OutputInterface $output)
     {
-        set_error_handler(new ErrorHandler($input, $output), E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED);
-        set_error_handler(function($err, $msg) {
-            throw new \ErrorException($msg);
-        }, E_RECOVERABLE_ERROR);
+        set_error_handler(new ErrorHandler($input, $output), E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED | E_RECOVERABLE_ERROR);
 
         $output->setFormatter(new Output\PrefixFormatter($output->getFormatter()));
 

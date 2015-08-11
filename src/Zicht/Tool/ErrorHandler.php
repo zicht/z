@@ -50,6 +50,7 @@ class ErrorHandler
             error_reporting() & E_USER_DEPRECATED
             || error_reporting() & E_USER_NOTICE
             || error_reporting() & E_USER_WARNING
+            || error_reporting() & E_RECOVERABLE_ERROR
         ) {
             switch ($err) {
                 case E_USER_WARNING:
@@ -82,6 +83,9 @@ class ErrorHandler
                     if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL) {
                         fprintf(STDERR, $this->output->getFormatter()->format("<comment>[DEPRECATED]</comment>   $errstr\n"));
                     }
+                    break;
+                case E_RECOVERABLE_ERROR:
+                    throw new \ErrorException($errstr);
                     break;
             }
         }
