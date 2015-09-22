@@ -55,7 +55,7 @@ class Container
 
         $this->values = array(
             'SHELL'         => '/bin/bash -e',
-            'TIMEOUT'       => 300,
+            'TIMEOUT'       => null,
             'INTERACTIVE'   => false,
         );
         // gather the options for nested z calls.

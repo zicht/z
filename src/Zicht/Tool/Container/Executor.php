@@ -75,12 +75,14 @@ class Executor
      */
     protected function createProcess($interactive = false)
     {
-        $process = new Process($this->container->get('SHELL'));
+        $process = new Process($this->container->get('SHELL'), null, null, null, null, []);
 
         if ($interactive) {
             $process->setTty(true);
         } else {
-            $process->setTimeout($this->container->get('TIMEOUT'));
+            if ($this->container->has('TIMEOUT') && $timeout = $this->container->get('TIMEOUT')) {
+                $process->setTimeout($this->container->get('TIMEOUT'));
+            }
         }
 
         return $process;
