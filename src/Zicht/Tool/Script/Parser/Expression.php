@@ -51,6 +51,9 @@ class Expression extends AbstractParser
         } elseif ($stream->match(Token::KEYWORD, array('true', 'false'))) {
             $ret = new Node\Expr\Literal($stream->current()->value === 'true');
             $stream->next();
+        } elseif ($stream->match(Token::KEYWORD, 'null')) {
+            $ret = new Node\Expr\Literal(null);
+            $stream->next();
         } elseif ($stream->match(Token::IDENTIFIER)) {
             $name = $stream->current()->value;
             $stream->next();
