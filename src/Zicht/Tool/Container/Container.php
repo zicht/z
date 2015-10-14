@@ -316,8 +316,9 @@ class Container
         }
         $this->set($id, function(Container $c) use($callable, $id) {
             Debug::enterScope(join('.', $id));
-            $value = call_user_func($callable, $c);
-            $c->set($id, $value);
+            if (null !== ($value = call_user_func($callable, $c))) {
+                $c->set($id, $value);
+            }
             Debug::exitScope(join('.', $id));
             return $value;
         });
