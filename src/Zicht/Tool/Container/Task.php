@@ -102,6 +102,8 @@ class Task extends Declaration
      */
     public function compileBody(Buffer $buffer)
     {
+        $buffer->writeln('$ret = null;');
+
         foreach ($this->taskDef['flags'] as $flag => $value) {
             $buffer
                 ->write('if (null === $z->resolve(')->asPhp($flag)->raw(', false)) {')->eol()
@@ -169,8 +171,6 @@ class Task extends Declaration
             $buffer->writeln('$ret = ');
             $this->taskDef['yield']->compile($buffer);
             $buffer->write(';');
-        } else {
-            $buffer->writeln('$ret = true;');
         }
         $buffer->writeln('return $ret;');
     }
