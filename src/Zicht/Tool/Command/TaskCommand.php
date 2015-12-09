@@ -6,11 +6,11 @@
 
 namespace Zicht\Tool\Command;
 
-use \Symfony\Component\Console\Command\Command;
-use \Symfony\Component\Console\Input\InputOption;
-use \Symfony\Component\Console\Input\InputInterface;
-use \Symfony\Component\Console\Output;
-use \Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output;
+use Symfony\Component\Console\Input\InputArgument;
 
 /**
  * Command to execute a specific task
@@ -37,16 +37,14 @@ class TaskCommand extends BaseCommand
         $this->opts = $options;
 
         foreach ($arguments as $name => $required) {
+            $mode  = $required ? InputArgument::REQUIRED : InputArgument::OPTIONAL;
+
             if ($multiple = ('[]' === substr($name, -2))) {
                 $name = substr($name, 0, -2);
+                $mode |=  InputArgument::IS_ARRAY;
             }
-            $this->addArgument(
-                $name,
-                $required
-                    ? InputArgument::REQUIRED
-                    : InputArgument::OPTIONAL
-                | ($multiple ? InputArgument::IS_ARRAY : 0)
-            );
+
+            $this->addArgument($name, $mode);
         }
         foreach ($options as $name) {
             $this
