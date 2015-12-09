@@ -48,7 +48,7 @@ class TextDescriptor extends BaseDescriptor
         $this->writeText("\n");
         $this->describeInputDefinition($public, $options);
         if (count($internal->getOptions())) {
-            $this->writeText('<comment>Global options:</comment>' . "\n");
+            $this->writeText("\n\n" . '<comment>Global options:</comment>' . "\n");
             $this->writeText(' Following global options are available for all task commands:');
             $this->writeText(' ' . join(', ', array_map(function($o) { return $o->getName(); }, $internal->getOptions())));
             $this->writeText(' Read the application help for more info' . "\n");
@@ -74,6 +74,7 @@ class TextDescriptor extends BaseDescriptor
      */
     public function splitDefinition(InputDefinition $definition)
     {
+        /** @var InputDefinition[] $ret */
         $ret = array(
             new InputDefinition(),
             new InputDefinition()
@@ -84,7 +85,7 @@ class TextDescriptor extends BaseDescriptor
             $ret[1]->addArgument($arg);
         }
         foreach ($definition->getOptions() as $opt) {
-            $ret[$this->isHiddenOption($opt) ? 1 : 0]->addOptions($opt);
+            $ret[$this->isHiddenOption($opt) ? 1 : 0]->addOption($opt);
         }
         return $ret;
     }
