@@ -1,32 +1,23 @@
 <?php
 
-use Behat\Behat\Context\ClosuredContextInterface,
-    Behat\Behat\Context\TranslatedContextInterface,
-    Behat\Behat\Context\BehatContext,
-    Behat\Behat\Exception\PendingException;
-use Behat\Gherkin\Node\PyStringNode,
-    Behat\Gherkin\Node\TableNode;
-
-//
-// Require 3rd-party libraries here:
-//
-//   require_once 'PHPUnit/Autoload.php';
-//   require_once 'PHPUnit/Framework/Assert/Functions.php';
-//
+use Behat\Behat\Context\Context;
+use Behat\Behat\Context\SnippetAcceptingContext;
+use Behat\Gherkin\Node\PyStringNode;
+use Behat\Gherkin\Node\TableNode;
 
 /**
- * Features context.
+ * Defines application features from the specific context.
  */
-class FeatureContext extends BehatContext
+class FeatureContext implements Context, SnippetAcceptingContext
 {
-
     /**
      * Initializes context.
-     * Every scenario gets it's own context object.
      *
-     * @param   array   $parameters     context parameters (set them up through behat.yml)
+     * Every scenario gets its own context instance.
+     * You can also pass arbitrary arguments to the
+     * context constructor through behat.yml.
      */
-    public function __construct(array $parameters)
+    public function __construct()
     {
         $this->testDir = __DIR__ . '/../tmp';
         $this->zBinary = escapeshellarg(__DIR__ . '/../../../bin/z');
@@ -58,14 +49,14 @@ class FeatureContext extends BehatContext
     /**
      * @Given /^there is (?:a )?file "(?P<file>[^"]+)"$/
      */
-    public function thereIsFile($file, $string)
+    public function thereIsFile($file, PyStringNode $string)
     {
         $dir = dirname($file);
         if ($dir && !is_dir($dir)) {
             mkdir($dir);
         }
 
-        file_put_contents($file, join("\n", $string->getLines()));
+        file_put_contents($file, $string->getRaw());
     }
 
 
