@@ -315,11 +315,11 @@ class Container
             throw new \InvalidArgumentException("Passed declaration is not callable");
         }
         $this->set($id, function(Container $c) use($callable, $id) {
-            Debug::enterScope(join('.', $id));
+            Debug::enterScope(join('.', (array)$id));
             if (null !== ($value = call_user_func($callable, $c))) {
                 $c->set($id, $value);
             }
-            Debug::exitScope(join('.', $id));
+            Debug::exitScope(join('.', (array)$id));
             return $value;
         });
     }
