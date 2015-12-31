@@ -157,7 +157,7 @@ EOSTR;
 
                 new InputOption('--help',           '-h', InputOption::VALUE_NONE, 'Display this help message.'),
                 new InputOption('--verbose',        '-v|vv|vvv', InputOption::VALUE_NONE, 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug'),
-                new InputOption('--no-cache',       '-c', InputOption::VALUE_NONE, 'Force recompilation of csontainer code'),
+                new InputOption('--no-cache',       '-c', InputOption::VALUE_NONE, 'Force recompilation of container code'),
                 new InputOption('--version',        '-V', InputOption::VALUE_NONE, 'Display this application version.'),
             )
         );
