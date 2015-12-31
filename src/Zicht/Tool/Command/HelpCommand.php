@@ -20,7 +20,7 @@ class HelpCommand extends Command
             ->setDescription('Shows help')
             ->setDefinition(
                 array(
-                    new Input\InputArgument('command_name', Input\InputArgument::OPTIONAL, 'The command name', 'help'),
+                    new Input\InputArgument('command_name', Input\InputArgument::OPTIONAL, 'The command name', 'z:help'),
                 )
             )
         ;
@@ -40,7 +40,14 @@ class HelpCommand extends Command
 
     protected function execute(Input\InputInterface $input, OutputInterface $output)
     {
-        $descriptor = new Descriptor\TextDescriptor();
-        $descriptor->describe($output, $this->command);
+        if (null === $this->command) {
+            $this->command = $this->getApplication()->find($input->getArgument('command_name'));
+        }
+
+        $helper = new DescriptorHelper();
+        $helper->describe($output, $this->command, array(
+            'format' => 'txt',
+            'raw_text' => false,
+        ));
     }
 }
