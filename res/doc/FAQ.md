@@ -52,9 +52,9 @@ be used in your configation simply by specifying them in your Zfile. See the doc
 disable or extend these plugins.
 
 # Why is there no default git plugin? #
-We don't use git as our primary VCS. This means that we can't test and utilitize it for real, which means that we
+We don't use git as our primary VCS (yet). This means that we can't test and utilitize it for real, which means that we
 can't be sure about how well it would work. But since the system is plugin-based, you could easily build and contribute
-your git implementation. Drop us a note if you have, because we would love to integrate it.
+your git implementation. Drop us a note if you have, because we would love to integrate it!
 
 # How can I get started the quick way? #
 All you need to get started is a working version of Z installed somewhere on your system, and the bin file in bin/z

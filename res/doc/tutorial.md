@@ -24,7 +24,7 @@ Hello world!
 
 Congratulations, you have just implemented your first task in Z!
 
-For convenience, you can abbreviate an array of commands a string, and even a single string command as the definition
+For convenience, you can abbreviate an array of commands as a string, and even a single string command as the definition
 of the task. So the following three examples are equivalent:
 
 ```
