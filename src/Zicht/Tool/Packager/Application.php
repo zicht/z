@@ -22,6 +22,8 @@ class Application extends BaseApplication
     {
         parent::__construct($name, $version);
 
+        throw new \RuntimeException("Sorry, the packager is currently unsupported");
+
         $this->add(new Cmd\BuildCommand());
     }
 }
