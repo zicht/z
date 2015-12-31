@@ -153,7 +153,7 @@ EOSTR;
     {
         return new InputDefinition(
             array(
-                new InputArgument('command', InputArgument::REQUIRED, 'The command to execute'),
+                new InputArgument('command', InputArgument::OPTIONAL, 'The command to execute', 'z:help'),
 
                 new InputOption('--help',           '-h', InputOption::VALUE_NONE, 'Display this help message.'),
                 new InputOption('--verbose',        '-v|vv|vvv', InputOption::VALUE_NONE, 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug'),
