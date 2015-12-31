@@ -27,5 +27,8 @@
     "bin": ["bin/z", "bin/z.php", "bin/package.php", "bin/1to2.sh"],
     "minimum-stability": "stable",
     "extra": {
+    },
+    "require-dev": {
+        "behat/behat": "^3.0"
     }
 }
