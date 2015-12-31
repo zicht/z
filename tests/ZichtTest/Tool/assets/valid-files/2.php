@@ -6,6 +6,7 @@ return array(
             'help' => null,
             'flags' => array(),
             'opts' => array(),
+            'set' => array(),
             'args' => array(),
             'yield' => null,
             'assert' => null,
