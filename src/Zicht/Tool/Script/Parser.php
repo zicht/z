@@ -42,7 +42,8 @@ class Parser extends AbstractParser
                         case 'for':
                             $key = null;
                             $name = $input->expect(Token::IDENTIFIER)->value;
-                            if ($input->match(Token::OPERATOR, ',')) {
+                            if ($input->match(',')) {
+                                $input->next();
                                 $key = $name;
                                 $name = $input->expect(Token::IDENTIFIER)->value;
                             }
