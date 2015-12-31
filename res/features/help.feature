@@ -21,15 +21,15 @@ I need to see what tasks are available and print their help
     """
 
   Scenario: Seeing the task is available
-    When I run "z list"
+    When I run "z z:list"
     Then I should see text matching "/t\s+Prints abc/"
 
   Scenario: Seeing the task's help
-    When I run "z help t"
+    When I run "z z:help t"
     Then I should see text matching "/Prints abc/"
     And I should see text matching "/Shows you some text/"
 
   Scenario: Seeing the available parameters for the task
-    When I run "z help t"
+    When I run "z z:help t"
     Then I should see text matching "/(?!\[).required_param/"
     And I should see text matching "/\[unrequired_param\]/"
