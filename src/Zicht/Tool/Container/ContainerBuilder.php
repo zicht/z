@@ -10,6 +10,7 @@ namespace Zicht\Tool\Container;
 use \Zicht\Tool\Script\Node\Node;
 use \Zicht\Tool\Script\Node\Task\OptNode;
 use \Zicht\Tool\Script\Compiler;
+use Zicht\Tool\Script\Node\Task\SetNode;
 use \Zicht\Tool\Script\Parser;
 use \Zicht\Tool\Debug;
 use \Zicht\Tool\Script\Parser\Expression as ExpressionParser;
@@ -183,6 +184,19 @@ class ContainerBuilder
 
 
     /**
+     * Creates a node for the 'set' definition of the task.
+     *
+     * @param array $path
+     * @param string $node
+     * @return \Zicht\Tool\Script\Node\Task\OptNode
+     */
+    public function createSetNode($path, $node)
+    {
+        return new SetNode(end($path), $this->exprcompiler->parse($node));
+    }
+
+
+    /**
      * Creates an expression node at the specified path.
      *
      * @param array $path
@@ -229,6 +243,13 @@ class ContainerBuilder
             array($this, 'createOptNode'),
             function($path) {
                 return (count($path) == 4 && $path[0] == 'tasks' && $path[2] == 'opts');
+            },
+            Traverser::BEFORE
+        );
+        $traverser->addVisitor(
+            array($this, 'createSetNode'),
+            function($path) {
+                return (count($path) == 4 && $path[0] == 'tasks' && $path[2] == 'set');
             },
             Traverser::BEFORE
         );

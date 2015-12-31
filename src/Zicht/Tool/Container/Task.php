@@ -119,6 +119,9 @@ class Task extends Declaration
         foreach ($this->taskDef['opts'] as $node) {
             $node->compile($buffer);
         }
+        foreach ($this->taskDef['set'] as $node) {
+            $node->compile($buffer);
+        }
         $buffer->writeln('$skip = false;');
         foreach (array('pre', 'do', 'post') as $scope) {
             if ($scope === 'do') {
