@@ -7,8 +7,8 @@
  */
 namespace Zicht\Tool\Container;
 
-use \Symfony\Component\Console\Output\OutputInterface;
-use \Zicht\Tool\ExceptionInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Zicht\Tool\ExceptionInterface;
 
 /**
  * Verbose exceptions can explain themselves more verbose to an output.

@@ -8,8 +8,8 @@
 
 namespace Zicht\Tool\Container;
 
-use \Zicht\Tool\Script\Buffer;
-use \Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Node\Node;
 
 /**
  * Represents a value declaration in the container context.

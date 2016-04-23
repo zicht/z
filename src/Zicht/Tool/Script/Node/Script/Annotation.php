@@ -8,7 +8,7 @@
 
 namespace Zicht\Tool\Script\Node\Script;
 
-use \Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Buffer;
 
 /**
  * Script annotation node interface

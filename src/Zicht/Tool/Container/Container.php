@@ -6,20 +6,20 @@
 
 namespace Zicht\Tool\Container;
 
-use \Symfony\Component\Console\Command\Command;
-use \Symfony\Component\Console\Output\NullOutput;
-use \Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Output\NullOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
-use \Zicht\Tool\Debug;
-use \Zicht\Tool\PropertyPath\PropertyAccessor;
-use \Zicht\Tool\PluginInterface;
-use \Zicht\Tool\Script\Compiler as ScriptCompiler;
-use \Zicht\Tool\Script;
-use \Zicht\Tool\Util;
-use \Zicht\Tool\Script\Parser\Expression as ExpressionParser;
-use \Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
+use Zicht\Tool\Debug;
+use Zicht\Tool\PropertyPath\PropertyAccessor;
+use Zicht\Tool\PluginInterface;
+use Zicht\Tool\Script\Compiler as ScriptCompiler;
+use Zicht\Tool\Script;
+use Zicht\Tool\Util;
+use Zicht\Tool\Script\Parser\Expression as ExpressionParser;
+use Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
 
-use \UnexpectedValueException;
+use UnexpectedValueException;
 
 /**
  * Service container

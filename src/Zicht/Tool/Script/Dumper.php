@@ -7,7 +7,7 @@
  */
 namespace Zicht\Tool\Script;
 
-use \Zicht\Tool\Util;
+use Zicht\Tool\Util;
 
 /**
  * Dumps a compiled node AST as an array

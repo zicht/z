@@ -8,8 +8,8 @@
 
 namespace Zicht\Tool\Container;
 
-use \Zicht\Tool\Script\Buffer;
-use \Zicht\Tool\PluginInterface;
+use Zicht\Tool\Script\Buffer;
+use Zicht\Tool\PluginInterface;
 
 /**
  * Compiler to compile the entire container into PHP code.

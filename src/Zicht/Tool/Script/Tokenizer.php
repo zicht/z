@@ -8,7 +8,7 @@
 
 namespace Zicht\Tool\Script;
 
-use \Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
+use Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
 
 /**
  * Tokenizer for the script language

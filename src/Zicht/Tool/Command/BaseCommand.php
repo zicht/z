@@ -5,10 +5,10 @@
  */
 namespace Zicht\Tool\Command;
 
-use \Symfony\Component\Console\Command\Command;
-use \Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputOption;
 
-use \Zicht\Tool\Container\Container;
+use Zicht\Tool\Container\Container;
 
 /**
  * Base command containing a reference to the container

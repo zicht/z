@@ -5,10 +5,10 @@
  */
 namespace Zicht\Tool\Configuration;
 
-use \Zicht\Version;
-use \Zicht\Tool\Version as V;
-use \Symfony\Component\Config\Definition\ConfigurationInterface;
-use \Symfony\Component\Config\Definition\Builder\TreeBuilder;
+use Zicht\Version;
+use Zicht\Tool\Version as V;
+use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 /**
  * Configuration implementation validation a Z file configuration

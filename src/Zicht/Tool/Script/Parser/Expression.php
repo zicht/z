@@ -8,11 +8,12 @@
 
 namespace Zicht\Tool\Script\Parser;
 
-use \Zicht\Tool\Script\Token;
-use \Zicht\Tool\Script\Node;
-use \Zicht\Tool\Script\Node\Expr\Op;
-use \Zicht\Tool\Script\AbstractParser;
-use \Zicht\Tool\Script\TokenStream;
+use Zicht\Tool\Script\Token;
+use Zicht\Tool\Script\Node;
+use Zicht\Tool\Script\Node\Expr\Op;
+use Zicht\Tool\Script\AbstractParser;
+use Zicht\Tool\Script\TokenStream;
+
 /**
  * Expression parser
  */

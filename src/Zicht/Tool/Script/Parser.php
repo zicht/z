@@ -8,7 +8,7 @@
 
 namespace Zicht\Tool\Script;
 
-use \Symfony\Component\Process\Exception\InvalidArgumentException;
+use Symfony\Component\Process\Exception\InvalidArgumentException;
 
 /**
  * Parser for root nodes of the script

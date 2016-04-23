@@ -6,8 +6,8 @@
 
 namespace Zicht\Tool\Container;
 
-use \Symfony\Component\Console\Output\OutputInterface;
-use \Exception;
+use Symfony\Component\Console\Output\OutputInterface;
+use Exception;
 
 /**
  * Exception wrapper for more verbosity in the config.

@@ -8,8 +8,8 @@
 
 namespace Zicht\Tool\Container;
 
-use \Zicht\Tool\Script\Buffer;
-use \Zicht\Tool\Script\Node\Branch;
+use Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Node\Branch;
 use Zicht\Tool\Script\Node\Node;
 
 /**

@@ -8,9 +8,9 @@
 
 namespace Zicht\Tool\Script\Node\Task;
 
-use \Zicht\Tool\Script\Buffer;
-use \Zicht\Tool\Script\Node\Branch;
-use \Zicht\Tool\Util;
+use Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Node\Branch;
+use Zicht\Tool\Util;
 
 /**
  * A node for the "args" section of a task

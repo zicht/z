@@ -7,15 +7,15 @@
  */
 namespace Zicht\Tool\Container;
 
-use \Zicht\Tool\Script\Node\Node;
-use \Zicht\Tool\Script\Node\Task\OptNode;
-use \Zicht\Tool\Script\Compiler;
+use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\Task\OptNode;
+use Zicht\Tool\Script\Compiler;
 use Zicht\Tool\Script\Node\Task\SetNode;
-use \Zicht\Tool\Script\Parser;
-use \Zicht\Tool\Debug;
-use \Zicht\Tool\Script\Parser\Expression as ExpressionParser;
-use \Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
-use \Zicht\Tool\Script\Node\Task\ArgNode;
+use Zicht\Tool\Script\Parser;
+use Zicht\Tool\Debug;
+use Zicht\Tool\Script\Parser\Expression as ExpressionParser;
+use Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
+use Zicht\Tool\Script\Node\Task\ArgNode;
 
 /**
  * The container builder converts a config tree into a compilable ContainerNode

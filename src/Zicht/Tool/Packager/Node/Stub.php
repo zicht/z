@@ -7,8 +7,8 @@
  */
 namespace Zicht\Tool\Packager\Node;
 
-use \Zicht\Tool\Script\Buffer;
-use \Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Node\Node;
 
 /**
  * Phar stub

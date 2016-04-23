@@ -7,10 +7,10 @@
  */
 namespace Zicht\Tool\Configuration;
 
-use \Symfony\Component\Config\FileLocatorInterface;
-use \Symfony\Component\Config\Definition\Processor;
-use \Zicht\Tool\Debug;
-use \Zicht\Version\Version;
+use Symfony\Component\Config\FileLocatorInterface;
+use Symfony\Component\Config\Definition\Processor;
+use Zicht\Tool\Debug;
+use Zicht\Version\Version;
 
 
 /**

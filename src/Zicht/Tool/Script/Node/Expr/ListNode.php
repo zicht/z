@@ -5,8 +5,8 @@
  */
 namespace Zicht\Tool\Script\Node\Expr;
 
-use \Zicht\Tool\Script\Buffer;
-use \Zicht\Tool\Script\Node\Branch;
+use Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Node\Branch;
 
 
 /**

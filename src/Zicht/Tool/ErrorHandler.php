@@ -6,10 +6,11 @@
 
 namespace Zicht\Tool;
 
-use \Symfony\Component\Console\Helper\DialogHelper;
-use \Zicht\Tool\Container\ExecutionAbortedException;
-use \Symfony\Component\Console\Output\OutputInterface;
-use \Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Helper\DialogHelper;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
+
+use Zicht\Tool\Container\ExecutionAbortedException;
 
 /**
  * Wrapper class for handling errors

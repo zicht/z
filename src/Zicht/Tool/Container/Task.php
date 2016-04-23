@@ -6,9 +6,9 @@
 
 namespace Zicht\Tool\Container;
 
-use \Zicht\Tool\Script\Buffer;
-use \Zicht\Tool\Script\Node\Node;
-use \Zicht\Tool\Util;
+use Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Util;
 
 /**
  * Compilable node that represents an executable task

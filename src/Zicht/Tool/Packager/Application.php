@@ -8,7 +8,7 @@
 
 namespace Zicht\Tool\Packager;
 
-use \Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Component\Console\Application as BaseApplication;
 
 /**
  * Z Packager application

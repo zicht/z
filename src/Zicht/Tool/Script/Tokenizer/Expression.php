@@ -8,8 +8,8 @@
 
 namespace Zicht\Tool\Script\Tokenizer;
 
-use \Zicht\Tool\Script\Token;
-use \Zicht\Tool\Script\TokenizerInterface;
+use Zicht\Tool\Script\Token;
+use Zicht\Tool\Script\TokenizerInterface;
 
 /**
  * Tokenizer for expressions

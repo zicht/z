@@ -6,8 +6,8 @@
 
 namespace Zicht\Tool\Script;
 
-use \Zicht\Tool\Util;
-use \Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Util;
+use Zicht\Tool\Script\Node\Node;
 
 /**
  * Wraps the tokenization, parsing and compiling into one convenience class.

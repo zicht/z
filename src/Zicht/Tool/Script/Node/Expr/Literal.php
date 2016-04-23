@@ -6,8 +6,8 @@
 
 namespace Zicht\Tool\Script\Node\Expr;
 
-use \Zicht\Tool\Script\Node\Node;
-use \Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Buffer;
 
 /**
  * Base class for literal nodes.

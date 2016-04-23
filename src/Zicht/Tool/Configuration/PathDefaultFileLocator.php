@@ -7,7 +7,7 @@
  */
 namespace Zicht\Tool\Configuration;
 
-use \Symfony\Component\Config\FileLocator;
+use Symfony\Component\Config\FileLocator;
 
 /**
  * A FileLocator implementation that uses an environment PATH variable, and defaults to other paths if that

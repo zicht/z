@@ -5,9 +5,9 @@
  */
 namespace Zicht\Tool\Command;
 
-use \Symfony\Component\Console\Input;
-use \Symfony\Component\Console\Output\OutputInterface;
-use \Symfony\Component\Yaml\Yaml;
+use Symfony\Component\Console\Input;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Command to evaluate an expression

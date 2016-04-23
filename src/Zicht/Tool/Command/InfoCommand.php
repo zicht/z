@@ -5,9 +5,9 @@
  */
 namespace Zicht\Tool\Command;
 
-use \Symfony\Component\Console\Input;
-use \Symfony\Component\Console\Output\OutputInterface;
-use \Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input\InputInterface;
 
 /**
  * Command to show some info about the Z container

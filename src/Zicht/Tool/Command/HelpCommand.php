@@ -2,9 +2,9 @@
 
 namespace Zicht\Tool\Command;
 
-use \Symfony\Component\Console\Helper\DescriptorHelper;
-use \Symfony\Component\Console\Output\OutputInterface;
-use \Symfony\Component\Console\Input;
+use Symfony\Component\Console\Helper\DescriptorHelper;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Input;
 use Symfony\Component\Console\Command\Command;
 
 class HelpCommand extends Command

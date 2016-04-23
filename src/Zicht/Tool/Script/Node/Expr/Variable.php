@@ -8,9 +8,9 @@
 
 namespace Zicht\Tool\Script\Node\Expr;
 
-use \Zicht\Tool\Script\Buffer;
-use \Zicht\Tool\Script\Node\Node;
-use \Zicht\Tool\Util;
+use Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Util;
 
 /**
  * A variable node refers a variable in the container context.

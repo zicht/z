@@ -8,10 +8,10 @@
 
 namespace Zicht\Tool\Packager\Node;
 
-use \Symfony\Component\Config\FileLocator;
-use \Zicht\Tool\Configuration;
-use \Zicht\Tool\Container\ContainerCompiler;
-use \Zicht\Tool\Script\Buffer;
+use Symfony\Component\Config\FileLocator;
+use Zicht\Tool\Configuration;
+use Zicht\Tool\Container\ContainerCompiler;
+use Zicht\Tool\Script\Buffer;
 
 /**
  * PHAR Stub implementation for a static build

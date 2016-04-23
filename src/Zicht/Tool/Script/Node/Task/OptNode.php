@@ -8,8 +8,8 @@
 
 namespace Zicht\Tool\Script\Node\Task;
 
-use \Zicht\Tool\Util;
-use \Zicht\Tool\Script\Node\Expr\Literal;
+use Zicht\Tool\Util;
+use Zicht\Tool\Script\Node\Expr\Literal;
 
 /**
  * A node for the "args" section of a task

@@ -6,13 +6,13 @@
 
 namespace Zicht\Tool\Configuration;
 
-use \Symfony\Component\Config\Loader\FileLoader as BaseFileLoader;
-use \Symfony\Component\Config\FileLocatorInterface;
-use \Zicht\Version\Version;
-use \Zicht\Tool;
-use \Zicht\Tool\Debug;
-use \Zicht\Version\Constraint;
-use \Symfony\Component\Yaml;
+use Symfony\Component\Config\Loader\FileLoader as BaseFileLoader;
+use Symfony\Component\Config\FileLocatorInterface;
+use Zicht\Version\Version;
+use Zicht\Tool;
+use Zicht\Tool\Debug;
+use Zicht\Version\Constraint;
+use Symfony\Component\Yaml;
 
 /**
  * The Z file loader

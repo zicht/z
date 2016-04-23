@@ -6,7 +6,7 @@
 
 namespace Zicht\Tool\Script;
 
-use \Zicht\Tool\Util;
+use Zicht\Tool\Util;
 
 /**
  * Buffer to write compiled code to

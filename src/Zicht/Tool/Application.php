@@ -5,22 +5,22 @@
  */
 namespace Zicht\Tool;
 
-use \Symfony\Component\Console\Application as BaseApplication;
-use \Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Application as BaseApplication;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
-use \Symfony\Component\Console\Input\InputArgument;
-use \Symfony\Component\Console\Input\InputOption;
-use \Symfony\Component\Console\Input\InputInterface;
-use \Symfony\Component\Console\Input\InputDefinition;
-use \Symfony\Component\Console\Output\OutputInterface;
-use \Symfony\Component\Yaml\Yaml;
-use \Zicht\Version\Version;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputDefinition;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Yaml\Yaml;
+use Zicht\Version\Version;
 
-use \Zicht\Tool\Command as Cmd;
-use \Zicht\Tool\Configuration\ConfigurationLoader;
-use \Zicht\Tool\Container\Container;
-use \Zicht\Tool\Container\ContainerCompiler;
-use \Zicht\Tool\Container\VerboseException;
+use Zicht\Tool\Command as Cmd;
+use Zicht\Tool\Configuration\ConfigurationLoader;
+use Zicht\Tool\Container\Container;
+use Zicht\Tool\Container\ContainerCompiler;
+use Zicht\Tool\Container\VerboseException;
 
 /**
  * Z CLI Application

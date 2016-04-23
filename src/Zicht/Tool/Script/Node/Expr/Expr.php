@@ -8,9 +8,9 @@
 
 namespace Zicht\Tool\Script\Node\Expr;
 
-use \Zicht\Tool\Script\Buffer;
-use \Zicht\Tool\Script\Node\Branch;
-use \Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Node\Branch;
+use Zicht\Tool\Script\Node\Node;
 
 /**
  * Represents an expression node in a script.

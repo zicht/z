@@ -8,9 +8,9 @@
 
 namespace Zicht\Tool\Script\Node\Expr\Op;
 
-use \Zicht\Tool\Script\Node\Branch;
-use \Zicht\Tool\Script\Node\Node;
-use \Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Node\Branch;
+use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Buffer;
 
 /**
  * Represents a unary expression

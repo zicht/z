@@ -8,8 +8,8 @@
 
 namespace Zicht\Tool\Script\Node\Script;
 
-use \Zicht\Tool\Script\Buffer;
-use \Zicht\Tool\Script\Node\Branch;
+use Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Node\Branch;
 
 /**
  * Class With

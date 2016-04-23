@@ -8,7 +8,7 @@
 
 namespace Zicht\Tool\Script\Node;
 
-use \Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Buffer;
 
 /**
  * Common interface for syntax tree nodes.
