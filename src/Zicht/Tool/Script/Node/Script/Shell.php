@@ -13,12 +13,12 @@ use Zicht\Tool\Script\Node\Branch;
 use Zicht\Tool\Script\Node\Node;
 
 /**
- * Represents a conditional for a script node.
+ * Wraps the task line in a different shell
  */
-class Decorator extends Branch implements Annotation
+class Shell extends Branch implements Annotation
 {
     /**
-     * Construct the decorator with the specified expression as the first and only child node.
+     * Construct the decorator with the specified expression as the SHELL to use.
      *
      * @param \Zicht\Tool\Script\Node\Node $expr
      */

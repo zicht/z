@@ -37,7 +37,7 @@ class Parser extends AbstractParser
 
                     switch ($type) {
                         case 'sh':
-                            $ret->append(new Node\Script\Decorator($exprParser->parse($input)));
+                            $ret->append(new Node\Script\Shell($exprParser->parse($input)));
                             break;
                         case 'for':
                             $key = null;
