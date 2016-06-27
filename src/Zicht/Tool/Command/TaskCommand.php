@@ -48,10 +48,11 @@ class TaskCommand extends BaseCommand
         }
         foreach ($options as $name) {
             $this
-                ->addOption($name, '', InputOption::VALUE_REQUIRED, '')
+                ->addOption($this->varToName($name), '', InputOption::VALUE_REQUIRED, '')
             ;
         }
         foreach ($flags as $name => $value) {
+            $name = $this->varToName($name);
             $this
                 ->addOption($name, '', InputOption::VALUE_NONE, 'Toggle ' . $name . ' flag on')
                 ->addOption('no-' . $name, '', InputOption::VALUE_NONE, 'Toggle ' . $name . ' flag off')
@@ -59,6 +60,18 @@ class TaskCommand extends BaseCommand
         }
         $this->setHelp($help);
         $this->setDescription(preg_replace('/^([^\n]*).*/s', '$1', $help));
+    }
+
+
+    protected function varToName($name)
+    {
+        return str_replace('_', '-', $name);
+    }
+
+
+    protected function nameToVar($name)
+    {
+        return str_replace('-', '_', $name);
     }
 
 
@@ -120,23 +133,27 @@ class TaskCommand extends BaseCommand
                 continue;
             }
             if ($input->getArgument($arg->getName())) {
-                $this->getContainer()->set(explode('.', $arg->getName()), $input->getArgument($arg->getName()));
+                $this->getContainer()->set(explode('.', $this->nametoVar($arg->getName())), $input->getArgument($arg->getName()));
             }
         }
         foreach ($this->opts as $opt) {
-            if ($input->getOption($opt)) {
-                $this->getContainer()->set(explode('.', $opt), $input->getOption($opt));
+            $optName = $this->varToName($opt);
+            if ($input->getOption($optName)) {
+                $this->getContainer()->set(explode('.', $optName), $input->getOption($optName));
             }
         }
         foreach ($this->flags as $name => $value) {
-            $this->getContainer()->set(explode('.', $name), $value);
-            if ($input->getOption('no-' . $name) && $input->getOption($name)) {
-                throw new \InvalidArgumentException("Cannot pass both --no-{$name} and --{$name} options, they are mutually exclusive");
+            $varName = explode('.', $name);
+            $optName = $this->varToName($name);
+            $this->getContainer()->set($varName, $value);
+
+            if ($input->getOption('no-' . $optName) && $input->getOption($optName)) {
+                throw new \InvalidArgumentException("Conflicting options --no-{$optName} and --{$optName} supplied. That confuses me.");
             }
-            if ($input->getOption('no-' . $name)) {
-                $this->getContainer()->set(explode('.', $name), false);
-            } elseif ($input->getOption($name)) {
-                $this->getContainer()->set(explode('.', $name), true);
+            if ($input->getOption('no-' . $optName)) {
+                $this->getContainer()->set($varName, false);
+            } elseif ($input->getOption($optName)) {
+                $this->getContainer()->set($varName, true);
             }
         }
 
