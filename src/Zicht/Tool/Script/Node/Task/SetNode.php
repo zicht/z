@@ -43,7 +43,8 @@ class SetNode extends Branch
         $phpName = Util::toPhp($name);
 
         $buffer->write('$z->set(')->raw($phpName)->raw(', ');
+        $buffer->raw('$z->value(');
         $this->nodes[0]->compile($buffer);
-        $buffer->raw(');')->eol();
+        $buffer->raw('));')->eol();
     }
 }

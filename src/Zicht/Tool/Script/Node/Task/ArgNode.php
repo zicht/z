@@ -67,7 +67,7 @@ class ArgNode extends Branch
             }
         }
         if ($this->nodes[0]) {
-            $buffer->write('$z->set(')->raw($phpName)->raw(', ');
+            $buffer->write('$z->set(')->raw($phpName)->raw(', $z->value(');
             if ($this->multiple) {
                 $buffer->raw('(array)(');
             }
@@ -75,8 +75,9 @@ class ArgNode extends Branch
             if ($this->multiple) {
                 $buffer->raw(')');
             }
-            $buffer->raw(');')->eol();
+            $buffer->raw('));')->eol();
         }
+
         if ($this->conditional) {
             $buffer->indent(-1)->writeln('}');
         }
