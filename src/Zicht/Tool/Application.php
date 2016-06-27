@@ -115,6 +115,7 @@ EOSTR;
     /**
      * Returns the container instance, and initializes it if not yet available.
      *
+     * @param bool $forceRecompile
      * @return Container
      */
     public function getContainer($forceRecompile = false)
