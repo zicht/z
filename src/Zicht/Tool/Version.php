@@ -16,5 +16,5 @@ final class Version
     /**
      * Core version, used to check version constraints for z.yml files in the require:
      */
-    const CORE_VERSION = '2.0.0';
+    const CORE_VERSION = '2.0.2';
 }
