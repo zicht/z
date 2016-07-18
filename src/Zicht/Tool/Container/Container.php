@@ -83,7 +83,12 @@ class Container
         $this->fn('mtime', 'filemtime');
         $this->fn('atime', 'fileatime');
         $this->fn('ctime', 'filectime');
-        $this->fn('escape', 'escapeshellarg');
+        $this->fn('escape', function($value) {
+            if (is_array($value)) {
+                return array_map('escapeshellarg', $value);
+            }
+            return escapeshellarg($value);
+        });
         $this->fn('join', 'implode');
         $this->fn('str_replace', 'str_replace');
         $this->fn('range', function() {
