@@ -1,6 +1,6 @@
 # Documentation #
 
-Read the docs in [res/doc/](res/doc/)
+Read the docs in [docs/](docs/)
 
 # Quick start #
 You can start Z by making the file in `bin/z` available on your PATH, for example by symlinking it in your /usr/local/bin.
