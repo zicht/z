@@ -1,3 +1,6 @@
+2.0.4
+* Allow for globbing in path environment variables, e.g. ZPLUGINPATH="./vendor/zicht/z-plugin-*"
+
 2.0-dev
 -----
 * Removed deprecated / 1.0 backward compatibility features

@@ -16,6 +16,18 @@ use Symfony\Component\Config\FileLocator;
 class PathDefaultFileLocator extends FileLocator
 {
     /**
+     * Expand all path elements with globbing.
+     *
+     * @param string $paths
+     * @return array
+     */
+    private static function expand($paths)
+    {
+        return array_filter(array_reduce(array_map('glob', $paths), 'array_merge', []));
+    }
+
+
+    /**
      * Construct the locator based on the passed environment variable.
      *
      * @param array|string $envName
@@ -23,10 +35,6 @@ class PathDefaultFileLocator extends FileLocator
      */
     public function __construct($envName, $defaultPaths = array())
     {
-        parent::__construct(
-            getenv($envName)
-                ? explode(PATH_SEPARATOR, getenv($envName))
-                : $defaultPaths
-        );
+        parent::__construct(self::expand(getenv($envName) ? explode(PATH_SEPARATOR, getenv($envName)) : $defaultPaths));
     }
 }
