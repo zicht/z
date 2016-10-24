@@ -6,7 +6,6 @@
 
 namespace Zicht\Tool\Command;
 
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output;
@@ -17,6 +16,11 @@ use Symfony\Component\Console\Input\InputArgument;
  */
 class TaskCommand extends BaseCommand
 {
+    protected $taskName;
+    protected $flags;
+    protected $opts;
+    protected $taskReference;
+
     /**
      * Construct the front end command for the specified task name.
      *
@@ -36,6 +40,11 @@ class TaskCommand extends BaseCommand
         $this->flags = $flags;
         $this->opts = $options;
 
+
+        // first line of help is the description
+        $this->setDescription(preg_replace('/^([^\n]*).*/s', '$1', $help));
+        $this->setHelp(trim($help));
+
         foreach ($arguments as $name => $required) {
             $mode  = $required ? InputArgument::REQUIRED : InputArgument::OPTIONAL;
 
@@ -48,18 +57,44 @@ class TaskCommand extends BaseCommand
         }
         foreach ($options as $name) {
             $this
-                ->addOption($this->varToName($name), '', InputOption::VALUE_REQUIRED, '')
+                ->addOption($this->varToName($name), '', InputOption::VALUE_REQUIRED)
             ;
         }
         foreach ($flags as $name => $value) {
             $name = $this->varToName($name);
             $this
-                ->addOption($name, '', InputOption::VALUE_NONE, 'Toggle ' . $name . ' flag on')
-                ->addOption('no-' . $name, '', InputOption::VALUE_NONE, 'Toggle ' . $name . ' flag off')
+                ->addOption($name, '', InputOption::VALUE_NONE)
+                ->addOption('no-' . $name, '', InputOption::VALUE_NONE)
             ;
         }
-        $this->setHelp($help);
-        $this->setDescription(preg_replace('/^([^\n]*).*/s', '$1', $help));
+    }
+
+    public function addOption($name, $shortcut = null, $mode = null, $help = null)
+    {
+        $helpTag = ($mode === InputOption::VALUE_NONE) ? "--$name" : "--$name=" . strtoupper($name);
+        return parent::addOption($name, $shortcut, $mode, $help ?: $this->parseHelp($helpTag));
+    }
+
+    public function addArgument($name, $mode = null, $help = null)
+    {
+        return parent::addArgument($name, $mode, $help ?: $this->parseHelp($name));
+    }
+
+
+    private function parseHelp($name)
+    {
+        $ret = '';
+        $this->setHelp(
+            preg_replace_callback(
+                sprintf('/\s*%s: (.*)(\n|$)/', $name),
+                function ($m) use (&$ret) {
+                    $ret = trim($m[1]);
+                    return '';
+                },
+                $this->getHelp()
+            )
+        );
+        return $ret;
     }
 
 
@@ -116,9 +151,6 @@ class TaskCommand extends BaseCommand
     }
 
 
-
-
-
     /**
      * Executes the specified task
      *
@@ -133,7 +165,7 @@ class TaskCommand extends BaseCommand
                 continue;
             }
             if ($input->getArgument($arg->getName())) {
-                $this->getContainer()->set(explode('.', $this->nametoVar($arg->getName())), $input->getArgument($arg->getName()));
+                $this->getContainer()->set(explode('.', $this->nameToVar($arg->getName())), $input->getArgument($arg->getName()));
             }
         }
         foreach ($this->opts as $opt) {
@@ -157,7 +189,7 @@ class TaskCommand extends BaseCommand
             }
         }
 
-        $callable = $this->getContainer()->get($this->getTaskReference(), true);
+        $callable = $this->getContainer()->get($this->getTaskReference());
         call_user_func($callable, $this->getContainer());
     }
 

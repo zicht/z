@@ -6,8 +6,6 @@
 namespace Zicht\Tool\Command;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputOption;
-
 use Zicht\Tool\Container\Container;
 
 /**
@@ -15,6 +13,9 @@ use Zicht\Tool\Container\Container;
  */
 class BaseCommand extends Command
 {
+    /**
+     * @return Container
+     */
     protected function getContainer()
     {
         return $this->getApplication()->getContainer();
