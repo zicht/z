@@ -54,7 +54,9 @@ class Container
         $this->output = $output ?: new NullOutput();
 
         $this->values = array(
-            'SHELL'         => '/bin/bash -e',
+            'SHELL'         => function($z) {
+                return '/bin/bash -e' . ($z->has('DEBUG') && $z->get('DEBUG') ? 'x' : '');
+            },
             'TIMEOUT'       => null,
             'INTERACTIVE'   => false,
         );

@@ -75,7 +75,7 @@ class Executor
      */
     protected function createProcess($interactive = false)
     {
-        $process = new Process($this->container->get('SHELL'), null, null, null, null, []);
+        $process = new Process($this->container->resolve('SHELL'), null, null, null, null, []);
 
         if ($interactive) {
             $process->setTty(true);

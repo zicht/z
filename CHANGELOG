@@ -1,3 +1,6 @@
+2.0.6
+* Bash now outputs all commands in `--debug` mode
+
 2.0.5
 * Task help can now also interprets help for arguments, options and flags. 
 
