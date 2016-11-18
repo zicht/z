@@ -4,6 +4,7 @@ namespace Zicht\Tool;
 
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\ExpressionLanguage\SyntaxError;
+use Zicht\Tool\Script\Node\Node;
 
 class Parser
 {
@@ -30,25 +31,25 @@ class Parser
 
             if (preg_match('/(?:-|(^\w+(?:\.\w+)*(?:\[\])?):)(\s*)(.*)/', $lineValue, $nodeMatch)) {
                 $node = $this->newNode($nodeMatch[1], $lineIndent, strlen($nodeMatch[2]), $nodeMatch[3]);
-                $node['offset']= $offset + $lineIndent;
+                $node->attributes['offset']= $offset + $lineIndent;
 
-                while ($previousNode['indent'] >= $node['indent']) {
+                while ($previousNode->attributes['indent'] >= $node->attributes['indent']) {
                     $parent = array_pop($stack);
-                    $parent['children'][]= $previousNode;
+                    $parent->append($previousNode);
                     $previousNode = $parent;
                 }
 
                 array_push($stack, $previousNode);
                 $previousNode = $node;
             } elseif (strlen(trim($lineValue))) {
-                if ($lineIndent < $previousNode['data_indent']) {
-                    $this->err("Unexpected decreasing indent. Expected indent is {$previousNode['data_indent']}, found {$lineIndent}", $offset + $lineIndent);
+                if ($lineIndent < $previousNode->attributes['data_indent']) {
+                    $this->err("Unexpected decreasing indent. Expected indent is {$previousNode->attributes['data_indent']}, found {$lineIndent}", $offset + $lineIndent);
                 } else {
-                    if ($previousNode['data']) {
-                        $previousNode['data'] .= "\n" . substr($line, $previousNode['data_indent']);
+                    if ($previousNode->attributes['data']) {
+                        $previousNode->attributes['data'] .= "\n" . substr($line, $previousNode->attributes['data_indent']);
                     } else {
-                        $previousNode['data_indent']= $lineIndent;
-                        $previousNode['data']= $lineValue;
+                        $previousNode->attributes['data_indent']= $lineIndent;
+                        $previousNode->attributes['data']= $lineValue;
                     }
                 }
             }
@@ -61,7 +62,7 @@ class Parser
         while(count($stack) >= 2) {
             $child = array_pop($stack);
             $parent = array_pop($stack);
-            $parent['children'][]= $child;
+            $parent->append($child);
             array_push($stack, $parent);
         }
 
@@ -73,11 +74,11 @@ class Parser
 
     private function fold($node, $path = [])
     {
-        if ($node['data']) {
+        if ($node->attributes['data']) {
             // array or object literals are handled by the expression parser.
-            if (preg_match('/^(\{|\[).*(\}|\])$/s', trim($node['data']))) {
+            if (preg_match('/^(\{|\[).*(\}|\])$/s', trim($node->attributes['data']))) {
                 try {
-                    $node['data']= $this->expr->evaluate($node['data']);
+                    $node->attributes['data']= $this->expr->evaluate($node->attributes['data']);
                 } catch (SyntaxError $e) {
                     if (!preg_match('/position (\d+)/', $e->getMessage(), $m)) {
                         throw $e;
@@ -87,20 +88,22 @@ class Parser
                         sprintf(
                             "\nExpression parse error:\n%s\n%s",
                             $e->getMessage(),
-                            $this->formatPosition($m[1], $node['data'])
+                            $this->formatPosition($m[1], $node->attributes['data'])
                         ),
-                        $node['offset']
+                        $node->attributes['offset']
                     );
                 }
             }
-            return $node['data'];
-        } elseif ($node['children']) {
+            return $node->attributes['data'];
+
+
+        } elseif ($node->nodes) {
             $ret = [];
-            foreach ($node['children'] as $child) {
-                if ($child['name'] === '') {
+            foreach ($node->nodes as $child) {
+                if ($child->attributes['name'] === '') {
                     $ret[]= $this->fold($child);
                 } else {
-                    $ret[$child['name']]= $this->fold($child);
+                    $ret[$child->attributes['name']]= $this->fold($child);
                 }
             }
             return $ret;
@@ -139,9 +142,9 @@ class Parser
 
     private function newNode($name, $indent, $dataIndent = 0, $data = null)
     {
-        $data = ltrim($data);
-
-        $ret = [
+        $ret = new Node();
+        
+        $ret->attributes = [
             'name' => $name,
             'indent' => $indent,
             'data_indent' =>
@@ -153,7 +156,6 @@ class Parser
                     )
                     : null,
             'data' => $data === '|' ? '' : $data,
-            'children' => []
         ];
         return $ret;
     }

@@ -18,7 +18,8 @@ class Node implements NodeInterface
      *
      * @var NodeInterface[]
      */
-    public $nodes;
+    public $nodes = [];
+    public $attributes = [];
 
     /**
      * Constructor.
