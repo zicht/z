@@ -9,12 +9,12 @@
 namespace Zicht\Tool\Container;
 
 use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 
 /**
  * Represents a value declaration in the container context.
  */
-class Definition implements Node
+class Definition implements NodeInterface
 {
     /**
      * Constructor.

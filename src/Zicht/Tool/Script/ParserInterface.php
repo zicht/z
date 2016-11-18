@@ -15,7 +15,7 @@ interface ParserInterface
      * Parses the token stream and returns a node implementation
      *
      * @param TokenStream $stream
-     * @return Node\Node
+     * @return Node\NodeInterface
      */
     public function parse(TokenStream $stream);
 }

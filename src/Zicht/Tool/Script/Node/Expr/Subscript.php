@@ -8,22 +8,22 @@
 
 namespace Zicht\Tool\Script\Node\Expr;
 
-use Zicht\Tool\Script\Node\Branch;
 use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 use Zicht\Tool\Script\Buffer;
 
 /**
  * A subscript node is a node that refers another element inside the node, either though dot notation (a,b) or bracket
  * notation (a["b"]).
  */
-class Subscript extends Branch
+class Subscript extends Node
 {
     /**
      * Constructor.
      *
-     * @param Node $n
+     * @param NodeInterface $n
      */
-    public function __construct(Node $n)
+    public function __construct(NodeInterface $n)
     {
         parent::__construct();
         $this->append($n);

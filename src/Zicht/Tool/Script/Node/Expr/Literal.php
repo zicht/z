@@ -6,13 +6,13 @@
 
 namespace Zicht\Tool\Script\Node\Expr;
 
-use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 use Zicht\Tool\Script\Buffer;
 
 /**
  * Base class for literal nodes.
  */
-class Literal implements Node
+class Literal implements NodeInterface
 {
     /**
      * Constructor.

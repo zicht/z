@@ -8,12 +8,12 @@
 namespace Zicht\Tool\Packager\Node;
 
 use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 
 /**
  * Phar stub
  */
-abstract class Stub implements Node
+abstract class Stub implements NodeInterface
 {
     protected $phar;
     protected $appName;

@@ -8,18 +8,18 @@
 namespace Zicht\Tool\Script\Node\Expr;
 
 use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Branch;
 use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 
 /**
  * Represents a function call node
  */
-class Call extends Branch
+class Call extends Node
 {
     /**
      * Constructor
      *
-     * @param Node $function
+     * @param NodeInterface $function
      */
     public function __construct($function)
     {

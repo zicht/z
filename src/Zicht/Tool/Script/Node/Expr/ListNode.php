@@ -6,13 +6,13 @@
 namespace Zicht\Tool\Script\Node\Expr;
 
 use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Branch;
+use Zicht\Tool\Script\Node\Node;
 
 
 /**
  * Represents a list (0-indexed numeric key array).
  */
-class ListNode extends Branch
+class ListNode extends Node
 {
     /**
      * @{inheritDoc}

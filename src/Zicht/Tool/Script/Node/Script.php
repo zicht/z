@@ -13,7 +13,7 @@ use Zicht\Tool\Script\Buffer;
 /**
  * A Script node is used as the body for each of the nodes executed in a pre, do, or post section in a Task
  */
-class Script extends Branch
+class Script extends Node
 {
     /**
      * Compiles the node.

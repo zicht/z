@@ -8,22 +8,22 @@
 
 namespace Zicht\Tool\Script\Node\Expr\Op;
 
-use Zicht\Tool\Script\Node\Branch;
 use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 use Zicht\Tool\Script\Buffer;
 
 /**
  * Represents a ternary expression
  */
-class Ternary extends Branch
+class Ternary extends Node
 {
     /**
      * Constructor.
      *
      * @param string $operator
-     * @param Node $condition
-     * @param Node $then
-     * @param Node $else
+     * @param NodeInterface $condition
+     * @param NodeInterface $then
+     * @param NodeInterface $else
      */
     public function __construct($operator, $condition, $then, $else)
     {

@@ -20,7 +20,7 @@ class OptNode extends ArgNode
      * Constructor.
      *
      * @param string $name
-     * @param \Zicht\Tool\Script\Node\Node $expr
+     * @param \Zicht\Tool\Script\Node\NodeInterface $expr
      */
     public function __construct($name, $expr)
     {

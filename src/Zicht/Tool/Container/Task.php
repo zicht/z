@@ -7,7 +7,7 @@
 namespace Zicht\Tool\Container;
 
 use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 use Zicht\Tool\Util;
 
 /**

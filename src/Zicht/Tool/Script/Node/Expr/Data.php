@@ -9,13 +9,13 @@
 namespace Zicht\Tool\Script\Node\Expr;
 
 use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 
 
 /**
  * Represents a raw data node inside a script
  */
-class Data implements Node
+class Data implements NodeInterface
 {
     /**
      * Construct the node.

@@ -5,15 +5,19 @@
     "autoload": {
         "psr-0": { "": "src/" }
     },
+    "repositories": [
+	{"type": "vcs", "url": "git@github.com:zicht/util"},
+	{"type": "vcs", "url": "git@github.com:zicht/version"}
+    ],
     "require": {
         "php": ">=5.3.3",
-        "symfony/yaml": "2.*@stable",
         "symfony/process": "2.*@stable",
         "symfony/config": "2.*@stable",
         "symfony/console": "2.*@stable",
         "symfony/finder": "2.*@stable",
         "zicht/version": "1.*@stable",
-        "zicht/util": "1.*@stable"
+        "zicht/util": "1.*@stable",
+        "symfony/expression-language": "^3.1"
     },
     "suggest": {
         "zicht/z-plugins": "A set of default plugins for Z"
@@ -29,6 +33,7 @@
     "extra": {
     },
     "require-dev": {
-        "behat/behat": "^3.0"
+        "behat/behat": "^3.0",
+        "phpunit/phpunit": "^5.6"
     }
 }

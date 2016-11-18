@@ -9,20 +9,20 @@
 namespace Zicht\Tool\Script\Node\Expr;
 
 use Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Node\NodeInterface;
 use Zicht\Tool\Script\Node\Node;
-use Zicht\Tool\Script\Node\Branch;
 
 /**
  * A parenthesized expression, i.e. enclosed in parentheses.
  */
-class Parens extends Branch
+class Parens extends Node
 {
     /**
      * Constructor.
      *
-     * @param Node $node
+     * @param NodeInterface $node
      */
-    public function __construct(Node $node)
+    public function __construct(NodeInterface $node)
     {
         parent::__construct();
         $this->nodes[0] = $node;

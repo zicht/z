@@ -75,6 +75,7 @@ class FileLoader extends BaseFileLoader
     public function load($resource, $type = null)
     {
         if (!is_file($resource)) {
+            $resource = null;
             $fileContents = $resource;
         } else {
             $this->sourceFiles[]= $resource;
@@ -95,8 +96,8 @@ class FileLoader extends BaseFileLoader
         }
         Debug::exitScope('annotations');
 
-        $parser = new Parser();
-        $config = $parser->parse($fileContents);
+        $parser = new Parser($resource, $fileContents);
+        $config = $parser->parse();
 
         if (isset($config['plugins'])) {
             Debug::enterScope('plugins');

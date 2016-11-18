@@ -9,19 +9,19 @@
 namespace Zicht\Tool\Script\Node\Task;
 
 use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Branch;
+use Zicht\Tool\Script\Node\Node;
 use Zicht\Tool\Util;
 
 /**
  * A node for the "args" section of a task
  */
-class SetNode extends Branch
+class SetNode extends Node
 {
     /**
      * Constructor.
      *
      * @param string $name
-     * @param \Zicht\Tool\Script\Node\Node $expr
+     * @param \Zicht\Tool\Script\Node\NodeInterface $expr
      */
     public function __construct($name, $expr)
     {

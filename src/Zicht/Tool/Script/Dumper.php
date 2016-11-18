@@ -17,16 +17,16 @@ class Dumper
     /**
      * Returns the AST for a specified node as an array representation
      *
-     * @param Node\Node $b
+     * @param Node\NodeInterface $b
      * @param string $path
      * @return array
      */
-    public function getAst(Node\Node $b, $path = '')
+    public function getAst(Node\NodeInterface $b, $path = '')
     {
         $ret = array(
             'type' => str_replace('Zicht\Tool\Script\Node\\', '', get_class($b))
         );
-        if ($b instanceof Node\Branch) {
+        if ($b instanceof Node\Node) {
             if (count($b->nodes)) {
                 $ret['nodes'] = array();
 
@@ -34,7 +34,7 @@ class Dumper
                     if (null === $n) {
                         $ret['nodes'][]= $n;
                     } else {
-                        if (! $n instanceof Node\Node) {
+                        if (! $n instanceof Node\NodeInterface) {
                             throw new \InvalidArgumentException("Invalid child node in " . Util::toPhp($path));
                         }
                         $ret['nodes'][]= $this->getAst($n);

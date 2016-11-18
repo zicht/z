@@ -9,13 +9,13 @@
 namespace Zicht\Tool\Script\Node\Expr;
 
 use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 use Zicht\Tool\Util;
 
 /**
  * A variable node refers a variable in the container context.
  */
-class Variable implements Node
+class Variable implements NodeInterface
 {
     /**
      * @var array

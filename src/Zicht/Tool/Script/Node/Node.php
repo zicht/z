@@ -5,21 +5,39 @@
  * @author Gerard van Helden <drm@melp.nl>
  * @copyright 2012 Gerard van Helden <http://melp.nl>
  */
-
 namespace Zicht\Tool\Script\Node;
 
-use Zicht\Tool\Script\Buffer;
-
 /**
- * Common interface for syntax tree nodes.
+ * Base class for nodes that can have children.
  */
-interface Node
+abstract class Node implements NodeInterface
 {
     /**
-     * Compiles the node into the buffer.
+     * The child nodes.
      *
-     * @param \Zicht\Tool\Script\Buffer $buffer
+     * @var NodeInterface[]
+     */
+    public $nodes;
+
+    /**
+     * Constructor.
+     *
+     * @param NodeInterface[] $nodes
+     */
+    public function __construct(array $nodes = array())
+    {
+        $this->nodes = $nodes;
+    }
+
+
+    /**
+     * Append a node.
+     *
+     * @param NodeInterface $node
      * @return void
      */
-    public function compile(Buffer $buffer);
+    public function append(NodeInterface $node)
+    {
+        $this->nodes[]= $node;
+    }
 }

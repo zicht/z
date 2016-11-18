@@ -41,7 +41,7 @@ class Expression extends AbstractParser
      * Does a recursive descent parsing of the token stream and returns the resulting node.
      *
      * @param \Zicht\Tool\Script\TokenStream $stream
-     * @return \Zicht\Tool\Script\Node\Node
+     * @return \Zicht\Tool\Script\Node\NodeInterface
      */
     public function parse(TokenStream $stream)
     {

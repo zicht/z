@@ -9,13 +9,13 @@
 namespace Zicht\Tool\Container;
 
 use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Branch;
 use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 
 /**
  * The root node of a container definition
  */
-class ContainerNode extends Branch
+class ContainerNode extends Node
 {
     /**
      * @{inheritDoc}

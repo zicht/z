@@ -9,12 +9,12 @@
 namespace Zicht\Tool\Container;
 
 use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 
 /**
  * Represents a value declaration in the container context.
  */
-class Declaration implements Node
+class Declaration implements NodeInterface
 {
     protected $path;
     protected $expr;
@@ -25,7 +25,7 @@ class Declaration implements Node
      * @param array $path
      * @param mixed $value
      */
-    public function __construct(array $path, Node $value = null)
+    public function __construct(array $path, NodeInterface $value = null)
     {
         $this->path = $path;
         $this->expr = $value;

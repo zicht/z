@@ -9,18 +9,18 @@
 namespace Zicht\Tool\Script\Node\Script;
 
 use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Branch;
 use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 
 /**
  * Represents a conditional for a script node.
  */
-class Conditional extends Branch implements Annotation
+class Conditional extends Node implements Annotation
 {
     /**
      * Constructor.
      *
-     * @param Node $node
+     * @param NodeInterface $node
      */
     public function __construct($node)
     {

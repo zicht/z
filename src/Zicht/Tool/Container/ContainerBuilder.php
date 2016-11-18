@@ -7,7 +7,7 @@
  */
 namespace Zicht\Tool\Container;
 
-use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 use Zicht\Tool\Script\Node\Task\OptNode;
 use Zicht\Tool\Script\Compiler;
 use Zicht\Tool\Script\Node\Task\SetNode;
@@ -93,7 +93,7 @@ class ContainerBuilder
      * Creates the traverser that gathers all nodes (i.e. Node instances) that are specified in the tree.
      *
      * @param array $result
-     * @param \Zicht\Tool\Script\Node\Branch $containerNode
+     * @param \Zicht\Tool\Script\Node\Node $containerNode
      * @return Traverser
      */
     public function createNodeGathererTraverser($result, $containerNode)
@@ -104,7 +104,7 @@ class ContainerBuilder
                 $containerNode->append($node);
             },
             function ($path, $node) {
-                return $node instanceof Node;
+                return $node instanceof NodeInterface;
             },
             Traverser::AFTER
         );
@@ -201,7 +201,7 @@ class ContainerBuilder
      *
      * @param array $path
      * @param array $node
-     * @return \Zicht\Tool\Script\Node\Node
+     * @return \Zicht\Tool\Script\Node\NodeInterface
      */
     public function createExpressionNode($path, $node)
     {
@@ -214,7 +214,7 @@ class ContainerBuilder
      *
      * @param array $path
      * @param array $node
-     * @return \Zicht\Tool\Script\Node\Node
+     * @return \Zicht\Tool\Script\Node\NodeInterface
      */
     public function createScriptNode($path, $node)
     {

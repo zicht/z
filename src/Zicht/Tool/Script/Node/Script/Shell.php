@@ -9,18 +9,18 @@
 namespace Zicht\Tool\Script\Node\Script;
 
 use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Branch;
 use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 
 /**
  * Wraps the task line in a different shell
  */
-class Shell extends Branch implements Annotation
+class Shell extends Node implements Annotation
 {
     /**
      * Construct the decorator with the specified expression as the SHELL to use.
      *
-     * @param \Zicht\Tool\Script\Node\Node $expr
+     * @param \Zicht\Tool\Script\Node\NodeInterface $expr
      */
     public function __construct($expr)
     {

@@ -7,7 +7,7 @@
 namespace Zicht\Tool\Script;
 
 use Zicht\Tool\Util;
-use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 
 /**
  * Wraps the tokenization, parsing and compiling into one convenience class.
@@ -31,7 +31,7 @@ class Compiler
      * Parses the raw string input and returns the resulting root node.
      *
      * @param string $input
-     * @return Node
+     * @return NodeInterface
      */
     public function parse($input)
     {

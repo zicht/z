@@ -74,7 +74,19 @@ class Configuration implements ConfigurationInterface
                             ->scalarNode('name')->end()
                             ->scalarNode('help')->defaultValue(null)->end()
                             ->arrayNode('flags')
-                                ->prototype('boolean')->end()
+                                ->prototype('boolean')
+                                    ->beforeNormalization()
+                                        ->ifString()->then(function($v) {
+                                            if ($v === 'false') {
+                                                return false;
+                                            }
+                                            if ($v === 'true') {
+                                                return true;
+                                            }
+                                            return $v;
+                                        })
+                                    ->end()
+                                ->end()
                                 ->useAttributeAsKey('name')
                                 ->defaultValue(array())
                             ->end()
