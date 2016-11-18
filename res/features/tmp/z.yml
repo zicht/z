@@ -1,0 +1,15 @@
+tasks:
+    t:
+        yield: '"foo"'
+        do: echo "bar"
+
+    a:
+      set:
+        var: tasks.t
+
+    b:
+      set:
+        var: tasks.t
+      pre:
+        - @a
+      do: echo $(tasks.t) $(tasks.t)

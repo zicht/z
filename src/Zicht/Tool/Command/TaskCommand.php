@@ -69,15 +69,15 @@ class TaskCommand extends BaseCommand
         }
     }
 
-    public function addOption($name, $shortcut = null, $mode = null, $help = null)
+    public function addOption($name, $shortcut = null, $mode = null, $description = '', $default = null)
     {
         $helpTag = ($mode === InputOption::VALUE_NONE) ? "--$name" : "--$name=" . strtoupper($name);
-        return parent::addOption($name, $shortcut, $mode, $help ?: $this->parseHelp($helpTag));
+        return parent::addOption($name, $shortcut, $mode, $description ?: $this->parseHelp($helpTag), $default);
     }
 
-    public function addArgument($name, $mode = null, $help = null)
+    public function addArgument($name, $mode = null, $description = '', $default = null)
     {
-        return parent::addArgument($name, $mode, $help ?: $this->parseHelp($name));
+        return parent::addArgument($name, $mode, $description ?: $this->parseHelp($description), $default);
     }
 
 
