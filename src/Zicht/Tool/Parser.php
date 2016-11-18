@@ -22,7 +22,7 @@ class Parser
             $lineValue = preg_replace('/#.*/', '', $lineValue);
             $previousNode = array_pop($stack);
 
-            if (preg_match('/(^\w+):(\s*)(.*)/', $lineValue, $nodeMatch)) {
+            if (preg_match('/(^\w+(?:\.\w+)*):(\s*)(.*)/', $lineValue, $nodeMatch)) {
                 $node = $this->newNode($nodeMatch[1], $lineIndent, strlen($nodeMatch[2]), $nodeMatch[3]);
 
                 while ($previousNode['indent'] >= $node['indent']) {
