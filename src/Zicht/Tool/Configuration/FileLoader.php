@@ -8,11 +8,11 @@ namespace Zicht\Tool\Configuration;
 
 use Symfony\Component\Config\Loader\FileLoader as BaseFileLoader;
 use Symfony\Component\Config\FileLocatorInterface;
+use Zicht\Tool\Parser;
 use Zicht\Version\Version;
 use Zicht\Tool;
 use Zicht\Tool\Debug;
 use Zicht\Version\Constraint;
-use Symfony\Component\Yaml;
 
 /**
  * The Z file loader
@@ -95,11 +95,8 @@ class FileLoader extends BaseFileLoader
         }
         Debug::exitScope('annotations');
 
-        try {
-            $config = Yaml\Yaml::parse($fileContents);
-        } catch (Yaml\Exception\ExceptionInterface $e) {
-            throw new \RuntimeException("YAML error in {$resource}", 0, $e);
-        }
+        $parser = new Parser();
+        $config = $parser->parse($fileContents);
 
         if (isset($config['plugins'])) {
             Debug::enterScope('plugins');
