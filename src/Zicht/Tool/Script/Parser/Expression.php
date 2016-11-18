@@ -86,6 +86,25 @@ class Expression extends AbstractParser
                 }
             }
             $stream->expect(Token::OPERATOR, ']');
+        } elseif ($stream->match(Token::OPERATOR, '{')) {
+            $stream->next();
+            $ret = new Node\Expr\ListNode();
+            if (!$stream->match(Token::OPERATOR, '}')) {
+                $name = $stream->expect([Token::STRING, Token::IDENTIFIER])->value;
+                $stream->expect(Token::OPERATOR, ':');
+                $node = $this->parse($stream);
+                $node->attributes['name']= $name;
+                $ret->append($node);
+                while ($stream->match(',')) {
+                    $stream->next();
+                    $name = $stream->expect([Token::STRING, Token::IDENTIFIER])->value;
+                    $stream->expect(Token::OPERATOR, ':');
+                    $node = $this->parse($stream);
+                    $node->attributes['name']= $name;
+                    $ret->append($node);
+                }
+            }
+            $stream->expect(Token::OPERATOR, '}');
         } else {
             $this->err($stream);
             return null;
