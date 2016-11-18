@@ -14,7 +14,7 @@ Background:
       args:
           var: ? 4
       do:
-        - @(sh "perl")     print "." x 5 if $(var) % 2 == 0;
+        - @(sh "perl") print "." x 5 if $(var) % 2 == 0;
   """
 
   Scenario:

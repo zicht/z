@@ -6,11 +6,12 @@
  * @copyright 2012 Gerard van Helden <http://melp.nl>
  */
 namespace Zicht\Tool\Script\Node;
+use Zicht\Tool\Script\Buffer;
 
 /**
  * Base class for nodes that can have children.
  */
-abstract class Node implements NodeInterface
+class Node implements NodeInterface
 {
     /**
      * The child nodes.
@@ -39,5 +40,14 @@ abstract class Node implements NodeInterface
     public function append(NodeInterface $node)
     {
         $this->nodes[]= $node;
+    }
+
+
+
+    public function compile(Buffer $buffer)
+    {
+        foreach ($this->nodes as $node) {
+            $node->compile($buffer);
+        }
     }
 }
