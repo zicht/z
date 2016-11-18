@@ -3,12 +3,14 @@
 namespace ZichtTest\Tool;
 
 use Zicht\Tool\Parser;
+use Zicht\Tool\Script\Buffer;
+use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
 
 class ParserTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->parser = new Parser();
     }
 
     /**
@@ -17,7 +19,8 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function test($z, $php)
     {
-        $this->assertEquals(include $php, $this->parser->parse(file_get_contents($z, 'r')));
+        $parser = new Parser($z, file_get_contents($z));
+        $this->assertEquals(include $php, $this->fold($parser->parse(file_get_contents($z, 'r'))));
     }
 
 
@@ -47,5 +50,17 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         return [
             [__DIR__ . '/assets/parser/cur.z', __DIR__ . '/assets/parser/cur.php'],
         ];
+    }
+
+
+    private function fold(NodeInterface $node)
+    {
+        $compiler = new Buffer();
+        $node->compile($compiler);
+
+        $_ = null;
+        eval('$_ = ' . $compiler->getResult() . ';');
+
+        return $_;
     }
 }
