@@ -56,8 +56,9 @@ class Expression implements TokenizerInterface
             } elseif (preg_match('/^[\?,]/', $substr, $m)) {
                 $ret[] = new Token($m[0]);
                 $needle ++;
-            } elseif ($string{$needle} == '"') {
+            } elseif ($string{$needle} == '"' || $string{$needle} == "'") {
                 $strData = '';
+                $start = $string{$needle};
 
                 $escape = false;
                 for ($j = $needle +1; $j < $len; $j ++) {
@@ -65,7 +66,7 @@ class Expression implements TokenizerInterface
 
                     if ($ch == '\\') {
                         $escape = true;
-                    } elseif ($ch == '"') {
+                    } elseif ($ch == $start) {
                         if ($escape) {
                             $escape = false;
                         } else {

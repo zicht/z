@@ -4,13 +4,23 @@ namespace Zicht\Tool;
 
 use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
 use Symfony\Component\ExpressionLanguage\SyntaxError;
+use Zicht\Tool\Script\Compiler;
+use Zicht\Tool\Script\Node\Expr\Dict;
+use Zicht\Tool\Script\Node\Expr\ListNode;
+use Zicht\Tool\Script\Node\Expr\Literal;
+use Zicht\Tool\Script\Node\Expr\Str;
 use Zicht\Tool\Script\Node\Node;
+use Zicht\Tool\Script\Node\NodeInterface;
+use Zicht\Tool\Script\Parser\Expression as ExpressionParser;
+use Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
+use Zicht\Tool\Script\TokenStream;
 
 class Parser
 {
     public function __construct($file, $str)
     {
-        $this->expr = new ExpressionLanguage();
+        $this->expressionParser = new ExpressionParser();
+
         $this->file = 'STDIN';
         $this->str = $str;
     }
@@ -18,9 +28,15 @@ class Parser
 
     public function parse()
     {
-        $stack = [$this->newNode('root', -1)];
+        $root = new ListNode();
+
+        $root->attributes['indent'] = -1;
+
+        $stack = [$root];
+
 
         $offset = 0;
+
         foreach (explode("\n", $this->str) as $line) {
             preg_match('/^( *)(.*)/s', $line, $indentMatch);
             $lineIndent = strlen($indentMatch[1]);
@@ -29,27 +45,41 @@ class Parser
             $lineValue = preg_replace('/#.*/', '', $lineValue);
             $previousNode = array_pop($stack);
 
-            if (preg_match('/(?:-|(^\w+(?:\.\w+)*(?:\[\])?):)(\s*)(.*)/', $lineValue, $nodeMatch)) {
-                $node = $this->newNode($nodeMatch[1], $lineIndent, strlen($nodeMatch[2]), $nodeMatch[3]);
+            if (preg_match('/(?:-|(?P<name>^\w+(?:\.\w+)*(?:\[\])?):)(?P<data_indent>\s*)(?P<data>.*)/', $lineValue, $nodeMatch)) {
+                if (isset($nodeMatch['data'])) {
+                    if ($nodeMatch['data'] === '|') {
+                        $node = new Str('');
+                    } else {
+                        $node = new Str($nodeMatch['data']);
+                        $node->attributes['data_indent'] = $lineIndent + strlen($nodeMatch['name']) + 1 + strlen($nodeMatch['data_indent']);
+                    }
+                } else {
+                    $node = new ListNode();
+                }
+                $node->attributes['indent'] = $lineIndent;
+                if (!empty($nodeMatch['name'])) {
+                    $node->attributes['name'] = $nodeMatch['name'];
+                }
                 $node->attributes['offset']= $offset + $lineIndent;
 
                 while ($previousNode->attributes['indent'] >= $node->attributes['indent']) {
                     $parent = array_pop($stack);
-                    $parent->append($previousNode);
+                    $parent = $this->appendTo($parent, $previousNode);
                     $previousNode = $parent;
                 }
 
                 array_push($stack, $previousNode);
+
                 $previousNode = $node;
             } elseif (strlen(trim($lineValue))) {
-                if ($lineIndent < $previousNode->attributes['data_indent']) {
+                if (isset($previousNode->attributes['data_indent']) && $lineIndent < $previousNode->attributes['data_indent']) {
                     $this->err("Unexpected decreasing indent. Expected indent is {$previousNode->attributes['data_indent']}, found {$lineIndent}", $offset + $lineIndent);
                 } else {
-                    if ($previousNode->attributes['data']) {
-                        $previousNode->attributes['data'] .= "\n" . substr($line, $previousNode->attributes['data_indent']);
+                    if ($previousNode->value) {
+                        $previousNode->value .= "\n" . substr($line, $previousNode->attributes['data_indent']);
                     } else {
+                        $previousNode->value = $lineValue;
                         $previousNode->attributes['data_indent']= $lineIndent;
-                        $previousNode->attributes['data']= $lineValue;
                     }
                 }
             }
@@ -62,54 +92,17 @@ class Parser
         while(count($stack) >= 2) {
             $child = array_pop($stack);
             $parent = array_pop($stack);
-            $parent->append($child);
+            $parent = $this->appendTo($parent, $child);
             array_push($stack, $parent);
         }
 
         $root = array_pop($stack);
 
-        return $this->fold($root);
-    }
-
-
-    private function fold($node, $path = [])
-    {
-        if ($node->attributes['data']) {
-            // array or object literals are handled by the expression parser.
-            if (preg_match('/^(\{|\[).*(\}|\])$/s', trim($node->attributes['data']))) {
-                try {
-                    $node->attributes['data']= $this->expr->evaluate($node->attributes['data']);
-                } catch (SyntaxError $e) {
-                    if (!preg_match('/position (\d+)/', $e->getMessage(), $m)) {
-                        throw $e;
-                    }
-
-                    $this->err(
-                        sprintf(
-                            "\nExpression parse error:\n%s\n%s",
-                            $e->getMessage(),
-                            $this->formatPosition($m[1], $node->attributes['data'])
-                        ),
-                        $node->attributes['offset']
-                    );
-                }
-            }
-            return $node->attributes['data'];
-
-
-        } elseif ($node->nodes) {
-            $ret = [];
-            foreach ($node->nodes as $child) {
-                if ($child->attributes['name'] === '') {
-                    $ret[]= $this->fold($child);
-                } else {
-                    $ret[$child->attributes['name']]= $this->fold($child);
-                }
-            }
-            return $ret;
-        } else {
-            return null;
+        if (!$root->nodes) {
+            return new Literal(null);
         }
+
+        return $root;
     }
 
 
@@ -140,24 +133,24 @@ class Parser
         throw new \UnexpectedValueException($msg);
     }
 
-    private function newNode($name, $indent, $dataIndent = 0, $data = null)
+
+    private function appendTo(NodeInterface $parent, NodeInterface $node)
     {
-        $ret = new Node();
-        
-        $ret->attributes = [
-            'name' => $name,
-            'indent' => $indent,
-            'data_indent' =>
-                $data
-                    ? (
-                        $data === '|'
-                        ? null
-                        : ($indent + strlen($name) + 1 + $dataIndent) // the 1 is the colon
-                    )
-                    : null,
-            'data' => $data === '|' ? '' : $data,
-        ];
-        return $ret;
+        if ($parent instanceof Str) {
+            $newParent = new ListNode();
+            $newParent->attributes = $parent->attributes;
+            $parent = $newParent;
+        }
+
+        if ($node instanceof Str && preg_match('/^(\{|\[).*(\}|\])$/s', trim($node->value))) {
+            $value = $this->expressionParser->parse(new TokenStream((new ExpressionTokenizer())->getTokens($node->value)));
+            $value->attributes = $node->attributes;
+            $parent->append($value);
+        } else {
+            $parent->append($node);
+        }
+
+        return $parent;
     }
 }
 

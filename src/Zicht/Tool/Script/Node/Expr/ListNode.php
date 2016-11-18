@@ -25,6 +25,10 @@ class ListNode extends Node
             if ($i++ > 0) {
                 $buffer->raw(', ');
             }
+            if (isset($child->attributes['name'])) {
+                $buffer->asPhp($child->attributes['name']);
+                $buffer->raw(' => ');
+            }
             $child->compile($buffer);
         }
         $buffer->raw(')');

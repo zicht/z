@@ -98,8 +98,8 @@ class ContainerBuilder
      */
     public function createNodeGathererTraverser($result, $containerNode)
     {
-        $gatherer = new Traverser($result);
-        $gatherer->addVisitor(
+         $gatherer = new Traverser($result);
+         $gatherer->addVisitor(
             function($path, $node) use($containerNode) {
                 $containerNode->append($node);
             },

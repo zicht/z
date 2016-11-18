@@ -18,9 +18,8 @@ abstract class AbstractParser implements ParserInterface
      *
      * @param ParserInterface $parent
      */
-    public function __construct(ParserInterface $parent = null)
+    public function __construct()
     {
-        $this->parent = $parent;
     }
 
     /**

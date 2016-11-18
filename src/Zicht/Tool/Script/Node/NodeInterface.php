@@ -12,6 +12,8 @@ use Zicht\Tool\Script\Buffer;
 
 /**
  * Common interface for syntax tree nodes.
+ *
+ * @property NodeInterface[] $nodes
  */
 interface NodeInterface
 {
