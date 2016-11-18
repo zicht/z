@@ -28,7 +28,7 @@ I need to be able to set the SHELL to another interpreter than the default
     """
     # @version ">=1.1"
 
-    SHELL: "/usr/bin/env php"
+    SHELL: "/usr/bin/php"
 
     tasks:
         hello: |

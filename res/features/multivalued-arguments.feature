@@ -8,7 +8,10 @@ Feature: Multivalued arguments
     And there is file "z.yml"
     """
     globals:
-        a: ['1', '2', '3']
+        a:
+          - 1
+          - 2
+          - 3
 
     tasks:
         t:

@@ -9,7 +9,8 @@ I need to be able to define declarations that resolve only once
         """
         # @version ">=1.0"
 
-        plugins: ["declaration"]
+        plugins:
+          - declaration
 
         tasks:
             fn:

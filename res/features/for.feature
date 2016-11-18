@@ -13,7 +13,10 @@ Background:
     # @version ">=2.0"
 
     globals:
-        a: ['a', 'b', 'c']
+        a:
+          - a
+          - b
+          - c
 
     tasks:
         t:  @(for i, v in globals.a) echo "$(i) => $(v)"
@@ -29,7 +32,10 @@ Background:
     # @version ">=2.0"
 
     globals:
-        a: ['a', 'b', 'c']
+        a:
+          - a
+          - b
+          - c
 
     tasks:
         t:  @(each globals.a) echo "foo"
@@ -43,7 +49,10 @@ Background:
     # @version ">=2.0"
 
     globals:
-        a: ['a', 'b', 'c']
+        a:
+          - a
+          - b
+          - c
 
     tasks:
         t:  @(for v in globals.a) echo "$(v)"
@@ -57,7 +66,7 @@ Background:
     # @version ">=2.0"
 
     globals:
-        a: []
+        a:
 
     tasks:
         t:  @(for i, v in globals.a) echo "NEVER"

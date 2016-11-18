@@ -41,22 +41,23 @@ Feature: Complex variable resolution
     """
     # @version ">=1.0"
 
-    plugins: ['unstrict']
+    plugins:
+      - unstrict
     vars:
         a:
             b:
-                c: "Ultimate"
+                c: Ultimate
         x:
             y:
-                z: "b"
+                z: b
         foo:
             bar:
-                baz: "c"
+                baz: c
 
     tasks:
         t1: echo "t1 says $(vars.a.b.c)"
         t2: echo "t2 says $(vars.a[vars.x.y.z][vars.foo.bar.baz])"
-        t3: |
+        t3:
           echo 't3 says $(
             vars.a[
               vars.x["y"]["z"]

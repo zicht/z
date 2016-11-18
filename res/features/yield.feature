@@ -11,7 +11,7 @@ Feature: Yielding a value
     """
     tasks:
         t:
-            yield: '"foo"'
+            yield: "foo"
             do: echo "bar"
 
         b: echo $(tasks.t) $(tasks.t)
@@ -26,7 +26,7 @@ Feature: Yielding a value
     """
     tasks:
         t:
-            yield: '"foo"'
+            yield: "foo"
             do: echo "bar"
 
         b:
@@ -45,7 +45,7 @@ Feature: Yielding a value
     """
     tasks:
         t:
-            yield: '"foo"'
+            yield: "foo"
             do: echo "bar"
 
         a:

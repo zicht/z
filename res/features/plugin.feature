@@ -9,7 +9,8 @@ I need to be able to add tasks, functions and declarations in a Plugin
         """
         # @version ">=1.0"
 
-        plugins: ["myplugin"]
+        plugins:
+          - myplugin
 
         tasks:
             t: echo "$(hello)"
@@ -24,7 +25,7 @@ I need to be able to add tasks, functions and declarations in a Plugin
         # @version ">=1.0"
 
         foo:
-            bar: "'This is fubar'"
+            bar: "This is fubar"
 
         tasks:
             t3:

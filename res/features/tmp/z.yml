@@ -1,15 +1,9 @@
+# @version ">=1.0"
+
 tasks:
     t:
-        yield: '"foo"'
-        do: echo "bar"
-
-    a:
-      set:
-        var: tasks.t
-
-    b:
-      set:
-        var: tasks.t
-      pre:
-        - @a
-      do: echo $(tasks.t) $(tasks.t)
+      args:
+        a: ? "no"
+      do:
+        - @(if a == "yes") echo Yep
+        - @(if a == "no")  echo Nope

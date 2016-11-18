@@ -14,7 +14,7 @@ I need to see what tasks are available and print their help
             args:
                 required_param: ?
                 unrequired_param: ? "foo"
-            help: |
+            help:
                 Prints abc
 
                 Shows you some text.

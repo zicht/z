@@ -12,8 +12,8 @@ Feature: Task definition
     tasks:
         t:
             opts:
-                a: '"xax"'
-                b: '"xbx"'
+                a: "xax"
+                b: "xbx"
             do: echo $(a) $(b)
     """
 
