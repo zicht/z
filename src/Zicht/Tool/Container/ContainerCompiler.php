@@ -10,6 +10,7 @@ namespace Zicht\Tool\Container;
 
 use Zicht\Tool\Script\Buffer;
 use Zicht\Tool\PluginInterface;
+use Zicht\Util\Mutex;
 
 /**
  * Compiler to compile the entire container into PHP code.
@@ -46,12 +47,17 @@ class ContainerCompiler
      */
     public function getContainer()
     {
-        if ($this->needsRecompile()) {
-            $this->code = $this->compileContainerCode();
-            file_put_contents($this->file, $this->code);
-        }
+        $mutex = new Mutex($this->file . '.lock', true);
 
-        $ret = include $this->file;
+        $ret = $mutex->run(
+            function () {
+                if ($this->needsRecompile()) {
+                    file_put_contents($this->file, $this->compileContainerCode());
+                }
+                return include $this->file;
+            }
+        );
+
         if (! ($ret instanceof Container)) {
             throw new \LogicException("The container must be returned by the compiler");
         }
