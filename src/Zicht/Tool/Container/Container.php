@@ -74,8 +74,25 @@ class Container
             }
         );
         $this->set(array('z', 'cmd'), $_SERVER['argv'][0]);
+        $this->decl(
+            'STDIN',
+            function () {
+                return stream_get_contents(STDIN);
+            }
+        );
 
+        $this->fn('trim');
+        $this->fn(
+            'sha1',
+            function () {
+                return sha1(join("", func_get_args()));
+            }
+        );
+        $this->fn('ltrim');
+        $this->fn('rtrim');
         $this->fn('sprintf');
+        $this->fn('basename');
+        $this->fn('dirname');
         $this->fn('is_file');
         $this->fn('is_dir');
         $this->fn('confirm', function() {
