@@ -129,7 +129,7 @@ $ #or explain the actual deploy
 $ z deploy production --explain
 ```
 
-Read the [tutorial](tutorial.html) for a more detailed walkthrough of how Z works.
+Read the [tutorial](tutorial.md) for a more detailed walkthrough of how Z works.
 
 Also, the [deploy](https://github.com/zicht/z-plugin-deploy) plugin has an
 extensive description of a typical deploy setup with Z.
