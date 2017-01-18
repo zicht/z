@@ -96,6 +96,7 @@ class Container
             }
         );
         $this->fn('trim');
+        $this->fn('str_replace', 'str_replace');
         $this->fn(
             'sha1',
             function () {
@@ -144,7 +145,6 @@ class Container
         $this->fn('join', 'implode');
         $this->fn('keys', 'array_keys');
         $this->fn('values', 'array_values');
-        $this->fn('str_replace', 'str_replace');
         $this->fn('range', function() {
             if (func_num_args() > 1) {
                 return range(func_get_arg(1), func_get_arg(0));
