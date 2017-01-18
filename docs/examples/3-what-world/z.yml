@@ -1,6 +1,0 @@
-tasks:
-    say:
-        args:
-            what: '"Hello"'
-        do:
-            - echo "$(what) world!"

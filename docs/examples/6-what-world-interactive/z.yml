@@ -1,8 +1,0 @@
-plugins: ['core']
-
-tasks:
-    say:
-        args:
-            what: ? ask("You did not specify what! Please tell me!", "Hello anyway")
-        do:
-            - echo "$(what) world!"
