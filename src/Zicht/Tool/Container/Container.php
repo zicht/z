@@ -80,7 +80,12 @@ class Container
                 return stream_get_contents(STDIN);
             }
         );
+        $this->fn('confirm', function() {
+            return false;
+        });
 
+        // -----------------------------------------------------------------
+        // string functions
         $this->fn('trim');
         $this->fn(
             'sha1',
@@ -91,14 +96,16 @@ class Container
         $this->fn('ltrim');
         $this->fn('rtrim');
         $this->fn('sprintf');
+        $this->fn(array('safename'), function($fn) {
+            return preg_replace('/[^a-z0-9]+/', '-', $fn);
+        });
+        
+        // -----------------------------------------------------------------
+        // I/O functions
         $this->fn('basename');
         $this->fn('dirname');
         $this->fn('is_file');
         $this->fn('is_dir');
-        $this->fn('confirm', function() {
-            return false;
-        });
-        $this->fn('keys', 'array_keys');
         $this->fn('mtime', 'filemtime');
         $this->fn('atime', 'fileatime');
         $this->fn('ctime', 'filectime');
@@ -107,14 +114,6 @@ class Container
                 return array_map('escapeshellarg', $value);
             }
             return escapeshellarg($value);
-        });
-        $this->fn('join', 'implode');
-        $this->fn('str_replace', 'str_replace');
-        $this->fn('range', function() {
-            if (func_num_args() > 1) {
-                return range(func_get_arg(1), func_get_arg(0));
-            }
-            return range(1, func_get_arg(0));
         });
         $this->fn(
             'path',
@@ -130,6 +129,20 @@ class Container
                 );
             }
         );
+        
+        // -----------------------------------------------------------------
+        // array functions
+        $this->fn('join', 'implode');
+        $this->fn('keys', 'array_keys');
+        $this->fn('values', 'array_values');
+        $this->fn('str_replace', 'str_replace');
+        $this->fn('range', function() {
+            if (func_num_args() > 1) {
+                return range(func_get_arg(1), func_get_arg(0));
+            }
+            return range(1, func_get_arg(0));
+        });
+        $this->fn('slice', 'array_slice');
         $this->fn('sh', array($this, 'helperExec'));
         $this->fn('str', array($this, 'str'));
         $this->fn(
@@ -140,9 +153,6 @@ class Container
         );
         $this->decl(array('now'), function() {
             return date('YmdHis');
-        });
-        $this->fn(array('safename'), function($fn) {
-            return preg_replace('/[^a-z0-9]+/', '-', $fn);
         });
 
         $exitCode = self::ABORT_EXIT_CODE;
