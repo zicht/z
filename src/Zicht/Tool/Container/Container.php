@@ -83,9 +83,18 @@ class Container
         $this->fn('confirm', function() {
             return false;
         });
+        $this->set('cwd',  getcwd());
+        $this->set('user', getenv('USER'));
+
 
         // -----------------------------------------------------------------
         // string functions
+        $this->fn(
+            'cat',
+            function() {
+                return join('', func_get_args());
+            }
+        );
         $this->fn('trim');
         $this->fn(
             'sha1',
@@ -143,6 +152,17 @@ class Container
             return range(1, func_get_arg(0));
         });
         $this->fn('slice', 'array_slice');
+
+
+        // -----------------------------------------------------------------
+        // encoding / decoding
+        $this->fn('json_encode', function ($v) {
+            return json_encode($v, JSON_UNESCAPED_SLASHES);
+        });
+        $this->fn('json_decode');
+
+        // -----------------------------------------------------------------
+        // other functions
         $this->fn('sh', array($this, 'helperExec'));
         $this->fn('str', array($this, 'str'));
         $this->fn(
@@ -159,14 +179,6 @@ class Container
         $this->decl(array('abort'), function() use($exitCode) {
             return 'exit ' . $exitCode;
         });
-        $this->fn(
-            'cat',
-            function() {
-                return join('', func_get_args());
-            }
-        );
-        $this->set('cwd',  getcwd());
-        $this->set('user', getenv('USER'));
     }
 
 
