@@ -31,5 +31,5 @@ I need to see what tasks are available and print their help
 
   Scenario: Seeing the available parameters for the task
     When I run "z z:help t"
-    Then I should see text matching "/(?!\[).required_param/"
-    And I should see text matching "/\[unrequired_param\]/"
+    Then I should see text matching "/(?!\[).<?required_param/"
+    And I should see text matching "/\[<?unrequired_param>?\]/"

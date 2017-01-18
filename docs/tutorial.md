@@ -1,11 +1,15 @@
-% Tutorial
+# Tutorial
+
+Note that all of the examples in this tutorial are available as Behat features,
+which means you can see them in action if you run behat in your copy of Z.
 
 ## Writing a z.yml file ##
 
 ### Hello world ###
-Of course, as we are all programmers or at least we know some, we know that the first thing to do is say hello to the
-world. We can accomplish this by defining a yml file and defining a task "say_hello", which has 'echo hello world' as
-its body:
+Of course, as we are all programmers or at least we know some, we know that the
+first thing to do is say hello to the world. We can accomplish this by defining
+a yml file and defining a task `say_hello`, which has `echo hello world` as its
+body:
 
 ```
 tasks:
@@ -14,8 +18,8 @@ tasks:
             - echo "Hello world!"
 ```
 
-Save this file as "z.yml" and run z help. Z will now display "say_hello" as a command. Running this command will run
-the shell script snippet:
+Save this file as "z.yml" and run z help. Z will now display `say_hello` as a
+command. Running this command will run the shell script snippet:
 
 ```shell
 $ z say_hello
@@ -24,8 +28,9 @@ Hello world!
 
 Congratulations, you have just implemented your first task in Z!
 
-For convenience, you can abbreviate an array of commands as a string, and even a single string command as the definition
-of the task. So the following three examples are equivalent:
+For convenience, you can abbreviate an array of commands as a string, and even
+a single string command as the definition of the task. So the following three
+examples are equivalent:
 
 ```
 tasks:
@@ -39,8 +44,9 @@ tasks:
     say_hello_shorter: echo "Hello world!"
 ```
 
-For clarity's sake, we stick to the first version in our examples, but you will find that writing the 'do' section in
-the first and second form will come in handy as your tasks become more and more atomic.
+For clarity's sake, we stick to the first version in our examples, but you will
+find that writing the 'do' section in the first and second form will come in
+handy as your tasks become more and more atomic.
 
 ### Task input ###
 If you add an 'args' section to the task, you will define variables or task input:
@@ -53,18 +59,22 @@ tasks:
         do:
             - echo "$(what) world!"
 ```
-> *Note that the notation for the string "Hello" is a bit awkward, because YML would interpret the double quotes as
-a regular string, and Z would never know that you put quotes there. Fortunately, this use case isn't that common.*
+> *Note that the notation for the string "Hello" is a bit awkward, because YML
+> would interpret the double quotes as a regular string, and Z would never know
+> that you put quotes there.  Fortunately, this use case isn't that common. 
+> Also, this is likely to change in the next major version.*
 
-This is not very helpful, because we would still have the hard coded "Hello" value in our code, even though executing
-would do the same as our first example:
+This is not very helpful, because we would still have the hard coded "Hello"
+value in our code, even though executing would do the same as our first
+example:
 
 ```shell
 z say
 Hello world
 ```
 
-It would be cool if we could pass in the variable to the command, right? Ok, let's do that:
+It would be cool if we could pass in the variable to the command, right? Ok,
+let's do that:
 
 ```
 tasks:
@@ -74,10 +84,11 @@ tasks:
         do:
             - echo "$(what) world!"
 ```
-> *Note that you can skip the single quotes now, because the question mark is part of the value. Fortunately, this use
-case is much more common.*
+> *Note that you can skip the single quotes now, because the question mark is
+> part of the value. Fortunately, this use case is much more common.*
 
-Now, you have declared input for your task, which is available through the command line:
+Now, you have declared input for your task, which is available through the
+command line:
 
 ```shell
 $ z say
@@ -87,8 +98,8 @@ $ z say Boogiewoogie
 Boogiewoogie world!
 ```
 
-By simply adding a question mark to the input declaration, you have made the input dynamic. If you omit the default
-value, the input will become required:
+By simply adding a question mark to the input declaration, you have made the
+input dynamic. If you omit the default value, the input will become required:
 
 ```
 tasks:
@@ -111,7 +122,8 @@ $ z say Hello
 Hello world!
 ```
 
-You can even add interactivity to your script, by including the ask() function to the declaration:
+You can even add interactivity to your script, by including the ask() function
+to the declaration:
 
 ```
 plugins: ['interact']
@@ -133,11 +145,14 @@ $ z say Modern
 Modern world!
 ```
 
-As you can see, you need the 'core' plugin for this example. More about plugins later.
+As you can see, you need the
+'[interact](https://github.com/zicht/z-plugin-interact)' plugin for this
+example. More about plugins later.
 
 # Chaining or triggering tasks #
-By prepending variables with an underscore, you are declaring them private. This means that the command line will not
-pass input to the task, but other tasks can define the input for it:
+By prepending variables with an underscore, you are declaring them private.
+This means that the command line will not pass input to the task, but other
+tasks can define the input for it:
 
 ```
 tasks:
@@ -154,23 +169,21 @@ tasks:
             - echo "$(_what) world!"
 ```
 
-As you can see, referring another task is done by prepending the task line with an at-sign. Internally, this is
-represented as the variable $tasks.say.
+As you can see, referring another task is done by prepending the task line with
+an at-sign. Internally, this is represented as the variable `tasks.say`.
 
-In essence, you are declaring that the 'say' task cannot be executed without another task providing a value as it's
-input. This would mean that the task itself could be considered private, as it can not be executed from the command
+In essence, you are declaring that the 'say' task cannot be executed without
+another task providing a value as it's input. This would mean that the task
+itself could be considered private, as it can not be executed from the command
 line. It will always throw an error about the missing '_what' parameter:
 
 ```shell
 $ z say
+required variable _what is not defined [RuntimeException]             
+[run::tasks.say]
 
-  [RuntimeException]
-  required variable _what is not defined
-
-say_hello [--explain] [-f|--force]
-
-$ z say_hello
-[                  say] Hello world!
+$ z say-hello
+Hello world!
 ```
 
 Of course, the say_hello task can by itself publish the variable:
@@ -193,46 +206,51 @@ tasks:
 
 ```shell
 $ z say
+required variable _what is not defined [RuntimeException]             
+[run::tasks.say]
 
-  [RuntimeException]
-  required variable _what is not defined
+$ z say-hello
+Hello world!
 
-say [--explain] [-f|--force]
-
-$ z say_hello
-[                  say] Hello world!
-
-$ z say_hello boo
-[                  say] boo world!
+$ z say-hello boo
+boo world!
 ```
 
-Notice that Z by default shows where the output comes from if the task depth is deeper than 1. This means that the name
-of any task that is triggered or depended upon is displayed before the output the task renders.
-
 # Explaining commands #
-Now is a good time to tell a little bit more about what Z actually does. By convention, and by ideology, Z does nothing
-but find out what tasks need to be executed and provide these tasks to the shell. That means that anything that is
-actually **done**, is done by the shell. When you start to implement your own tasks or even plugins, this is critical
-to the way Z functions. Because this way, Z can generate scripts for any task that is executed, by simply adding a
+Now is a good time to tell a little bit more about what Z actually does. By
+convention, and by ideology, Z does nothing but find out what tasks need to be
+executed and provide these tasks to the shell. That means that anything that is
+actually **done**, is done by the shell. When you start to implement your own
+tasks or even plugins, this is critical to the way Z functions. Because this
+way, Z can generate scripts for any task that is executed, by simply adding a
 parameter:
 
 ```shell
-    $ z say_hello --explain
-    ( echo "Hello world!" );
+    $ z say-hello --explain
+    echo 'echo "Hello world!"' | /bin/bash -e
 
     $ z say_hello "Foo bar baz!" --explain
-    ( echo "Foo bar baz world!" );
+    echo 'echo "Foo bar baz! world!"' | /bin/bash -e
 ```
 
-This is very helpful in debugging your tasks and explains a task better than any other way of describing, documenting,
-etcetera. Of course, you could add "dry run" version of any task you might want to execute, but it's much harder
-actually dry-running something, than simply showing what "would have been done" exactly. Of course, the script output
-might be cryptic at times, but then again, if what the task would be doing was easy, you probably wouldn't have the need
-to explain it in the first place.
+This is very helpful in debugging your tasks and explains a task better than
+any other way of describing, documenting, etcetera. Of course, you could add
+"dry run" version of any task you might want to execute, but it's much harder
+actually dry-running something, than simply showing what "would have been done"
+exactly. Of course, the script output might be cryptic at times, but then
+again, if what the task would be doing was easy, you probably wouldn't have the
+need to explain it in the first place.
 
-The reason all lines are displayed between parentheses, is that each of the line is effectively executed in a separate
-process and thus in a subshell. However, if you define the task body as a string separated by new lines, the task line
-is executed in one script:
+The reason all lines are piped to a separate shell command is is that each of the
+lines is effectively executed in a separate process and thus in a subshell, and the
+shell can differ per line.
+
+The added bonus of this approach is that you can copy-and-paste these lines and
+execute them directly in your shell and they should behave the exact same way
+as they would have when running with Z.
+
+However, if you define the task body as a string separated by new lines, the
+task line is executed in one script:
 
 ```
 tasks:
@@ -252,7 +270,7 @@ tasks:
 
 ```shell
 $ z --explain long_line
-( echo            \
+echo 'echo            \
     This        \
     is          \
     spanned     \
@@ -261,13 +279,19 @@ echo            \
     Over        \
     multiple    \
     lines       \
-; );
+;' | /bin/bash -e
 ```
+
+# Even further debugging
+You can also add the `--debug` flag to have even more information of where a
+line comes from. Every line is then prefixed with a somewhat cryptic path of
+where the task originates from.
 
 
 # Adding help #
-You can add help to your commands by adding a "help" section. This section is read by the command line runner and passed
-as an info line for the command and a help for the help display of the command:
+You can add help to your commands by adding a "help" section. This section is
+read by the command line runner and passed as an info line for the command and
+a help for the help display of the command:
 
 ```
 tasks:
@@ -282,10 +306,11 @@ tasks:
 ```
 
 # Conditionals #
-A task may be conditional, i.e., if there is some check done and that check says 'true', you might want to skip the
-task. A simple example is checking if something is up to date, before overwriting it. These conditionals can best be
-used in conjunction with functions from the core plugin, such as 'mtime', but for the sake of the example, we will just
-include a simple expression.
+A task may be conditional, i.e., if there is some check done and that check
+says 'true', you might want to skip the task. A simple example is checking if
+something is up to date, before overwriting it. These conditionals can best be
+used in conjunction with functions from the core plugin, such as 'mtime', but
+for the sake of the example, we will just include a simple expression.
 
 These conditionals are identified by the 'unless' section:
 
@@ -607,3 +632,10 @@ tasks:
 ```
 
 This is just a convenience and syntactic sugar. You should be the judge of whether you would want to use it or not ;)
+
+# Got the taste?
+Read more about [plugins](plugins.md) or dive deeper into the [reference](reference.md).
+
+If you need help, or have questions, feel free to create issues on the github project!
+
+
