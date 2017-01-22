@@ -10,6 +10,13 @@ use Behat\Gherkin\Node\TableNode;
  */
 class FeatureContext implements Context
 {
+    private $testDir;
+    private $zBinary;
+    private $zBinaryPath;
+    private $packageBinary;
+    private $response;
+
+
     /**
      * Initializes context.
      *
