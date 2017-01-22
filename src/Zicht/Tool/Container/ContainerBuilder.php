@@ -11,7 +11,6 @@ use Zicht\Tool\Script\Node\Node;
 use Zicht\Tool\Script\Node\Task\OptNode;
 use Zicht\Tool\Script\Compiler;
 use Zicht\Tool\Script\Node\Task\SetNode;
-use Zicht\Tool\Script\Parser;
 use Zicht\Tool\Debug;
 use Zicht\Tool\Script\Parser\Expression as ExpressionParser;
 use Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
@@ -32,7 +31,7 @@ class ContainerBuilder
     {
         $this->config = $config;
 
-        $this->exprcompiler  = new Compiler(new ExpressionParser(), new ExpressionTokenizer());
+        $this->exprcompiler = new Compiler(new ExpressionParser(), new ExpressionTokenizer());
         $this->scriptcompiler = new Compiler();
     }
 
@@ -45,7 +44,7 @@ class ContainerBuilder
      */
     public function addExpressionPath($callable)
     {
-        $this->expressionPaths[]= $callable;
+        $this->expressionPaths[] = $callable;
     }
 
 
@@ -100,7 +99,7 @@ class ContainerBuilder
     {
         $gatherer = new Traverser($result);
         $gatherer->addVisitor(
-            function($path, $node) use($containerNode) {
+            function ($path, $node) use($containerNode) {
                 $containerNode->append($node);
             },
             function ($path, $node) {
@@ -188,7 +187,7 @@ class ContainerBuilder
      *
      * @param array $path
      * @param string $node
-     * @return \Zicht\Tool\Script\Node\Task\OptNode
+     * @return SetNode
      */
     public function createSetNode($path, $node)
     {
@@ -234,21 +233,21 @@ class ContainerBuilder
 
         $traverser->addVisitor(
             array($this, 'createArgNode'),
-            function($path) {
+            function ($path) {
                 return (count($path) == 4 && $path[0] == 'tasks' && $path[2] == 'args');
             },
             Traverser::BEFORE
         );
         $traverser->addVisitor(
             array($this, 'createOptNode'),
-            function($path) {
+            function ($path) {
                 return (count($path) == 4 && $path[0] == 'tasks' && $path[2] == 'opts');
             },
             Traverser::BEFORE
         );
         $traverser->addVisitor(
             array($this, 'createSetNode'),
-            function($path) {
+            function ($path) {
                 return (count($path) == 4 && $path[0] == 'tasks' && $path[2] == 'set');
             },
             Traverser::BEFORE
@@ -256,7 +255,7 @@ class ContainerBuilder
 
         $traverser->addVisitor(
             array($this, 'createExpressionNode'),
-            function($path) {
+            function ($path) {
                 return
                     count($path) === 3
                     && $path[0] == 'tasks'
@@ -267,18 +266,18 @@ class ContainerBuilder
         );
         $traverser->addVisitor(
             array($this, 'createScriptNode'),
-            function($path) {
+            function ($path) {
                 return
                     count($path) == 4
                     && $path[0] == 'tasks'
-                    && in_array($path[2], array('do', 'pre' ,'post'))
+                    && in_array($path[2], array('do', 'pre', 'post'))
                 ;
             },
             Traverser::BEFORE
         );
         $traverser->addVisitor(
             array($this, 'createTaskNode'),
-            function($path) {
+            function ($path) {
                 return count($path) == 2 && $path[0] == 'tasks';
             },
             Traverser::AFTER
@@ -290,7 +289,7 @@ class ContainerBuilder
         );
         $traverser->addVisitor(
             array($this, 'createDefinitionNode'),
-            function($path, $node) {
+            function ($path, $node) {
                 return $path[0] !== 'tasks' && (is_scalar($node) || (is_array($node) && count($node) === 0));
             },
             Traverser::AFTER

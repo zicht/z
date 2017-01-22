@@ -24,12 +24,12 @@ class PropertyAccessor
      */
     public static function getByPath($subject, array $path, $notFoundIsError = true)
     {
-        $ptr =& $subject;
+        $ptr = & $subject;
         foreach ($path as $key) {
             if (is_object($ptr) && property_exists($ptr, $key)) {
-                $ptr =& $ptr->$key;
+                $ptr = & $ptr->$key;
             } elseif (is_array($ptr) && array_key_exists($key, $ptr)) {
-                $ptr =& $ptr[$key];
+                $ptr = & $ptr[$key];
             } else {
                 if ($notFoundIsError === true) {
                     throw new \OutOfBoundsException("Path not found: " . implode('.', $path) . ", key {$key} did not resolve");
@@ -51,18 +51,18 @@ class PropertyAccessor
      */
     public static function setByPath(&$subject, array $path, $value)
     {
-        $ptr =& $subject;
+        $ptr = & $subject;
         foreach ($path as $key) {
             if (is_object($ptr)) {
                 if (!isset($ptr->$key)) {
                     $ptr->$key = array();
                 }
-                $ptr =& $ptr->$key;
+                $ptr = & $ptr->$key;
             } elseif (is_array($ptr)) {
                 if (!isset($ptr[$key])) {
                     $ptr[$key] = array();
                 }
-                $ptr =& $ptr[$key];
+                $ptr = & $ptr[$key];
             }
         }
         $ptr = $value;

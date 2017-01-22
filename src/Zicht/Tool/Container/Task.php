@@ -7,7 +7,6 @@
 namespace Zicht\Tool\Container;
 
 use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Node;
 use Zicht\Tool\Util;
 
 /**
@@ -214,7 +213,7 @@ class Task extends Declaration
         $ret = array();
         if (!empty($this->taskDef['opts'])) {
             foreach ($this->taskDef['opts'] as $opt) {
-                $ret[]= $opt->name;
+                $ret[] = $opt->name;
             }
         }
         return $ret;

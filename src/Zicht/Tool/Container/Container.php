@@ -9,16 +9,13 @@ namespace Zicht\Tool\Container;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-
 use Zicht\Tool\Debug;
 use Zicht\Tool\PropertyPath\PropertyAccessor;
 use Zicht\Tool\PluginInterface;
 use Zicht\Tool\Script\Compiler as ScriptCompiler;
-use Zicht\Tool\Script;
 use Zicht\Tool\Util;
 use Zicht\Tool\Script\Parser\Expression as ExpressionParser;
 use Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
-
 use UnexpectedValueException;
 
 /**
@@ -54,7 +51,7 @@ class Container
         $this->output = $output ?: new NullOutput();
 
         $this->values = array(
-            'SHELL'         => function($z) {
+            'SHELL'         => function ($z) {
                 return '/bin/bash -e' . ($z->has('DEBUG') && $z->get('DEBUG') ? 'x' : '');
             },
             'TIMEOUT'       => null,
@@ -63,11 +60,11 @@ class Container
         // gather the options for nested z calls.
         $this->set(
             array('z', 'opts'),
-            function($z) {
+            function ($z) {
                 $opts = array();
                 foreach (array('FORCE', 'VERBOSE', 'EXPLAIN', 'DEBUG') as $opt) {
                     if ($z->has($opt) && $z->get($opt)) {
-                        $opts[]= '--' . strtolower($opt);
+                        $opts[] = '--' . strtolower($opt);
                     }
                 }
                 return join(' ', $opts);
@@ -80,10 +77,10 @@ class Container
                 return stream_get_contents(STDIN);
             }
         );
-        $this->fn('confirm', function() {
+        $this->fn('confirm', function () {
             return false;
         });
-        $this->set('cwd',  getcwd());
+        $this->set('cwd', getcwd());
         $this->set('user', getenv('USER'));
 
 
@@ -91,7 +88,7 @@ class Container
         // string functions
         $this->fn(
             'cat',
-            function() {
+            function () {
                 return join('', func_get_args());
             }
         );
@@ -106,7 +103,7 @@ class Container
         $this->fn('ltrim');
         $this->fn('rtrim');
         $this->fn('sprintf');
-        $this->fn(array('safename'), function($fn) {
+        $this->fn(array('safename'), function ($fn) {
             return preg_replace('/[^a-z0-9]+/', '-', $fn);
         });
         
@@ -119,7 +116,7 @@ class Container
         $this->fn('mtime', 'filemtime');
         $this->fn('atime', 'fileatime');
         $this->fn('ctime', 'filectime');
-        $this->fn('escape', function($value) {
+        $this->fn('escape', function ($value) {
             if (is_array($value)) {
                 return array_map('escapeshellarg', $value);
             }
@@ -127,11 +124,11 @@ class Container
         });
         $this->fn(
             'path',
-            function() {
+            function () {
                 return join(
                     "/",
                     array_map(
-                        function($el) {
+                        function ($el) {
                             return rtrim($el, "/");
                         },
                         array_filter(func_get_args())
@@ -145,7 +142,7 @@ class Container
         $this->fn('join', 'implode');
         $this->fn('keys', 'array_keys');
         $this->fn('values', 'array_values');
-        $this->fn('range', function() {
+        $this->fn('range', function () {
             if (func_num_args() > 1) {
                 return range(func_get_arg(1), func_get_arg(0));
             }
@@ -167,16 +164,16 @@ class Container
         $this->fn('str', array($this, 'str'));
         $this->fn(
             array('url', 'host'),
-            function($url) {
+            function ($url) {
                 return parse_url($url, PHP_URL_HOST);
             }
         );
-        $this->decl(array('now'), function() {
+        $this->decl(array('now'), function () {
             return date('YmdHis');
         });
 
         $exitCode = self::ABORT_EXIT_CODE;
-        $this->decl(array('abort'), function() use($exitCode) {
+        $this->decl(array('abort'), function () use($exitCode) {
             return 'exit ' . $exitCode;
         });
     }
@@ -200,7 +197,7 @@ class Container
      * @param array $context
      * @param array $path
      * @param bool $require
-     * @return mixed
+     * @return string
      *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
@@ -222,7 +219,7 @@ class Container
      *
      * @param array $id
      * @param bool $required
-     * @return mixed
+     * @return string
      *
      * @throws \RuntimeException
      * @throws CircularReferenceException
@@ -234,7 +231,7 @@ class Container
         try {
             if (in_array($id, $this->resolutionStack)) {
                 $path = array_map(
-                    function($a) {
+                    function ($a) {
                         return join('.', $a);
                     },
                     $this->resolutionStack
@@ -360,7 +357,7 @@ class Container
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException("Passed declaration is not callable");
         }
-        $this->set($id, function(Container $c) use($callable, $id) {
+        $this->set($id, function (Container $c) use($callable, $id) {
             Debug::enterScope(join('.', (array)$id));
             if (null !== ($value = call_user_func($callable, $c))) {
                 $c->set($id, $value);
@@ -389,11 +386,11 @@ class Container
      * @param string $expression
      * @param string &$code
      *
-     * @return mixed
+     * @return string
      */
     public function evaluate($expression, &$code = null)
     {
-        $exprcompiler  = new ScriptCompiler(new ExpressionParser(), new ExpressionTokenizer());
+        $exprcompiler = new ScriptCompiler(new ExpressionParser(), new ExpressionTokenizer());
 
         $z = $this;
         $_value = null;
@@ -496,7 +493,7 @@ class Container
      * Execute a command. This is a wrapper for 'exec', so that a task prefixed with '@' can be passed as well.
      *
      * @param string $cmd
-     * @return int
+     * @return string|null
      */
     public function cmd($cmd)
     {
@@ -540,7 +537,7 @@ class Container
             $allScalar = function ($a, $b) {
                 return $a && is_scalar($b);
             };
-            if (! array_reduce($value, $allScalar, true)) {
+            if (!array_reduce($value, $allScalar, true)) {
                 throw new UnexpectedValueException("Unexpected complex type " . Util::toPhp($value));
             }
             return join(' ', $value);
@@ -557,7 +554,7 @@ class Container
      */
     public function addPlugin(PluginInterface $plugin)
     {
-        $this->plugins[]= $plugin;
+        $this->plugins[] = $plugin;
         $plugin->setContainer($this);
     }
 
@@ -570,7 +567,7 @@ class Container
      */
     public function addCommand(Command $command)
     {
-        $this->commands[]= $command;
+        $this->commands[] = $command;
     }
 
 

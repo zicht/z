@@ -46,11 +46,11 @@ class TaskCommand extends BaseCommand
         $this->setHelp(trim($help));
 
         foreach ($arguments as $name => $required) {
-            $mode  = $required ? InputArgument::REQUIRED : InputArgument::OPTIONAL;
+            $mode = $required ? InputArgument::REQUIRED : InputArgument::OPTIONAL;
 
             if ($multiple = ('[]' === substr($name, -2))) {
                 $name = substr($name, 0, -2);
-                $mode |=  InputArgument::IS_ARRAY;
+                $mode |= InputArgument::IS_ARRAY;
             }
 
             $this->addArgument($name, $mode);
@@ -69,6 +69,10 @@ class TaskCommand extends BaseCommand
         }
     }
 
+    /**
+     * @param string $shortcut
+     * @param string $help
+     */
     public function addOption($name, $shortcut = null, $mode = null, $help = null, $default = null)
     {
         $helpTag = ($mode === InputOption::VALUE_NONE) ? "--$name" : "--$name=" . strtoupper($name);
@@ -104,6 +108,11 @@ class TaskCommand extends BaseCommand
     }
 
 
+    /**
+     * @param string $name
+     *
+     * @return string
+     */
     protected function nameToVar($name)
     {
         return str_replace('-', '_', $name);
@@ -121,9 +130,9 @@ class TaskCommand extends BaseCommand
             $i = 0;
             $ret = preg_replace_callback(
                 '/\[--(no-)?' . $name . '\]/',
-                function() use(&$i, $name) {
-                    if ($i ++ == 0) {
-                        return '[--[no|]-' . $name .']';
+                function () use(&$i, $name) {
+                    if ($i++ == 0) {
+                        return '[--[no|]-' . $name . ']';
                     }
                     return '';
                 },
@@ -143,10 +152,10 @@ class TaskCommand extends BaseCommand
     protected function configure()
     {
         $this
-            ->addOption('explain',  '',     InputOption::VALUE_NONE,        'Explains the commands that would be executed.')
-            ->addOption('force',    'f',    InputOption::VALUE_NONE,        'Force execution of otherwise skipped tasks.')
-            ->addOption('plugin',   '',     InputOption::VALUE_REQUIRED,    'Load additional plugins on-the-fly')
-            ->addOption('debug',    '',     InputOption::VALUE_NONE,        "Set the debug flag")
+            ->addOption('explain', '', InputOption::VALUE_NONE, 'Explains the commands that would be executed.')
+            ->addOption('force', 'f', InputOption::VALUE_NONE, 'Force execution of otherwise skipped tasks.')
+            ->addOption('plugin', '', InputOption::VALUE_REQUIRED, 'Load additional plugins on-the-fly')
+            ->addOption('debug', '', InputOption::VALUE_NONE, "Set the debug flag")
         ;
     }
 

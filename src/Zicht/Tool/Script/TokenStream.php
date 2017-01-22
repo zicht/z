@@ -39,7 +39,7 @@ class TokenStream
      */
     public function next()
     {
-        $this->ptr ++;
+        $this->ptr++;
     }
 
     /**
@@ -49,7 +49,7 @@ class TokenStream
      */
     public function hasNext()
     {
-        return $this->ptr < count($this->tokenList) -1;
+        return $this->ptr < count($this->tokenList) - 1;
     }
 
 
@@ -95,7 +95,7 @@ class TokenStream
      *
      * @param string $type
      * @param string $value
-     * @return mixed
+     * @return boolean
      */
     public function match($type, $value = null)
     {

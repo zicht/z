@@ -24,7 +24,7 @@ class Call extends Branch
     public function __construct($function)
     {
         parent::__construct();
-        $this->nodes[]= $function;
+        $this->nodes[] = $function;
     }
 
     /**
