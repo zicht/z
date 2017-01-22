@@ -265,7 +265,7 @@ class Container
     /**
      * Set the value at the specified path
      *
-     * @param array $path
+     * @param array|string $path
      * @param mixed $value
      * @return void
      *
@@ -313,7 +313,7 @@ class Container
     /**
      * Set a function at the specified path.
      *
-     * @param array $id
+     * @param array|string $id
      * @param callable $callable
      * @param bool $needsContainer
      * @return void
@@ -349,7 +349,7 @@ class Container
      * Does a declaration, i.e., the first time the declaration is called, it's resulting value overwrites the
      * declaration.
      *
-     * @param array $id
+     * @param array|string $id
      * @param callable $callable
      * @return void
      *

@@ -39,6 +39,8 @@ class Application extends BaseApplication
 EOSTR;
 
     protected $container = null;
+    protected $loader = null;
+    protected $plugins = array();
 
 
     /**
@@ -53,7 +55,6 @@ EOSTR;
         parent::__construct($name, (string)$version);
         $this->setDefaultCommand('z:list');
         $this->loader = $loader;
-        $this->plugins = array();
     }
 
 

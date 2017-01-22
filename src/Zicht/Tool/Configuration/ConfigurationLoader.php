@@ -18,8 +18,6 @@ use Zicht\Version\Version;
  */
 class ConfigurationLoader
 {
-    protected $sourceFiles = array();
-
     /**
      * Create the configuration loader based the current shell environment variables.
      *
@@ -47,6 +45,13 @@ class ConfigurationLoader
         );
     }
 
+    protected $sourceFiles = array();
+    protected $plugins = array();
+    protected $configFilename = '';
+    protected $configLocator = '';
+    protected $loader = '';
+
+
 
     /**
      * Construct the loader.
@@ -60,7 +65,6 @@ class ConfigurationLoader
         $this->configFilename = $configFilename;
         $this->configLocator = $configLocator;
         $this->loader = $loader;
-        $this->plugins = array();
     }
 
     /**
