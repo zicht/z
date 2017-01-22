@@ -73,7 +73,9 @@ class FeatureContext implements Context
         $this->thereIsFile($file, $string);
         // this is necessary when the binary is inside a path that contains spaces.
         // A shebang path cannot contain spaces... whoa.
-        @unlink("/tmp/z-interpreter");
+        if (file_exists("/tmp/z-interpreter")) {
+            unlink("/tmp/z-interpreter");
+        }
         symlink($this->zBinaryPath, "/tmp/z-interpreter");
         file_put_contents($file, "#!/tmp/z-interpreter -\n\n" . file_get_contents($file));
         chmod($file, 0755);

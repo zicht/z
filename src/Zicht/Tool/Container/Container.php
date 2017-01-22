@@ -10,6 +10,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Zicht\Tool\Debug;
+use Zicht\Tool\Output\PrefixFormatter;
 use Zicht\Tool\PropertyPath\PropertyAccessor;
 use Zicht\Tool\PluginInterface;
 use Zicht\Tool\Script\Compiler as ScriptCompiler;
@@ -182,7 +183,7 @@ class Container
     /**
      * Return the raw context value at the specified path.
      *
-     * @param array $path
+     * @param array|string $path
      * @return mixed
      */
     public function get($path)
@@ -217,7 +218,7 @@ class Container
      * Resolve the specified path. If the resulting value is a Closure, it's assumed a declaration and therefore
      * executed
      *
-     * @param array $id
+     * @param array|string $id
      * @param bool $required
      * @return string
      *
@@ -460,6 +461,21 @@ class Container
         return call_user_func_array($service[0], $args);
     }
 
+    /**
+     * Helper to set prefix if the output if PrefixFormatter
+     *
+     * @param string $prefix
+     * @return void
+     */
+    private function setOutputPrefix($prefix)
+    {
+        if (!($this->output->getFormatter() instanceof PrefixFormatter)) {
+            return;
+        }
+
+        $this->output->getFormatter()->prefix = $prefix;
+    }
+
 
     /**
      * Executes a script snippet using the 'executor' service.
@@ -470,9 +486,10 @@ class Container
     public function exec($cmd)
     {
         if (trim($cmd)) {
-            $this->output->getFormatter()->prefix = '';
+            $this->setOutputPrefix('');
+
             if ($this->resolve('DEBUG')) {
-                $this->output->getFormatter()->prefix = '[' . join('::', Debug::$scope) . '] ';
+                $this->setOutputPrefix('[' . join('::', Debug::$scope) . '] ');
             }
 
             if ($this->resolve('EXPLAIN')) {
@@ -622,7 +639,7 @@ class Container
      */
     public function push($varName, $tail)
     {
-        if (!$this->has($varName)) {
+        if (false === $this->has($varName)) {
             $this->set($varName, null);
         }
         if (!isset($this->varStack[json_encode($varName)])) {

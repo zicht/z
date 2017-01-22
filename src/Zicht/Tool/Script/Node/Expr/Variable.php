@@ -27,7 +27,6 @@ class Variable implements Node
      * Constructor.
      *
      * @param array $name
-     * @return void
      */
     public function __construct($name)
     {
