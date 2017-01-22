@@ -21,7 +21,7 @@ class ContainerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->container = new Container();
-        $this->container->output = $this->getMock('Symfony\Console\Output\OutputInterface');
+        $this->container->output = $this->createMock('Symfony\Component\Console\Output\OutputInterface');
     }
 
     /**

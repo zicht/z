@@ -19,8 +19,8 @@ class ConfigurationLoaderTest extends \PHPUnit_Framework_TestCase
 
     public function createLoader()
     {
-        $this->fileLoader = $this->getMock('Zicht\Tool\Configuration\FileLoader', array(), array($this->getMock('Symfony\Component\Config\FileLocator')));
-        $this->fileLocator = $this->getMock('Symfony\Component\Config\FileLocator');
+        $this->fileLoader = $this->createMock('Zicht\Tool\Configuration\FileLoader', array(), array($this->createMock('Symfony\Component\Config\FileLocator')));
+        $this->fileLocator = $this->createMock('Symfony\Component\Config\FileLocator');
         return new ConfigurationLoader(
             'file.yml',
             $this->fileLocator,
