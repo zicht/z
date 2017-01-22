@@ -29,7 +29,7 @@ final class Util
                 $ret = 'array(';
                 $i = 0;
                 foreach ($var as $key => $value) {
-                    if ($i ++ > 0) {
+                    if ($i++ > 0) {
                         $ret .= ', ';
                     }
                     if (!$skipKeys) {

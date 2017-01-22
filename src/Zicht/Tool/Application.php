@@ -6,16 +6,13 @@
 namespace Zicht\Tool;
 
 use Symfony\Component\Console\Application as BaseApplication;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Yaml\Yaml;
 use Zicht\Version\Version;
-
 use Zicht\Tool\Command as Cmd;
 use Zicht\Tool\Configuration\ConfigurationLoader;
 use Zicht\Tool\Container\Container;
@@ -47,7 +44,7 @@ EOSTR;
      * Construct the application with the specified name, version and config loader.
      *
      * @param string $name
-     * @param string $version
+     * @param Version $version
      * @param Configuration\ConfigurationLoader $loader
      */
     public function __construct($name, Version $version, ConfigurationLoader $loader = null)
@@ -88,12 +85,12 @@ EOSTR;
                     $output->writeln(
                         sprintf(
                             '%s%-40s %s',
-                            ($depth > 0 ? str_repeat('   ', $depth - 1) . '-> ' : ''),
+                            ($depth > 0 ? str_repeat('   ', $depth-1) . '-> ' : ''),
                             '<fg=red;options=bold>' . $e->getMessage() . '</fg=red;options=bold>',
-                            $depth == count($ancestry) -1 ? str_pad('[' . get_class($e) . ']', $maxLength + 15, ' ') : ''
+                            $depth == count($ancestry)-1 ? str_pad('[' . get_class($e) . ']', $maxLength+15, ' ') : ''
                         )
                     );
-                    $depth ++;
+                    $depth++;
                 }
             }
         }
@@ -157,10 +154,10 @@ EOSTR;
             array(
                 new InputArgument('command', InputArgument::REQUIRED, 'The command to execute'),
 
-                new InputOption('--help',           '-h', InputOption::VALUE_NONE, 'Display this help message.'),
-                new InputOption('--verbose',        '-v|vv|vvv', InputOption::VALUE_NONE, 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug'),
-                new InputOption('--no-cache',       '-c', InputOption::VALUE_NONE, 'Force recompilation of container code'),
-                new InputOption('--version',        '-V', InputOption::VALUE_NONE, 'Display this application version.'),
+                new InputOption('--help', '-h', InputOption::VALUE_NONE, 'Display this help message.'),
+                new InputOption('--verbose', '-v|vv|vvv', InputOption::VALUE_NONE, 'Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug'),
+                new InputOption('--no-cache', '-c', InputOption::VALUE_NONE, 'Force recompilation of container code'),
+                new InputOption('--version', '-V', InputOption::VALUE_NONE, 'Display this application version.'),
             )
         );
     }
@@ -196,10 +193,10 @@ EOSTR;
 
         $container->output = $output;
 
-        $container->set('VERBOSE',  $input->hasParameterOption(array('--verbose', '-v')));
-        $container->set('FORCE',    $input->hasParameterOption(array('--force', '-f')));
-        $container->set('EXPLAIN',  $input->hasParameterOption(array('--explain')));
-        $container->set('DEBUG',    $input->hasParameterOption(array('--debug')));
+        $container->set('VERBOSE', $input->hasParameterOption(array('--verbose', '-v')));
+        $container->set('FORCE', $input->hasParameterOption(array('--force', '-f')));
+        $container->set('EXPLAIN', $input->hasParameterOption(array('--explain')));
+        $container->set('DEBUG', $input->hasParameterOption(array('--debug')));
 
         foreach ($container->getCommands() as $task) {
             $this->add($task);

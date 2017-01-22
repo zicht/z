@@ -85,7 +85,7 @@ class Traverser
      */
     public function addVisitor($callable, $condition, $when = self::BEFORE)
     {
-        $this->visitors[]= array($when, $condition, $callable);
+        $this->visitors[] = array($when, $condition, $callable);
 
         return $this;
     }
@@ -112,7 +112,7 @@ class Traverser
     private function doTraverse($node, $path = array())
     {
         foreach ($node as $name => $value) {
-            $path[]= $name;
+            $path[] = $name;
             $value = $this->doVisit($path, $value, self::BEFORE);
 
             if (is_array($value)) {

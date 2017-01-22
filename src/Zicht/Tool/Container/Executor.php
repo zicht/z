@@ -7,7 +7,6 @@
 namespace Zicht\Tool\Container;
 
 use Symfony\Component\Process\Process;
-use Symfony\Component\Process\ProcessBuilder;
 
 /**
  * Runs the commands in the shell.
@@ -30,6 +29,7 @@ class Executor
      *
      * @param string $cmd
      * @param null &$captureOutput
+     * @param string $captureOutput
      * @return int
      *
      * @throws ExecutionAbortedException
