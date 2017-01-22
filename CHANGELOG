@@ -1,3 +1,6 @@
+2.0.9
+* Only codestyle fixes and cleanup
+
 2.0.8
 * Fixes E_STRICT warnings (php7 compatibility)
 * Removed local mirror data from composer.lock
