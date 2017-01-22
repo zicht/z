@@ -26,7 +26,7 @@ class SetNode extends Branch
     public function __construct($name, $expr)
     {
         parent::__construct();
-        $this->nodes[0]= $expr;
+        $this->nodes[0] = $expr;
         $this->name = $name;
     }
 

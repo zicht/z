@@ -56,16 +56,16 @@ class Configuration implements ConfigurationInterface
                     ->prototype('array')
                         ->beforeNormalization()
                             ->ifTrue(
-                                function($in) {
+                                function ($in) {
                                     return
                                         is_string($in)
 
                                         // allow for 'lists' (skipping the 'do' key)
-                                     || (is_array($in) && range(0, count($in) -1) === array_keys($in));
+                                     || (is_array($in) && range(0, count($in) - 1) === array_keys($in));
                                 }
                             )
                             ->then(
-                                function($v) {
+                                function ($v) {
                                     return array('do' => $v);
                                 }
                             )
@@ -113,7 +113,7 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('do')
                                 ->beforeNormalization()
                                     ->ifString()->then($toArray)
-                                 ->end()
+                                    ->end()
                                 ->performNoDeepMerging()
                                 ->prototype('scalar')->end()
                                 ->defaultValue(array())

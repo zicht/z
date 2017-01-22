@@ -30,16 +30,16 @@ class Expression implements TokenizerInterface
 
             if (preg_match('/^(==|=~|<=?|>=?|!=?|\?|:|\|\||&&|xor\b|or\b|and\b|\.|\[|\]|\(|\)|\+|-|\/|\*)/', $substr, $m)) {
                 if ($m[0] == ')') {
-                    $depth --;
+                    $depth--;
                     if ($depth == 0) {
                         $ret[] = new Token(Token::EXPR_END, ')');
-                        $needle ++;
+                        $needle++;
                         break;
                     }
                 } elseif ($m[0] === '(') {
-                    $depth ++;
+                    $depth++;
                 }
-                $ret[]= new Token(Token::OPERATOR, $m[0]);
+                $ret[] = new Token(Token::OPERATOR, $m[0]);
                 $needle += strlen($m[0]);
             } elseif (preg_match('/^(true|false|in|as|null)\b/', $substr, $m)) {
                 $ret[] = new Token(Token::KEYWORD, $m[0]);
@@ -48,19 +48,19 @@ class Expression implements TokenizerInterface
                 $ret[] = new Token(Token::IDENTIFIER, $m[0]);
                 $needle += strlen($m[0]);
             } elseif (preg_match('/^\s+/', $substr, $m)) {
-                $ret[]= new Token(Token::WHITESPACE, $m[0]);
+                $ret[] = new Token(Token::WHITESPACE, $m[0]);
                 $needle += strlen($m[0]);
             } elseif (preg_match('/^([0-9]*.)?[0-9]+/', $substr, $m)) {
-                $ret[]= new Token(Token::NUMBER, $m[0]);
+                $ret[] = new Token(Token::NUMBER, $m[0]);
                 $needle += strlen($m[0]);
             } elseif (preg_match('/^[\?,]/', $substr, $m)) {
                 $ret[] = new Token($m[0]);
-                $needle ++;
+                $needle++;
             } elseif ($string{$needle} == '"') {
                 $strData = '';
 
                 $escape = false;
-                for ($j = $needle +1; $j < $len; $j ++) {
+                for ($j = $needle + 1; $j < $len; $j++) {
                     $ch = $string{$j};
 
                     if ($ch == '\\') {
@@ -69,7 +69,7 @@ class Expression implements TokenizerInterface
                         if ($escape) {
                             $escape = false;
                         } else {
-                            $j ++;
+                            $j++;
                             break;
                         }
                     } else {
@@ -91,7 +91,7 @@ class Expression implements TokenizerInterface
                         }
                     }
                 }
-                $ret[]= new Token(Token::STRING, $strData);
+                $ret[] = new Token(Token::STRING, $strData);
                 $needle = $j;
             }
             if ($before === $needle) {

@@ -105,7 +105,7 @@ class Packager
         return realpath($targetFile);
     }
 
-    private static $HEADER =<<<EOHEADER
+    private static $HEADER = <<<EOHEADER
 /**
  * This file was built with the Z packager. For more information,
  * visit the Z website at http://z.zicht.nl/, or contact gerard@zicht.nl

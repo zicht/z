@@ -7,6 +7,7 @@ namespace Zicht\Tool\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Zicht\Tool\Container\Container;
+use Zicht\Tool\Application;
 
 /**
  * Base command containing a reference to the container
@@ -18,6 +19,12 @@ class BaseCommand extends Command
      */
     protected function getContainer()
     {
+        $app = $this->getApplication();
+
+        if (!($app instanceof Application)) {
+            throw new \UnexpectedValueException("This command can only be part of " . Application::class);
+        }
+        
         return $this->getApplication()->getContainer();
     }
 }

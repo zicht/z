@@ -12,7 +12,7 @@ class FileLoaderTest extends \PHPUnit_Framework_TestCase
 {
     function testLoadWithPlugins()
     {
-        $locator = $this->getMock('Symfony\Component\Config\FileLocator');
+        $locator = $this->createMock('Symfony\Component\Config\FileLocator');
         $loader = new \Zicht\Tool\Configuration\FileLoader($locator);
         $locator->expects($this->at(0))->method('locate')->with('valid/Plugin.php')->will($this->returnValue(
             __DIR__ . '/../assets/plugins/valid/Plugin.php'
@@ -31,7 +31,7 @@ EOSTR;
      */
     function testInvalidPluginWillThrowInvalidArgumentException()
     {
-        $locator = $this->getMock('Symfony\Component\Config\FileLocator');
+        $locator = $this->createMock('Symfony\Component\Config\FileLocator');
         $loader = new \Zicht\Tool\Configuration\FileLoader($locator);
         $locator->expects($this->at(0))->method('locate')->with('invalid/Plugin.php')->will($this->throwException(new \InvalidArgumentException()));
         $locator->expects($this->at(1))->method('locate')->with('invalid/z.yml')->will($this->throwException(new \InvalidArgumentException()));
@@ -44,7 +44,7 @@ EOSTR;
 
     function testLoadWithPluginsWillLoadZFileOfPlugin()
     {
-        $locator = $this->getMock('Symfony\Component\Config\FileLocator');
+        $locator = $this->createMock('Symfony\Component\Config\FileLocator');
         $loader = new \Zicht\Tool\Configuration\FileLoader($locator);
         $locator->expects($this->at(0))->method('locate')->with('valid/Plugin.php')->will($this->returnValue(
             __DIR__ . '/../assets/plugins/valid/Plugin.php'
@@ -63,7 +63,7 @@ EOSTR;
 
     function testLoadWithImports()
     {
-        $locator = $this->getMock('Symfony\Component\Config\FileLocator');
+        $locator = $this->createMock('Symfony\Component\Config\FileLocator');
         $loader = new \Zicht\Tool\Configuration\FileLoader($locator);
         $locator->expects($this->at(0))->method('locate')->with('another/file.yml')->will($this->returnValue(
             __DIR__ . '/../assets/import/import.yml'

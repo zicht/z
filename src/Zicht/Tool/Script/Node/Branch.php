@@ -38,6 +38,6 @@ abstract class Branch implements Node
      */
     public function append(Node $node)
     {
-        $this->nodes[]= $node;
+        $this->nodes[] = $node;
     }
 }

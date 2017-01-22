@@ -25,11 +25,11 @@ final class Util
     {
         switch (gettype($var)) {
             case 'array':
-                $skipKeys = (range(0, count($var)-1) === array_keys($var));
+                $skipKeys = (range(0, count($var) - 1) === array_keys($var));
                 $ret = 'array(';
                 $i = 0;
                 foreach ($var as $key => $value) {
-                    if ($i ++ > 0) {
+                    if ($i++ > 0) {
                         $ret .= ', ';
                     }
                     if (!$skipKeys) {

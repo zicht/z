@@ -1,15 +1,20 @@
 <?php
 
 use Behat\Behat\Context\Context;
-use Behat\Behat\Context\SnippetAcceptingContext;
 use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
 
 /**
  * Defines application features from the specific context.
  */
-class FeatureContext implements Context, SnippetAcceptingContext
+class FeatureContext implements Context
 {
+    private $testDir;
+    private $zBinary;
+    private $zBinaryPath;
+    private $packageBinary;
+    private $response;
+
+
     /**
      * Initializes context.
      *
@@ -68,7 +73,9 @@ class FeatureContext implements Context, SnippetAcceptingContext
         $this->thereIsFile($file, $string);
         // this is necessary when the binary is inside a path that contains spaces.
         // A shebang path cannot contain spaces... whoa.
-        @unlink("/tmp/z-interpreter");
+        if (file_exists("/tmp/z-interpreter")) {
+            unlink("/tmp/z-interpreter");
+        }
         symlink($this->zBinaryPath, "/tmp/z-interpreter");
         file_put_contents($file, "#!/tmp/z-interpreter -\n\n" . file_get_contents($file));
         chmod($file, 0755);
