@@ -29,6 +29,7 @@
     "extra": {
     },
     "require-dev": {
-        "behat/behat": "^3.0"
+        "behat/behat": "^3.0",
+        "phpunit/phpunit": "^5.7"
     }
 }
