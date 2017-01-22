@@ -47,9 +47,9 @@ class ConfigurationLoader
 
     protected $sourceFiles = array();
     protected $plugins = array();
-    protected $configFilename = '';
-    protected $configLocator = '';
-    protected $loader = '';
+    protected $configFilename;
+    protected $configLocator;
+    protected $loader;
 
 
 
