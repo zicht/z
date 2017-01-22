@@ -91,7 +91,7 @@ class ConfigurationLoader
         Debug::enterScope('config');
         Debug::enterScope('load');
         try {
-            $zfiles = $this->configLocator->locate($this->configFilename, null, false);
+            $zfiles = (array)$this->configLocator->locate($this->configFilename, null, false);
         } catch (\InvalidArgumentException $e) {
             $zfiles = array();
         }
