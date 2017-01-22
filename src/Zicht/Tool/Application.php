@@ -47,7 +47,7 @@ EOSTR;
      * Construct the application with the specified name, version and config loader.
      *
      * @param string $name
-     * @param string $version
+     * @param Version $version
      * @param Configuration\ConfigurationLoader $loader
      */
     public function __construct($name, Version $version, ConfigurationLoader $loader = null)
