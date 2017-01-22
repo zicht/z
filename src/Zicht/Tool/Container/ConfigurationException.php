@@ -7,7 +7,7 @@
 namespace Zicht\Tool\Container;
 
 use Symfony\Component\Console\Output\OutputInterface;
-use Exception;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Exception wrapper for more verbosity in the config.
@@ -17,7 +17,7 @@ class ConfigurationException extends \RuntimeException implements VerboseExcepti
     /**
      * @{inheritDoc}
      */
-    public function __construct($message = "", $code = 0, Exception $previous = null, array $config = null)
+    public function __construct($message = "", $code = 0, \Exception $previous = null, array $config = null)
     {
         parent::__construct($message, $code, $previous);
         $this->config = $config;
@@ -28,10 +28,6 @@ class ConfigurationException extends \RuntimeException implements VerboseExcepti
      */
     public function output(OutputInterface $output)
     {
-        ob_start();
-        var_dump($this->config);
-        $dmp = ob_get_clean();
-
-        $output->writeln("Source configuration:\n" . $dmp);
+        $output->writeln("Source configuration:\n" . Yaml::dump($this->config));
     }
 }
