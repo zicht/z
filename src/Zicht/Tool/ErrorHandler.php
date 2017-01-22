@@ -16,6 +16,12 @@ use Zicht\Tool\Container\ExecutionAbortedException;
  */
 class ErrorHandler
 {
+    private $input;
+    private $output;
+    private $dialog;
+    private $repeating = array();
+    private $continueAlways = false;
+
     /**
      * Constructor
      *
@@ -26,9 +32,7 @@ class ErrorHandler
     {
         $this->input = $input;
         $this->output = $output;
-        $this->repeating = array();
         $this->dialog = new DialogHelper();
-        $this->continueAlways = false;
     }
 
     /**
@@ -86,7 +90,6 @@ class ErrorHandler
                     break;
                 case E_RECOVERABLE_ERROR:
                     throw new \ErrorException($errstr);
-                    break;
             }
         }
     }
