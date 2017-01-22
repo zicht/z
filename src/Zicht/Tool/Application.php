@@ -6,16 +6,13 @@
 namespace Zicht\Tool;
 
 use Symfony\Component\Console\Application as BaseApplication;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Yaml\Yaml;
 use Zicht\Version\Version;
-
 use Zicht\Tool\Command as Cmd;
 use Zicht\Tool\Configuration\ConfigurationLoader;
 use Zicht\Tool\Container\Container;
@@ -47,7 +44,7 @@ EOSTR;
      * Construct the application with the specified name, version and config loader.
      *
      * @param string $name
-     * @param string $version
+     * @param Version $version
      * @param Configuration\ConfigurationLoader $loader
      */
     public function __construct($name, Version $version, ConfigurationLoader $loader = null)
