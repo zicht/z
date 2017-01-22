@@ -40,7 +40,7 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
 
         $zConfig = $treeBuilder->root('z');
-        $toArray = function ($s) {
+        $toArray = function($s) {
             return array($s);
         };
 
@@ -61,7 +61,7 @@ class Configuration implements ConfigurationInterface
                                         is_string($in)
 
                                         // allow for 'lists' (skipping the 'do' key)
-                                     || (is_array($in) && range(0, count($in) -1) === array_keys($in));
+                                     || (is_array($in) && range(0, count($in)-1) === array_keys($in));
                                 }
                             )
                             ->then(
@@ -113,7 +113,7 @@ class Configuration implements ConfigurationInterface
                             ->arrayNode('do')
                                 ->beforeNormalization()
                                     ->ifString()->then($toArray)
-                                 ->end()
+                                    ->end()
                                 ->performNoDeepMerging()
                                 ->prototype('scalar')->end()
                                 ->defaultValue(array())

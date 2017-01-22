@@ -25,7 +25,7 @@ class Packager
     public function __construct($root, array $options)
     {
         $this->srcRoot = $root;
-        $this->options = $options + array(
+        $this->options = $options+array(
             'config-filename'   => 'z.yml',
             'app-name'          => 'The Zicht Tool',
             'app-version'       => 'development build (' . date('r') . ')',
@@ -105,7 +105,7 @@ class Packager
         return realpath($targetFile);
     }
 
-    private static $HEADER =<<<EOHEADER
+    private static $HEADER = <<<EOHEADER
 /**
  * This file was built with the Z packager. For more information,
  * visit the Z website at http://z.zicht.nl/, or contact gerard@zicht.nl

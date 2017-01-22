@@ -54,7 +54,7 @@ class BuildCommand extends Command
         $result = $packager->package($input->getArgument('file'), $input->getOption('force'));
 
         if ($output->getVerbosity() > OutputInterface::VERBOSITY_NORMAL) {
-            $output->writeln(sprintf("Built {$result} in %.2f seconds", microtime(true) -$t));
+            $output->writeln(sprintf("Built {$result} in %.2f seconds", microtime(true)-$t));
         }
     }
 }

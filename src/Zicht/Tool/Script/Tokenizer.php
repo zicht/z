@@ -45,11 +45,11 @@ class Tokenizer implements TokenizerInterface
                 // match either '$(' or '@(' and mark that as an EXPR_START token.
                 if (preg_match('/^([$@])\(/', $substr, $m)) {
                     $needle += strlen($m[0]);
-                    $ret[]= new Token(Token::EXPR_START, $m[0]);
+                    $ret[] = new Token(Token::EXPR_START, $m[0]);
 
                     // record expression depth, to make sure the usage of parentheses inside the expression doesn't
                     // break tokenization (e.g. '$( ("foo") )'
-                    $depth ++;
+                    $depth++;
                 } else {
                     // store the current token in a temp var for appending, in case it's a DATA token
                     $token = end($ret);
@@ -69,7 +69,7 @@ class Tokenizer implements TokenizerInterface
                         $token->value .= $value;
                         unset($token);
                     } else {
-                        $ret[]= new Token(Token::DATA, $value);
+                        $ret[] = new Token(Token::DATA, $value);
                     }
                 }
             } else {

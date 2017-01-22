@@ -9,16 +9,13 @@ namespace Zicht\Tool\Container;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-
 use Zicht\Tool\Debug;
 use Zicht\Tool\PropertyPath\PropertyAccessor;
 use Zicht\Tool\PluginInterface;
 use Zicht\Tool\Script\Compiler as ScriptCompiler;
-use Zicht\Tool\Script;
 use Zicht\Tool\Util;
 use Zicht\Tool\Script\Parser\Expression as ExpressionParser;
 use Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
-
 use UnexpectedValueException;
 
 /**
@@ -67,7 +64,7 @@ class Container
                 $opts = array();
                 foreach (array('FORCE', 'VERBOSE', 'EXPLAIN', 'DEBUG') as $opt) {
                     if ($z->has($opt) && $z->get($opt)) {
-                        $opts[]= '--' . strtolower($opt);
+                        $opts[] = '--' . strtolower($opt);
                     }
                 }
                 return join(' ', $opts);
@@ -76,14 +73,14 @@ class Container
         $this->set(array('z', 'cmd'), $_SERVER['argv'][0]);
         $this->decl(
             'STDIN',
-            function () {
+            function() {
                 return stream_get_contents(STDIN);
             }
         );
         $this->fn('confirm', function() {
             return false;
         });
-        $this->set('cwd',  getcwd());
+        $this->set('cwd', getcwd());
         $this->set('user', getenv('USER'));
 
 
@@ -99,7 +96,7 @@ class Container
         $this->fn('str_replace', 'str_replace');
         $this->fn(
             'sha1',
-            function () {
+            function() {
                 return sha1(join("", func_get_args()));
             }
         );
@@ -156,7 +153,7 @@ class Container
 
         // -----------------------------------------------------------------
         // encoding / decoding
-        $this->fn('json_encode', function ($v) {
+        $this->fn('json_encode', function($v) {
             return json_encode($v, JSON_UNESCAPED_SLASHES);
         });
         $this->fn('json_decode');
@@ -200,7 +197,7 @@ class Container
      * @param array $context
      * @param array $path
      * @param bool $require
-     * @return mixed
+     * @return string
      *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
@@ -222,7 +219,7 @@ class Container
      *
      * @param array $id
      * @param bool $required
-     * @return mixed
+     * @return string
      *
      * @throws \RuntimeException
      * @throws CircularReferenceException
@@ -389,11 +386,11 @@ class Container
      * @param string $expression
      * @param string &$code
      *
-     * @return mixed
+     * @return string
      */
     public function evaluate($expression, &$code = null)
     {
-        $exprcompiler  = new ScriptCompiler(new ExpressionParser(), new ExpressionTokenizer());
+        $exprcompiler = new ScriptCompiler(new ExpressionParser(), new ExpressionTokenizer());
 
         $z = $this;
         $_value = null;
@@ -496,7 +493,7 @@ class Container
      * Execute a command. This is a wrapper for 'exec', so that a task prefixed with '@' can be passed as well.
      *
      * @param string $cmd
-     * @return int
+     * @return string|null
      */
     public function cmd($cmd)
     {
@@ -537,10 +534,10 @@ class Container
     public function str($value)
     {
         if (is_array($value)) {
-            $allScalar = function ($a, $b) {
+            $allScalar = function($a, $b) {
                 return $a && is_scalar($b);
             };
-            if (! array_reduce($value, $allScalar, true)) {
+            if (!array_reduce($value, $allScalar, true)) {
                 throw new UnexpectedValueException("Unexpected complex type " . Util::toPhp($value));
             }
             return join(' ', $value);
@@ -557,7 +554,7 @@ class Container
      */
     public function addPlugin(PluginInterface $plugin)
     {
-        $this->plugins[]= $plugin;
+        $this->plugins[] = $plugin;
         $plugin->setContainer($this);
     }
 
@@ -570,7 +567,7 @@ class Container
      */
     public function addCommand(Command $command)
     {
-        $this->commands[]= $command;
+        $this->commands[] = $command;
     }
 
 

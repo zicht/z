@@ -11,7 +11,6 @@ use Zicht\Tool\Script\Node\Node;
 use Zicht\Tool\Script\Node\Task\OptNode;
 use Zicht\Tool\Script\Compiler;
 use Zicht\Tool\Script\Node\Task\SetNode;
-use Zicht\Tool\Script\Parser;
 use Zicht\Tool\Debug;
 use Zicht\Tool\Script\Parser\Expression as ExpressionParser;
 use Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
@@ -32,7 +31,7 @@ class ContainerBuilder
     {
         $this->config = $config;
 
-        $this->exprcompiler  = new Compiler(new ExpressionParser(), new ExpressionTokenizer());
+        $this->exprcompiler = new Compiler(new ExpressionParser(), new ExpressionTokenizer());
         $this->scriptcompiler = new Compiler();
     }
 
@@ -45,7 +44,7 @@ class ContainerBuilder
      */
     public function addExpressionPath($callable)
     {
-        $this->expressionPaths[]= $callable;
+        $this->expressionPaths[] = $callable;
     }
 
 
@@ -103,7 +102,7 @@ class ContainerBuilder
             function($path, $node) use($containerNode) {
                 $containerNode->append($node);
             },
-            function ($path, $node) {
+            function($path, $node) {
                 return $node instanceof Node;
             },
             Traverser::AFTER
@@ -188,7 +187,7 @@ class ContainerBuilder
      *
      * @param array $path
      * @param string $node
-     * @return \Zicht\Tool\Script\Node\Task\OptNode
+     * @return SetNode
      */
     public function createSetNode($path, $node)
     {
@@ -271,7 +270,7 @@ class ContainerBuilder
                 return
                     count($path) == 4
                     && $path[0] == 'tasks'
-                    && in_array($path[2], array('do', 'pre' ,'post'))
+                    && in_array($path[2], array('do', 'pre', 'post'))
                 ;
             },
             Traverser::BEFORE
