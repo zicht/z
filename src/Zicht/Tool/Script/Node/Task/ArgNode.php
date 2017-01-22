@@ -30,7 +30,7 @@ class ArgNode extends Branch
     public function __construct($name, $expr, $conditional)
     {
         parent::__construct();
-        $this->nodes[0]= $expr;
+        $this->nodes[0] = $expr;
         $this->name = $name;
         if (substr($this->name, -2) === '[]') {
             $this->multiple = true;

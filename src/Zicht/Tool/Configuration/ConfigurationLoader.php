@@ -97,13 +97,13 @@ class ConfigurationLoader
         }
         foreach ($zfiles as $file) {
             Debug::enterScope($file);
-            $this->sourceFiles[]= $file;
+            $this->sourceFiles[] = $file;
             $this->loader->load($file);
             Debug::exitScope($file);
         }
         foreach ($this->loader->getPlugins() as $name => $file) {
             Debug::enterScope($file);
-            $this->sourceFiles[]= $file;
+            $this->sourceFiles[] = $file;
             $this->loadPlugin($name, $file);
             Debug::exitScope($file);
         }

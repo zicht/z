@@ -58,7 +58,7 @@ class ContainerCompiler
             }
         );
 
-        if (! ($ret instanceof Container)) {
+        if (!($ret instanceof Container)) {
             throw new \LogicException("The container must be returned by the compiler");
         }
         foreach ($this->plugins as $plugin) {
@@ -76,7 +76,7 @@ class ContainerCompiler
      */
     public function addPlugin(PluginInterface $p)
     {
-        $this->plugins[]= $p;
+        $this->plugins[] = $p;
     }
 
 

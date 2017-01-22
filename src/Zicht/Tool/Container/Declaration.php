@@ -23,7 +23,7 @@ class Declaration implements Node
      * Constructor.
      *
      * @param array $path
-     * @param mixed $value
+     * @param null|Node $value
      */
     public function __construct(array $path, Node $value = null)
     {

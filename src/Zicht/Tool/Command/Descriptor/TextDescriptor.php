@@ -3,7 +3,6 @@ namespace Zicht\Tool\Command\Descriptor;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Descriptor\TextDescriptor as BaseDescriptor;
@@ -37,12 +36,12 @@ class TextDescriptor extends BaseDescriptor
 
         $this->writeText('<comment>Usage:</comment>', $options);
         $this->writeText("\n");
-        $this->writeText(' '.$synopsis->getSynopsis(), $options);
+        $this->writeText(' ' . $synopsis->getSynopsis(), $options);
         $this->writeText("\n");
 
         if (count($command->getAliases()) > 0) {
             $this->writeText("\n");
-            $this->writeText('<comment>Aliases:</comment> <info>'.implode(', ', $command->getAliases()).'</info>', $options);
+            $this->writeText('<comment>Aliases:</comment> <info>' . implode(', ', $command->getAliases()) . '</info>', $options);
         }
 
         $this->writeText("\n");
@@ -50,7 +49,7 @@ class TextDescriptor extends BaseDescriptor
         if (count($internal->getOptions())) {
             $this->writeText("\n\n" . '<comment>Global options:</comment>' . "\n");
             $this->writeText(' Following global options are available for all task commands:');
-            $this->writeText(' ' . join(', ', array_map(function($o) { return $o->getName(); }, $internal->getOptions())));
+            $this->writeText(' ' . join(', ', array_map(function ($o) { return $o->getName(); }, $internal->getOptions())));
             $this->writeText(' Read the application help for more info' . "\n");
         }
         $this->writeText("\n");
@@ -58,7 +57,7 @@ class TextDescriptor extends BaseDescriptor
         if ($help = $command->getProcessedHelp()) {
             $this->writeText('<comment>Help:</comment>', $options);
             $this->writeText("\n");
-            $this->writeText(' '.str_replace("\n", "\n ", $help), $options);
+            $this->writeText(' ' . str_replace("\n", "\n ", $help), $options);
             $this->writeText("\n");
         }
 
@@ -70,7 +69,7 @@ class TextDescriptor extends BaseDescriptor
      * the former representing the options that are hidden.
      *
      * @param \Symfony\Component\Console\Input\InputDefinition $definition
-     * @return array
+     * @return InputDefinition[]
      */
     public function splitDefinition(InputDefinition $definition)
     {
@@ -115,7 +114,7 @@ class TextDescriptor extends BaseDescriptor
         foreach ($description->getNamespaces() as $namespace) {
             if (!$describedNamespace && ApplicationDescription::GLOBAL_NAMESPACE !== $namespace['id']) {
                 $this->writeText("\n");
-                $this->writeText('<comment>'.$namespace['id'].'</comment>', $options);
+                $this->writeText('<comment>' . $namespace['id'] . '</comment>', $options);
             }
 
             foreach ($namespace['commands'] as $name) {
