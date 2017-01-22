@@ -1,3 +1,5 @@
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/zicht/z/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/zicht/z/?branch=master)
+
 # Documentation #
 
 Read the docs in [the wiki](https://github.com/zicht/z/wiki)
