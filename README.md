@@ -1,4 +1,4 @@
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/zicht/z/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/zicht/z/?branch=master)
+[![Build Status](https://scrutinizer-ci.com/g/zicht/z/badges/build.png?b=master)](https://scrutinizer-ci.com/g/zicht/z/build-status/master) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/zicht/z/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/zicht/z/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/zicht/z/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/zicht/z/?branch=master) 
 
 # Documentation #
 
