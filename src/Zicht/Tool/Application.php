@@ -47,7 +47,7 @@ EOSTR;
      * @param Version $version
      * @param Configuration\ConfigurationLoader $loader
      */
-    public function __construct($name, Version $version, ConfigurationLoader $loader = null)
+    public function __construct($name = null, Version $version = null, ConfigurationLoader $loader = null)
     {
         parent::__construct($name, (string)$version);
         $this->setDefaultCommand('z:list');

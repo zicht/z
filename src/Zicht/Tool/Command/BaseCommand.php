@@ -12,7 +12,7 @@ use Zicht\Tool\Application;
 /**
  * Base command containing a reference to the container
  */
-class BaseCommand extends Command
+abstract class BaseCommand extends Command
 {
     /**
      * @return Container
