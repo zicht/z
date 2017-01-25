@@ -104,6 +104,10 @@ class TextDescriptor extends BaseDescriptor
         $this->writeText($application->getHelp(), $options);
         $this->writeText("\n\n");
 
+        $this->describeInputDefinition(new InputDefinition($application->getDefinition()->getOptions()), $options);
+        $this->writeText("\n");
+        $this->writeText("\n");
+
         if ($describedNamespace) {
             $this->writeText(sprintf("<comment>Available commands for the \"%s\" namespace:</comment>", $describedNamespace), $options);
         } else {

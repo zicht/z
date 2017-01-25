@@ -489,7 +489,7 @@ class Container
             $this->setOutputPrefix('');
 
             if ($this->resolve('DEBUG')) {
-                $this->setOutputPrefix('[' . join('::', Debug::$scope) . '] ');
+                $this->output->writeln('<comment># ' . join('::', Debug::$scope) . "</comment>");
             }
 
             if ($this->resolve('EXPLAIN')) {
