@@ -86,7 +86,7 @@ class Traverser
      */
     public function addVisitor($callable, $condition, $when = self::BEFORE)
     {
-        $this->visitors[]= array($when, $condition, $callable);
+        $this->visitors[] = array($when, $condition, $callable);
 
         return $this;
     }

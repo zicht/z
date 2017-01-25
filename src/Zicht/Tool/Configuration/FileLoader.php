@@ -37,7 +37,7 @@ class FileLoader extends BaseFileLoader
      * @var array
      */
     protected $plugins = array();
-    protected $pluginPaths  = array();
+    protected $pluginPaths = array();
     protected $sourceFiles = array();
 
     /**
@@ -78,7 +78,7 @@ class FileLoader extends BaseFileLoader
             $resource = null;
             $fileContents = $resource;
         } else {
-            $this->sourceFiles[]= $resource;
+            $this->sourceFiles[] = $resource;
             $fileContents = file_get_contents($resource);
         }
         Debug::enterScope('annotations');
@@ -181,7 +181,7 @@ class FileLoader extends BaseFileLoader
             $this->pluginPaths[$name] = dirname($this->plugins[$name]);
 
             $hasPlugin = true;
-            $this->sourceFiles[]= $this->plugins[$name];
+            $this->sourceFiles[] = $this->plugins[$name];
         } catch (\InvalidArgumentException $e) {
         }
 
@@ -198,7 +198,7 @@ class FileLoader extends BaseFileLoader
             }
 
             $hasZfile = true;
-            $this->sourceFiles[]= $zFileLocation;
+            $this->sourceFiles[] = $zFileLocation;
         } catch (\InvalidArgumentException $e) {
         }
 

@@ -9,7 +9,6 @@ namespace Zicht\Tool;
 use Symfony\Component\Console\Helper\DialogHelper;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputInterface;
-
 use Zicht\Tool\Container\ExecutionAbortedException;
 
 /**
@@ -17,6 +16,12 @@ use Zicht\Tool\Container\ExecutionAbortedException;
  */
 class ErrorHandler
 {
+    private $input;
+    private $output;
+    private $dialog;
+    private $repeating = array();
+    private $continueAlways = false;
+
     /**
      * Constructor
      *
@@ -27,9 +32,7 @@ class ErrorHandler
     {
         $this->input = $input;
         $this->output = $output;
-        $this->repeating = array();
         $this->dialog = new DialogHelper();
-        $this->continueAlways = false;
     }
 
     /**
@@ -46,7 +49,7 @@ class ErrorHandler
         if (in_array($errstr, $this->repeating)) {
             return;
         }
-        $this->repeating[]= $errstr;
+        $this->repeating[] = $errstr;
         if (
             error_reporting() & E_USER_DEPRECATED
             || error_reporting() & E_USER_NOTICE
@@ -87,7 +90,6 @@ class ErrorHandler
                     break;
                 case E_RECOVERABLE_ERROR:
                     throw new \ErrorException($errstr);
-                    break;
             }
         }
     }

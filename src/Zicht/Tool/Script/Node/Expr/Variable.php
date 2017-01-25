@@ -27,7 +27,6 @@ class Variable implements NodeInterface
      * Constructor.
      *
      * @param array $name
-     * @return void
      */
     public function __construct($name)
     {

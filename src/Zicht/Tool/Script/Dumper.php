@@ -32,12 +32,12 @@ class Dumper
 
                 foreach ($b->nodes as $n) {
                     if (null === $n) {
-                        $ret['nodes'][]= $n;
+                        $ret['nodes'][] = $n;
                     } else {
-                        if (! $n instanceof Node\NodeInterface) {
+                        if (!$n instanceof Node\NodeInterface) {
                             throw new \InvalidArgumentException("Invalid child node in " . Util::toPhp($path));
                         }
-                        $ret['nodes'][]= $this->getAst($n);
+                        $ret['nodes'][] = $this->getAst($n);
                     }
                 }
             }

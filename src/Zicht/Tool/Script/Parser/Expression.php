@@ -33,7 +33,7 @@ class Expression extends AbstractParser
      */
     public static $INFIX_BINARY = array(
         '==', '!=', '<=', '>=', '<', '>', '&&', '||', '=~',
-        '+', '*', '/',  '-'
+        '+', '*', '/', '-'
     );
 
 
@@ -140,7 +140,7 @@ class Expression extends AbstractParser
                         $ret->append($this->parse($stream));
                     }
 
-                    switch($type->value) {
+                    switch ($type->value) {
                         case '[':
                             $stream->expect(Token::OPERATOR, ']');
                             break;

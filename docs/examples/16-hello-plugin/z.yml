@@ -1,6 +1,0 @@
-plugins: ['plugins/say']
-
-tasks:
-    say:
-        do: [ @_say ]
-

@@ -9,16 +9,14 @@ namespace Zicht\Tool\Container;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
-
 use Zicht\Tool\Debug;
+use Zicht\Tool\Output\PrefixFormatter;
 use Zicht\Tool\PropertyPath\PropertyAccessor;
 use Zicht\Tool\PluginInterface;
 use Zicht\Tool\Script\Compiler as ScriptCompiler;
-use Zicht\Tool\Script;
 use Zicht\Tool\Util;
 use Zicht\Tool\Script\Parser\Expression as ExpressionParser;
 use Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
-
 use UnexpectedValueException;
 
 /**
@@ -54,7 +52,7 @@ class Container
         $this->output = $output ?: new NullOutput();
 
         $this->values = array(
-            'SHELL'         => function($z) {
+            'SHELL'         => function ($z) {
                 return '/bin/bash -e' . ($z->has('DEBUG') && $z->get('DEBUG') ? 'x' : '');
             },
             'TIMEOUT'       => null,
@@ -63,49 +61,75 @@ class Container
         // gather the options for nested z calls.
         $this->set(
             array('z', 'opts'),
-            function($z) {
+            function ($z) {
                 $opts = array();
                 foreach (array('FORCE', 'VERBOSE', 'EXPLAIN', 'DEBUG') as $opt) {
                     if ($z->has($opt) && $z->get($opt)) {
-                        $opts[]= '--' . strtolower($opt);
+                        $opts[] = '--' . strtolower($opt);
                     }
                 }
                 return join(' ', $opts);
             }
         );
         $this->set(array('z', 'cmd'), $_SERVER['argv'][0]);
-
-        $this->fn('sprintf');
-        $this->fn('is_file');
-        $this->fn('is_dir');
-        $this->fn('confirm', function() {
+        $this->decl(
+            'STDIN',
+            function () {
+                return stream_get_contents(STDIN);
+            }
+        );
+        $this->fn('confirm', function () {
             return false;
         });
-        $this->fn('keys', 'array_keys');
+        $this->set('cwd', getcwd());
+        $this->set('user', getenv('USER'));
+
+
+        // -----------------------------------------------------------------
+        // string functions
+        $this->fn(
+            'cat',
+            function () {
+                return join('', func_get_args());
+            }
+        );
+        $this->fn('trim');
+        $this->fn('str_replace', 'str_replace');
+        $this->fn(
+            'sha1',
+            function () {
+                return sha1(join("", func_get_args()));
+            }
+        );
+        $this->fn('ltrim');
+        $this->fn('rtrim');
+        $this->fn('sprintf');
+        $this->fn(array('safename'), function ($fn) {
+            return preg_replace('/[^a-z0-9]+/', '-', $fn);
+        });
+        
+        // -----------------------------------------------------------------
+        // I/O functions
+        $this->fn('basename');
+        $this->fn('dirname');
+        $this->fn('is_file');
+        $this->fn('is_dir');
         $this->fn('mtime', 'filemtime');
         $this->fn('atime', 'fileatime');
         $this->fn('ctime', 'filectime');
-        $this->fn('escape', function($value) {
+        $this->fn('escape', function ($value) {
             if (is_array($value)) {
                 return array_map('escapeshellarg', $value);
             }
             return escapeshellarg($value);
         });
-        $this->fn('join', 'implode');
-        $this->fn('str_replace', 'str_replace');
-        $this->fn('range', function() {
-            if (func_num_args() > 1) {
-                return range(func_get_arg(1), func_get_arg(0));
-            }
-            return range(1, func_get_arg(0));
-        });
         $this->fn(
             'path',
-            function() {
+            function () {
                 return join(
                     "/",
                     array_map(
-                        function($el) {
+                        function ($el) {
                             return rtrim($el, "/");
                         },
                         array_filter(func_get_args())
@@ -113,40 +137,53 @@ class Container
                 );
             }
         );
+        
+        // -----------------------------------------------------------------
+        // array functions
+        $this->fn('join', 'implode');
+        $this->fn('keys', 'array_keys');
+        $this->fn('values', 'array_values');
+        $this->fn('range', function () {
+            if (func_num_args() > 1) {
+                return range(func_get_arg(1), func_get_arg(0));
+            }
+            return range(1, func_get_arg(0));
+        });
+        $this->fn('slice', 'array_slice');
+
+
+        // -----------------------------------------------------------------
+        // encoding / decoding
+        $this->fn('json_encode', function ($v) {
+            return json_encode($v, JSON_UNESCAPED_SLASHES);
+        });
+        $this->fn('json_decode');
+
+        // -----------------------------------------------------------------
+        // other functions
         $this->fn('sh', array($this, 'helperExec'));
         $this->fn('str', array($this, 'str'));
         $this->fn(
             array('url', 'host'),
-            function($url) {
+            function ($url) {
                 return parse_url($url, PHP_URL_HOST);
             }
         );
-        $this->decl(array('now'), function() {
+        $this->decl(array('now'), function () {
             return date('YmdHis');
-        });
-        $this->fn(array('safename'), function($fn) {
-            return preg_replace('/[^a-z0-9]+/', '-', $fn);
         });
 
         $exitCode = self::ABORT_EXIT_CODE;
-        $this->decl(array('abort'), function() use($exitCode) {
+        $this->decl(array('abort'), function () use($exitCode) {
             return 'exit ' . $exitCode;
         });
-        $this->fn(
-            'cat',
-            function() {
-                return join('', func_get_args());
-            }
-        );
-        $this->set('cwd',  getcwd());
-        $this->set('user', getenv('USER'));
     }
 
 
     /**
      * Return the raw context value at the specified path.
      *
-     * @param array $path
+     * @param array|string $path
      * @return mixed
      */
     public function get($path)
@@ -161,7 +198,7 @@ class Container
      * @param array $context
      * @param array $path
      * @param bool $require
-     * @return mixed
+     * @return string
      *
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
@@ -181,9 +218,9 @@ class Container
      * Resolve the specified path. If the resulting value is a Closure, it's assumed a declaration and therefore
      * executed
      *
-     * @param array $id
+     * @param array|string $id
      * @param bool $required
-     * @return mixed
+     * @return string
      *
      * @throws \RuntimeException
      * @throws CircularReferenceException
@@ -195,7 +232,7 @@ class Container
         try {
             if (in_array($id, $this->resolutionStack)) {
                 $path = array_map(
-                    function($a) {
+                    function ($a) {
                         return join('.', $a);
                     },
                     $this->resolutionStack
@@ -226,7 +263,7 @@ class Container
     /**
      * Set the value at the specified path
      *
-     * @param array $path
+     * @param array|string $path
      * @param mixed $value
      * @return void
      *
@@ -274,7 +311,7 @@ class Container
     /**
      * Set a function at the specified path.
      *
-     * @param array $id
+     * @param array|string $id
      * @param callable $callable
      * @param bool $needsContainer
      * @return void
@@ -310,7 +347,7 @@ class Container
      * Does a declaration, i.e., the first time the declaration is called, it's resulting value overwrites the
      * declaration.
      *
-     * @param array $id
+     * @param array|string $id
      * @param callable $callable
      * @return void
      *
@@ -321,7 +358,7 @@ class Container
         if (!is_callable($callable)) {
             throw new \InvalidArgumentException("Passed declaration is not callable");
         }
-        $this->set($id, function(Container $c) use($callable, $id) {
+        $this->set($id, function (Container $c) use($callable, $id) {
             Debug::enterScope(join('.', (array)$id));
             if (null !== ($value = call_user_func($callable, $c))) {
                 $c->set($id, $value);
@@ -350,11 +387,11 @@ class Container
      * @param string $expression
      * @param string &$code
      *
-     * @return mixed
+     * @return string
      */
     public function evaluate($expression, &$code = null)
     {
-        $exprcompiler  = new ScriptCompiler(new ExpressionParser(), new ExpressionTokenizer());
+        $exprcompiler = new ScriptCompiler(new ExpressionParser(), new ExpressionTokenizer());
 
         $z = $this;
         $_value = null;
@@ -424,6 +461,21 @@ class Container
         return call_user_func_array($service[0], $args);
     }
 
+    /**
+     * Helper to set prefix if the output if PrefixFormatter
+     *
+     * @param string $prefix
+     * @return void
+     */
+    private function setOutputPrefix($prefix)
+    {
+        if (!($this->output->getFormatter() instanceof PrefixFormatter)) {
+            return;
+        }
+
+        $this->output->getFormatter()->prefix = $prefix;
+    }
+
 
     /**
      * Executes a script snippet using the 'executor' service.
@@ -434,9 +486,10 @@ class Container
     public function exec($cmd)
     {
         if (trim($cmd)) {
-            $this->output->getFormatter()->prefix = '';
+            $this->setOutputPrefix('');
+
             if ($this->resolve('DEBUG')) {
-                $this->output->getFormatter()->prefix = '[' . join('::', Debug::$scope) . '] ';
+                $this->setOutputPrefix('[' . join('::', Debug::$scope) . '] ');
             }
 
             if ($this->resolve('EXPLAIN')) {
@@ -457,7 +510,7 @@ class Container
      * Execute a command. This is a wrapper for 'exec', so that a task prefixed with '@' can be passed as well.
      *
      * @param string $cmd
-     * @return int
+     * @return string|null
      */
     public function cmd($cmd)
     {
@@ -501,7 +554,7 @@ class Container
             $allScalar = function ($a, $b) {
                 return $a && is_scalar($b);
             };
-            if (! array_reduce($value, $allScalar, true)) {
+            if (!array_reduce($value, $allScalar, true)) {
                 throw new UnexpectedValueException("Unexpected complex type " . Util::toPhp($value));
             }
             return join(' ', $value);
@@ -518,7 +571,7 @@ class Container
      */
     public function addPlugin(PluginInterface $plugin)
     {
-        $this->plugins[]= $plugin;
+        $this->plugins[] = $plugin;
         $plugin->setContainer($this);
     }
 
@@ -531,7 +584,7 @@ class Container
      */
     public function addCommand(Command $command)
     {
-        $this->commands[]= $command;
+        $this->commands[] = $command;
     }
 
 
@@ -586,7 +639,7 @@ class Container
      */
     public function push($varName, $tail)
     {
-        if (!$this->has($varName)) {
+        if (false === $this->has($varName)) {
             $this->set($varName, null);
         }
         if (!isset($this->varStack[json_encode($varName)])) {

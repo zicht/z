@@ -5,10 +5,6 @@
     "autoload": {
         "psr-0": { "": "src/" }
     },
-    "repositories": [
-	{"type": "vcs", "url": "git@github.com:zicht/util"},
-	{"type": "vcs", "url": "git@github.com:zicht/version"}
-    ],
     "require": {
         "php": ">=5.3.3",
         "symfony/process": "2.*@stable",
@@ -34,6 +30,6 @@
     },
     "require-dev": {
         "behat/behat": "^3.0",
-        "phpunit/phpunit": "^5.6"
+        "phpunit/phpunit": "^5.7"
     }
 }

@@ -83,7 +83,7 @@ class Buffer
      * Adds indentation to the buffer if $increment is not specified. Otherwise increment the current indentation
      * $increment steps. You should pass a negative number to outdent.
      *
-     * @param bool $increment
+     * @param int $increment
      * @return Buffer
      */
     public function indent($increment = null)

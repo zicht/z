@@ -18,8 +18,6 @@ use Zicht\Version\Version;
  */
 class ConfigurationLoader
 {
-    protected $sourceFiles = array();
-
     /**
      * Create the configuration loader based the current shell environment variables.
      *
@@ -47,6 +45,13 @@ class ConfigurationLoader
         );
     }
 
+    protected $sourceFiles = array();
+    protected $plugins = array();
+    protected $configFilename;
+    protected $configLocator;
+    protected $loader;
+
+
 
     /**
      * Construct the loader.
@@ -60,7 +65,6 @@ class ConfigurationLoader
         $this->configFilename = $configFilename;
         $this->configLocator = $configLocator;
         $this->loader = $loader;
-        $this->plugins = array();
     }
 
     /**
@@ -87,19 +91,19 @@ class ConfigurationLoader
         Debug::enterScope('config');
         Debug::enterScope('load');
         try {
-            $zfiles = $this->configLocator->locate($this->configFilename, null, false);
+            $zfiles = (array)$this->configLocator->locate($this->configFilename, null, false);
         } catch (\InvalidArgumentException $e) {
             $zfiles = array();
         }
         foreach ($zfiles as $file) {
             Debug::enterScope($file);
-            $this->sourceFiles[]= $file;
+            $this->sourceFiles[] = $file;
             $this->loader->load($file);
             Debug::exitScope($file);
         }
         foreach ($this->loader->getPlugins() as $name => $file) {
             Debug::enterScope($file);
-            $this->sourceFiles[]= $file;
+            $this->sourceFiles[] = $file;
             $this->loadPlugin($name, $file);
             Debug::exitScope($file);
         }

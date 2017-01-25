@@ -27,7 +27,7 @@ class Script extends Node
         $annotations = array();
         $nodes = $this->nodes;
         while (current($nodes) instanceof Script\Annotation) {
-            $annotations[]= array_shift($nodes);
+            $annotations[] = array_shift($nodes);
         }
 
         foreach ($annotations as $annotation) {

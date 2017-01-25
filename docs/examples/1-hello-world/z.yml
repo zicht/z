@@ -1,5 +1,0 @@
-tasks:
-    say_hello:
-        do:
-            - echo "Hello world!"
-
