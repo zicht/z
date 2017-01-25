@@ -24,10 +24,10 @@ class FeatureContext implements Context
      */
     public function __construct()
     {
-        $this->testDir = __DIR__ . '/../tmp';
-        $this->zBinary = escapeshellarg(__DIR__ . '/../../../bin/z');
-        $this->zBinaryPath = realpath(__DIR__ . '/../../../bin/z');
-        $this->packageBinary = escapeshellarg(__DIR__ . '/../../../bin/package.php');
+        $this->testDir = __DIR__ . '/tmp';
+        $this->zBinary = escapeshellarg(__DIR__ . '/../../bin/z');
+        $this->zBinaryPath = realpath(__DIR__ . '/../../bin/z');
+        $this->packageBinary = escapeshellarg(__DIR__ . '/../../bin/package.php');
 
         putenv('ZPATH=.');
         putenv('ZFILE=z.yml');
