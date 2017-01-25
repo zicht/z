@@ -44,9 +44,9 @@ class ContainerCompiler
      *
      * @throws \LogicException
      */
-    public function getContainer()
+    public function getContainer($forceRecompile = false)
     {
-        if ($this->needsRecompile()) {
+        if ($forceRecompile || $this->needsRecompile()) {
             $this->code = $this->compileContainerCode();
             file_put_contents($this->file, $this->code);
         }

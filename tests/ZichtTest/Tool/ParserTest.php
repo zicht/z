@@ -4,7 +4,6 @@ namespace ZichtTest\Tool;
 
 use Zicht\Tool\Parser;
 use Zicht\Tool\Script\Buffer;
-use Zicht\Tool\Script\Node\Node;
 use Zicht\Tool\Script\Node\NodeInterface;
 
 class ParserTest extends \PHPUnit_Framework_TestCase
@@ -30,6 +29,9 @@ class ParserTest extends \PHPUnit_Framework_TestCase
      */
     public function testCurrent($z, $php)
     {
+        if (!is_file($z)) {
+            $this->markTestSkipped('cur.z does not exist');
+        }
         $this->test($z, $php);
     }
 
@@ -59,7 +61,12 @@ class ParserTest extends \PHPUnit_Framework_TestCase
         $node->compile($compiler);
 
         $_ = null;
-        eval('$_ = ' . $compiler->getResult() . ';');
+
+        $php = '$_ = ' . $compiler->getResult() . ';';
+//        echo "\n---\n";
+//        echo $php;
+//        echo "\n---\n";
+        eval($php);
 
         return $_;
     }

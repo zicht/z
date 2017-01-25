@@ -2,26 +2,25 @@
 
 namespace Zicht\Tool;
 
-use Symfony\Component\ExpressionLanguage\ExpressionLanguage;
-use Symfony\Component\ExpressionLanguage\SyntaxError;
-use Zicht\Tool\Script\Compiler;
-use Zicht\Tool\Script\Node\Expr\Dict;
 use Zicht\Tool\Script\Node\Expr\ListNode;
 use Zicht\Tool\Script\Node\Expr\Literal;
 use Zicht\Tool\Script\Node\Expr\Str;
-use Zicht\Tool\Script\Node\Node;
 use Zicht\Tool\Script\Node\NodeInterface;
 use Zicht\Tool\Script\Parser\Expression as ExpressionParser;
 use Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
 use Zicht\Tool\Script\TokenStream;
 
+/**
+ * This parser parses a yaml-like structure into a context-free tree of nodes.
+ */
 class Parser
 {
+
     public function __construct($file, $str)
     {
         $this->expressionParser = new ExpressionParser();
 
-        $this->file = 'STDIN';
+        $this->file = $file;
         $this->str = $str;
     }
 
@@ -33,7 +32,6 @@ class Parser
         $root->attributes['indent'] = -1;
 
         $stack = [$root];
-
 
         $offset = 0;
 
@@ -106,7 +104,7 @@ class Parser
     }
 
 
-    public function formatPosition($offset, $str)
+    public static function formatPosition($offset, $str)
     {
         $lineNr = substr_count(substr($str, 0, $offset), "\n");
         $lines = explode("\n", $str);
@@ -127,7 +125,7 @@ class Parser
     {
         $lineNr = substr_count(substr($this->str, 0, $offset), "\n");
         $msg = sprintf("Parse error in %s at line %d:\n", $this->file, $lineNr +1);
-        $msg .= sprintf($this->formatPosition($offset, $this->str));
+        $msg .= sprintf(self::formatPosition($offset, $this->str));
         $msg .= sprintf("%s\n", $message);
 
         throw new \UnexpectedValueException($msg);

@@ -10,7 +10,7 @@ use Zicht\Tool\Script\Node\Node;
 
 
 /**
- * Represents a list (0-indexed numeric key array).
+ * Represents an array
  */
 class ListNode extends Node
 {

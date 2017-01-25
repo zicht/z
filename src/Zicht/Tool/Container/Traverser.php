@@ -6,6 +6,7 @@
  * @copyright 2012 Gerard van Helden <http://melp.nl>
  */
 namespace Zicht\Tool\Container;
+use Zicht\Tool\Script\Node\NodeInterface;
 
 /**
  * A tree traverser which can be used to alter a nested array tree structure
@@ -98,7 +99,10 @@ class Traverser
      */
     public function traverse()
     {
-        return $this->doTraverse($this->tree);
+        $this->tree = array_map([$this, 'doTraverse'], $this->tree);
+
+        // TODO merge pass
+        return $this->tree[0];
     }
 
 
@@ -109,18 +113,19 @@ class Traverser
      * @param array $path
      * @return mixed
      */
-    private function doTraverse($node, $path = array())
+    private function doTraverse(NodeInterface $node, $path = array())
     {
-        foreach ($node as $name => $value) {
-            $path[]= $name;
-            $value = $this->doVisit($path, $value, self::BEFORE);
+        foreach ($node->nodes as $i => $childNode) {
 
-            if (is_array($value)) {
-                $value = $this->doTraverse($value, $path);
+            $path[]= isset($childNode->attributes['name']) ? $childNode->attributes['name'] : $i;
+
+            $value = $this->doVisit($path, $childNode, self::BEFORE);
+
+            if (!empty($childNode->nodes)) {
+                $node = $this->doTraverse($value, $path);
             }
 
-            $value = $this->doVisit($path, $value, self::AFTER);
-            $node[$name] = $value;
+            $node->nodes[$i] = $this->doVisit($path, $childNode, self::AFTER);
             array_pop($path);
         }
 

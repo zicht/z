@@ -16,6 +16,7 @@ use Zicht\Tool\Debug;
 use Zicht\Tool\Script\Parser\Expression as ExpressionParser;
 use Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
 use Zicht\Tool\Script\Node\Task\ArgNode;
+use Zicht\Util\Str;
 
 /**
  * The container builder converts a config tree into a compilable ContainerNode
@@ -23,6 +24,7 @@ use Zicht\Tool\Script\Node\Task\ArgNode;
 class ContainerBuilder
 {
     protected $expressionPaths = array();
+
     /**
      * Constructor.
      *
@@ -160,7 +162,7 @@ class ContainerBuilder
      */
     public function createArgNode($path, $node)
     {
-        $v = trim($node);
+        $v = trim($node->value);
         if (substr($v, 0, 1) == '?') {
             $conditional = true;
             $v = ltrim(substr($v, 1));
@@ -192,7 +194,7 @@ class ContainerBuilder
      */
     public function createSetNode($path, $node)
     {
-        return new SetNode(end($path), $this->exprcompiler->parse($node));
+        return new SetNode(end($path), $this->createExpressionNode($path, $node));
     }
 
 
@@ -203,7 +205,7 @@ class ContainerBuilder
      * @param array $node
      * @return \Zicht\Tool\Script\Node\NodeInterface
      */
-    public function createExpressionNode($path, $node)
+    public function createExpressionNode($path, Str $node)
     {
         return $this->exprcompiler->parse($node);
     }
@@ -216,9 +218,9 @@ class ContainerBuilder
      * @param array $node
      * @return \Zicht\Tool\Script\Node\NodeInterface
      */
-    public function createScriptNode($path, $node)
+    public function createScriptNode($path, Str $node)
     {
-        return $this->scriptcompiler->parse(trim($node));
+        return $this->scriptcompiler->parse(trim($node->value));
     }
 
 

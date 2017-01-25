@@ -105,15 +105,17 @@ class ConfigurationLoader
         }
         Debug::exitScope('load');
 
-        Debug::enterScope('process');
-        $processor = new Processor();
-        $ret = $processor->processConfiguration(
-            new Configuration($this->plugins),
-            $this->loader->getConfigs()
-        );
-        Debug::exitScope('process');
         Debug::exitScope('config');
-        return $ret;
+        return $this->loader->getConfigs();
+
+//        Debug::enterScope('process');
+//        $processor = new Processor();
+//        $ret = $processor->processConfiguration(
+//            new Configuration($this->plugins),
+//            []
+//        );
+//        Debug::exitScope('process');
+//        return $ret;
     }
 
 

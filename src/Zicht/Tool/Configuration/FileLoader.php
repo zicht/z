@@ -99,19 +99,19 @@ class FileLoader extends BaseFileLoader
         $parser = new Parser($resource, $fileContents);
         $config = $parser->parse();
 
-        if (isset($config['plugins'])) {
-            Debug::enterScope('plugins');
-            $this->processPlugins($config['plugins'], dirname($resource));
-            Debug::exitScope('plugins');
-            unset($config['plugins']);
-        }
-        if (isset($config['imports'])) {
-            Debug::enterScope('imports');
-            $this->processImports($config['imports'], dirname($resource));
-            Debug::exitScope('imports');
-            unset($config['imports']);
-        }
-
+//        if (isset($config['plugins'])) {
+//            Debug::enterScope('plugins');
+//            $this->processPlugins($config['plugins'], dirname($resource));
+//            Debug::exitScope('plugins');
+//            unset($config['plugins']);
+//        }
+//        if (isset($config['imports'])) {
+//            Debug::enterScope('imports');
+//            $this->processImports($config['imports'], dirname($resource));
+//            Debug::exitScope('imports');
+//            unset($config['imports']);
+//        }
+//
         $this->configs[]= $config;
 
         return $config;
