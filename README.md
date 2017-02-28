@@ -10,3 +10,6 @@ You can start Z by making the file in `bin/z` available on your PATH, for exampl
 If you will be using plugins, you should make the plugins available by using the ZPLUGINPATH, for example in your `~/.bashrc`:
 
     export ZPLUGINPATH="/path/to/z/plugins:/path/to/more/z/plugins:."
+
+# Maintainer(s)
+* Philip Bergman <philip@zicht.nl>
