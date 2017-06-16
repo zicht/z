@@ -114,7 +114,7 @@ class TaskCommand extends BaseCommand
     }
 
     /**
-     * will add the given option the opt stack so it will resolved fot the z plugin.
+     * will add the given option the opt stack so it will resolved for the z plugin.
      *
      * @param string $name
      * @param null $shortcut
