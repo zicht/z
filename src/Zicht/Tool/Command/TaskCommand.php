@@ -10,6 +10,8 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output;
 use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Application;
+use Zicht\Tool\PluginTaskListenerInterface;
 
 /**
  * Command to execute a specific task
@@ -70,8 +72,32 @@ class TaskCommand extends BaseCommand
     }
 
     /**
-     * @param string $shortcut
-     * @param string $help
+     * Sets the application instance for this command.
+     *
+     * @param Application $application An Application instance
+     */
+    public function setApplication(Application $application = null)
+    {
+        parent::setApplication($application);
+
+        if (!is_null($application)) {
+            try {
+                foreach($this->getContainer()->plugins as $plugin) {
+                    if ($plugin instanceof PluginTaskListenerInterface) {
+                        $name = implode('.', array_slice($this->getTaskReference(), 1));
+                        $listeners = $plugin->getTaskListeners();
+                        if (in_array($name, array_keys($listeners))) {
+                            call_user_func_array(array($plugin, $listeners[$name]), array($this));
+                        }
+                    }
+                }
+            } catch (\UnexpectedValueException $e) {}
+        }
+
+    }
+
+    /**
+     * @{@inheritDoc}
      */
     public function addOption($name, $shortcut = null, $mode = null, $help = null, $default = null)
     {
@@ -79,11 +105,29 @@ class TaskCommand extends BaseCommand
         return parent::addOption($name, $shortcut, $mode, $help ?: $this->parseHelp($helpTag), $default);
     }
 
+    /**
+     * @{@inheritDoc}
+     */
     public function addArgument($name, $mode = null, $help = null, $default = null)
     {
         return parent::addArgument($name, $mode, $help ?: $this->parseHelp($name), $default);
     }
 
+    /**
+     * will add the given option the opt stack so it will resolved fot the z plugin.
+     *
+     * @param string $name
+     * @param null $shortcut
+     * @param null $mode
+     * @param null $help
+     * @param null $default
+     * @return $this
+     */
+    public function addResolvableOption($name, $shortcut = null, $mode = null, $help = null, $default = null)
+    {
+        $this->opts[] = $name;
+        return parent::addOption($name, $shortcut, $mode, $help, $default);
+    }
 
     private function parseHelp($name)
     {
