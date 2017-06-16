@@ -12,6 +12,7 @@ class ListCommand extends Command
     {
         $this
             ->setName('z:list')
+            ->setAliases(array('list'))
             ->setDescription('Lists available commands')
         ;
     }
