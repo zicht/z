@@ -221,12 +221,13 @@ class TaskCommand extends BaseCommand
                 $this->getContainer()->set(explode('.', $this->nameToVar($arg->getName())), $input->getArgument($arg->getName()));
             }
         }
+
         foreach ($this->opts as $opt) {
-            $optName = $this->varToName($opt);
-            if ($input->getOption($optName)) {
-                $this->getContainer()->set(explode('.', $optName), $input->getOption($optName));
+            if ($value = $input->getOption($this->varToName($opt))) {
+                $this->getContainer()->set(explode('.', $opt), $value);
             }
         }
+
         foreach ($this->flags as $name => $value) {
             $varName = explode('.', $name);
             $optName = $this->varToName($name);
