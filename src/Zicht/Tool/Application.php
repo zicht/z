@@ -118,7 +118,7 @@ EOSTR;
         $seed = json_encode($this->loader->getSourceFiles());
         foreach ($this->loader->getPlugins() as $name => $plugin) {
             if ($plugin instanceof PluginCacheSeedInterface) {
-                $seed .= $plugin->getCacheSeed(isset($config[$name]) ? $config[$name] : array());
+                $seed .= $plugin->getCacheSeed($config);
             }
         }
         return sha1($seed);
