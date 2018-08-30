@@ -109,6 +109,21 @@ EOSTR;
         $this->container = $container;
     }
 
+    /**
+     * @param array $config
+     * @return string
+     */
+    protected function getCacheKey(array $config)
+    {
+        $seed = json_encode($this->loader->getSourceFiles());
+        foreach ($this->loader->getPlugins() as $name => $plugin) {
+            if ($plugin instanceof PluginCacheSeedInterface) {
+                $seed .= $plugin->getCacheSeed(isset($config[$name]) ? $config[$name] : array());
+            }
+        }
+        return sha1($seed);
+    }
+
 
     /**
      * Returns the container instance, and initializes it if not yet available.
@@ -121,7 +136,7 @@ EOSTR;
         if (null === $this->container) {
             $config = $this->loader->processConfiguration();
             $config['z']['sources'] = $this->loader->getSourceFiles();
-            $config['z']['cache_file'] = sys_get_temp_dir() . '/z_' . sha1(json_encode($this->loader->getSourceFiles())) . '.php';
+            $config['z']['cache_file'] = sys_get_temp_dir() . '/z_' . $this->getCacheKey($config) . '.php';
             if ($forceRecompile && is_file($config['z']['cache_file'])) {
                 unlink($config['z']['cache_file']);
                 clearstatcache();
