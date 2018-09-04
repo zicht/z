@@ -74,32 +74,8 @@ class FileLoader extends BaseFileLoader
      */
     public function load($resource, $type = null)
     {
-        if (!is_file($resource)) {
-            $fileContents = $resource;
-        } else {
-            $this->sourceFiles[] = $resource;
-            $fileContents = file_get_contents($resource);
-        }
-        Debug::enterScope('annotations');
-        $annotations = $this->parseAnnotations($fileContents);
 
-        if ($this->version && !empty($annotations['version'])) {
-            $failures = array();
-            if (!Constraint::isMatch($annotations['version'], $this->version, $failures)) {
-                trigger_error(
-                    "Core version '{$this->version}' does not match version annotation '{$annotations['version']}'\n"
-                    . "(specified in $resource; " . join("; ", $failures) . ")",
-                    E_USER_WARNING
-                );
-            }
-        }
-        Debug::exitScope('annotations');
-
-        try {
-            $config = Yaml\Yaml::parse($fileContents);
-        } catch (Yaml\Exception\ExceptionInterface $e) {
-            throw new \RuntimeException("YAML error in {$resource}", 0, $e);
-        }
+        $config = $this->parseConfig($resource);
 
         if (isset($config['plugins'])) {
             Debug::enterScope('plugins');
@@ -115,6 +91,62 @@ class FileLoader extends BaseFileLoader
         }
 
         $this->configs[] = $config;
+
+        return $config;
+    }
+
+    /**
+     * @param mixed $content
+     * @param mixed $reference
+     */
+    private function validateConfig($content, $reference)
+    {
+        Debug::enterScope('annotations');
+        $annotations = $this->parseAnnotations($content);
+        if ($this->version && !empty($annotations['version'])) {
+            $failures = array();
+            if (!Constraint::isMatch($annotations['version'], $this->version, $failures)) {
+                trigger_error(
+                    "Core version '{$this->version}' does not match version annotation '{$annotations['version']}'\n"
+                    . "(specified in $reference; " . join("; ", $failures) . ")",
+                    E_USER_WARNING
+                );
+            }
+        }
+        Debug::exitScope('annotations');
+    }
+
+    /**
+     * @param mixed $resource
+     * @return array
+     */
+    private function parseConfig($resource)
+    {
+        if (!is_file($resource)) {
+            $content = $resource;
+        } else {
+            $this->sourceFiles[] = $resource;
+            $content = file_get_contents($resource);
+        }
+
+        $this->validateConfig($content, $resource);
+
+        try {
+            $config = Yaml\Yaml::parse($content);
+
+            if (isset($config['extends'])) {
+
+                foreach ((array)$config['extends'] as $file) {
+                    $config = array_merge_recursive($config, $this->parseConfig($file));
+                }
+
+                unset($config['extends']);
+
+            }
+
+        } catch (Yaml\Exception\ExceptionInterface $e) {
+            throw new \RuntimeException("YAML error in {$resource}", 0, $e);
+        }
 
         return $config;
     }
