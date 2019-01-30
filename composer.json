@@ -15,9 +15,6 @@
         "zicht/version": "1.*@stable",
         "zicht/util": "1.*@stable"
     },
-    "suggest": {
-        "zicht/z-plugins": "A set of default plugins for Z"
-    },
     "scripts": {
         "post-install-cmd": [
         ],
