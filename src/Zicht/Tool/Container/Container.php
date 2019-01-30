@@ -162,6 +162,16 @@ class Container
         // -----------------------------------------------------------------
         // other functions
         $this->fn('sh', array($this, 'helperExec'));
+        $this->fn(
+            'defaults',
+            function(Container $c, $name, $env = null, $default = null) {
+                if (null !== $env && null !== $bin = $c->resolve('globals.' . $name . '.' . $env )) {
+                    return $bin;
+                }
+                return $default;
+            },
+            true
+        );
         $this->fn('str', array($this, 'str'));
         $this->fn(
             array('url', 'host'),
