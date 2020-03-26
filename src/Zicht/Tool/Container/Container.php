@@ -503,11 +503,12 @@ class Container
             }
 
             if ($this->resolve('EXPLAIN')) {
+                $cleanCmd = preg_replace(array("/\n *\\\\\n/", '/( +\\\\)+$/m'), array('', ' \\'), trim($cmd));
                 if ($this->resolve('INTERACTIVE')) {
                     $this->notice('interactive shell:');
-                    $line = '( /bin/bash -c \'' . trim($cmd) . '\' )';
+                    $line = '( /bin/bash -c \'' . $cleanCmd . '\' )';
                 } else {
-                    $line = 'echo ' . escapeshellarg(trim($cmd)) . ' | ' . $this->resolve(array('SHELL'));
+                    $line = 'echo ' . escapeshellarg($cleanCmd) . ' | ' . $this->resolve(array('SHELL'));
                 }
                 $this->output->writeln($line);
             } else {
