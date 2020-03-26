@@ -12,4 +12,5 @@ If you will be using plugins, you should make the plugins available by using the
     export ZPLUGINPATH="/path/to/z/plugins:/path/to/more/z/plugins:."
 
 # Maintainer(s)
-* Philip Bergman <philip@zicht.nl>
+* Michael Roterman <michael@zicht.nl>
+* Jochem Klaver <jochem@zicht.nl>
