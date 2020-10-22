@@ -53,7 +53,7 @@ class Container
 
         $this->values = array(
             'SHELL'         => function ($z) {
-                return '/bin/bash -e' . ($z->has('DEBUG') && $z->get('DEBUG') ? 'x' : '');
+                return '/bin/bash -el' . ($z->has('DEBUG') && $z->get('DEBUG') ? 'x' : '');
             },
             'TIMEOUT'       => null,
             'INTERACTIVE'   => false,
