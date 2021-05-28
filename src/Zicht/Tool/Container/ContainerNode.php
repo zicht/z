@@ -24,8 +24,12 @@ class ContainerNode extends Branch
     {
         $date = new \DateTime();
         $buffer->writeln('/** Container compiled by ' . getenv('USER') . ' at: ' . $date->format('r') . ' */');
-        $buffer->writeln('use \Zicht\Tool\Debug;');
-        $buffer->writeln('$z = new \Zicht\Tool\Container\Container();');
+        $buffer->eol();
+        $buffer->writeln('use Zicht\Tool\Container\Container;');
+        $buffer->writeln('use Zicht\Tool\Debug;');
+        $buffer->eol();
+        $buffer->writeln('$z = new Container();');
+        $buffer->eol();
 
         foreach ($this->nodes as $node) {
             $node->compile($buffer);

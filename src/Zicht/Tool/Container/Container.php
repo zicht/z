@@ -1,7 +1,6 @@
 <?php
 /**
- * @author Gerard van Helden <gerard@zicht.nl>
- * @copyright Zicht Online <http://zicht.nl>
+ * @copyright Zicht Online <https://zicht.nl>
  */
 
 namespace Zicht\Tool\Container;
@@ -9,15 +8,15 @@ namespace Zicht\Tool\Container;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\OutputInterface;
+use UnexpectedValueException;
 use Zicht\Tool\Debug;
 use Zicht\Tool\Output\PrefixFormatter;
-use Zicht\Tool\PropertyPath\PropertyAccessor;
 use Zicht\Tool\PluginInterface;
+use Zicht\Tool\PropertyPath\PropertyAccessor;
 use Zicht\Tool\Script\Compiler as ScriptCompiler;
-use Zicht\Tool\Util;
 use Zicht\Tool\Script\Parser\Expression as ExpressionParser;
 use Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
-use UnexpectedValueException;
+use Zicht\Tool\Util;
 
 /**
  * Service container
@@ -52,8 +51,9 @@ class Container
         $this->output = $output ?: new NullOutput();
 
         $this->values = array(
-            'SHELL'         => function ($z) {
-                return '/bin/bash -el' . ($z->has('DEBUG') && $z->get('DEBUG') ? 'x' : '');
+            'DEFAULT_SHELL' => '/bin/bash -el',
+            'SHELL'         => function (Container $z) {
+                return $z->get('DEFAULT_SHELL');
             },
             'TIMEOUT'       => null,
             'INTERACTIVE'   => false,
@@ -61,7 +61,7 @@ class Container
         // gather the options for nested z calls.
         $this->set(
             array('z', 'opts'),
-            function ($z) {
+            function (Container $z) {
                 $opts = array();
                 foreach (array('FORCE', 'VERBOSE', 'EXPLAIN', 'DEBUG') as $opt) {
                     if ($z->has($opt) && $z->get($opt)) {
@@ -107,7 +107,7 @@ class Container
         $this->fn(array('safename'), function ($fn) {
             return preg_replace('/[^a-z0-9]+/', '-', $fn);
         });
-        
+
         // -----------------------------------------------------------------
         // I/O functions
         $this->fn('basename');
@@ -137,7 +137,7 @@ class Container
                 );
             }
         );
-        
+
         // -----------------------------------------------------------------
         // array functions
         $this->fn('join', 'implode');
@@ -293,8 +293,8 @@ class Container
     public function helperExec($cmd)
     {
         if ($this->resolve('EXPLAIN')) {
-            $this->output->writeln("# Task needs the following helper command:");
-            $this->output->writeln("# " . str_replace("\n", "\\n", $cmd));
+            $this->output->writeln('<info># Task needs the following helper command:</info>');
+            $this->output->writeln('<info># ' . str_replace("\n", "\\n", $cmd) . '</info>');
         }
         $ret = '';
         $this->executor->execute($cmd, $ret);
@@ -507,11 +507,16 @@ class Container
                 if ($this->resolve('INTERACTIVE')) {
                     $this->notice('interactive shell:');
                     $line = '( /bin/bash -c \'' . $cleanCmd . '\' )';
+                } elseif (($shell = $this->resolve(array('SHELL'))) !== $this->resolve(array('DEFAULT_SHELL'))) {
+                    $line = 'echo ' . escapeshellarg($cleanCmd) . ' | ' . $shell;
                 } else {
-                    $line = 'echo ' . escapeshellarg($cleanCmd) . ' | ' . $this->resolve(array('SHELL'));
+                    $line = $cleanCmd;
                 }
                 $this->output->writeln($line);
             } else {
+                if ($this->resolve('DEBUG') && !$this->resolve('EXPLAIN')) {
+                    $cmd = 'set -x; ' . $cmd;
+                }
                 $this->executor->execute($cmd);
             }
         }

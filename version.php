@@ -5,4 +5,4 @@
  */
 
 use \Zicht\Version\Version;
-return new Version(2, 0, 9); 
+return new Version(2, 0, 18);
