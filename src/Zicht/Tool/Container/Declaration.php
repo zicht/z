@@ -37,7 +37,7 @@ class Declaration implements Node
     public function compile(Buffer $buffer)
     {
         $buffer
-            ->write('$z->decl(')->asPhp($this->path)->raw(', function($z) {')->eol()
+            ->write('$z->decl(')->asPhp($this->path)->raw(', function (Container $z) {')->eol()
             ->indent(1);
         $this->compileBody($buffer);
         $buffer->eol()->indent(-1)->writeln('});');

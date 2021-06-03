@@ -1,3 +1,44 @@
+2.0.18
+* Improved explain and debug output
+* Typehint Container argument in closure functions
+* Updated .gitignore
+* Updated CHANGELOG
+* Update maintainers
+* Added .env file
+
+2.0.17
+* Add -l flag to SHELL - all commands are now .bash_profile aware
+
+2.0.16
+* Update README.md
+* Update maintainers
+* Explain: Clean up command string before output
+
+2.0.15
+* add defaults method, which can be used like:
+* Remove suggest to obsolete z-plugins package  (bugfix/remove-suggest-to-obsolete-z-plugins)
+
+2.0.14
+* add support to extend z files
+
+2.0.13
+* give access to whole config for generating extra cache seed
+
+2.0.12
+* add plugins the possibility to invalidate the container cache
+
+2.0.11
+* fix bug with name conversion
+
+2.0.10
+* add support for plugin task listener.
+* Update maintainers
+* add tests
+* `/res/features/` => `/features/`
+* add list command alias a
+* print default options on application description
+* the debug explain is now valid shell and better readable
+
 2.0.9
 * Only codestyle fixes and cleanup
 
@@ -12,7 +53,7 @@
 * Bash now outputs all commands in `--debug` mode using mode 'x'
 
 2.0.5
-* Task help can now also interpret help for arguments, options and flags. 
+* Task help can now also interpret help for arguments, options and flags.
 
 2.0.4
 * Allow for globbing in path environment variables, e.g. ZPLUGINPATH="./vendor/zicht/z-plugin-*"
