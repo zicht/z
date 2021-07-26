@@ -13,6 +13,8 @@ use Symfony\Component\Console\Formatter\OutputFormatterStyleInterface;
 
 class PrefixFormatter implements OutputFormatterInterface
 {
+    private $innerFormatter;
+
     public $prefix = '';
 
     public function __construct(OutputFormatterInterface $innerFormatter)
@@ -72,5 +74,10 @@ class PrefixFormatter implements OutputFormatterInterface
             $ret = preg_replace('/^/m', $this->prefix . '$1', $ret);
         }
         return $ret;
+    }
+
+    public function __clone()
+    {
+        $this->innerFormatter = clone $this->innerFormatter;
     }
 }

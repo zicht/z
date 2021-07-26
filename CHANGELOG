@@ -1,3 +1,7 @@
+2.1.0
+* Added block() function to display a colorful block
+* Minor improvements
+
 2.0.18
 * Improved explain and debug output
 * Typehint Container argument in closure functions

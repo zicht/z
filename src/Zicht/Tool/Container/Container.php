@@ -6,9 +6,9 @@
 namespace Zicht\Tool\Container;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Output\OutputInterface;
-use UnexpectedValueException;
+use Symfony\Component\Console\Input;
+use Symfony\Component\Console\Output;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Zicht\Tool\Debug;
 use Zicht\Tool\Output\PrefixFormatter;
 use Zicht\Tool\PluginInterface;
@@ -35,20 +35,25 @@ class Container
     private $varStack = array();
     private $scope = array();
 
+    /** @var Output\OutputInterface */
     public $output;
+
+    /** @var Executor */
     public $executor;
+
+    /** @var PluginInterface[] */
     public $plugins = array();
 
     /**
      * Construct the container with the specified values as services/values.
      *
-     * @param Executor $executor
-     * @param OutputInterface $output
+     * @param Executor|null $executor
+     * @param Output\OutputInterface|null $output
      */
-    public function __construct(Executor $executor = null, $output = null)
+    public function __construct(Executor $executor = null, Output\OutputInterface $output = null)
     {
         $this->executor = $executor ?: new Executor($this);
-        $this->output = $output ?: new NullOutput();
+        $this->output = $output ?: new Output\NullOutput();
 
         $this->values = array(
             'DEFAULT_SHELL' => '/bin/bash -el',
@@ -158,6 +163,20 @@ class Container
             return json_encode($v, JSON_UNESCAPED_SLASHES);
         });
         $this->fn('json_decode');
+
+        // -----------------------------------------------------------------
+        // output functions
+        $this->method(array('block'), function (Container $c, $messages, $style = null) {
+            $io = new SymfonyStyle(new Input\ArrayInput(array()), $c->output);
+            $messages = (array)$messages;
+            if ($c->resolve('EXPLAIN')) {
+                $messages = array_map(function ($m) { return trim($m) !== '' ? '# ' . $m : ''; }, $messages);
+            }
+            if (count($messages) === 1 && strpos(current($messages), "\n") !== 0) {
+                $messages = array("\n" . current($messages) . "\n");
+            }
+            $io->block($messages, null, $style);
+        });
 
         // -----------------------------------------------------------------
         // other functions
@@ -458,7 +477,7 @@ class Container
         $args = func_get_args();
         $service = array_shift($args);
         if (!is_array($service)) {
-            throw new \RuntimeException("Expected an array");
+            throw new \RuntimeException(sprintf('Expected an array, got \'%s\'', is_object($service) ? get_class($service) : gettype($service)));
         }
         if (!is_callable($service[0])) {
             throw new \InvalidArgumentException("Can not use service '{$service[0]}' as a function, it is not callable");
@@ -571,7 +590,7 @@ class Container
                 return $a && is_scalar($b);
             };
             if (!array_reduce($value, $allScalar, true)) {
-                throw new UnexpectedValueException("Unexpected complex type " . Util::toPhp($value));
+                throw new \UnexpectedValueException('Unexpected complex type ' . Util::toPhp($value));
             }
             return join(' ', $value);
         }
@@ -648,7 +667,7 @@ class Container
 
     /**
      * Push a var on a local stack by it's name.
-     * 
+     *
      * @param string $varName
      * @param string $tail
      * @return void
