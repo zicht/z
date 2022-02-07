@@ -1,8 +1,8 @@
 <?php
 /**
- * @author Gerard van Helden <gerard@zicht.nl>
- * @copyright Zicht Online <http://zicht.nl>
+ * @copyright Zicht Online <https://zicht.nl>
  */
+
 namespace Zicht\Tool;
 
 use Symfony\Component\Console\Application as BaseApplication;
@@ -180,16 +180,24 @@ EOSTR;
 
 
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     public function doRun(InputInterface $input, OutputInterface $output)
     {
-        set_error_handler(new ErrorHandler($input, $output), E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED | E_RECOVERABLE_ERROR);
+        $debug = $input->hasParameterOption(array('--debug'));
+
+        if (!$debug) {
+            set_error_handler(new ErrorHandler($input, $output), E_USER_WARNING | E_USER_NOTICE | E_USER_DEPRECATED | E_RECOVERABLE_ERROR);
+        }
 
         $output->setFormatter(new Output\PrefixFormatter($output->getFormatter()));
 
         if (true === $input->hasParameterOption(array('--quiet', '-q'))) {
             $output->setVerbosity(OutputInterface::VERBOSITY_QUIET);
+        } elseif (true === $input->hasParameterOption(array('-vvv'))) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
+        } elseif (true === $input->hasParameterOption(array('-vv'))) {
+            $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
         } elseif (true === $input->hasParameterOption(array('--verbose', '-v'))) {
             $output->setVerbosity(OutputInterface::VERBOSITY_VERBOSE);
         }
@@ -209,10 +217,10 @@ EOSTR;
 
         $container->output = $output;
 
+        $container->set('DEBUG', $debug);
         $container->set('VERBOSE', $input->hasParameterOption(array('--verbose', '-v')));
         $container->set('FORCE', $input->hasParameterOption(array('--force', '-f')));
         $container->set('EXPLAIN', $input->hasParameterOption(array('--explain')));
-        $container->set('DEBUG', $input->hasParameterOption(array('--debug')));
 
         foreach ($container->getCommands() as $task) {
             $this->add($task);
@@ -234,7 +242,7 @@ EOSTR;
     }
 
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     public function getHelp()
     {
@@ -254,7 +262,4 @@ EOSTR;
 
         return parent::get($name);
     }
-
-
-
 }
