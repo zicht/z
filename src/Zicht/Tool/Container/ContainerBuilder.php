@@ -270,7 +270,7 @@ class ContainerBuilder
                 return
                     count($path) == 4
                     && $path[0] == 'tasks'
-                    && in_array($path[2], array('do', 'pre', 'post'))
+                    && in_array($path[2], array('do', 'pre', 'post', 'done'))
                 ;
             },
             Traverser::BEFORE

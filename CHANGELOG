@@ -1,5 +1,7 @@
 2.1.0
 * Added block() function to display a colorful block
+* Added a "done" scope (pre -> do -> post -> done) to be able to explicitly execute tasks
+  at the very end instead of pushing them onto the "post" stack
 * Minor improvements
 
 2.0.18

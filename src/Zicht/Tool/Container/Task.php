@@ -122,7 +122,7 @@ class Task extends Declaration
             $node->compile($buffer);
         }
         $buffer->writeln('$skip = false;');
-        foreach (array('pre', 'do', 'post') as $scope) {
+        foreach (array('pre', 'do', 'post', 'done') as $scope) {
             if ($scope === 'do') {
                 if (!empty($this->taskDef['unless'])) {
                     $buffer->write('if (!$z->resolve(\'FORCE\') &&');
@@ -164,7 +164,7 @@ class Task extends Declaration
                 $buffer->write('Debug::exitScope(')->asPhp($scope . '[' . $i . ']')->raw(');')->eol();
             }
 
-            if ($scope === 'post') {
+            if ($scope === 'done') {
                 $buffer->indent(-1);
                 $buffer->writeln('}');
             }

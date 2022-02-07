@@ -170,7 +170,7 @@ class Container
             $io = new SymfonyStyle(new Input\ArrayInput(array()), $c->output);
             $messages = (array)$messages;
             if ($c->resolve('EXPLAIN')) {
-                $messages = array_map(function ($m) { return trim($m) !== '' ? '# ' . $m : ''; }, $messages);
+                $messages = array_map(function ($m) { return trim($m) !== '' ? '# ' . str_replace("\n", "\n# ", $m) : ''; }, $messages);
             }
             if (count($messages) === 1 && strpos(current($messages), "\n") !== 0) {
                 $messages = array("\n" . current($messages) . "\n");
