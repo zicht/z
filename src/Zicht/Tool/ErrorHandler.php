@@ -1,14 +1,15 @@
 <?php
 /**
- * @author Gerard van Helden <gerard@zicht.nl>
- * @copyright Zicht Online <http://zicht.nl>
+ * @copyright Zicht Online <https://zicht.nl>
  */
 
 namespace Zicht\Tool;
 
 use Symfony\Component\Console\Helper\DialogHelper;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Zicht\Tool\Container\ExecutionAbortedException;
 
 /**
@@ -18,13 +19,10 @@ class ErrorHandler
 {
     private $input;
     private $output;
-    private $dialog;
     private $repeating = array();
     private $continueAlways = false;
 
     /**
-     * Constructor
-     *
      * @param InputInterface $input
      * @param OutputInterface $output
      */
@@ -32,7 +30,6 @@ class ErrorHandler
     {
         $this->input = $input;
         $this->output = $output;
-        $this->dialog = new DialogHelper();
     }
 
     /**
@@ -63,7 +60,7 @@ class ErrorHandler
                     if (!$this->continueAlways) {
                         do {
                             if ($this->input->isInteractive()) {
-                                $answer = $this->dialog->ask($this->output, "Continue anyway? (y)es, (n)o, (a)lways ", false);
+                                $answer = $this->askConfirmation('Continue anyway? (y)es, (n)o, (a)lways ', false);
                             } else {
                                 $answer = 'n';
                             }
@@ -92,5 +89,18 @@ class ErrorHandler
                     throw new \ErrorException($errstr);
             }
         }
+    }
+
+    private function askConfirmation($question, $default)
+    {
+        if (class_exists(QuestionHelper::class)) {
+            $helper = new QuestionHelper();
+            $confirmationQuestion = new ConfirmationQuestion($question, $default);
+            return $helper->ask($this->input, $this->output, $confirmationQuestion);
+        }
+
+        // Sf < 3.3
+        $helper = new DialogHelper();
+        return $helper->ask($this->output, $question, $default);
     }
 }
