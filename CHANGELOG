@@ -1,3 +1,9 @@
+3.0.0 [UNRELEASED]
+* Cleaned up composer.json
+* Updated dependencies to version ranges: symfony/* 3.4 - 4 instead of 2.8 only
+* Set minimum PHP version to 5.6
+* Swithed from PSR-0 to to PSR-4 autoloading
+
 2.1.1
 * Added a public_ip() function to the container
 
