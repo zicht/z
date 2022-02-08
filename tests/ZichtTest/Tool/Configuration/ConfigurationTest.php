@@ -5,7 +5,8 @@
  * @author Gerard van Helden <drm@melp.nl>
  * @copyright 2012 Gerard van Helden <http://melp.nl>
  */
-namespace ZichtTest\Tool\Container;
+
+namespace ZichtTest\Tool\Configuration;
 
 /**
  * @covers \Zicht\Tool\Configuration\Configuration
@@ -26,16 +27,16 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     function validFiles()
     {
         $ret = array();
+        $basePath = realpath(__DIR__ . '/../../../..') . '/';
+
         foreach (new \RegexIterator(new \DirectoryIterator(__DIR__ . '/../assets/valid-files'), '~.yml$~') as $file) {
             $file = realpath($file->getPathName());
             $php = dirname($file) . '/' . basename($file, '.yml') . '.php';
             $result = include $php;
-            $ret[]= array(\Symfony\Component\Yaml\Yaml::parse($file), $result);
+            $ret[str_replace($basePath, '', $file)] = array(\Symfony\Component\Yaml\Yaml::parse(file_get_contents($file)), $result);
         }
         return $ret;
     }
-
-
 
     function testPluginLoaderHandling()
     {

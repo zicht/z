@@ -6,6 +6,7 @@
 * Fix verbosity levels
 * Introduce TokenException instead of throwing native SPL Exceptions when parsing Z script
 * Remove use of DialogHelper and always use QuestionHelper
+* Fixed tests and added a GitHub action workflow to run composer and run the tests
 
 2.1.1
 * Added a public_ip() function to the container

@@ -14,6 +14,7 @@ return array(
             'if' => null,
             'pre' => array(),
             'post' => array(),
+            'done' => array(),
             'do' => array(
                 'do it'
             )

@@ -5,7 +5,8 @@
  * @author Gerard van Helden <drm@melp.nl>
  * @copyright 2012 Gerard van Helden <http://melp.nl>
  */
-namespace ZichtTest\Tool\Container;
+
+namespace ZichtTest\Tool\Configuration;
 
 use Zicht\Tool\Configuration\PathDefaultFileLocator;
 
@@ -14,9 +15,8 @@ class PathDefaultFileLocatorTest extends \PHPUnit_Framework_TestCase
     function testEnvPath()
     {
         $loader = new PathDefaultFileLocator('PATH', array('a', 'b', 'c'));
-        $this->assertEquals('/bin/bash', $loader->locate('bash'));
+        $this->assertContains($loader->locate('bash'), array('/bin/bash', '/usr/bin/bash'));
     }
-
 
     function testDefaultPath()
     {

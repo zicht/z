@@ -22,5 +22,8 @@
         }
     },
     "minimum-stability": "stable",
+    "scripts": {
+        "test": "phpunit -c ./phpunit.xml.dist --no-coverage"
+    },
     "bin": ["bin/z", "bin/z.php", "bin/package.php", "bin/1to2.sh"]
 }

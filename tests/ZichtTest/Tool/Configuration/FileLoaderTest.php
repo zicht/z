@@ -6,7 +6,7 @@
  * @copyright 2012 Gerard van Helden <http://melp.nl>
  */
 
-namespace ZichtTest\Tool\Container;
+namespace ZichtTest\Tool\Configuration;
 
 class FileLoaderTest extends \PHPUnit_Framework_TestCase
 {
