@@ -5,6 +5,7 @@
 * Swithed from PSR-0 to to PSR-4 autoloading
 * Fix verbosity levels
 * Introduce TokenException instead of throwing native SPL Exceptions when parsing Z script
+* Remove use of DialogHelper and always use QuestionHelper
 
 2.1.1
 * Added a public_ip() function to the container
