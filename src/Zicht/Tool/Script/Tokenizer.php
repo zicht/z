@@ -1,13 +1,11 @@
 <?php
 /**
- * For licensing information, please see the LICENSE file accompanied with this file.
- *
- * @author Gerard van Helden <drm@melp.nl>
- * @copyright 2012 Gerard van Helden <http://melp.nl>
+ * @copyright Zicht Online <https://zicht.nl>
  */
 
 namespace Zicht\Tool\Script;
 
+use Zicht\Tool\Script\Exception\TokenException;
 use Zicht\Tool\Script\Tokenizer\Expression as ExpressionTokenizer;
 
 /**
@@ -22,13 +20,12 @@ class Tokenizer implements TokenizerInterface
     {
     }
 
-
     /**
      * Returns an array of tokens
      *
      * @param string $string
      * @param int &$needle
-     * @throws \UnexpectedValueException
+     * @throws TokenException
      * @return array
      */
     public function getTokens($string, &$needle = 0)
@@ -78,7 +75,7 @@ class Tokenizer implements TokenizerInterface
             }
             if ($before === $needle) {
                 // safety net.
-                throw new \UnexpectedValueException(
+                throw new TokenException(
                     "Unexpected input near token {$string{$needle}}, unsupported character"
                 );
             }

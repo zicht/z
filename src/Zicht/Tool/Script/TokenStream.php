@@ -1,10 +1,11 @@
 <?php
 /**
- * @author Gerard van Helden <gerard@zicht.nl>
- * @copyright Zicht Online <http://zicht.nl>
+ * @copyright Zicht Online <https://zicht.nl>
  */
 
 namespace Zicht\Tool\Script;
+
+use Zicht\Tool\Script\Exception\TokenException;
 
 /**
  * Wraps a list of tokens into an convenience class for matching and iterating the tokens
@@ -68,12 +69,12 @@ class TokenStream
      * Returns the current token
      *
      * @return Token
-     * @throws \UnexpectedValueException
+     * @throws TokenException
      */
     public function current()
     {
         if (!isset($this->tokenList[$this->ptr])) {
-            throw new \UnexpectedValueException("Unexpected input at offset {$this->ptr}, unexpected end of stream");
+            throw new TokenException("Unexpected input at offset {$this->ptr}, unexpected end of stream");
         }
         return $this->tokenList[$this->ptr];
     }
@@ -110,13 +111,13 @@ class TokenStream
      * @param string $value
      * @return Token
      *
-     * @throws \UnexpectedValueException
+     * @throws TokenException
      */
     public function expect($type, $value = null)
     {
         if (!$this->match($type, $value)) {
             $msg = "Unexpected token {$this->current()->type} '{$this->current()->value}', expected {$type}";
-            throw new \UnexpectedValueException($msg);
+            throw new TokenException($msg);
         }
         $current = $this->current();
         $this->next();
