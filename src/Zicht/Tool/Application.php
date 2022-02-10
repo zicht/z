@@ -58,12 +58,8 @@ EOSTR;
     /**
      * Custom exception rendering, renders only the exception types and messages, hierarchically, but with regular
      * formatting if verbosity is higher.
-     *
-     * @param \Exception $e
-     * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return void
      */
-    public function renderException($e, $output)
+    public function renderException(\Exception $e, OutputInterface $output)
     {
         if ($output->getVerbosity() > OutputInterface::VERBOSITY_VERBOSE) {
             parent::renderException($e, $output);
