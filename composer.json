@@ -16,6 +16,30 @@
         "behat/behat": "^3.0",
         "phpunit/phpunit": "^5.7"
     },
+    "conflict": {
+        "zicht/z-plugin-apc": "<1.1.3",
+        "zicht/z-plugin-apcu": "<1.1.4",
+        "zicht/z-plugin-bower": "<1.0.1",
+        "zicht/z-plugin-build": "<1.1.4",
+        "zicht/z-plugin-chmod": "<1.0.2",
+        "zicht/z-plugin-content": "<2.0.7",
+        "zicht/z-plugin-cron": "<1.0.3",
+        "zicht/z-plugin-deploy": "<1.1.1",
+        "zicht/z-plugin-docker": "<2.1.1",
+        "zicht/z-plugin-env": "<2.2.4",
+        "zicht/z-plugin-git": "<1.0.8",
+        "zicht/z-plugin-messages": "<1.1.4",
+        "zicht/z-plugin-opcache": "<1.1.3",
+        "zicht/z-plugin-requirejs": "<1.0.1",
+        "zicht/z-plugin-rsync": "<1.0.3",
+        "zicht/z-plugin-sass": "<1.1.1",
+        "zicht/z-plugin-solr": "<1.4.6",
+        "zicht/z-plugin-symfony": "<1.2.1",
+        "zicht/z-plugin-systemjs": "<1.1.2",
+        "zicht/z-plugin-tunnel": "<1.0.1",
+        "zicht/z-plugin-typescript": "<1.0.5",
+        "zicht/z-plugin-uglifyjs": "<1.1.3"
+    },
     "autoload": {
         "psr-4": {
             "Zicht\\Tool\\": "src/Zicht/Tool/"

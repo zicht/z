@@ -8,6 +8,7 @@
 * Remove use of DialogHelper and always use QuestionHelper
 * Fixed tests and added a GitHub action workflow to run composer and run the tests
 * Made declaration of Zicht\Tool\Application::renderException() compatible with Symfony 3.4 Application::renderException()
+* Add conflict rules for all plugins that have previous versions with incompatible Yaml (unquoted values stating with @ or ! or containing :)
 
 2.1.1
 * Added a public_ip() function to the container
