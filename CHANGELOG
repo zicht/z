@@ -1,3 +1,6 @@
+2.1.1
+* Added a public_ip() function to the container
+
 2.1.0
 * Added block() function to display a colorful block
 * Added a "done" scope (pre -> do -> post -> done) to be able to explicitly execute tasks

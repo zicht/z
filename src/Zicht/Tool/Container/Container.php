@@ -206,6 +206,23 @@ class Container
         $this->decl(array('abort'), function () use($exitCode) {
             return 'exit ' . $exitCode;
         });
+
+        $this->fn('public_ip', function () {
+            try {
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, 'https://api.ipify.org');
+                curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 1);
+                curl_setopt($ch, CURLOPT_HEADER, false);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                return curl_exec($ch);
+            } catch (\Exception $e) {
+                return null;
+            } finally {
+                if (isset($ch) && is_resource($ch)) {
+                    curl_close($ch);
+                }
+            }
+        });
     }
 
 
