@@ -56,7 +56,7 @@ class Tokenizer implements TokenizerInterface
                         $value = substr($m[0], 1);
                         $needle += strlen($m[0]);
                     } else {
-                        $value = $string{$needle};
+                        $value = $string[$needle];
                         $needle += strlen($value);
                     }
 
@@ -76,7 +76,7 @@ class Tokenizer implements TokenizerInterface
             if ($before === $needle) {
                 // safety net.
                 throw new TokenException(
-                    "Unexpected input near token {$string{$needle}}, unsupported character"
+                    "Unexpected input near token {$string[$needle]}, unsupported character"
                 );
             }
         }

@@ -54,12 +54,12 @@ class Expression implements TokenizerInterface
             } elseif (preg_match('/^[\?,]/', $substr, $m)) {
                 $ret[] = new Token($m[0]);
                 $needle++;
-            } elseif ($string{$needle} == '"') {
+            } elseif ($string[$needle] == '"') {
                 $strData = '';
 
                 $escape = false;
                 for ($j = $needle + 1; $j < $len; $j++) {
-                    $ch = $string{$j};
+                    $ch = $string[$j];
 
                     if ($ch == '\\') {
                         $escape = true;
@@ -95,7 +95,7 @@ class Expression implements TokenizerInterface
             if ($before === $needle) {
                 // safety net.
                 throw new TokenException(
-                    "Unexpected input near token {$string{$needle}}, unsupported character ($string)"
+                    "Unexpected input near token {$string[$needle]}, unsupported character ($string)"
                 );
             }
         }

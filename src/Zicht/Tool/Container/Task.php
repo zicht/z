@@ -189,7 +189,7 @@ class Task extends Declaration
         $ret = array();
         if (isset($this->taskDef['args'])) {
             foreach ($this->taskDef['args'] as $name => $expr) {
-                if ($onlyPublic && $name{0} === '_') {
+                if ($onlyPublic && $name[0] === '_') {
                     // Variables prefixed with an underscore are considered non public
                     continue;
                 }
