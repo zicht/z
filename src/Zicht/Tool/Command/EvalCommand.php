@@ -54,5 +54,7 @@ class EvalCommand extends BaseCommand
             default:
                 throw new \InvalidArgumentException("Unsupported output format {$input->getOption('format')}");
         }
+
+        return 0;
     }
 }

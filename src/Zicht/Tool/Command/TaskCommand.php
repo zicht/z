@@ -209,7 +209,7 @@ class TaskCommand extends BaseCommand
      *
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @return mixed
+     * @return int
      */
     protected function execute(InputInterface $input, Output\OutputInterface $output)
     {
@@ -245,6 +245,8 @@ class TaskCommand extends BaseCommand
 
         $callable = $this->getContainer()->get($this->getTaskReference());
         call_user_func($callable, $this->getContainer());
+
+        return 0;
     }
 
     /**

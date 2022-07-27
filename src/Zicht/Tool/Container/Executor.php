@@ -75,7 +75,8 @@ class Executor
      */
     protected function createProcess($interactive = false)
     {
-        $process = new Process($this->container->resolve('SHELL'), null, null, null, null, []);
+        // This seems to give bugs now and then: new Process(explode(' ', $this->container->resolve('SHELL')) ...
+        $process = new Process($this->container->resolve('SHELL'), null, null, null, null);
 
         if ($interactive) {
             $process->setTty(true);

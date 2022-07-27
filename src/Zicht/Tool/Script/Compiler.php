@@ -35,7 +35,7 @@ class Compiler
      */
     public function parse($input)
     {
-        if (strlen($input) == 0) {
+        if (null === $input || strlen($input) === 0) {
             return null;
         }
         return $this->parser->parse(new TokenStream($this->tokenizer->getTokens($input)));
