@@ -37,9 +37,15 @@ class Configuration implements ConfigurationInterface
      */
     public function getConfigTreeBuilder()
     {
-        $treeBuilder = new TreeBuilder();
+        $treeBuilder = new TreeBuilder('z');
 
-        $zConfig = $treeBuilder->root('z');
+        // Keep compatibility with symfony/config < 4.2
+        if (!method_exists($treeBuilder, 'getRootNode')) {
+            $zConfig = $treeBuilder->root('z');
+        } else {
+            $zConfig = $treeBuilder->getRootNode();
+        }
+
         $toArray = function ($s) {
             return array($s);
         };
