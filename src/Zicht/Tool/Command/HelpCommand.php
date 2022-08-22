@@ -49,5 +49,7 @@ class HelpCommand extends Command
             'format' => 'txt',
             'raw_text' => false,
         ));
+
+        return 0;
     }
 }

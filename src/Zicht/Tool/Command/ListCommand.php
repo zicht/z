@@ -21,5 +21,7 @@ class ListCommand extends Command
     {
         $descriptor = new Descriptor\TextDescriptor();
         $descriptor->describe($output, $this->getApplication());
+
+        return 0;
     }
 }

@@ -1,3 +1,15 @@
+3.0.0 [UNRELEASED]
+* Cleaned up composer.json
+* Updated dependencies to version ranges: symfony/* 3.4 - 4 instead of 2.8 only
+* Set minimum PHP version to 5.6
+* Swithed from PSR-0 to to PSR-4 autoloading
+* Fix verbosity levels
+* Introduce TokenException instead of throwing native SPL Exceptions when parsing Z script
+* Remove use of DialogHelper and always use QuestionHelper
+* Fixed tests and added a GitHub action workflow to run composer and run the tests
+* Made declaration of Zicht\Tool\Application::renderException() compatible with Symfony 3.4 Application::renderException()
+* Add conflict rules for all plugins that have previous versions with incompatible Yaml (unquoted values stating with @ or ! or containing :)
+
 2.1.1
 * Added a public_ip() function to the container
 

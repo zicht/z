@@ -1,14 +1,11 @@
 <?php
 /**
- * For licensing information, please see the LICENSE file accompanied with this file.
- *
- * @author Gerard van Helden <drm@melp.nl>
- * @copyright 2012 Gerard van Helden <http://melp.nl>
+ * @copyright Zicht Online <https://zicht.nl>
  */
 
 namespace Zicht\Tool\Script;
 
-use Symfony\Component\Process\Exception\InvalidArgumentException;
+use Zicht\Tool\Script\Exception\TokenException;
 
 /**
  * Parser for root nodes of the script
@@ -20,9 +17,7 @@ class Parser extends AbstractParser
      *
      * @param TokenStream $input
      * @return Node\Script
-     *
-     * @throws \Symfony\Component\Process\Exception\InvalidArgumentException
-     * @throws \UnexpectedValueException
+     * @throws TokenException
      */
     public function parse(TokenStream $input)
     {
@@ -63,7 +58,7 @@ class Parser extends AbstractParser
                             $ret->append(new Node\Script\Conditional($exprParser->parse($input)));
                             break;
                         default:
-                            throw new \UnexpectedValueException("Unknown EXPR_START token at this point: {$type}");
+                            throw new TokenException("Unknown EXPR_START token at this point: {$type}");
                     }
                     $input->expect(Token::EXPR_END);
                     $hasMatch = true;
@@ -83,7 +78,7 @@ class Parser extends AbstractParser
                 $ret->append(new Node\Expr\Data($cur->value));
                 $input->next();
             } else {
-                throw new InvalidArgumentException("Unxpected token: " . $input->current()->type);
+                throw new TokenException("Unxpected token: " . $input->current()->type);
             }
         }
 

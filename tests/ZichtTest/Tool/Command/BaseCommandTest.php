@@ -4,21 +4,20 @@
  * @copyright Zicht Online <http://zicht.nl>
  */
 
-namespace ZichtTest\Tool\Container\Command;
+namespace ZichtTest\Tool\Command;
 
-use Zicht\Tool\Command\BaseCommand;
 use Symfony\Component\Console\Application as SymfonyApp;
 use Zicht\Tool\Application as ZApp;
+use Zicht\Tool\Command\BaseCommand;
 use Zicht\Tool\Container\Container;
 
 class CommandImpl extends BaseCommand
 {
     public function doGetContainer()
     {
-        return$this->getContainer();
+        return $this->getContainer();
     }
 }
-
 
 class BaseCommandTest extends \PHPUnit_Framework_TestCase
 {
@@ -32,12 +31,11 @@ class BaseCommandTest extends \PHPUnit_Framework_TestCase
         $command->doGetContainer();
     }
 
-
     public function testNoFailureIfAppIsZ()
     {
         $command = new CommandImpl('test');
         $container = new Container();
-        $app = new ZApp();
+        $app = new ZApp('The Zicht Tool');
         $app->setContainer($container);
 
         $command->setApplication($app);

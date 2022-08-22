@@ -35,10 +35,12 @@ class DumpCommand extends BaseCommand
      *
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @return void
+     * @return int
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln(Yaml::dump($this->getContainer()->getValues(), 5, 4));
+
+        return 0;
     }
 }

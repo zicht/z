@@ -1,13 +1,11 @@
 <?php
 /**
- * For licensing information, please see the LICENSE file accompanied with this file.
- *
- * @author Gerard van Helden <drm@melp.nl>
- * @copyright 2012 Gerard van Helden <http://melp.nl>
+ * @copyright Zicht Online <https://zicht.nl>
  */
 
 namespace Zicht\Tool\Script\Tokenizer;
 
+use Zicht\Tool\Script\Exception\TokenException;
 use Zicht\Tool\Script\Token;
 use Zicht\Tool\Script\TokenizerInterface;
 
@@ -17,7 +15,7 @@ use Zicht\Tool\Script\TokenizerInterface;
 class Expression implements TokenizerInterface
 {
     /**
-     * @{inheritDoc}
+     * {@inheritDoc}
      */
     public function getTokens($string, &$needle = 0)
     {
@@ -56,12 +54,12 @@ class Expression implements TokenizerInterface
             } elseif (preg_match('/^[\?,]/', $substr, $m)) {
                 $ret[] = new Token($m[0]);
                 $needle++;
-            } elseif ($string{$needle} == '"') {
+            } elseif ($string[$needle] == '"') {
                 $strData = '';
 
                 $escape = false;
                 for ($j = $needle + 1; $j < $len; $j++) {
-                    $ch = $string{$j};
+                    $ch = $string[$j];
 
                     if ($ch == '\\') {
                         $escape = true;
@@ -96,8 +94,8 @@ class Expression implements TokenizerInterface
             }
             if ($before === $needle) {
                 // safety net.
-                throw new \UnexpectedValueException(
-                    "Unexpected input near token {$string{$needle}}, unsupported character ($string)"
+                throw new TokenException(
+                    "Unexpected input near token {$string[$needle]}, unsupported character ($string)"
                 );
             }
         }

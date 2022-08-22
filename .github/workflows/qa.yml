@@ -1,0 +1,39 @@
+name: QA
+
+on:
+    pull_request:
+        branches:
+            - release/*
+
+jobs:
+    backend:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                php-versions: ['5.6', '7.0', '7.1', '7.2', '7.4']
+        steps:
+            -   uses: actions/checkout@v2
+            -   uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-versions }}
+                    coverage: none # disable xdebug, pcov
+
+            -   id: composer-cache
+                run: echo "::set-output name=dir::$(composer config cache-dir)"
+
+            -   uses: actions/cache@v2
+                with:
+                    path: ${{ steps.composer-cache.outputs.dir }}
+                    key: composer-${{ runner.OS }}-${{ matrix.php-versions }}-${{ hashFiles('composer.json') }}-${{ hashFiles('composer.lock') }}
+                    restore-keys: |
+                        composer-${{ runner.OS }}-${{ matrix.php-versions }}-${{ hashFiles('composer.json') }}-
+                        composer-${{ runner.OS }}-${{ matrix.php-versions }}-
+                        composer-${{ matrix.php-versions }}-
+                        composer-
+
+            -   run: composer validate --strict
+            -   run: composer config --global github-oauth.github.com ${{ secrets.GITHUB_TOKEN }}
+            -   run: composer config --global --auth http-basic.repo.packagist.com token ${{ secrets.COMPOSER_PACKAGIST_COM_TOKEN }}
+            -   run: composer install --prefer-dist --no-progress --no-scripts
+            -   if: always()
+                run: composer run-script test
